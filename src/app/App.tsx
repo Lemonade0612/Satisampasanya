@@ -108,7 +108,7 @@ const TOPIC_LABELS: Record<string, { en: string; lo: string }> = {
 // ═══════════════════════════════════════════════════════════════════════════════
 const T = {
   en: {
-    app_name: "Satisampasanya", app_short: "Sati",
+    app_name: "Satisampasanya", app_short: "Satisampasanya",
     welcome_title: "Stay Safe\nOnline",
     welcome_sub: "Satisampasanya helps Lao youth spot scams, trafficking, and digital threats before they happen.",
     btn_login: "Sign In", btn_register: "Register",
@@ -131,8 +131,8 @@ const T = {
     compose_news: "News", compose_post: "Post",
     compose_info: "Points only for expert-verified posts. Featured bonus for verified posts that spread awareness. Limit: 2 posts + 5 comments per day.",
     compose_remaining: "posts remaining today",
-    compose_ph_news: "Write a detailed news post with context... (500-2000 chars)",
-    compose_sources: "Source Links (required for News)", compose_source_ph: "Source URL",
+    compose_ph_news: "What's on your mind? (50-2000 chars)",
+    compose_sources: "Source Links (required)", compose_source_ph: "Source URL",
     compose_topics: "Topic Tags", compose_topics_hint: "pick at least one",
     compose_photos: "Attach Photos", compose_photos_hint: "Drag & drop or tap to upload",
     edit_profile: "Edit Profile", save: "Save", cancel: "Cancel",
@@ -159,10 +159,11 @@ const T = {
     safety_tip_url: "Check URLs carefully — scammers use lookalike domains (e.g., facebo0k.com)",
     safety_tip_too_good: "If it sounds too good to be true (free money, guaranteed returns), it is",
     footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
-    repost: "Repost", repost_ph: "Add your thoughts (max 150 chars)", reposted: "Reposted!",
+    repost: "Repost", repost_ph: "Add your thoughts (optional, max 150)", reposted: "Reposted!",
+    show_more: "Show more", show_less: "Show less", following: "Following", follow: "Follow",
   },
   lo: {
-    app_name: "ສະຕິຊໍາປະຊັນຍະ", app_short: "ສາຕິ",
+    app_name: "ສະຕິຊໍາປະຊັນຍະ", app_short: "ສະຕິຊໍາປະຊັນຍະ",
     welcome_title: "ປອດໄພ\nທາງອອນລາຍ",
     welcome_sub: "ສະຕິຊໍາປະຊັນຍະ ຊ່ວຍໄວໜຸ່ມລາວຮູ້ຈັກການຫຼອກລວງ, ການຄ້າມະນຸດ ແລະ ໄພດິຈິຕອລ ກ່ອນທີ່ມັນຈະເກີດຂຶ້ນ.",
     btn_login: "ເຂົ້າສູ່ລະບົບ", btn_register: "ລົງທະບຽນ",
@@ -185,8 +186,8 @@ const T = {
     compose_news: "ຂ່າວ", compose_post: "ໂພສ",
     compose_info: "ຄະແນນສຳລັບໂພສທີ່ຜ່ານການກວດສອບໂດຍຜູ້ຊ່ຽວຊານເທົ່ານັ້ນ. ຈຳກັດ: 2 ໂພສ + 5 ຄອມເມັນຕໍ່ວັນ.",
     compose_remaining: "ໂພສຍັງເຫຼືອ",
-    compose_ph_news: "ຂຽນໂພສຂ່າວລະອຽດ...",
-    compose_sources: "ລິ້ງແຫຼ່ງຂໍ້ມູນ", compose_source_ph: "URL ແຫຼ່ງຂໍ້ມູນ",
+    compose_ph_news: "ມີຫຍັງໃຈຢາກແຊຣ໌? (50-2000 ຕົວອັກສອນ)",
+    compose_sources: "ລິ້ງແຫຼ່ງຂໍ້ມູນ (ບັງຄັບ)", compose_source_ph: "URL ແຫຼ່ງຂໍ້ມູນ",
     compose_topics: "ໝວດໝູ່", compose_topics_hint: "ເລືອກຢ່າງໜ້ອຍໜຶ່ງ",
     compose_photos: "ແນບຮູບ", compose_photos_hint: "ລາກ ແລະ ວາງ ຫຼື ແຕະເພື່ອອັບໂຫຼດ",
     edit_profile: "ແກ້ໄຂໂປຣໄຟລ", save: "ບັນທຶກ", cancel: "ຍົກເລີກ",
@@ -215,7 +216,8 @@ const T = {
     safety_tip_url: "ກວດເບິ່ງ URL ໃຫ້ລະອຽດ — ຜູ້ຫຼອກລວງໃຊ້ໂດເມນທີ່ຄ້າຍຄືກັນ",
     safety_tip_too_good: "ຖ້າມັນດີເກີນຈິງ (ເງິນຟຣີ, ຜົນຕອບແທນຮັບປະກັນ), ມັນກໍ່ແມ່ນ",
     footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
-    repost: "Repost", repost_ph: "ເພີ່ມຄວາມຄິດເຫັນ (ສູງສຸດ 150 ຕົວອັກສອນ)", reposted: "Reposted!",
+    repost: "Repost", repost_ph: "ເພີ່ມຄວາມຄິດເຫັນ (ບໍ່ບັງຄັບ, ສູງສຸດ 150)", reposted: "Reposted!",
+    show_more: "ສະແດງເພີ່ມ", show_less: "ສະແດງໜ້ອຍ", following: "ກຳລັງຕິດຕາມ", follow: "ຕິດຕາມ",
   },
 } as const;
 
@@ -766,7 +768,7 @@ function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, on
             <p className="text-sm text-foreground leading-relaxed mt-1 whitespace-pre-wrap">{displayContent}</p>
             {isLong && (
               <button onClick={() => setShowFull(v => !v)} className="text-xs text-primary font-semibold mt-1">
-                {showFull ? "Show less" : "Show more"}
+                {showFull ? t.show_less : t.show_more}
               </button>
             )}
             {post.image && (
@@ -844,7 +846,7 @@ function RepostModal({ post, lang, onClose, onRepost }: {
   if (!post) return null;
 
   const content = lang === "lo" && post.contentLo ? post.contentLo : post.content;
-  const canRepost = text.length <= 150;
+  const canRepost = text.length === 0 || (text.length >= 1 && text.length <= 150);
 
   return (
     <div className="fixed inset-0 z-50 flex flex-col bg-background">
@@ -994,7 +996,7 @@ function ComposeModal({ lang, onClose, onPost }: { lang: Lang; onClose: () => vo
   const [remaining, setRemaining] = useState(2);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const canPost = text.trim().length > 0 && text.length >= 500 && selectedTags.length > 0 && sourceUrl.startsWith("http");
+  const canPost = text.trim().length >= 50 && text.length <= 2000 && selectedTags.length > 0 && sourceUrl.trim().length > 0;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -1054,8 +1056,8 @@ function ComposeModal({ lang, onClose, onPost }: { lang: Lang; onClose: () => vo
           placeholder={t.compose_ph_news}
           className="w-full min-h-[120px] bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground/60 text-foreground leading-relaxed"
         />
-        <div className={`text-right text-xs mb-4 ${text.length < 500 ? "text-red-500" : "text-muted-foreground"}`}>
-          {text.length} / 500 min
+        <div className={`text-right text-xs mb-4 ${text.length < 50 ? "text-red-500" : "text-muted-foreground"}`}>
+          {text.length} / 50 min
         </div>
         <div className="mt-3">
           <p className="text-xs font-semibold mb-1.5">{t.compose_sources}</p>
@@ -1155,7 +1157,7 @@ function ProfileScreen({ lang, user, posts, onLogout }: {
         {bannerFile && <img src={bannerFile} alt="banner" className="w-full h-full object-cover" />}
         {editing && (
           <>
-            <input type="file" accept="image/*" capture="environment" className="hidden" id="banner-upload" onChange={(e) => {
+            <input type="file" accept="image/*" className="hidden" id="banner-upload" onChange={(e) => {
               if (e.target.files?.[0]) {
                 const url = URL.createObjectURL(e.target.files[0]);
                 setBannerFile(url);
@@ -1175,7 +1177,7 @@ function ProfileScreen({ lang, user, posts, onLogout }: {
         </div>
         {editing && (
           <>
-            <input type="file" accept="image/*" capture="environment" className="hidden" id="avatar-upload" onChange={(e) => {
+            <input type="file" accept="image/*" className="hidden" id="avatar-upload" onChange={(e) => {
               if (e.target.files?.[0]) {
                 const url = URL.createObjectURL(e.target.files[0]);
                 setAvatarFile(url);
@@ -1278,7 +1280,7 @@ function ProfileScreen({ lang, user, posts, onLogout }: {
                   </div>
                   <button onClick={() => toggleFollow(topic)}
                     className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all font-lao ${followed.includes(topic) ? "bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300" : "border border-border text-foreground/60 hover:border-primary/30"}`}>
-                    {followed.includes(topic) ? "Following" : "Follow"}
+                    {followed.includes(topic) ? t.following : t.follow}
                   </button>
                 </div>
               );
