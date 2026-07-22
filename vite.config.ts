@@ -28,6 +28,7 @@ export default defineConfig({
     alias: {
       // Alias @ to the src directory
       '@': path.resolve(__dirname, './src'),
+"@satisampasanya_app": path.resolve(__dirname, "./src/satisampasanya_app"),
     },
   },
 

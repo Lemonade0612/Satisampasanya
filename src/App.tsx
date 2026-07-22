@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
-  Heart, MessageCircle, Share2, Repeat2, Flag, ArrowLeft, X,
+  Heart, MessageCircle, Share2, Repeat2, Flag, ArrowLeft, X, LogOut,
   AlertTriangle, Clock, Bell, Search, Home, User, Plus, Shield,
   Zap, Link2, Check, Send, Eye, EyeOff, Pencil, Play, ChevronRight,
   Camera, Image as ImageIcon, Moon, Sun, TrendingUp, Upload, FileImage,
@@ -10,14 +10,24 @@ import {
 // ═══════════════════════════════════════════════════════════════════════════════
 //  IMAGE IMPORTS
 // ═══════════════════════════════════════════════════════════════════════════════
-import imgBcel   from "@/imports/Screenshot_2026-07-19_at_14.04.04.png";
-import imgApk    from "@/imports/Screenshot_2026-07-19_at_14.03.50.png";
+// IMPORTANT: You must rename these 2 files to remove spaces/parentheses:
+//   1. "image 2.png"   -> "image_2.png"
+//   2. "image (2).png" -> "image_2_apk.png"
+// Run these commands in your terminal (inside the imports folder):
+//   mv 'image 2.png' image_2.png
+//   mv 'image (2).png' image_2_apk.png
+import imgBcel from "@/imports/image_2.png";
+import imgApk from "@/imports/image_2_apk.png";
 import imgLaoPost from "@/imports/Screenshot_2026-07-19_at_14.05.21.png";
 import imgPhoneScam from "@/imports/image-13.png";
 import imgTraffickingVideo from "@/imports/image-11.png";
-import imgTruck  from "@/imports/image-12.png";
+import imgTruck from "@/imports/image-12.png";
 import imgTraffickingPoster from "@/imports/image-10.png";
 import imgTiktokScam from "@/imports/image-14.png";
+// IMPORTANT: Rename the file to remove spaces before running:
+// "Screenshot 2026-07-19 at 14.30.16.png" -> "logo.png" (or any name without spaces)
+// Then update the path below to match your renamed file
+import logoImage from "@/imports/Screenshot_2026-07-19_at_14.30.16.png";
 
 // ═══════════════════════════════════════════════════════════════════════════════
 //  TYPES
@@ -59,6 +69,9 @@ interface Post {
   isNews?: boolean;
   image?: string;
   hasVideo?: boolean;
+  link?: string;
+  repostOf?: string;
+  repostText?: string;
 }
 
 interface CurrentUser {
@@ -95,7 +108,7 @@ const TOPIC_LABELS: Record<string, { en: string; lo: string }> = {
 // ═══════════════════════════════════════════════════════════════════════════════
 const T = {
   en: {
-    app_name: "Satisampasanya", app_short: "Sati",
+    app_name: "Satisampasanya", app_short: "Satisampasanya",
     welcome_title: "Stay Safe\nOnline",
     welcome_sub: "Satisampasanya helps Lao youth spot scams, trafficking, and digital threats before they happen.",
     btn_login: "Sign In", btn_register: "Register",
@@ -115,12 +128,11 @@ const T = {
     nav_home: "Home", nav_explore: "Explore", nav_alerts: "Alerts", nav_profile: "Profile",
     feed_for_you: "For You", feed_following: "Following",
     caught_up_en: "You're all caught up", caught_up_lo: "ທ່ານໄດ້ອ່ານໝົດແລ້ວ",
-    compose_short: "Short", compose_news: "News", compose_post: "Post",
+    compose_news: "News", compose_post: "Post",
     compose_info: "Points only for expert-verified posts. Featured bonus for verified posts that spread awareness. Limit: 2 posts + 5 comments per day.",
     compose_remaining: "posts remaining today",
-    compose_ph_short: "What scam or safety issue are you seeing? (max 150 chars)",
-    compose_ph_news: "Write a detailed news post with context... (500-2000 chars)",
-    compose_sources: "Source Links (required for News)", compose_source_ph: "Source URL",
+    compose_ph_news: "What's on your mind? (1-500 chars)",
+    compose_sources: "Source Links (required)", compose_source_ph: "Source URL",
     compose_topics: "Topic Tags", compose_topics_hint: "pick at least one",
     compose_photos: "Attach Photos", compose_photos_hint: "Drag & drop or tap to upload",
     edit_profile: "Edit Profile", save: "Save", cancel: "Cancel",
@@ -146,10 +158,12 @@ const T = {
     safety_tip_apk: "Don't install APK files from unknown sources — they may contain malware",
     safety_tip_url: "Check URLs carefully — scammers use lookalike domains (e.g., facebo0k.com)",
     safety_tip_too_good: "If it sounds too good to be true (free money, guaranteed returns), it is",
-    footer: "Satisampasanya · ສະຕິຊໍາປະຊັນຍະ · Built for Lao youth safety",
+    footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
+    repost: "Repost", repost_ph: "Add your thoughts (optional, max 150)", reposted: "Reposted!",
+    show_more: "Show more", show_less: "Show less", following: "Following", follow: "Follow",
   },
   lo: {
-    app_name: "ສະຕິຊໍາປະຊັນຍະ", app_short: "ສາຕິ",
+    app_name: "ສະຕິຊໍາປະຊັນຍະ", app_short: "ສະຕິຊໍາປະຊັນຍະ",
     welcome_title: "ປອດໄພ\nທາງອອນລາຍ",
     welcome_sub: "ສະຕິຊໍາປະຊັນຍະ ຊ່ວຍໄວໜຸ່ມລາວຮູ້ຈັກການຫຼອກລວງ, ການຄ້າມະນຸດ ແລະ ໄພດິຈິຕອລ ກ່ອນທີ່ມັນຈະເກີດຂຶ້ນ.",
     btn_login: "ເຂົ້າສູ່ລະບົບ", btn_register: "ລົງທະບຽນ",
@@ -169,12 +183,11 @@ const T = {
     nav_home: "ໜ້າຫຼັກ", nav_explore: "ຄົ້ນຫາ", nav_alerts: "ແຈ້ງເຕືອນ", nav_profile: "ໂປຣໄຟລ",
     feed_for_you: "ສຳລັບທ່ານ", feed_following: "ຕິດຕາມ",
     caught_up_en: "You're all caught up", caught_up_lo: "ທ່ານໄດ້ອ່ານໝົດແລ້ວ",
-    compose_short: "ສັ້ນ", compose_news: "ຂ່າວ", compose_post: "ໂພສ",
+    compose_news: "ຂ່າວ", compose_post: "ໂພສ",
     compose_info: "ຄະແນນສຳລັບໂພສທີ່ຜ່ານການກວດສອບໂດຍຜູ້ຊ່ຽວຊານເທົ່ານັ້ນ. ຈຳກັດ: 2 ໂພສ + 5 ຄອມເມັນຕໍ່ວັນ.",
     compose_remaining: "ໂພສຍັງເຫຼືອ",
-    compose_ph_short: "ທ່ານເຫັນການຫຼອກລວງຫຍັງ? (ສູງສຸດ 150 ຕົວອັກສອນ)",
-    compose_ph_news: "ຂຽນໂພສຂ່າວລະອຽດ...",
-    compose_sources: "ລິ້ງແຫຼ່ງຂໍ້ມູນ", compose_source_ph: "URL ແຫຼ່ງຂໍ້ມູນ",
+    compose_ph_news: "ມີຫຍັງໃຈຢາກແຊຣ໌? (50-2000 ຕົວອັກສອນ)",
+    compose_sources: "ລິ້ງແຫຼ່ງຂໍ້ມູນ (ບັງຄັບ)", compose_source_ph: "URL ແຫຼ່ງຂໍ້ມູນ",
     compose_topics: "ໝວດໝູ່", compose_topics_hint: "ເລືອກຢ່າງໜ້ອຍໜຶ່ງ",
     compose_photos: "ແນບຮູບ", compose_photos_hint: "ລາກ ແລະ ວາງ ຫຼື ແຕະເພື່ອອັບໂຫຼດ",
     edit_profile: "ແກ້ໄຂໂປຣໄຟລ", save: "ບັນທຶກ", cancel: "ຍົກເລີກ",
@@ -202,13 +215,12 @@ const T = {
     safety_tip_apk: "ຢ່າຕິດຕັ້ງໄຟລ APK ຈາກແຫຼ່ງທີ່ບໍ່ຮູ້ຈັກ — ອາດມີ malware",
     safety_tip_url: "ກວດເບິ່ງ URL ໃຫ້ລະອຽດ — ຜູ້ຫຼອກລວງໃຊ້ໂດເມນທີ່ຄ້າຍຄືກັນ",
     safety_tip_too_good: "ຖ້າມັນດີເກີນຈິງ (ເງິນຟຣີ, ຜົນຕອບແທນຮັບປະກັນ), ມັນກໍ່ແມ່ນ",
-    footer: "Satisampasanya · ສະຕິຊໍາປະຊັນຍະ · Built for Lao youth safety",
+    footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
+    repost: "Repost", repost_ph: "ເພີ່ມຄວາມຄິດເຫັນ (ບໍ່ບັງຄັບ, ສູງສຸດ 150)", reposted: "Reposted!",
+    show_more: "ສະແດງເພີ່ມ", show_less: "ສະແດງໜ້ອຍ", following: "ກຳລັງຕິດຕາມ", follow: "ຕິດຕາມ",
   },
 } as const;
 
-// ═══════════════════════════════════════════════════════════════════════════════
-//  DESIGN TOKENS
-// ═══════════════════════════════════════════════════════════════════════════════
 const COLORS = {
   primary: "#5B21D1",
   primaryLight: "#84ADEF",
@@ -244,24 +256,14 @@ const FEED_TABS_EN = ["For You","Following","#OnlineScam","#Trafficking","#Digit
 const FEED_TABS_LO = ["ສຳລັບທ່ານ","ຕິດຕາມ","#ການຫຼອກລວງ","#ການຄ້າມະນຸດ","#ຄວາມປອດໄພດິຈິຕອລ"];
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  SATI LOGO (SVG - Professional, scalable, theme-aware)
+//  SATI LOGO (SVG - Professional S mark)
 // ═══════════════════════════════════════════════════════════════════════════════
 function SatiLogo({ size = 28, className = "" }: { size?: number; className?: string }) {
+  const h = Math.round(size * 1.1);
   return (
-    <svg width={size} height={Math.round(size * 1.1)} viewBox="0 0 100 110" fill="none" className={className}>
-      <defs>
-        <linearGradient id="satilogo-purple" x1="0" y1="0" x2="100" y2="0">
-          <stop offset="0%" stopColor={COLORS.primary} />
-          <stop offset="100%" stopColor={COLORS.accent} />
-        </linearGradient>
-        <linearGradient id="satilogo-blue" x1="0" y1="0" x2="100" y2="100">
-          <stop offset="0%" stopColor={COLORS.primaryLight} />
-          <stop offset="100%" stopColor="#A78BFA" />
-        </linearGradient>
-      </defs>
-      <path d="M6 54 L30 54 L30 82 L82 82 L82 104 L18 104 L6 80 Z" fill="url(#satilogo-blue)" />
-      <path d="M18 6 L82 6 L94 30 L94 56 L70 56 L70 28 L18 28 Z" fill="url(#satilogo-purple)" />
-      <path d="M50 32 L64 40 L64 60 L50 68 L36 60 L36 40 Z" fill="white" opacity="0.08" />
+    <svg width={size} height={h} viewBox="0 0 100 110" fill="none" className={className}>
+      <polygon points="6,54 30,54 30,82 82,82 82,104 18,104 6,80" fill="#84ADEF" />
+      <polygon points="18,6 82,6 94,30 94,56 70,56 70,28 18,28" fill="#5B21D1" />
     </svg>
   );
 }
@@ -329,7 +331,8 @@ const INITIAL_POSTS: Post[] = [
     contentLo: 'ຄຳເຕືອນ: ຂໍ້ຄວາມ WhatsApp ປອມ "BCEL Bank" ຮຽກໃຫ້ຢືນຢັນບັນຊີ. ເບີ +856 20 97 386 532 ບໍ່ແມ່ນ BCEL. ຢ່າກົດລິ້ງ ຫຼື ແຊຣ໌ OTP ຂອງທ່ານ.',
     tags: ["OnlineScam", "PhishingAlert"], timestamp: "2h", state: "confirmed",
     likes: 847, comments: 92, reposts: 431, warnedMe: 203,
-    points: 50, featuredPoints: true, image: imgBcel,
+    points: 50, featuredPoints: true,
+    image: imgBcel,
   },
   {
     id: "p2", author: AUTHORS.kham,
@@ -347,7 +350,8 @@ const INITIAL_POSTS: Post[] = [
     contentLo: "ວິທີການຫຼອກລວງທາງໂທລະສັບໃນລາວ:\n\n• ສະເໜີສິນຄ້າທີ່ດີເກີນຈິງ\n• ໂທຫາໂດຍໄຮ້ນັດໝາຍຈາກໜ່ວຍງານລັດ\n• ຮຽກຂໍ້ມູນສ່ວນຕົວ ຫຼື ຂູ່ຮ້າຍ\n\nວິທີປ້ອງກັນ: ວາງສາຍ. ບ໋ອກເບີ. ຢ່າກົດລິ້ງ. ຢ່າໂອນເງິນໃຫ້ຄົນແປກໜ້າ.",
     tags: ["OnlineScam", "PhishingAlert", "DigitalSafety"], timestamp: "1d", state: "confirmed",
     likes: 2341, comments: 187, reposts: 1204, warnedMe: 891,
-    points: 75, featuredPoints: false, isNews: true, image: imgPhoneScam,
+    points: 75, featuredPoints: false, isNews: true,
+    image: imgPhoneScam,
   },
   {
     id: "p4", author: AUTHORS.boun,
@@ -355,7 +359,8 @@ const INITIAL_POSTS: Post[] = [
     contentLo: "ວິດີໂອ TikTok ສະແດງຜູ້ຍິງຖືກຕ່ວນໃນຈີນ — ນາງແມ່ນໜຶ່ງໃນຫຼາຍພັນຄົນທີ່ຖືກຄ້າ. ນີ້ເກີດຂຶ້ນກັບຜູ້ຍິງລາວດ້ວຍ. ຖ້າໃຜສະເໜີວຽກ ຫຼື ການແຕ່ງງານໃນຈີນໂດຍບໍ່ໄດ້ພົບກ່ອນ, ລາຍງານທັນທີ: 1800.",
     tags: ["Trafficking", "BorderSafety"], timestamp: "3h", state: "sla",
     likes: 156, comments: 43, reposts: 89, warnedMe: 74,
-    hasVideo: true, image: imgTraffickingVideo,
+    hasVideo: true,
+    image: imgTraffickingVideo,
   },
   {
     id: "p5", author: AUTHORS.naly,
@@ -365,13 +370,14 @@ const INITIAL_POSTS: Post[] = [
     likes: 12, comments: 5, reposts: 3, warnedMe: 0,
     correction: "Lao cybercrime police do file and act on reports. Report at cybercrime.gov.la or call 021-212-516. Filings compile evidence to identify and dismantle scam networks.",
     correctionLo: "ຕຳຫຼວດອາຊະຍາກຳໄຊເບີລາວຮັບ ແລະ ດຳເນີນການ. ລາຍງານທີ່ cybercrime.gov.la ຫຼື 021-212-516.",
+    image: imgLaoPost,
   },
   {
     id: "p6", author: AUTHORS.phone,
     content: "This Facebook post in Lao is spreading dangerous misinformation about border crossing. The post claims it's safe to cross with a broker — it is NOT. This is how trafficking starts. Shared as a WARNING, not an endorsement.",
     contentLo: "ໂພສ Facebook ນີ້ແຜ່ຂໍ້ມູນຜິດກ່ຽວກັບການຂ້າມຊາຍແດນ. ໂພສອ້າງວ່າການຂ້າມຜ່ານນາຍໜ້າປອດໄພ — ບໍ່ປອດໄພ. ນີ້ແມ່ນຈຸດເລີ່ມຕົ້ນຂອງການຄ້າມະນຸດ. ແຊຣ໌ເພື່ອເຕືອນ.",
     tags: ["Trafficking", "SocialMedia"], timestamp: "1h", state: "clean",
-    likes: 67, comments: 14, reposts: 38, warnedMe: 29, image: imgLaoPost,
+    likes: 67, comments: 14, reposts: 38, warnedMe: 29,
   },
   {
     id: "p7", author: AUTHORS.malee,
@@ -379,7 +385,8 @@ const INITIAL_POSTS: Post[] = [
     contentLo: "ການຄ້າມະນຸດມີຫຼາຍຮູບແບບ — ການຂູດຮີດທາງເພດ, ແຮງງານບັງຄັບ, ການຄ້າເດັກ, ການແຕ່ງງານບັງຄັບ, ການຄ້າອະໄວຍະວະ. ຮູ້ຈັກສັນຍານ. NGO ໃນລາວໃຫ້ການຊ່ວຍເຫຼືອຟຣີ.",
     tags: ["Trafficking", "BorderSafety"], timestamp: "4h", state: "confirmed",
     likes: 312, comments: 28, reposts: 145, warnedMe: 118,
-    points: 40, featuredPoints: false, image: imgTraffickingPoster,
+    points: 40, featuredPoints: false,
+    image: imgTraffickingPoster,
   },
   {
     id: "p8", author: AUTHORS.kham,
@@ -387,7 +394,8 @@ const INITIAL_POSTS: Post[] = [
     contentLo: "ພົບໃນລົດບັນທຸກ: ຮູບນີ້ສະແດງຄົນທີ່ຖືກລັກລອບຂ້າມຊາຍແດນ. ຖ້າເຫັນລົດໜ້າສົງໄສ, ໂທ 1800 ທັນທີ.",
     tags: ["Trafficking", "BorderSafety"], timestamp: "6h", state: "confirmed",
     likes: 523, comments: 61, reposts: 287, warnedMe: 201,
-    points: 45, featuredPoints: true, image: imgTruck,
+    points: 45, featuredPoints: true,
+    image: imgTruck,
   },
   {
     id: "p9", author: AUTHORS.phone,
@@ -395,7 +403,17 @@ const INITIAL_POSTS: Post[] = [
     contentLo: "ການຫຼອກລວງ TikTok: ປ໊ອບອັບ 'Joybuy' ສັນຍາລາງວັນຖ້າກົດ. ນີ້ແມ່ນໜ້າ phishing — ເກັບເບີໂທ ແລະ ຂໍ້ມູນການຊຳລະ. ຖ້າເຫັນ popup ນີ້, ປິດທັນທີ.",
     tags: ["OnlineScam", "SocialMedia"], timestamp: "30m", state: "clean",
     likes: 89, comments: 17, reposts: 52, warnedMe: 41,
-    hasVideo: true, image: imgTiktokScam,
+    hasVideo: true,
+    image: imgTiktokScam,
+  },
+  {
+    id: "p10", author: AUTHORS.admin,
+    content: "BREAKING: 924 Indian nationals rescued from Golden Triangle SEZ in Laos. Trafficked workers forced into cyber-scam operations. This mirrors what happens to Lao citizens too. Read the full RFA report for details on how trafficking networks operate in the region.",
+    contentLo: "ຂ່າວດ່ວນ: 924 ຄົນອິນເດຍຖືກຊ່ອຍຈາກເຂດສີ່ເຫຼົ່າສາມຫຼ່ຽມຄຳໃນລາວ. ແຮງງານທີ່ຖືກຄ້າຖືກບັງຄັບເຮັດວຽກ scam ໄຊເບີ. ນີ້ຄ້າຍຄືກັບສິ່ງທີ່ເກີດຂຶ້ນກັບພົນລະເມືອງລາວ. ອ່ານບົດລາຍງານ RFA ສົມບູນ.",
+    tags: ["Trafficking", "BorderSafety", "DigitalSafety"], timestamp: "30m", state: "confirmed",
+    likes: 1240, comments: 187, reposts: 892, warnedMe: 654,
+    points: 60, featuredPoints: true, isNews: true,
+    link: "https://www.rfa.org/lao/daily/southeastasia/924-indian-nationals-rescured-from-golden-triangle-sez-01302025003502.html",
   },
 ];
 
@@ -464,7 +482,7 @@ function SocialButtons({ onPress, label }: { onPress: () => void; label: string 
         {[
           <svg key="g" width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908C16.658 14.251 17.64 11.945 17.64 9.2z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>,
           <svg key="f" width="18" height="18" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>,
-          <svg key="a" width="15" height="18" viewBox="0 0 814 1000" fill="currentColor" className="text-foreground"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 537.8 10.3 427.8 10.3 321.7c0-178.5 116.4-272.8 230.7-272.8 61.3 0 112.4 40.8 150.8 40.8 36.7 0 94.7-43.1 163.7-43.1 26.4 0 108.2 2.6 163.7 80.3zm-234.4-181.9c30.3-36.2 52.2-86.5 52.2-136.7 0-7.1-.6-14.3-1.9-20.1-49.3 1.9-108.2 33.2-142.6 75.2-28.1 32.2-55.9 82.5-55.9 133.3 0 7.7 1.3 15.4 1.9 17.9 3.2.6 8.4 1.3 13.6 1.3 44.1 0 100.9-30.3 132.7-70.9z"/></svg>,
+          <svg key="a" width="15" height="18" viewBox="0 0 814 1000" fill="black"><path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76.5 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 537.8 10.3 427.8 10.3 321.7c0-178.5 116.4-272.8 230.7-272.8 61.3 0 112.4 40.8 150.8 40.8 36.7 0 94.7-43.1 163.7-43.1 26.4 0 108.2 2.6 163.7 80.3zm-234.4-181.9c30.3-36.2 52.2-86.5 52.2-136.7 0-7.1-.6-14.3-1.9-20.1-49.3 1.9-108.2 33.2-142.6 75.2-28.1 32.2-55.9 82.5-55.9 133.3 0 7.7 1.3 15.4 1.9 17.9 3.2.6 8.4 1.3 13.6 1.3 44.1 0 100.9-30.3 132.7-70.9z"/></svg>,
         ].map((icon, i) => (
           <button key={i} onClick={onPress} className="w-12 h-12 rounded-full border border-border bg-white dark:bg-background flex items-center justify-center hover:bg-gray-50 dark:hover:bg-muted active:scale-95 transition-all shadow-sm">{icon}</button>
         ))}
@@ -489,29 +507,51 @@ function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
 //  THEME TOGGLE
 // ═══════════════════════════════════════════════════════════════════════════════
 function ThemeToggle({ mode, onChange }: { mode: ThemeMode; onChange: (m: ThemeMode) => void }) {
-  const modes: { key: ThemeMode; icon: typeof Sun; label: string }[] = [
-    { key: "light", icon: Sun, label: "Light" },
-    { key: "dark", icon: Moon, label: "Dark" },
-    { key: "system", icon: MonitorIcon, label: "System" },
-  ];
+  const isDark = mode === "dark" || (mode === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
   return (
-    <div className="flex items-center gap-1 bg-muted/60 rounded-full p-1">
-      {modes.map(({ key, icon: Icon, label }) => (
-        <button key={key} onClick={() => onChange(key)}
-          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-xs font-medium transition-all ${mode === key ? "bg-primary text-white shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
-          title={label}>
-          <Icon size={13} />
-        </button>
-      ))}
-    </div>
+    <button
+      onClick={() => onChange(isDark ? "light" : "dark")}
+      className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+      title={isDark ? "Switch to light" : "Switch to dark"}
+    >
+      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+    </button>
   );
 }
 
-function MonitorIcon({ size = 16 }: { size?: number }) {
+// ═══════════════════════════════════════════════════════════════════════════════
+//  SPLASH SCREEN
+// ═══════════════════════════════════════════════════════════════════════════════
+function SplashScreen({ onDone }: { onDone: () => void }) {
+  const [fading, setFading] = useState(false);
+  useEffect(() => {
+    const t1 = setTimeout(() => setFading(true), 2000);
+    const t2 = setTimeout(() => onDone(), 2600);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [onDone]);
+
   return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="3" width="20" height="14" rx="2" /><line x1="8" y1="21" x2="16" y2="21" /><line x1="12" y1="17" x2="12" y2="21" />
-    </svg>
+    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center"
+      style={{ background: "linear-gradient(160deg,#1E1B4B 0%,#3B0FA0 45%,#1a365d 100%)", opacity: fading ? 0 : 1, transition: "opacity 0.6s ease-in-out" }}>
+      <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 50% 40%, rgba(147,197,253,0.12) 0%, transparent 60%)" }} />
+      <div className="relative">
+        <img src={logoImage} alt="Sati Logo" className="w-20 h-20 rounded-2xl object-cover shadow-2xl" />
+      </div>
+      <h1 className="font-display font-bold text-white text-center mt-6 leading-none" style={{ fontSize: 32, letterSpacing: "-0.03em" }}>
+        Satisampasanya
+      </h1>
+      <p className="font-lao text-white/50 mt-3 text-base" style={{ letterSpacing: "0.04em" }}>ສະຕິຊໍາປະຊັນຍະ</p>
+
+      <div className="absolute bottom-16 flex flex-col items-center gap-2">
+        <div className="w-8 h-8 rounded-full border-2 border-white/20 border-t-white/80 animate-spin" />
+        <p className="text-white/40 text-[10px] text-center leading-relaxed">
+          Your trusted source, built for youth.
+        </p>
+        <p className="font-lao text-white/30 text-[10px] text-center mt-0.5">
+          ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -557,7 +597,10 @@ function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLangToggle:
       <div className="flex justify-end px-5 pt-3"><LangToggle lang={lang} onToggle={onLangToggle} /></div>
       <div className="flex-1 flex items-center justify-center px-8"><SatiIllustration /></div>
       <div className="bg-background rounded-t-3xl px-7 pt-7 pb-8 shadow-[0_-8px_32px_rgba(91,33,209,0.08)] border-t border-border">
-        <div className="flex items-center gap-2 mb-3"><SatiLogo size={22} /><span className="font-display font-bold text-base" style={{ letterSpacing:"-0.02em" }}>{t.app_short}</span></div>
+        <div className="flex items-center gap-2 mb-3">
+          <img src={logoImage} alt="Sati Logo" className="w-8 h-8 rounded-lg object-cover" />
+          <span className="font-display font-bold text-base" style={{ letterSpacing:"-0.02em" }}>{t.app_short}</span>
+        </div>
         <h1 className="font-display font-bold mb-3 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
         <p className="text-sm text-muted-foreground leading-relaxed mb-7 font-lao">{t.welcome_sub}</p>
         <div className="flex gap-3">
@@ -632,308 +675,282 @@ function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLangToggle:
       </div>
       <div className="flex-1 px-5 pt-6">
         {resetSent ? (
-          <div className="rounded-2xl p-5 bg-green-50 border border-green-200 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center shrink-0"><Check size={16} className="text-green-600" /></div>
-            <p className="text-sm text-green-800 leading-relaxed font-lao">{t.reset_sent}</p>
-          </div>
-        ) : (
-          <>
-            <FormInput value={forgotEmail} onChange={(v) => { setForgotEmail(v); setForgotError(""); }} placeholder={t.field_email} type="email" error={forgotError} />
-            <button onClick={handleForgot} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mt-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_send_reset}</button>
-          </>
-        )}
-        <div className="mt-5 text-center"><button onClick={() => setView("login")} className="text-sm text-primary font-semibold font-lao">← {t.back_signin}</button></div>
+          <div className="rounded-2xl p-5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-center">
+              <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center mx-auto mb-3">
+                <Check size={24} className="text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 font-lao">{t.reset_sent}</p>
+            </div>
+          ) : (
+            <>
+              <FormInput value={forgotEmail} onChange={(v) => { setForgotEmail(v); setForgotError(""); }} placeholder={t.field_email} type="email" error={forgotError} />
+              <button onClick={handleForgot} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mb-3 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_send_reset}</button>
+            </>
+          )}
+        </div>
+        <div className="px-5 pb-6 text-center">
+          <button onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.back_signin}</button>
+        </div>
       </div>
-    </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  STATE BANNER
+//  POST CARD
 // ═══════════════════════════════════════════════════════════════════════════════
-function StateBanner({ state, flagReason, flagReasonLo, correction, correctionLo, lang }: Pick<Post,"state"|"flagReason"|"flagReasonLo"|"correction"|"correctionLo"> & { lang: Lang }) {
+function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, onRepostClick, onImageExpand, onTopicClick }: {
+  post: Post; lang: Lang; onOpenComments: (id: string) => void;
+  onLike: (id: string) => void; onRepost: (id: string) => void; onWarnedMe: (id: string) => void;
+  onRepostClick: (post: Post) => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void;
+}) {
   const t = T[lang];
-  if (state === "clean" || state === "confirmed") return null;
-  if (state === "flagged") return (
-    <div className="mx-4 mb-2 rounded-xl p-3 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800">
-      <div className="flex items-start gap-2">
-        <AlertTriangle size={13} className="text-amber-500 mt-0.5 shrink-0" />
-        <div>
-          <p className="text-[10px] font-bold tracking-wider uppercase text-amber-800 dark:text-amber-400 mb-0.5">{t.banner_review_title}</p>
-          <p className="text-xs text-amber-700 dark:text-amber-300 leading-relaxed font-lao">{lang==="lo"&&flagReasonLo ? flagReasonLo : flagReason}</p>
-        </div>
-      </div>
-    </div>
-  );
-  if (state === "false") return (
-    <div className="mx-4 mb-2 rounded-xl p-3 bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-800">
-      <div className="flex items-start gap-2">
-        <X size={13} className="text-red-500 mt-0.5 shrink-0" />
-        <div>
-          <p className="text-[10px] font-bold tracking-wider uppercase text-red-800 dark:text-red-400 mb-0.5">{t.banner_false_title}</p>
-          {(correction||correctionLo) && <p className="text-xs text-red-700 dark:text-red-300 leading-relaxed font-lao"><span className="font-semibold">{t.banner_correction}</span>{lang==="lo"&&correctionLo ? correctionLo : correction}</p>}
-        </div>
-      </div>
-    </div>
-  );
-  if (state === "sla") return (
-    <div className="mx-4 mb-2 rounded-xl p-3 bg-gray-100 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700">
-      <div className="flex items-center gap-2">
-        <Clock size={13} className="text-gray-400 shrink-0" />
-        <p className="text-[11px] text-gray-500 dark:text-gray-400 font-lao">{t.banner_sla}</p>
-      </div>
-    </div>
-  );
-  return null;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  IMAGE LIGHTBOX
-// ═══════════════════════════════════════════════════════════════════════════════
-function ImageLightbox({ src, onClose }: { src: string; onClose: () => void }) {
-  return (
-    <div className="fixed inset-0 z-[200] bg-black/95 flex flex-col" onClick={onClose}>
-      <button className="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-white/10 flex items-center justify-center" onClick={onClose}>
-        <X size={18} className="text-white" />
-      </button>
-      <div className="flex-1 flex items-center justify-center p-4" onClick={(e) => e.stopPropagation()}>
-        <img src={src} alt="Full size" className="max-w-full max-h-full object-contain rounded-xl" />
-      </div>
-      <p className="text-center text-white/30 text-[11px] pb-6">Tap anywhere to close</p>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  POST CARD (Enhanced with Photo Upload Preview)
-// ═══════════════════════════════════════════════════════════════════════════════
-function PostCard({ post, onTap, lang }: { post: Post; onTap: () => void; lang: Lang }) {
   const [liked, setLiked] = useState(false);
-  const [warned, setWarned] = useState(false);
   const [reposted, setReposted] = useState(false);
-  const [shareToast, setShareToast] = useState(false);
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const t = T[lang];
-  const locked = post.state === "flagged" || post.state === "false";
-  const leafState: LeafState = post.state==="confirmed" ? (post.featuredPoints?"featured":"verified") : post.state==="flagged"||post.state==="sla" ? "pending" : "none";
-  const displayContent = lang==="lo"&&post.contentLo ? post.contentLo : post.content;
+  const [warned, setWarned] = useState(false);
+  const [showFull, setShowFull] = useState(false);
+  const content = lang === "lo" && post.contentLo ? post.contentLo : post.content;
+  const isLong = content.length > 200;
+  const displayContent = showFull || !isLong ? content : content.slice(0, 200) + "...";
 
-  const handleShare = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setShareToast(true);
-    setTimeout(() => setShareToast(false), 2000);
+  const getLeafState = (): LeafState => {
+    if (post.state === "confirmed") return post.featuredPoints ? "featured" : "verified";
+    if (post.state === "flagged" || post.state === "sla") return "pending";
+    return "none";
   };
 
+
   return (
-    <article className="border-b border-border cursor-pointer active:bg-indigo-50/30 transition-colors relative" onClick={onTap}>
-      <div className="pt-3">
-        <StateBanner state={post.state} flagReason={post.flagReason} flagReasonLo={post.flagReasonLo} correction={post.correction} correctionLo={post.correctionLo} lang={lang} />
-      </div>
-      <div className={`px-4 pb-4 ${post.state==="false"?"opacity-60":""}`}>
-        {/* Author */}
-        <div className="flex items-start gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold text-white shrink-0" style={{ background: post.author.color }}>{post.author.initials}</div>
+    <article className="bg-background border-b border-border">
+      {getStateBanner()}
+      <div className="px-4 pt-3 pb-2">
+        <div className="flex gap-3">
+          <div className="shrink-0">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: post.author.color }}>
+              {post.author.initials}
+            </div>
+          </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-semibold text-sm">{post.author.name}</span>
-              <LeafMark state={leafState} size={15} />
-              {post.isNews && <span className="text-[10px] font-bold bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full uppercase tracking-wide font-lao">{t.news_label}</span>}
+              <span className="font-semibold text-sm text-foreground">{post.author.name}</span>
+              <LeafMark state={getLeafState()} size={14} />
+              {post.isNews && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">{t.news_label}</span>}
+              <span className="text-xs text-muted-foreground">{post.author.handle}</span>
+              <span className="text-xs text-muted-foreground">·</span>
+              <span className="text-xs text-muted-foreground">{post.timestamp}</span>
             </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <span>{post.author.handle}</span><span>·</span><span>{post.timestamp}</span>
-            </div>
-          </div>
-          <button className="p-1.5 text-muted-foreground/50 hover:text-muted-foreground transition-colors" onClick={(e) => e.stopPropagation()}><Flag size={13} /></button>
-        </div>
-
-        {/* Content */}
-        <p className="text-sm leading-relaxed mb-3 whitespace-pre-line font-lao">{displayContent}</p>
-
-        {/* Image */}
-        {post.image && !post.hasVideo && (
-          <div className="relative rounded-2xl overflow-hidden mb-3 bg-muted cursor-zoom-in" onClick={(e) => { e.stopPropagation(); setLightboxSrc(post.image!); }}>
-            <img src={post.image} alt="Post media" className="w-full object-cover" style={{ maxHeight: 260 }} loading="lazy" />
-            <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-md">⤢ expand</div>
-          </div>
-        )}
-
-        {/* Video */}
-        {post.hasVideo && post.image && (
-          <div className="relative rounded-2xl overflow-hidden mb-3 bg-muted cursor-pointer" onClick={(e) => e.stopPropagation()}>
-            <img src={post.image} alt="Video thumbnail" className="w-full object-cover" style={{ maxHeight: 250 }} loading="lazy" />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-              <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg">
-                <Play size={20} fill="currentColor" className="text-primary ml-1" />
+            <p className="text-sm text-foreground leading-relaxed mt-1 whitespace-pre-wrap">{displayContent}</p>
+            {isLong && (
+              <button onClick={() => setShowFull(v => !v)} className="text-xs text-primary font-semibold mt-1">
+                {showFull ? t.show_less : t.show_more}
+              </button>
+            )}
+            {post.image && (
+              <div className="mt-2.5 rounded-2xl overflow-hidden border border-border relative cursor-pointer" onClick={() => onImageExpand && onImageExpand(post.image!)}>
+                <img src={post.image} alt="" className="w-full h-auto object-cover max-h-[400px]" />
+                {post.hasVideo && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center">
+                      <Play size={24} className="text-white ml-1" />
+                    </div>
+                  </div>
+                )}
               </div>
+            )}
+            {post.link && (
+              <a href={post.link} target="_blank" rel="noopener noreferrer" className="mt-2.5 flex items-center gap-2 rounded-xl border border-border bg-muted/30 px-3 py-2.5 hover:bg-muted/50 transition-colors">
+                <Link2 size={14} className="text-muted-foreground shrink-0" />
+                <span className="text-xs text-primary truncate flex-1">{post.link}</span>
+                <ExternalLink size={12} className="text-muted-foreground shrink-0" />
+              </a>
+            )}
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
+              {post.tags.map(tag => (
+                <span key={tag} onClick={(e) => { e.stopPropagation(); onTopicClick && onTopicClick(tag); }}
+                  className="cursor-pointer">
+                  <TagChip tag={tag} lang={lang} small />
+                </span>
+              ))}
             </div>
-            <div className="absolute bottom-2.5 right-3 bg-black/65 text-white text-[10px] px-2 py-0.5 rounded-md font-mono">1:24</div>
-          </div>
-        )}
-        {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
-
-        {/* Tags */}
-        {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 mb-4">
-            {post.tags.map((tag) => <TagChip key={tag} tag={tag} lang={lang} />)}
-          </div>
-        )}
-
-        {/* Actions */}
-        <div className="flex items-center justify-between" onClick={(e) => e.stopPropagation()}>
-          <button disabled={locked} onClick={() => !locked && setLiked(v=>!v)}
-            className={`flex items-center gap-1.5 text-xs transition-colors ${locked?"text-gray-300 cursor-not-allowed":liked?"text-red-500":"text-muted-foreground hover:text-red-400"}`}>
-            <Heart size={15} strokeWidth={1.75} fill={liked?"currentColor":"none"} /><span>{post.likes+(liked?1:0)}</span>
-          </button>
-          <button disabled={locked} onClick={(e) => { e.stopPropagation(); if(!locked) onTap(); }}
-            className={`flex items-center gap-1.5 text-xs transition-colors ${locked?"text-gray-300 cursor-not-allowed":"text-muted-foreground hover:text-indigo-500"}`}>
-            <MessageCircle size={15} strokeWidth={1.75} /><span>{post.comments}</span>
-          </button>
-          <button disabled={locked} onClick={(e) => { e.stopPropagation(); if(!locked) setReposted(v=>!v); }}
-            className={`flex items-center gap-1.5 text-xs transition-colors ${locked?"text-gray-300 cursor-not-allowed":reposted?"text-green-600 font-semibold":"text-muted-foreground hover:text-green-600"}`}>
-            <Repeat2 size={15} strokeWidth={1.75} fill={reposted?"currentColor":"none"} /><span>{post.reposts+(reposted?1:0)}</span>
-          </button>
-          <button disabled={locked} onClick={(e) => { e.stopPropagation(); if(!locked) setWarned(v=>!v); }}
-            className={`flex items-center gap-1 text-[11px] px-2.5 py-1 rounded-full border transition-all font-medium ${locked?"border-gray-200 text-gray-300 cursor-not-allowed":warned?"bg-primary border-primary text-white":"border-indigo-200 text-indigo-600 hover:bg-indigo-50"}`}>
-            <Shield size={11} /><span className="font-lao">{t.warned_me}{warned?" ✓":""}</span>
-          </button>
-          <button disabled={locked} onClick={handleShare}
-            className={`flex items-center gap-1.5 text-xs transition-colors ${locked?"text-gray-300 cursor-not-allowed":"text-muted-foreground hover:text-indigo-500"}`}>
-            <Share2 size={14} strokeWidth={1.75} />
-          </button>
-        </div>
-
-        {/* Points footer */}
-        {post.state==="confirmed" && post.points && (
-          <div className="mt-3 flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 bg-green-50 dark:bg-green-950/50 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 text-[11px] font-semibold px-2.5 py-1 rounded-full">
-              <LeafMark state="verified" size={11} />+{post.points} <span className="font-lao">{t.verified_pts}</span>
-            </span>
-            {post.featuredPoints && (
-              <span className="inline-flex items-center gap-1.5 bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                <Zap size={10} /><span className="font-lao">{t.featured_bonus}</span>
-              </span>
+            {post.points !== undefined && post.state === "confirmed" && (
+              <div className="flex items-center gap-3 mt-2.5 text-[11px] text-muted-foreground">
+                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                  <Zap size={12} /> {post.points} {t.verified_pts}
+                </span>
+                {post.featuredPoints && (
+                  <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+                    <TrendingUp size={12} /> {t.featured_bonus}
+                  </span>
+                )}
+              </div>
             )}
           </div>
-        )}
+        </div>
       </div>
-      {shareToast && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-foreground text-background text-[11px] font-semibold px-3 py-1.5 rounded-full z-10 whitespace-nowrap">{t.share} ✓</div>
-      )}
+      <div className="flex items-center justify-between px-2 py-2">
+        <button onClick={() => { if (!liked) { setLiked(true); onLike(post.id); } }} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-colors ${liked ? "text-red-500 bg-red-50 dark:bg-red-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
+          <Heart size={16} fill={liked ? "currentColor" : "none"} /> {post.likes + (liked ? 1 : 0)}
+        </button>
+        <button onClick={() => onOpenComments(post.id)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
+          <MessageCircle size={16} /> {post.comments}
+        </button>
+        <button onClick={() => onRepostClick(post)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-colors ${reposted ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
+          <Repeat2 size={16} /> {post.reposts + (reposted ? 1 : 0)}
+        </button>
+        <button onClick={() => { if (!warned) { setWarned(true); onWarnedMe(post.id); } }} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-colors ${warned ? "text-amber-500 bg-amber-50 dark:bg-amber-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
+          <Shield size={16} /> {post.warnedMe + (warned ? 1 : 0)}
+        </button>
+        <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
+          <Share2 size={16} />
+        </button>
+      </div>
     </article>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  POST DETAIL
+//  REPOST MODAL
 // ═══════════════════════════════════════════════════════════════════════════════
-function PostDetail({ post, onBack, lang }: { post: Post; onBack: () => void; lang: Lang }) {
-  const [reply, setReply] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [replies, setReplies] = useState<string[]>([]);
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+function RepostModal({ post, lang, onClose, onRepost }: {
+  post: Post | null; lang: Lang; onClose: () => void;
+  onRepost: (originalPost: Post, text: string) => void;
+}) {
   const t = T[lang];
-  const leafState: LeafState = post.state==="confirmed"?(post.featuredPoints?"featured":"verified"):"none";
-  const displayContent = lang==="lo"&&post.contentLo ? post.contentLo : post.content;
+  const [text, setText] = useState("");
+  if (!post) return null;
 
-  const handleReply = () => {
-    if (!reply.trim()) return;
-    setReplies(r => [reply.trim(), ...r]);
-    setReply(""); setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2000);
-  };
+  const content = lang === "lo" && post.contentLo ? post.contentLo : post.content;
+  const canRepost = text.length === 0 || (text.length >= 1 && text.length <= 150);
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background/95 backdrop-blur-sm z-10">
-        <button onClick={onBack} className="p-1 -ml-1 hover:text-muted-foreground transition-colors"><ArrowLeft size={20} strokeWidth={1.75} /></button>
-        <h2 className="font-display font-semibold text-base">Post</h2>
-      </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
-        <div className="px-4 pt-4 pb-4 border-b border-border">
-          <StateBanner state={post.state} flagReason={post.flagReason} flagReasonLo={post.flagReasonLo} correction={post.correction} correctionLo={post.correctionLo} lang={lang} />
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-base shrink-0" style={{ background: post.author.color }}>{post.author.initials}</div>
-            <div>
-              <div className="flex items-center gap-1.5"><span className="font-semibold text-sm">{post.author.name}</span><LeafMark state={leafState} size={15} /></div>
-              <span className="text-xs text-muted-foreground">{post.author.handle}</span>
-            </div>
-          </div>
-          <p className="text-base leading-relaxed mb-4 whitespace-pre-line font-lao">{displayContent}</p>
-          {post.image && !post.hasVideo && (
-            <div className="relative rounded-2xl overflow-hidden mb-4 bg-muted cursor-zoom-in" onClick={() => setLightboxSrc(post.image!)}>
-              <img src={post.image} alt="Post media" className="w-full object-contain" style={{ maxHeight: 420 }} />
-              <div className="absolute bottom-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-md">⤢ expand</div>
-            </div>
-          )}
-          {post.hasVideo && post.image && (
-            <div className="relative rounded-2xl overflow-hidden mb-4 bg-muted">
-              <img src={post.image} alt="Video thumbnail" className="w-full object-cover" style={{ maxHeight: 280 }} />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                <div className="w-14 h-14 rounded-full bg-white/90 flex items-center justify-center shadow-lg"><Play size={20} fill="currentColor" className="text-primary ml-1" /></div>
-              </div>
-              <div className="absolute bottom-2.5 right-3 bg-black/65 text-white text-[10px] px-2 py-0.5 rounded-md font-mono">1:24</div>
-            </div>
-          )}
-          {lightboxSrc && <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />}
-          {post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mb-4">{post.tags.map(tag => <TagChip key={tag} tag={tag} lang={lang} />)}</div>
-          )}
-          <p className="text-xs text-muted-foreground mb-4">{post.timestamp} · via Satisampasanya</p>
-          <div className="flex gap-5 text-sm border-t border-b border-border py-3">
-            <span><b>{post.reposts}</b> <span className="text-muted-foreground">Reposts</span></span>
-            <span><b>{post.likes}</b> <span className="text-muted-foreground">Likes</span></span>
-            <span><b>{post.warnedMe}</b> <span className="text-muted-foreground font-lao">{t.warned_me}</span></span>
-          </div>
-        </div>
-        {submitted && <div className="px-4 py-3 text-xs text-green-600 font-semibold bg-green-50 border-b border-green-100">Reply posted!</div>}
-        {replies.map((r, i) => (
-          <div key={i} className="px-4 py-3 border-b border-border/40 flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shrink-0">VK</div>
-            <p className="text-sm leading-relaxed font-lao">{r}</p>
-          </div>
-        ))}
-        <div className="py-8 text-center text-xs text-muted-foreground font-lao">{t.no_replies}</div>
-      </div>
-      <div className="border-t border-border p-3 flex items-center gap-2.5 bg-background">
-        <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-xs font-bold text-white shrink-0">VK</div>
-        <input value={reply} onChange={(e) => setReply(e.target.value)} onKeyDown={(e) => e.key==="Enter"&&handleReply()} placeholder={t.reply_ph}
-          className="flex-1 bg-muted/60 rounded-full px-4 py-2 text-sm outline-none border border-border focus:border-primary/40 transition-colors placeholder:text-muted-foreground/60 font-lao" />
-        <button onClick={handleReply} disabled={!reply.trim()} className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all ${reply.trim()?"bg-primary text-white":"bg-muted text-muted-foreground cursor-not-allowed"}`}>
-          <Send size={13} strokeWidth={2} />
+    <div className="fixed inset-0 z-50 flex flex-col bg-background">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+        <button onClick={onClose} className="p-1"><X size={20} /></button>
+        <span className="text-sm font-semibold">{t.repost}</span>
+        <button onClick={() => { if (canRepost) { onRepost(post, text); onClose(); } }} disabled={!canRepost} className="bg-primary text-white text-xs font-semibold px-4 py-1.5 rounded-full disabled:opacity-40 active:scale-95 transition-transform">
+          {t.repost}
         </button>
       </div>
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-4">
+        <div className="flex gap-3 mb-4">
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold shrink-0" style={{ background: "linear-gradient(135deg,#5B21D1,#84ADEF)" }}>
+            YO
+          </div>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={t.repost_ph}
+            className="flex-1 bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground/60 min-h-[80px]"
+            maxLength={500}
+          />
+        </div>
+        <div className="text-right text-xs text-muted-foreground mb-4">{150 - text.length} remaining</div>
+        <div className="rounded-xl border border-border bg-muted/30 p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold" style={{ background: post.author.color }}>
+              {post.author.initials}
+            </div>
+            <div>
+              <span className="text-xs font-semibold">{post.author.name}</span>
+              <span className="text-[10px] text-muted-foreground ml-1">{post.author.handle}</span>
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground line-clamp-3">{content}</p>
+        </div>
+      </div>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  FEED VIEW
+//  COMMENTS MODAL
 // ═══════════════════════════════════════════════════════════════════════════════
-function FeedView({ posts, onPostTap, lang }: { posts: Post[]; onPostTap: (p: Post) => void; lang: Lang }) {
-  const [activeTab, setActiveTab] = useState(0);
+function CommentsModal({ postId, posts, lang, onClose, onAddComment }: {
+  postId: string | null; posts: Post[]; lang: Lang; onClose: () => void;
+  onAddComment: (postId: string, text: string) => void;
+}) {
   const t = T[lang];
-  const tabs = lang==="en" ? FEED_TABS_EN : FEED_TABS_LO;
-  const tabTagFilters = [null, null, "OnlineScam", "Trafficking", "DigitalSafety"];
-  const tagFilter = tabTagFilters[activeTab];
-  const visiblePosts = tagFilter ? posts.filter(p => p.tags.includes(tagFilter)) : posts;
+  const post = posts.find(p => p.id === postId);
+  const [reply, setReply] = useState("");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  if (!post) return null;
+
+  const dummyReplies = [
+    { id: "r1", author: AUTHORS.phone, text: "Thanks for sharing this! I almost fell for a similar scam last week.", time: "1h" },
+    { id: "r2", author: AUTHORS.malee, text: "Everyone should be careful with these messages. Always verify through official channels.", time: "45m" },
+  ];
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="flex overflow-x-auto scrollbar-hide px-1">
-          {tabs.map((tab, i) => (
-            <button key={i} onClick={() => setActiveTab(i)}
-              className={`shrink-0 px-3.5 py-3.5 text-sm font-medium transition-colors border-b-2 whitespace-nowrap font-lao ${activeTab===i?"border-primary text-primary":"border-transparent text-muted-foreground hover:text-foreground"}`}>
-              {tab}
-            </button>
-          ))}
+    <div className="fixed inset-0 z-50 flex flex-col bg-background">
+      <div className="flex items-center gap-3 px-4 py-3 border-b border-border bg-background/80 backdrop-blur-md">
+        <button onClick={onClose} className="p-1 -ml-1"><ArrowLeft size={20} /></button>
+        <h3 className="font-semibold text-sm">{t.posts}</h3>
+      </div>
+      <div ref={scrollRef} className="flex-1 overflow-y-auto">
+        <div className="px-4 pt-4 pb-2">
+          <div className="flex gap-3">
+            <div className="shrink-0">
+              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xs font-bold" style={{ background: post.author.color }}>
+                {post.author.initials}
+              </div>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-sm">{post.author.name}</span>
+                <span className="text-xs text-muted-foreground">{post.author.handle}</span>
+                <span className="text-xs text-muted-foreground">· {post.timestamp}</span>
+              </div>
+              <p className="text-sm text-foreground leading-relaxed mt-1 whitespace-pre-wrap">{lang === "lo" && post.contentLo ? post.contentLo : post.content}</p>
+              {post.image && <img src={post.image} alt="" className="mt-2 rounded-xl border border-border w-full max-h-[300px] object-cover" />}
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-between px-6 py-3 border-y border-border">
+          <span className="text-xs text-muted-foreground">{post.likes} likes</span>
+          <span className="text-xs text-muted-foreground">{post.reposts} reposts</span>
+          <span className="text-xs text-muted-foreground">{post.comments} comments</span>
+        </div>
+        <div className="px-4 py-4">
+          <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Replies</h4>
+          {dummyReplies.length === 0 ? (
+            <p className="text-sm text-muted-foreground text-center py-8">{t.no_replies}</p>
+          ) : (
+            <div className="space-y-4">
+              {dummyReplies.map(r => (
+                <div key={r.id} className="flex gap-3">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0" style={{ background: r.author.color }}>
+                    {r.author.initials}
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold text-xs">{r.author.name}</span>
+                      <span className="text-[10px] text-muted-foreground">{r.author.handle}</span>
+                      <span className="text-[10px] text-muted-foreground">· {r.time}</span>
+                    </div>
+                    <p className="text-sm text-foreground mt-0.5">{r.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
-        {visiblePosts.map(post => <PostCard key={post.id} post={post} onTap={() => onPostTap(post)} lang={lang} />)}
-        <div className="py-10 text-center space-y-1">
-          <p className="text-xs text-muted-foreground">{t.caught_up_en}</p>
-          <p className="text-xs text-muted-foreground/50 font-lao">{t.caught_up_lo}</p>
+      <div className="border-t border-border p-3 bg-background">
+        <div className="flex items-center gap-2">
+          <input
+            value={reply}
+            onChange={(e) => setReply(e.target.value)}
+            placeholder={t.reply_ph}
+            className="flex-1 bg-muted/50 rounded-full px-4 py-2.5 text-sm outline-none placeholder:text-muted-foreground/60"
+            onKeyDown={(e) => { if (e.key === "Enter" && reply.trim()) { onAddComment(post.id, reply); setReply(""); }}}
+          />
+          <button
+            onClick={() => { if (reply.trim()) { onAddComment(post.id, reply); setReply(""); }}}
+            disabled={!reply.trim()}
+            className="p-2.5 rounded-full bg-primary text-white disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-transform"
+          >
+            <Send size={16} />
+          </button>
         </div>
       </div>
     </div>
@@ -941,414 +958,220 @@ function FeedView({ posts, onPostTap, lang }: { posts: Post[]; onPostTap: (p: Po
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  PHOTO UPLOAD COMPONENT (New - Professional)
+//  COMPOSE MODAL (News Only)
 // ═══════════════════════════════════════════════════════════════════════════════
-function PhotoUpload({ onFilesChange, lang }: { onFilesChange: (files: UploadedFile[]) => void; lang: Lang }) {
+function ComposeModal({ lang, onClose, onPost }: { lang: Lang; onClose: () => void; onPost: (post: Post) => void; }) {
   const t = T[lang];
+  const [text, setText] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [sourceUrl, setSourceUrl] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [remaining, setRemaining] = useState(2);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const processFiles = (fileList: FileList | null) => {
-    if (!fileList) return;
-    const newFiles: UploadedFile[] = Array.from(fileList).filter(f => f.type.startsWith("image/")).map(file => ({
-      id: Math.random().toString(36).slice(2),
+  const canPost = text.trim().length >= 50 && text.length <= 2000 && selectedTags.length > 0 && sourceUrl.trim().length > 0;
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files) return;
+    const newFiles: UploadedFile[] = Array.from(e.target.files).map((file, i) => ({
+      id: `f-${Date.now()}-${i}`,
       file,
       preview: URL.createObjectURL(file),
       progress: 0,
       status: "uploading" as const,
     }));
-
-    const updated = [...files, ...newFiles];
-    setFiles(updated);
-    onFilesChange(updated);
-
-    // Simulate upload progress
-    newFiles.forEach((uf) => {
-      let progress = 0;
-      const interval = setInterval(() => {
-        progress += Math.random() * 25;
-        if (progress >= 100) {
-          progress = 100;
-          clearInterval(interval);
-          setFiles(prev => {
-            const next = prev.map(f => f.id === uf.id ? { ...f, progress: 100, status: "done" as const } : f);
-            onFilesChange(next);
-            return next;
-          });
-        } else {
-          setFiles(prev => prev.map(f => f.id === uf.id ? { ...f, progress } : f));
-        }
-      }, 200);
+    setFiles(prev => [...prev, ...newFiles]);
+    newFiles.forEach((f, idx) => {
+      setTimeout(() => {
+        setFiles(prev => prev.map(pf => pf.id === f.id ? { ...pf, progress: 100, status: "done" as const } : pf));
+      }, 800 + idx * 300);
     });
   };
 
   const removeFile = (id: string) => {
-    const updated = files.filter(f => f.id !== id);
-    setFiles(updated);
-    onFilesChange(updated);
+    setFiles(prev => prev.filter(f => f.id !== id));
   };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    processFiles(e.dataTransfer.files);
-  };
-
-  return (
-    <div className="mb-4">
-      <div
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
-          isDragging 
-            ? "border-primary bg-indigo-50 dark:bg-indigo-950/30" 
-            : "border-border bg-muted/30 hover:border-primary/50 hover:bg-muted/50"
-        }`}
-      >
-        <input ref={inputRef} type="file" multiple accept="image/*" className="hidden" onChange={(e) => processFiles(e.target.files)} />
-        <div className="flex flex-col items-center gap-2">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-colors ${isDragging ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
-            <Upload size={22} />
-          </div>
-          <p className="text-sm font-medium text-foreground">{t.compose_photos}</p>
-          <p className="text-xs text-muted-foreground">{t.compose_photos_hint}</p>
-        </div>
-      </div>
-
-      {/* Preview grid */}
-      {files.length > 0 && (
-        <div className="grid grid-cols-4 gap-2 mt-3">
-          {files.map((file) => (
-            <div key={file.id} className="relative aspect-square rounded-xl overflow-hidden border border-border group">
-              <img src={file.preview} alt="Preview" className="w-full h-full object-cover" />
-              {/* Progress overlay */}
-              {file.status === "uploading" && (
-                <div className="absolute inset-0 bg-black/40 flex items-end p-1.5">
-                  <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
-                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${file.progress}%` }} />
-                  </div>
-                </div>
-              )}
-              {/* Remove button */}
-              <button
-                onClick={() => removeFile(file.id)}
-                className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <X size={12} />
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  COMPOSE OVERLAY (Enhanced with Photo Upload)
-// ═══════════════════════════════════════════════════════════════════════════════
-function ComposeOverlay({ onClose, onPost, lang, currentUser }: {
-  onClose: () => void; onPost: (p: Post) => void; lang: Lang; currentUser: CurrentUser;
-}) {
-  const t = T[lang];
-  const [type, setType] = useState<"short"|"news">("short");
-  const [text, setText] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [links, setLinks] = useState(["",""]);
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
-  const limit = type==="short" ? 150 : 2000;
-  const remaining = limit - text.length;
-  const overLimit = remaining < 0;
-  const linksOk = type==="short" || (links[0].startsWith("http") && links[1].startsWith("http"));
-  const canPost = text.trim().length>0 && !overLimit && tags.length>0 && linksOk;
-  const toggleTag = (tag: string) => setTags(p => p.includes(tag)?p.filter(x=>x!==tag):[...p,tag]);
-  const userInitials = currentUser.name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase()||"VK";
 
   const handlePost = () => {
     if (!canPost) return;
-    onPost({
-      id: `user_${Date.now()}`, author: { name:currentUser.name, handle:`@${currentUser.name.toLowerCase().replace(/\s+/g,"_")}`, initials:userInitials, color:"#5B21D1", points:580 },
-      content: text, tags, timestamp:"now", state:"clean", likes:0, comments:0, reposts:0, warnedMe:0, isNews:type==="news",
-    });
+    const newPost: Post = {
+      id: `p-${Date.now()}`,
+      author: { name: "You", handle: "@you", initials: "YO", color: COLORS.primary, points: 0 },
+      content: text,
+      tags: selectedTags,
+      timestamp: "Just now",
+      state: "flagged",
+      likes: 0, comments: 0, reposts: 0, warnedMe: 0,
+      flagReason: "Under AI screening. Usually reviewed within 2 hours.",
+      isNews: true,
+      link: sourceUrl,
+    };
+    onPost(newPost);
+    setRemaining(v => Math.max(0, v - 1));
     onClose();
   };
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col bg-background">
-      <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
-        <button onClick={onClose} className="p-1 text-foreground"><X size={20} /></button>
-        <div className="flex items-center gap-1 bg-muted/60 rounded-full p-1">
-          <button onClick={() => setType("short")} className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all font-lao ${type==="short"?"bg-primary text-white":"text-muted-foreground"}`}>{t.compose_short}</button>
-          <button onClick={() => setType("news")} className={`text-xs font-semibold px-4 py-1.5 rounded-full transition-all font-lao ${type==="news"?"bg-primary text-white":"text-muted-foreground"}`}>{t.compose_news}</button>
-        </div>
-        <button onClick={handlePost} disabled={!canPost} className={`text-sm font-semibold px-4 py-1.5 rounded-full transition-all font-lao ${canPost?"bg-primary text-white shadow-sm":"bg-primary/15 text-primary/40 cursor-not-allowed"}`}>{t.compose_post}</button>
-      </div>
-      <div className="mx-4 mt-3 rounded-xl p-3 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 shrink-0">
-        <p className="text-[11px] text-indigo-700 dark:text-indigo-300 leading-relaxed font-lao">{t.compose_info}</p>
-      </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-4">
-        <div className="flex items-start gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center font-bold text-white text-sm shrink-0">{userInitials}</div>
-          <div>
-            <p className="text-sm font-semibold">{currentUser.name}</p>
-            <p className="text-xs text-muted-foreground font-lao">@{currentUser.name.toLowerCase().replace(/\s+/g,"_")} · 2 {t.compose_remaining}</p>
-          </div>
-        </div>
-        <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={type==="short"?t.compose_ph_short:t.compose_ph_news}
-          className={`w-full min-h-[100px] bg-transparent text-sm leading-relaxed outline-none resize-none placeholder:text-muted-foreground/50 font-lao ${overLimit?"text-red-500":""}`} />
-        <div className={`text-right text-xs font-medium mb-4 ${remaining<=20?(overLimit?"text-red-500":"text-amber-500"):"text-muted-foreground"}`}>{remaining}</div>
-
-        {/* Photo Upload */}
-        <PhotoUpload onFilesChange={setUploadedFiles} lang={lang} />
-
-        {type==="news" && (
-          <div className="mb-5">
-            <p className="text-[10px] font-bold tracking-wider uppercase text-foreground/50 mb-2.5 font-lao">{t.compose_sources}</p>
-            <div className="space-y-2">
-              {links.map((link, i) => (
-                <div key={i} className="flex items-center gap-2 bg-muted/50 rounded-xl px-3 py-2.5 border border-border">
-                  <Link2 size={13} className="text-muted-foreground shrink-0" />
-                  <input value={link} onChange={(e) => { const n=[...links]; n[i]=e.target.value; setLinks(n); }} placeholder={`${t.compose_source_ph} ${i+1}...`}
-                    className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50" />
-                  {link.startsWith("http") && <Check size={13} className="text-green-500 shrink-0" />}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        <div>
-          <p className="text-[10px] font-bold tracking-wider uppercase text-foreground/50 mb-2.5">
-            <span className="font-lao">{t.compose_topics}</span> <span className="text-muted-foreground normal-case font-normal tracking-normal font-lao">({t.compose_topics_hint})</span>
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {TOPICS.map(tag => (
-              <button key={tag} onClick={() => toggleTag(tag)}
-                className={`text-xs font-medium px-3 py-1.5 rounded-full border transition-all font-lao ${tags.includes(tag)?"bg-primary text-white border-primary":"border-border text-foreground/70 hover:border-primary/40 bg-background"}`}>
-                #{lang==="lo" ? TOPIC_LABELS[tag]?.lo||tag : tag}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  ALERTS SHEET
-// ═══════════════════════════════════════════════════════════════════════════════
-function AlertsSheet({ onClose, lang }: { onClose: () => void; lang: Lang }) {
-  const t = T[lang];
-  const [read, setRead] = useState<Set<number>>(new Set());
-  const alerts = lang==="en" ? [
-    { icon:"✅", text:"Sarak's post was expert verified (+50 pts)", time:"2h", type:"verify" },
-    { icon:"🛡️", text:"Your post received 12 \"Warned me\" reactions", time:"4h", type:"engage" },
-    { icon:"⚠️", text:"A new post in #OnlineScam is under expert review", time:"5h", type:"review" },
-    { icon:"🌿", text:"Bounmy's trafficking post was unlocked (SLA)", time:"8h", type:"sla" },
-    { icon:"📢", text:"New expert-confirmed post in #DigitalSafety", time:"1d", type:"verify" },
-    { icon:"🔴", text:"Naly's post was confirmed false — correction issued", time:"1d", type:"false" },
-    { icon:"🛡️", text:"1,800 people tapped 'Warned me' on the BCEL scam post", time:"2d", type:"engage" },
-  ] : [
-    { icon:"✅", text:"ໂພສຂອງ Sarak ໄດ້ຮັບການຢືນຢັນ (+50 ຄະແນນ)", time:"2h", type:"verify" },
-    { icon:"🛡️", text:"ໂພສຂອງທ່ານໄດ້ຮັບ 12 'ເຕືອນຂ້ອຍ'", time:"4h", type:"engage" },
-    { icon:"⚠️", text:"ໂພສໃໝ່ໃນ #ການຫຼອກລວງ ກຳລັງຖືກກວດສອບ", time:"5h", type:"review" },
-    { icon:"🌿", text:"ໂພສຂອງ Bounmy ຖືກປົດລ໋ອກ (ໝົດເວລາ)", time:"8h", type:"sla" },
-    { icon:"📢", text:"ໂພສໃໝ່ທີ່ໄດ້ຮັບການຢືນຢັນໃນ #ຄວາມປອດໄພດິຈິຕອລ", time:"1d", type:"verify" },
-    { icon:"🔴", text:"ໂພສຂອງ Naly ໄດ້ຮັບການຢືນຢັນວ່າເປັນຂໍ້ມູນຜິດ", time:"1d", type:"false" },
-    { icon:"🛡️", text:"1,800 ຄົນກົດ 'ເຕືອນຂ້ອຍ' ໃນໂພສ BCEL", time:"2d", type:"engage" },
-  ];
-  const typeColors: Record<string,string> = {
-    verify: "bg-green-50 dark:bg-green-950/50 border-green-200 dark:border-green-800",
-    engage: "bg-indigo-50 dark:bg-indigo-950/50 border-indigo-200 dark:border-indigo-800",
-    review: "bg-amber-50 dark:bg-amber-950/50 border-amber-200 dark:border-amber-800",
-    sla:    "bg-gray-100 dark:bg-gray-900/60 border-gray-200 dark:border-gray-700",
-    false:  "bg-red-50 dark:bg-red-950/50 border-red-200 dark:border-red-800",
-  };
-
-  return (
-    <div className="absolute inset-0 z-50 flex flex-col bg-background">
+    <div className="fixed inset-0 z-50 flex flex-col bg-background">
       <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-        <h2 className="font-display font-bold text-base font-lao">{t.alerts_title}</h2>
-        <div className="flex items-center gap-3">
-          <button onClick={() => setRead(new Set(alerts.map((_,i)=>i)))} className="text-xs text-primary font-semibold font-lao">{t.alerts_mark_all}</button>
-          <button onClick={onClose} className="p-1 text-muted-foreground"><X size={20} /></button>
-        </div>
+        <button onClick={onClose} className="p-1"><X size={20} /></button>
+        <span className="text-sm font-semibold">{t.compose_news}</span>
+        <button onClick={handlePost} disabled={!canPost} className="bg-primary text-white text-xs font-semibold px-4 py-1.5 rounded-full disabled:opacity-40 active:scale-95 transition-transform">
+          {t.compose_post}
+        </button>
       </div>
-      <div className="flex-1 overflow-y-auto scrollbar-hide divide-y divide-border/50">
-        {alerts.map((alert, i) => (
-          <button key={i} onClick={() => setRead(r => new Set([...r, i]))}
-            className={`w-full text-left flex items-start gap-3 px-4 py-3.5 transition-colors hover:bg-muted/30 ${read.has(i)?"opacity-60":""}`}>
-            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border text-base ${typeColors[alert.type]}`}>{alert.icon}</div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm leading-relaxed font-lao">{alert.text}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{alert.time}</p>
-            </div>
-            {!read.has(i) && <div className="w-2 h-2 rounded-full bg-primary shrink-0 mt-1.5" />}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  EXPLORE VIEW
-// ═══════════════════════════════════════════════════════════════════════════════
-function ExploreView({ posts, onPostTap, lang }: { posts: Post[]; onPostTap: (p: Post) => void; lang: Lang }) {
-  const [search, setSearch] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState<string|null>(null);
-  const t = T[lang];
-  const trending = [
-    { tag:"OnlineScam", count:"2.4k", hot:true },
-    { tag:"JobScam", count:"1.1k", hot:true },
-    { tag:"Trafficking", count:"890", hot:false },
-    { tag:"DigitalSafety", count:"743", hot:false },
-    { tag:"CryptoScam", count:"512", hot:false },
-    { tag:"RomanceScam", count:"387", hot:false },
-    { tag:"BorderSafety", count:"298", hot:false },
-    { tag:"PhishingAlert", count:"201", hot:false },
-  ];
-  const filtered = trending.filter(item => !search || item.tag.toLowerCase().includes(search.toLowerCase()) || (TOPIC_LABELS[item.tag]?.lo||"").includes(search));
-
-  if (selectedTopic) {
-    const topicPosts = posts.filter(p => p.tags.includes(selectedTopic));
-    const label = TOPIC_LABELS[selectedTopic];
-    return (
-      <div className="flex flex-col h-full">
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-border sticky top-0 bg-background/95 backdrop-blur-sm z-10">
-          <button onClick={() => setSelectedTopic(null)} className="p-1 -ml-1"><ArrowLeft size={20} strokeWidth={1.75} /></button>
-          <div>
-            <h2 className="font-display font-bold text-base">#{lang==="lo"&&label ? label.lo : selectedTopic}</h2>
-            {label && <p className="text-[10px] text-muted-foreground">#{lang==="lo" ? label.en : label.lo}</p>}
-            <p className="text-[11px] text-muted-foreground">{topicPosts.length} {t.topic_posts}</p>
-          </div>
+      <div className="flex-1 overflow-y-auto px-4 pt-4 pb-4">
+        <p className="text-[11px] text-muted-foreground mb-3">{t.compose_info}</p>
+        <p className="text-[11px] text-primary font-semibold mb-3">{remaining} {t.compose_remaining}</p>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={t.compose_ph_news}
+          className="w-full min-h-[120px] bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground/60 text-foreground leading-relaxed"
+        />
+        <div className={`text-right text-xs mb-4 ${text.length < 50 ? "text-red-500" : "text-muted-foreground"}`}>
+          {text.length} / 500 max
         </div>
-        <div className="flex-1 overflow-y-auto scrollbar-hide">
-          {topicPosts.length===0
-            ? <div className="py-16 text-center text-sm text-muted-foreground">No posts yet.</div>
-            : topicPosts.map(post => <PostCard key={post.id} post={post} onTap={() => onPostTap(post)} lang={lang} />)
-          }
+        <div className="mt-3">
+          <p className="text-xs font-semibold mb-1.5">{t.compose_sources}</p>
+          <input value={sourceUrl} onChange={(e) => setSourceUrl(e.target.value)} placeholder={t.compose_source_ph}
+            className="w-full rounded-xl border border-border bg-muted/50 px-3 py-2 text-sm outline-none placeholder:text-muted-foreground/60" />
         </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col h-full overflow-y-auto scrollbar-hide">
-      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm px-4 py-3 border-b border-border">
-        <div className="flex items-center gap-2.5 bg-muted/60 rounded-2xl px-4 py-2.5 border border-border/50 focus-within:border-primary/30 transition-colors">
-          <Search size={15} className="text-muted-foreground shrink-0" />
-          <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.search_ph}
-            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 font-lao" />
-          {search && <button onClick={() => setSearch("")}><X size={14} className="text-muted-foreground" /></button>}
-        </div>
-      </div>
-      <div className="px-4 py-4">
-        <h3 className="font-display font-bold text-base mb-3 font-lao">{t.trending}</h3>
-        <div className="space-y-0.5">
-          {filtered.map((item, i) => {
-            const label = TOPIC_LABELS[item.tag];
-            return (
-              <button key={item.tag} onClick={() => setSelectedTopic(item.tag)}
-                className="w-full flex items-center justify-between py-3.5 border-b border-border/40 hover:bg-indigo-50/40 -mx-1 px-1 rounded-lg transition-colors text-left group">
-                <div>
-                  <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-sm font-semibold text-indigo-700">#{lang==="lo"&&label ? label.lo : item.tag}</span>
-                    {label && <span className="text-[10px] text-indigo-400">#{lang==="lo" ? label.en : label.lo}</span>}
-                    {item.hot && <span className="text-[10px] font-bold bg-orange-100 text-orange-600 px-1.5 py-0.5 rounded-full">HOT</span>}
-                  </div>
-                  <span className="text-xs text-muted-foreground">{item.count} {t.topic_posts}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground/50 font-medium">#{i+1}</span>
-                  <ChevronRight size={14} className="text-muted-foreground/40 group-hover:text-indigo-500 transition-colors" />
-                </div>
+        <div className="mt-4">
+          <p className="text-xs font-semibold mb-1.5">{t.compose_topics} <span className="text-muted-foreground font-normal">({t.compose_topics_hint})</span></p>
+          <div className="flex flex-wrap gap-1.5">
+            {TOPICS.map(tag => (
+              <button key={tag} onClick={() => setSelectedTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag])}
+                className={`px-2.5 py-1 rounded-full text-[11px] font-medium border transition-all ${selectedTags.includes(tag) ? "bg-primary text-white border-primary" : "bg-muted text-muted-foreground border-border hover:border-primary/30"}`}>
+                #{lang === "lo" ? TOPIC_LABELS[tag].lo : TOPIC_LABELS[tag].en}
               </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
-//  PROFILE VIEW
-// ═══════════════════════════════════════════════════════════════════════════════
-function ProfileView({ currentUser, posts, lang }: { currentUser: CurrentUser; posts: Post[]; lang: Lang }) {
-  const t = T[lang];
-  const [activeTab, setActiveTab] = useState<ProfileTab>("posts");
-  const [editing, setEditing] = useState(false);
-  const [displayName, setDisplayName] = useState(currentUser.name);
-  const [editName, setEditName] = useState(currentUser.name);
-  const [bio, setBio] = useState("Student in Vientiane. Sharing scam warnings to keep my community safe online.");
-  const [editBio, setEditBio] = useState(bio);
-  const [followed, setFollowed] = useState(["OnlineScam","JobScam","Trafficking","DigitalSafety"]);
-  const [avatarGradient, setAvatarGradient] = useState(AVATAR_GRADIENTS[0]);
-  const [bannerGradient, setBannerGradient] = useState(BANNER_GRADIENTS[0]);
-  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
-  const [showBannerPicker, setShowBannerPicker] = useState(false);
-  const initials = displayName.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase()||"VK";
-
-  const saveEdit = () => { setDisplayName(editName||displayName); setBio(editBio); setEditing(false); setShowAvatarPicker(false); setShowBannerPicker(false); };
-  const cancelEdit = () => { setEditName(displayName); setEditBio(bio); setEditing(false); setShowAvatarPicker(false); setShowBannerPicker(false); };
-  const toggleFollow = (topic: string) => setFollowed(p => p.includes(topic)?p.filter(x=>x!==topic):[...p,topic]);
-  const myPosts = posts.filter(p=>p.id.startsWith("user_")).concat(posts.slice(0,2));
-
-  return (
-    <div className="flex flex-col h-full overflow-y-auto scrollbar-hide bg-background">
-      {/* Banner */}
-      <div className="relative h-28 shrink-0" style={{ background: bannerGradient }}>
-        {editing && (
-          <button onClick={() => { setShowBannerPicker(v=>!v); setShowAvatarPicker(false); }}
-            className="absolute top-2 right-2 flex items-center gap-1.5 bg-black/40 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm">
-            <ImageIcon size={12} />{t.change_banner}
-          </button>
-        )}
-        {showBannerPicker && (
-          <div className="absolute top-10 right-2 z-20 bg-white dark:bg-background rounded-2xl p-3 shadow-xl border border-border flex gap-2 flex-wrap w-52">
-            {BANNER_GRADIENTS.map((g, i) => (
-              <button key={i} onClick={() => { setBannerGradient(g); setShowBannerPicker(false); }}
-                className={`w-10 h-10 rounded-xl border-2 transition-all ${bannerGradient===g?"border-primary scale-110":"border-transparent"}`}
-                style={{ background: g }} />
             ))}
           </div>
-        )}
-        <div className="absolute -bottom-7 left-4">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-full border-4 border-background flex items-center justify-center font-bold text-xl text-white" style={{ background: avatarGradient }}>
-              {initials}
-            </div>
-            {editing && (
-              <button onClick={() => { setShowAvatarPicker(v=>!v); setShowBannerPicker(false); }}
-                className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary border-2 border-background flex items-center justify-center">
-                <Camera size={10} className="text-white" />
-              </button>
-            )}
-          </div>
-          {showAvatarPicker && (
-            <div className="absolute top-14 left-0 z-20 bg-white dark:bg-background rounded-2xl p-3 shadow-xl border border-border flex gap-2 flex-wrap w-52">
-              {AVATAR_GRADIENTS.map((g, i) => (
-                <button key={i} onClick={() => { setAvatarGradient(g); setShowAvatarPicker(false); }}
-                  className={`w-10 h-10 rounded-full border-2 transition-all ${avatarGradient===g?"border-primary scale-110":"border-transparent"}`}
-                  style={{ background: g }} />
+        </div>
+        <div className="mt-4">
+          <p className="text-xs font-semibold mb-1.5">{t.compose_photos} <span className="text-muted-foreground font-normal">({t.compose_photos_hint})</span></p>
+          <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileSelect} />
+          <button onClick={() => fileInputRef.current?.click()} className="w-full border-2 border-dashed border-border rounded-2xl py-6 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/30 hover:bg-primary/5 transition-all">
+            <Upload size={20} />
+            <span className="text-xs">{t.compose_photos}</span>
+          </button>
+          {files.length > 0 && (
+            <div className="flex gap-2 mt-3 flex-wrap">
+              {files.map(f => (
+                <div key={f.id} className="relative w-20 h-20 rounded-xl overflow-hidden border border-border">
+                  <img src={f.preview} alt="" className="w-full h-full object-cover" />
+                  <button onClick={() => removeFile(f.id)} className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/50 text-white flex items-center justify-center">
+                    <X size={10} />
+                  </button>
+                  {f.status === "uploading" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
+                      <div className="h-full bg-primary transition-all" style={{ width: `${f.progress}%` }} />
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           )}
         </div>
       </div>
+    </div>
+  );
+}
 
-      <div className="pt-10 px-4 pb-4 border-b border-border">
+// ═══════════════════════════════════════════════════════════════════════════════
+//  PROFILE SCREEN (Editable Banner & Avatar)
+// ═══════════════════════════════════════════════════════════════════════════════
+function ProfileScreen({ lang, user, posts, onLogout }: {
+  lang: Lang; user: CurrentUser; posts: Post[]; onLogout: () => void;
+}) {
+  const t = T[lang];
+  const [tab, setTab] = useState<ProfileTab>("posts");
+  const [editing, setEditing] = useState(false);
+  const [bio, setBio] = useState("Student in Vientiane. Sharing scam warnings to keep my community safe online.");
+  const [editBio, setEditBio] = useState(bio);
+  const [displayName, setDisplayName] = useState(user.name);
+  const [editName, setEditName] = useState(user.name);
+  const [avatarGradient, setAvatarGradient] = useState(AVATAR_GRADIENTS[0]);
+  const [bannerGradient, setBannerGradient] = useState(BANNER_GRADIENTS[0]);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const [showBannerPicker, setShowBannerPicker] = useState(false);
+  const [followed, setFollowed] = useState(["OnlineScam","JobScam","Trafficking","DigitalSafety"]);
+  const [avatarFile, setAvatarFile] = useState<string | null>(null);
+  const [bannerFile, setBannerFile] = useState<string | null>(null);
+
+  const userPosts = posts.filter(p => p.author.name === "You" || p.author.handle === "@you");
+  const totalPoints = userPosts.reduce((sum, p) => sum + (p.points || 0), 0);
+  const initials = displayName.split(" ").map(w => w[0]).slice(0, 2).join("").toUpperCase() || "YO";
+
+  const saveEdit = () => {
+    setDisplayName(editName || displayName);
+    setBio(editBio);
+    setEditing(false);
+    setShowAvatarPicker(false);
+    setShowBannerPicker(false);
+  };
+
+  const cancelEdit = () => {
+    setEditName(displayName);
+    setEditBio(bio);
+    setEditing(false);
+    setShowAvatarPicker(false);
+    setShowBannerPicker(false);
+  };
+
+  const toggleFollow = (topic: string) => {
+    setFollowed(p => p.includes(topic) ? p.filter(x => x !== topic) : [...p, topic]);
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+      {/* Banner */}
+      <div className="relative h-32 w-full shrink-0" style={{ background: bannerFile ? undefined : bannerGradient }}>
+        {bannerFile && <img src={bannerFile} alt="banner" className="w-full h-full object-cover" />}
+        {editing && (
+          <>
+            <input type="file" accept="image/*" className="hidden" id="banner-upload" onChange={(e) => {
+              if (e.target.files?.[0]) {
+                const url = URL.createObjectURL(e.target.files[0]);
+                setBannerFile(url);
+              }
+            }} />
+            <label htmlFor="banner-upload" className="absolute top-2 right-2 flex items-center gap-1.5 bg-black/40 text-white text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm cursor-pointer z-10">
+              <ImageIcon size={12} />{t.change_banner}
+            </label>
+          </>
+        )}
+      </div>
+      {/* Avatar - positioned between banner and card */}
+      <div className="relative -mt-8 ml-4 z-30 w-fit">
+        <div className="w-16 h-16 rounded-full border-4 border-background flex items-center justify-center font-bold text-xl text-white overflow-hidden bg-gradient-to-br from-primary to-primaryLight"
+          style={avatarFile ? undefined : { background: avatarGradient }}>
+          {avatarFile ? <img src={avatarFile} alt="avatar" className="w-full h-full object-cover" /> : initials}
+        </div>
+        {editing && (
+          <>
+            <input type="file" accept="image/*" className="hidden" id="avatar-upload" onChange={(e) => {
+              if (e.target.files?.[0]) {
+                const url = URL.createObjectURL(e.target.files[0]);
+                setAvatarFile(url);
+              }
+            }} />
+            <label htmlFor="avatar-upload" className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-primary border-2 border-background flex items-center justify-center cursor-pointer">
+              <Camera size={10} className="text-white" />
+            </label>
+          </>
+        )}
+      </div>
+
+      {/* Identity */}
+      <div className="px-4 pt-3 pb-4 border-b border-border bg-background">
         <div className="flex items-start justify-between mb-2">
           <div className="flex-1 min-w-0 mr-3">
             {editing
               ? <input value={editName} onChange={(e) => setEditName(e.target.value)} className="font-display font-bold text-xl outline-none border-b-2 border-primary bg-transparent w-full mb-0.5" />
               : <h2 className="font-display font-bold text-xl">{displayName}</h2>
             }
-            <p className="text-sm text-muted-foreground">@{displayName.toLowerCase().replace(/\s+/g,"_")}</p>
+            <p className="text-sm text-muted-foreground">@{displayName.toLowerCase().replace(/\s+/g, "_")}</p>
           </div>
           {editing
             ? <div className="flex gap-2 shrink-0">
@@ -1361,9 +1184,10 @@ function ProfileView({ currentUser, posts, lang }: { currentUser: CurrentUser; p
               </button>
           }
         </div>
+        {/* Trust badge */}
         <div className="flex items-center gap-1.5 mb-2">
           <LeafMark state="verified" size={14} />
-          <span className="text-xs font-medium text-green-700">Verified contributor</span>
+          <span className="text-xs font-medium text-green-700 dark:text-green-400">Verified contributor</span>
         </div>
         {editing
           ? <textarea value={editBio} onChange={(e) => setEditBio(e.target.value)} placeholder={t.bio_ph}
@@ -1371,85 +1195,219 @@ function ProfileView({ currentUser, posts, lang }: { currentUser: CurrentUser; p
           : <p className="text-sm leading-relaxed mb-3 text-foreground/80 font-lao">{bio}</p>
         }
         <div className="flex gap-5 text-sm mb-4">
-          <span><b>{myPosts.length}</b> <span className="text-muted-foreground font-lao">{t.posts}</span></span>
-          <span><b>340</b> <span className="text-muted-foreground">Following</span></span>
-          <span><b>580</b> <span className="text-muted-foreground font-lao">{t.points_tab}</span></span>
+          <span><strong className="text-foreground">{userPosts.length}</strong> <span className="text-muted-foreground font-lao">{t.posts}</span></span>
+          <span><strong className="text-foreground">340</strong> <span className="text-muted-foreground">Following</span></span>
+          <span><strong className="text-foreground">{totalPoints}</strong> <span className="text-muted-foreground font-lao">{t.points_tab}</span></span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {followed.map(topic => (
             <span key={topic} className="text-[10px] font-medium bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-full flex flex-col">
-              <span>#{lang==="lo"&&TOPIC_LABELS[topic] ? TOPIC_LABELS[topic].lo : topic}</span>
+              <span>#{lang === "lo" && TOPIC_LABELS[topic] ? TOPIC_LABELS[topic].lo : topic}</span>
             </span>
           ))}
-          <button onClick={() => setActiveTab("topics")} className="text-xs font-medium text-muted-foreground border border-border px-2.5 py-1 rounded-full hover:border-primary/30 font-lao">{t.add_topic}</button>
+          <button onClick={() => setTab("topics")} className="text-xs font-medium text-muted-foreground border border-border px-2.5 py-1 rounded-full hover:border-primary/30 font-lao">{t.add_topic}</button>
         </div>
       </div>
 
+      {/* Tabs */}
       <div className="flex border-b border-border shrink-0 sticky top-0 bg-background/95 backdrop-blur-sm z-10">
-        {(["posts","topics","points"] as ProfileTab[]).map(tab => (
-          <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 font-lao ${activeTab===tab?"border-primary text-primary":"border-transparent text-muted-foreground"}`}>
-            {tab==="posts"?t.posts:tab==="topics"?t.topics:t.points_tab}
+        {(["posts","topics","points"] as ProfileTab[]).map(tabKey => (
+          <button key={tabKey} onClick={() => setTab(tabKey)}
+            className={`flex-1 py-3 text-sm font-medium transition-colors border-b-2 font-lao ${tab === tabKey ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
+            {tabKey === "posts" ? t.posts : tabKey === "topics" ? t.topics : t.points_tab}
           </button>
         ))}
       </div>
 
-      {activeTab==="posts" && (
-        myPosts.length===0
-          ? <div className="py-12 text-center text-sm text-muted-foreground">No posts yet.</div>
-          : myPosts.map(p => <PostCard key={p.id} post={p} onTap={()=>{}} lang={lang} />)
-      )}
-
-      {activeTab==="topics" && (
-        <div className="p-4 space-y-0.5">
-          {TOPICS.map(topic => {
-            const label = TOPIC_LABELS[topic];
-            return (
-              <div key={topic} className="flex items-center justify-between py-3 border-b border-border/40">
-                <div>
-                  <span className="text-sm font-semibold text-indigo-700">#{lang==="lo"&&label ? label.lo : topic}</span>
-                  {label && <span className="text-[10px] text-muted-foreground ml-2">#{lang==="lo" ? label.en : label.lo}</span>}
-                </div>
-                <button onClick={() => toggleFollow(topic)}
-                  className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all font-lao ${followed.includes(topic)?"bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300":"border border-border text-foreground/60 hover:border-primary/30"}`}>
-                  {followed.includes(topic)?"Following":"Follow"}
-                </button>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {activeTab==="points" && (
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <p className="text-3xl font-bold font-display text-foreground">580</p>
-              <p className="text-xs text-muted-foreground mt-0.5 font-lao">{t.total_points}</p>
-            </div>
-            <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950/50 border border-green-200 dark:border-green-800 rounded-2xl px-3.5 py-2.5">
-              <LeafMark state="verified" size={16} />
-              <div>
-                <p className="text-xs font-bold text-green-800 dark:text-green-400 font-lao">{t.rank} #47</p>
-                <p className="text-[10px] text-green-600 dark:text-green-500 font-lao">{t.region}</p>
-              </div>
-            </div>
-          </div>
-          <p className="text-[10px] font-bold tracking-wider uppercase text-foreground/40 mb-3 font-lao">{t.recent_activity}</p>
-          <div className="space-y-2.5">
-            {[{pts:"+50",date:"Jul 10",state:"featured" as LeafState},{pts:"+30",date:"Jul 7",state:"verified" as LeafState},{pts:"+25",date:"Jun 29",state:"verified" as LeafState}].map((item,i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-muted/40 dark:bg-muted/20 rounded-xl border border-border/40">
-                <div className="flex items-center gap-2.5">
-                  <LeafMark state={item.state} size={15} />
-                  <div>
-                    <p className="text-xs font-medium font-lao">{t.post_verified}</p>
-                    <p className="text-[10px] text-muted-foreground">{item.date}</p>
+      <div className="flex-1">
+        {tab === "posts" && (
+          <div>
+            {userPosts.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground text-sm">No posts yet</div>
+            ) : (
+              userPosts.map(post => (
+                <div key={post.id} className="px-4 py-3 border-b border-border">
+                  <p className="text-sm text-foreground line-clamp-2">{lang === "lo" && post.contentLo ? post.contentLo : post.content}</p>
+                  <div className="flex gap-2 mt-2">
+                    {post.tags.map(tag => <TagChip key={tag} tag={tag} lang={lang} small />)}
+                  </div>
+                  <div className="flex items-center gap-3 mt-2 text-[11px] text-muted-foreground">
+                    <span>{post.timestamp}</span>
+                    <span>{post.likes} likes</span>
+                    {post.points && <span className="text-emerald-600">{post.points} pts</span>}
                   </div>
                 </div>
-                <span className="text-sm font-bold text-green-700">{item.pts}</span>
+              ))
+            )}
+          </div>
+        )}
+        {tab === "topics" && (
+          <div className="p-4 space-y-0.5">
+            {TOPICS.map(topic => {
+              const label = TOPIC_LABELS[topic];
+              return (
+                <div key={topic} className="flex items-center justify-between py-3 border-b border-border/40">
+                  <div>
+                    <span className="text-sm font-semibold text-indigo-700">#{lang === "lo" && label ? label.lo : topic}</span>
+                    {label && <span className="text-[10px] text-muted-foreground ml-2">#{lang === "lo" ? label.en : label.lo}</span>}
+                  </div>
+                  <button onClick={() => toggleFollow(topic)}
+                    className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all font-lao ${followed.includes(topic) ? "bg-indigo-100 dark:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300" : "border border-border text-foreground/60 hover:border-primary/30"}`}>
+                    {followed.includes(topic) ? t.following : t.follow}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {tab === "points" && (
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <p className="text-3xl font-bold font-display text-foreground">{totalPoints}</p>
+                <p className="text-xs text-muted-foreground mt-0.5 font-lao">{t.total_points}</p>
+              </div>
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950/50 border border-green-200 dark:border-green-800 rounded-2xl px-3.5 py-2.5">
+                <LeafMark state="verified" size={16} />
+                <div>
+                  <p className="text-xs font-bold text-green-800 dark:text-green-400 font-lao">{t.rank} #47</p>
+                  <p className="text-[10px] text-green-600 dark:text-green-500 font-lao">{t.region}</p>
+                </div>
+              </div>
+            </div>
+            <p className="text-[10px] font-bold tracking-wider uppercase text-foreground/40 mb-3 font-lao">{t.recent_activity}</p>
+            <div className="space-y-2.5">
+              {[{pts:"+50",date:"Jul 10",state:"featured" as LeafState},{pts:"+30",date:"Jul 7",state:"verified" as LeafState},{pts:"+25",date:"Jun 29",state:"verified" as LeafState}].map((item,i) => (
+                <div key={i} className="flex items-center justify-between p-3 bg-muted/40 dark:bg-muted/20 rounded-xl border border-border/40">
+                  <div className="flex items-center gap-2.5">
+                    <LeafMark state={item.state} size={15} />
+                    <div>
+                      <p className="text-xs font-medium font-lao">{t.post_verified}</p>
+                      <p className="text-[10px] text-muted-foreground">{item.date}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-green-700">{item.pts}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+      <div className="p-4 border-t border-border">
+        <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
+          <LogOut size={16} /> Sign Out
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  EXPLORE SCREEN (with Safety Checklist)
+// ═══════════════════════════════════════════════════════════════════════════════
+function ExploreScreen({ lang, posts, onOpenPost, onTopicClick }: { lang: Lang; posts: Post[]; onOpenPost: (id: string) => void; onTopicClick?: (topic: string) => void; }) {
+  const t = T[lang];
+  const [search, setSearch] = useState("");
+  const [searchFocus, setSearchFocus] = useState(false);
+
+  const trending = TOPICS.map(tag => ({
+    tag,
+    count: posts.filter(p => p.tags.includes(tag)).reduce((sum, p) => sum + p.likes + p.comments + p.reposts, 0),
+  })).sort((a, b) => b.count - a.count).slice(0, 8);
+
+  const filteredPosts = search.trim() ? posts.filter(p => {
+    const searchLower = search.toLowerCase();
+    // Search in both English and Lao content
+    const contentMatch = p.content.toLowerCase().includes(searchLower) || 
+                         (p.contentLo && p.contentLo.toLowerCase().includes(searchLower));
+    // Search in both English and Lao tag labels
+    const tagMatch = p.tags.some(t => {
+      const label = TOPIC_LABELS[t];
+      return t.toLowerCase().includes(searchLower) || 
+             (label && (label.en.toLowerCase().includes(searchLower) || label.lo.toLowerCase().includes(searchLower)));
+    });
+    const authorMatch = p.author.name.toLowerCase().includes(searchLower);
+    return contentMatch || tagMatch || authorMatch;
+  }) : [];
+
+  const safetyTips = [
+    t.safety_tip_otp,
+    t.safety_tip_job,
+    t.safety_tip_apk,
+    t.safety_tip_url,
+    t.safety_tip_too_good,
+  ];
+
+  return (
+    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
+        <div className={`flex items-center gap-2 rounded-xl px-3 py-2.5 border transition-all ${searchFocus ? "border-primary/60 bg-white dark:bg-background" : "border-border bg-muted/50"}`}>
+          <Search size={16} className="text-muted-foreground shrink-0" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setSearchFocus(true)}
+            onBlur={() => setSearchFocus(false)}
+            placeholder={t.search_ph}
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 text-foreground"
+          />
+          {search && <button onClick={() => setSearch("")} className="text-muted-foreground"><X size={14} /></button>}
+        </div>
+      </div>
+      {search.trim() ? (
+        <div>
+          {filteredPosts.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground text-sm">No results found</div>
+          ) : (
+            filteredPosts.map(post => (
+              <button key={post.id} onClick={() => onOpenPost(post.id)} className="w-full text-left px-4 py-3 border-b border-border hover:bg-muted/30 transition-colors">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="font-semibold text-xs">{post.author.name}</span>
+                  <span className="text-[10px] text-muted-foreground">{post.timestamp}</span>
+                </div>
+                <p className="text-sm text-foreground line-clamp-2">{lang === "lo" && post.contentLo ? post.contentLo : post.content}</p>
+                <div className="flex gap-1.5 mt-1.5">
+                  {post.tags.map(tag => (
+                    <span key={tag} onClick={(e) => { e.stopPropagation(); onTopicClick && onTopicClick(tag); }}
+                      className="cursor-pointer">
+                      <TagChip tag={tag} lang={lang} small />
+                    </span>
+                  ))}
+                </div>
+              </button>
+            ))
+          )}
+        </div>
+      ) : (
+        <div className="p-4">
+          <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5">
+            <TrendingUp size={16} className="text-primary" /> {t.trending}
+          </h3>
+          <div className="space-y-2">
+            {trending.map(({ tag, count }, i) => (
+              <div key={tag} onClick={() => onTopicClick && onTopicClick(tag)}
+                className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer">
+                <div className="flex items-center gap-3 pointer-events-none">
+                  <span className="text-xs font-bold text-muted-foreground w-4">{i + 1}</span>
+                  <TagChip tag={tag} lang={lang} />
+                </div>
+                <span className="text-xs text-muted-foreground pointer-events-none">{count.toLocaleString()} {t.topic_posts}</span>
               </div>
             ))}
           </div>
+          <div className="mt-6">
+            <h3 className="text-sm font-bold mb-3 flex items-center gap-1.5">
+              <Shield size={16} className="text-primary" /> {t.safety_checklist}
+            </h3>
+            <div className="space-y-2">
+              {safetyTips.map((tip, i) => (
+                <div key={i} className="flex gap-2.5 p-3 rounded-xl border border-border bg-muted/30">
+                  <Check size={14} className="text-primary shrink-0 mt-0.5" />
+                  <p className="text-xs text-foreground leading-relaxed">{tip}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -1457,147 +1415,380 @@ function ProfileView({ currentUser, posts, lang }: { currentUser: CurrentUser; p
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  SPLASH SCREEN
+//  ALERTS SCREEN
 // ═══════════════════════════════════════════════════════════════════════════════
-function SplashScreen({ onDone }: { onDone: () => void }) {
-  const [fading, setFading] = useState(false);
-  useEffect(() => {
-    const t1 = setTimeout(() => setFading(true), 1700);
-    const t2 = setTimeout(() => onDone(), 2200);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [onDone]);
+function AlertsScreen({ lang, onMarkAllRead, onClose }: { lang: Lang; onMarkAllRead: () => void; onClose: () => void; }) {
+  const t = T[lang];
+  const [alerts, setAlerts] = useState([
+    { id: "a1", text: "Your post about BCEL scam was verified +50 points", time: "2h", read: false },
+    { id: "a2", text: "New trafficking alert in Vientiane region", time: "5h", read: false },
+    { id: "a3", text: "Sati Team posted: Digital Safety Checklist updated", time: "1d", read: true },
+    { id: "a4", text: "Your report was flagged for review", time: "2d", read: true },
+  ]);
+
+  const unreadCount = alerts.filter(a => !a.read).length;
+
+  const markRead = (id: string) => {
+    setAlerts(prev => prev.map(a => a.id === id ? { ...a, read: true } : a));
+  };
+
+  const markAll = () => {
+    setAlerts(prev => prev.map(a => ({ ...a, read: true })));
+    onMarkAllRead();
+  };
 
   return (
-    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center"
-      style={{ background:"linear-gradient(160deg,#1E1B4B 0%,#3B0FA0 45%,#1a365d 100%)", opacity:fading?0:1, transition:"opacity 0.5s ease-in-out" }}>
-      <div className="absolute inset-0" style={{ background:"radial-gradient(circle at 50% 40%, rgba(147,197,253,0.12) 0%, transparent 60%)" }} />
-      <SatiLogo size={72} />
-      <h1 className="font-display font-bold text-white text-center mt-5 leading-none" style={{ fontSize:28, letterSpacing:"-0.03em" }}>
-        Satisampasanya
-      </h1>
-      <p className="font-lao text-white/50 mt-2 text-sm" style={{ letterSpacing:"0.04em" }}>ສະຕິຊໍາປະຊັນຍະ</p>
-      <p className="absolute bottom-12 text-white/25 text-[10px] tracking-widest uppercase font-medium">Stay safe · ປອດໄພທາງອອນລາຍ</p>
+    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <button onClick={onClose} className="p-1 -ml-1"><ArrowLeft size={20} /></button>
+          <h2 className="font-bold text-base">{t.alerts_title}</h2>
+        </div>
+        {unreadCount > 0 && (
+          <button onClick={markAll} className="text-xs text-primary font-semibold">{t.alerts_mark_all}</button>
+        )}
+      </div>
+      <div>
+        {alerts.map(alert => (
+          <button key={alert.id} onClick={() => markRead(alert.id)} className={`w-full text-left px-4 py-3 border-b border-border flex gap-3 transition-colors ${alert.read ? "bg-transparent" : "bg-primary/5"}`}>
+            <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${alert.read ? "bg-transparent" : "bg-primary"}`} />
+            <div className="flex-1">
+              <p className="text-sm text-foreground">{alert.text}</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">{alert.time}</p>
+            </div>
+          </button>
+        ))}
+      </div>
     </div>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-//  APP ROOT
+//  IMAGE EXPAND MODAL
+// ═══════════════════════════════════════════════════════════════════════════════
+function ImageExpandModal({ imageUrl, onClose }: { imageUrl: string | null; onClose: () => void }) {
+  if (!imageUrl) return null;
+  return (
+    <div className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center p-4" onClick={onClose}>
+      <button onClick={onClose} className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition-colors">
+        <X size={24} />
+      </button>
+      <img src={imageUrl} alt="Full size" className="max-w-full max-h-full object-contain rounded-lg" onClick={(e) => e.stopPropagation()} />
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  FEED SCREEN
+// ═══════════════════════════════════════════════════════════════════════════════
+function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onCompose, onOpenAlerts, alertCount, onRepostClick, themeMode, onThemeChange, onLangToggle, onImageExpand, onTopicClick }: {
+  lang: Lang; posts: Post[]; activeTab: number; onTabChange: (i: number) => void;
+  onOpenComments: (id: string) => void; onLike: (id: string) => void; onRepost: (id: string) => void;
+  onWarnedMe: (id: string) => void; onCompose: () => void; onOpenAlerts: () => void; alertCount: number;
+  onRepostClick: (post: Post) => void; themeMode: ThemeMode; onThemeChange: (m: ThemeMode) => void; onLangToggle: () => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void;
+}) {
+  const t = T[lang];
+  const tabs = lang === "lo" ? FEED_TABS_LO : FEED_TABS_EN;
+
+  const filteredPosts = activeTab === 0 ? posts :
+    activeTab === 1 ? posts.filter(p => ["p1", "p3", "p7", "p8", "p10"].includes(p.id)) :
+    posts.filter(p => {
+      const tagMap = ["", "", "OnlineScam", "Trafficking", "DigitalSafety"];
+      return p.tags.includes(tagMap[activeTab]);
+    });
+
+  return (
+    <div className="h-full flex flex-col bg-background">
+      <div className="sticky top-0 z-10 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="flex items-center justify-between px-4 py-2.5">
+          <img src={logoImage} alt="Sati" className="w-8 h-8 rounded-lg object-cover" />
+          <div className="flex items-center gap-2">
+            <button onClick={onOpenAlerts} className="relative p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">
+              <Bell size={18} />
+              {alertCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{alertCount}</span>
+              )}
+            </button>
+            <ThemeToggle mode={themeMode} onChange={onThemeChange} />
+            <LangToggle lang={lang} onToggle={onLangToggle} />
+          </div>
+        </div>
+        <div className="flex overflow-x-auto scrollbar-hide">
+          {tabs.map((tab, i) => (
+            <button key={i} onClick={() => onTabChange(i)} className={`px-4 py-3 text-xs font-semibold whitespace-nowrap transition-colors relative ${activeTab === i ? "text-primary" : "text-muted-foreground"}`}>
+              {tab}
+              {activeTab === i && <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-primary rounded-full" />}
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="flex-1 overflow-y-auto scrollbar-hide">
+        {/* Compose bar hidden — users use the + button in bottom nav */}
+        {filteredPosts.map(post => (
+          <PostCard
+            key={post.id}
+            post={post}
+            lang={lang}
+            onOpenComments={onOpenComments}
+            onLike={onLike}
+            onRepost={onRepost}
+            onWarnedMe={onWarnedMe}
+            onRepostClick={onRepostClick}
+            onImageExpand={onImageExpand}
+            onTopicClick={onTopicClick}
+          />
+        ))}
+        <div className="py-8 text-center">
+          <p className="text-xs text-muted-foreground">{t.caught_up_en}</p>
+          <p className="text-xs text-muted-foreground font-lao">{t.caught_up_lo}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  BOTTOM NAV
+// ═══════════════════════════════════════════════════════════════════════════════
+function BottomNav({ active, onChange, lang, alertCount, onOpenAlerts, onCompose }: { 
+  active: ActiveView; 
+  onChange: (v: ActiveView) => void; 
+  lang: Lang; 
+  alertCount: number;
+  onOpenAlerts: () => void;
+  onCompose: () => void;
+}) {
+  const t = T[lang];
+
+  return (
+    <nav className="shrink-0 h-16 bg-background/80 backdrop-blur-md border-t border-border flex items-center justify-around px-2">
+      <button onClick={() => onChange("feed")} className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors ${active === "feed" ? "text-primary" : "text-muted-foreground"}`}>
+        <div className="relative">
+          <Home size={20} />
+          {alertCount > 0 && active !== "feed" && (
+            <span className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{alertCount}</span>
+          )}
+        </div>
+        <span className="text-[10px] font-medium">{t.nav_home}</span>
+      </button>
+
+      <button onClick={() => onChange("explore")} className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors ${active === "explore" ? "text-primary" : "text-muted-foreground"}`}>
+        <Search size={20} />
+        <span className="text-[10px] font-medium">{t.nav_explore}</span>
+      </button>
+
+      <button onClick={onCompose} className="w-12 h-12 -mt-3 rounded-full text-white flex items-center justify-center active:scale-95 transition-transform"
+        style={{ background: "linear-gradient(135deg,#5B21D1,#84ADEF)", boxShadow: "0 4px 16px rgba(91,33,209,0.4)" }}>
+        <Plus size={22} strokeWidth={2.5} />
+      </button>
+
+      <button onClick={onOpenAlerts} className="flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors text-muted-foreground hover:text-primary">
+        <div className="relative">
+          <Bell size={20} />
+          {alertCount > 0 && (
+            <span className="absolute -top-1 -right-1.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{alertCount}</span>
+          )}
+        </div>
+        <span className="text-[10px] font-medium">{t.nav_alerts}</span>
+      </button>
+
+      <button onClick={() => onChange("profile")} className={`flex flex-col items-center gap-0.5 px-4 py-1.5 rounded-xl transition-colors ${active === "profile" ? "text-primary" : "text-muted-foreground"}`}>
+        <User size={20} />
+        <span className="text-[10px] font-medium">{t.nav_profile}</span>
+      </button>
+    </nav>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+//  MAIN APP
 // ═══════════════════════════════════════════════════════════════════════════════
 export default function App() {
   const [showSplash, setShowSplash] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [lang, setLang] = useState<Lang>("en");
-  const [themeMode, setThemeMode] = useState<ThemeMode>("system");
-  const [currentUser, setCurrentUser] = useState<CurrentUser>({ name:"Vilay Ketmany", email:"vilay@example.com" });
+  const [user, setUser] = useState<CurrentUser | null>(null);
   const [view, setView] = useState<ActiveView>("feed");
-  const [selectedPost, setSelectedPost] = useState<Post|null>(null);
-  const [composeOpen, setComposeOpen] = useState(false);
-  const [alertsOpen, setAlertsOpen] = useState(false);
+  const [feedTab, setFeedTab] = useState(0);
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const [commentPostId, setCommentPostId] = useState<string | null>(null);
+  const [showCompose, setShowCompose] = useState(false);
+  const [alertCount, setAlertCount] = useState(2);
+  const [showAlerts, setShowAlerts] = useState(false);
+  const [repostPost, setRepostPost] = useState<Post | null>(null);
   const [postToast, setPostToast] = useState(false);
+  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
-  const toggleLang = () => setLang(l => l==="en"?"lo":"en");
-  const t = T[lang];
+  // Theme effect: apply dark class to document based on theme mode
+  useEffect(() => {
+    const root = document.documentElement;
+    const isDark = themeMode === "dark";
+    if (isDark) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [themeMode]);
 
-  const handleNewPost = (post: Post) => {
+  const toggleLang = () => setLang((l: Lang) => l === "en" ? "lo" : "en");
+
+  const handleLogin = (u: CurrentUser) => {
+    setUser(u);
+    setView("feed");
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setView("feed");
+  };
+
+  const handleAddPost = (post: Post) => {
     setPosts(prev => [post, ...prev]);
     setPostToast(true);
     setTimeout(() => setPostToast(false), 3000);
   };
 
-  const showHeader = !selectedPost && !composeOpen && !alertsOpen;
+  const handleAddComment = (postId: string, text: string) => {
+    setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments: p.comments + 1 } : p));
+  };
+
+  const handleRepost = (originalPost: Post, text: string) => {
+    const newPost: Post = {
+      id: `repost-${Date.now()}`,
+      author: { name: "You", handle: "@you", initials: "YO", color: COLORS.primary, points: 0 },
+      content: text ? `${text}\n\n— Repost from @${originalPost.author.handle}:` : `Repost from @${originalPost.author.handle}:`,
+      tags: originalPost.tags,
+      timestamp: "Just now",
+      state: "clean",
+      likes: 0, comments: 0, reposts: 0, warnedMe: 0,
+      repostOf: originalPost.id,
+      repostText: text,
+    };
+    setPosts(prev => [newPost, ...prev]);
+    setPostToast(true);
+    setTimeout(() => setPostToast(false), 3000);
+  };
+
+  const handleLike = (postId: string) => {
+    setPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: p.likes + 1 } : p));
+  };
+
+  const handleRepostCount = (postId: string) => {
+    setPosts(prev => prev.map(p => p.id === postId ? { ...p, reposts: p.reposts + 1 } : p));
+  };
+
+  const handleWarnedMe = (postId: string) => {
+    setPosts(prev => prev.map(p => p.id === postId ? { ...p, warnedMe: p.warnedMe + 1 } : p));
+  };
+
+  const handleOpenAlerts = () => {
+    setShowAlerts(true);
+    setAlertCount(0);
+  };
+
+  if (showSplash) {
+    return (
+      <div className="h-screen w-full max-w-md mx-auto bg-background relative overflow-hidden">
+        <SplashScreen onDone={() => setShowSplash(false)} />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="h-screen w-full max-w-md mx-auto bg-background">
+        <AuthScreen lang={lang} onLangToggle={toggleLang} onLogin={handleLogin} />
+      </div>
+    );
+  }
 
   return (
-    <div className="size-full flex items-center justify-center bg-slate-200/60 dark:bg-slate-900">
-      <div className="relative w-full max-w-[390px] h-full max-h-[844px] bg-background flex flex-col overflow-hidden dark"
-        style={{ boxShadow:"0 0 0 1px rgba(0,0,0,.08),0 24px 48px rgba(0,0,0,.22)" }}>
-
-        {showSplash && <SplashScreen onDone={() => setShowSplash(false)} />}
-
-        {!isAuthenticated ? (
-          <div className="flex-1 overflow-hidden">
-            <AuthScreen lang={lang} onLangToggle={toggleLang} onLogin={(user) => { setCurrentUser(user); setIsAuthenticated(true); }} />
+    <div className="h-screen w-full max-w-md mx-auto bg-background flex flex-col relative overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
+        {view === "feed" && !showAlerts && (
+          <FeedScreen
+            lang={lang}
+            posts={posts}
+            activeTab={feedTab}
+            onTabChange={setFeedTab}
+            onOpenComments={setCommentPostId}
+            onLike={handleLike}
+            onRepost={handleRepostCount}
+            onWarnedMe={handleWarnedMe}
+            onCompose={() => setShowCompose(true)}
+            onOpenAlerts={handleOpenAlerts}
+            alertCount={alertCount}
+            onRepostClick={setRepostPost}
+            themeMode={themeMode}
+            onThemeChange={setThemeMode}
+            onLangToggle={toggleLang}
+            onImageExpand={(url) => setExpandedImage(url)}
+            onTopicClick={(topic) => {
+              const tabMap: Record<string, number> = {
+                "OnlineScam": 2, "Trafficking": 3, "DigitalSafety": 4,
+                "JobScam": 2, "CryptoScam": 2, "BorderSafety": 3,
+                "SocialMedia": 4, "PhishingAlert": 2, "RomanceScam": 2, "DataPrivacy": 4
+              };
+              setFeedTab(tabMap[topic] || 0);
+            }}
+          />
+        )}
+        {view === "explore" && !showAlerts && (
+          <ExploreScreen 
+            lang={lang} 
+            posts={posts} 
+            onOpenPost={setCommentPostId} 
+            onTopicClick={(topic) => {
+              setFeedTab(2 + TOPICS.indexOf(topic)); // Map to correct tab index
+              setView("feed");
+            }}
+          />
+        )}
+        {view === "profile" && !showAlerts && (
+          <ProfileScreen lang={lang} user={user} posts={posts} onLogout={handleLogout} />
+        )}
+        {showAlerts && (
+          <div className="absolute inset-0 z-40">
+            <AlertsScreen lang={lang} onMarkAllRead={() => setAlertCount(0)} onClose={() => setShowAlerts(false)} />
           </div>
-        ) : (
-          <>
-            {showHeader && (
-              <div className="flex items-center justify-between px-4 py-2.5 border-b border-border shrink-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <SatiLogo size={22} />
-                  <span className="font-display font-bold text-sm truncate font-lao" style={{ letterSpacing:"-0.01em" }}>{t.app_name}</span>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <LangToggle lang={lang} onToggle={toggleLang} />
-                  <ThemeToggle mode={themeMode} onChange={setThemeMode} />
-                  <button onClick={() => setAlertsOpen(true)} className="p-2 text-muted-foreground hover:text-foreground transition-colors relative">
-                    <Bell size={20} strokeWidth={1.75} />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-                  </button>
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
-                    style={{ background:"linear-gradient(135deg,#5B21D1,#84ADEF)" }}>
-                    {currentUser.name.split(" ").map(w=>w[0]).slice(0,2).join("").toUpperCase()||"VK"}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="flex-1 overflow-hidden relative">
-              {selectedPost ? (
-                <PostDetail post={selectedPost} onBack={() => setSelectedPost(null)} lang={lang} />
-              ) : view==="feed" ? (
-                <FeedView posts={posts} onPostTap={p=>setSelectedPost(p)} lang={lang} />
-              ) : view==="explore" ? (
-                <ExploreView posts={posts} onPostTap={p=>setSelectedPost(p)} lang={lang} />
-              ) : (
-                <ProfileView currentUser={currentUser} posts={posts} lang={lang} />
-              )}
-              {composeOpen && <ComposeOverlay onClose={() => setComposeOpen(false)} onPost={handleNewPost} lang={lang} currentUser={currentUser} />}
-              {alertsOpen && <AlertsSheet onClose={() => setAlertsOpen(false)} lang={lang} />}
-            </div>
-
-            {postToast && (
-              <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-lao whitespace-nowrap">{t.posted}</div>
-            )}
-
-            {showHeader && (
-              <div className="border-t border-border bg-background shrink-0">
-                <div className="flex items-center justify-around px-2 py-1.5">
-                  {[
-                    { id:"feed" as ActiveView, icon:Home, label:t.nav_home },
-                    { id:"explore" as ActiveView, icon:Search, label:t.nav_explore },
-                  ].map(({ id, icon:Icon, label }) => (
-                    <button key={id} onClick={() => setView(id)}
-                      className={`flex flex-col items-center gap-0.5 px-4 py-1.5 transition-colors ${view===id?"text-primary":"text-muted-foreground"}`}>
-                      <Icon size={22} strokeWidth={view===id?2.25:1.75} />
-                      <span className="text-[10px] font-medium font-lao">{label}</span>
-                    </button>
-                  ))}
-                  <button onClick={() => setComposeOpen(true)}
-                    className="w-12 h-12 -mt-3 rounded-full text-white flex items-center justify-center active:scale-95 transition-transform"
-                    style={{ background:"linear-gradient(135deg,#5B21D1,#84ADEF)", boxShadow:"0 4px 16px rgba(91,33,209,0.4)" }}>
-                    <Plus size={22} strokeWidth={2.5} />
-                  </button>
-                  <button onClick={() => setAlertsOpen(true)}
-                    className="flex flex-col items-center gap-0.5 px-4 py-1.5 text-muted-foreground relative hover:text-foreground transition-colors">
-                    <Bell size={22} strokeWidth={1.75} />
-                    <span className="absolute top-0.5 right-3 w-1.5 h-1.5 bg-primary rounded-full" />
-                    <span className="text-[10px] font-medium font-lao">{t.nav_alerts}</span>
-                  </button>
-                  <button onClick={() => setView("profile")}
-                    className={`flex flex-col items-center gap-0.5 px-4 py-1.5 transition-colors ${view==="profile"?"text-primary":"text-muted-foreground"}`}>
-                    <User size={22} strokeWidth={view==="profile"?2.25:1.75} />
-                    <span className="text-[10px] font-medium font-lao">{t.nav_profile}</span>
-                  </button>
-                </div>
-                <div className="flex justify-center pb-1.5 pt-0.5">
-                  <div className="w-28 h-1 bg-foreground/20 rounded-full" />
-                </div>
-              </div>
-            )}
-          </>
         )}
       </div>
+      {commentPostId && (
+        <CommentsModal
+          postId={commentPostId}
+          posts={posts}
+          lang={lang}
+          onClose={() => setCommentPostId(null)}
+          onAddComment={handleAddComment}
+        />
+      )}
+      {showCompose && (
+        <ComposeModal
+          lang={lang}
+          onClose={() => setShowCompose(false)}
+          onPost={handleAddPost}
+        />
+      )}
+      {repostPost && (
+        <RepostModal
+          post={repostPost}
+          lang={lang}
+          onClose={() => setRepostPost(null)}
+          onRepost={handleRepost}
+        />
+      )}
+      {expandedImage && (
+        <ImageExpandModal
+          imageUrl={expandedImage}
+          onClose={() => setExpandedImage(null)}
+        />
+      )}
+      {postToast && (
+        <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-lao whitespace-nowrap">
+          {T[lang].posted}
+        </div>
+      )}
+      <BottomNav active={view} onChange={(v) => { setView(v); setShowAlerts(false); }} lang={lang} alertCount={alertCount} onOpenAlerts={handleOpenAlerts} onCompose={() => setShowCompose(true)} />
     </div>
   );
 }

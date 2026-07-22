@@ -1,12 +1,18 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Heart, MessageCircle, Share2, Repeat2, Flag, ArrowLeft, X, LogOut,
-  AlertTriangle, Clock, Bell, Search, Home, User, Plus, Shield,
+  AlertTriangle, Clock, Bell, Search, Home, User, Plus, Shield, CheckCircle,
   Zap, Link2, Check, Send, Eye, EyeOff, Pencil, Play, ChevronRight,
   Camera, Image as ImageIcon, Moon, Sun, TrendingUp, Upload, FileImage,
   Trash2, ChevronDown, Globe, Lock, AlertOctagon, ExternalLink,
 } from "lucide-react";
 
+// ═══════════════════════════════════════════════════════════════════════════════
+//  AI SCREENING IMPORTS
+// ═══════════════════════════════════════════════════════════════════════════════
+import { useAIScreening } from "@/satisampasanya_app/hooks/useAIScreening";
+import { PostCard as AIPostCard } from "@/satisampasanya_app/components/PostCard";
+import { ComposeModal as AIComposeModal } from "@/satisampasanya_app/components/ComposeModal";
 // ═══════════════════════════════════════════════════════════════════════════════
 //  IMAGE IMPORTS
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -21,9 +27,14 @@ import imgApk from "@/imports/image_2_apk.png";
 import imgLaoPost from "@/imports/Screenshot_2026-07-19_at_14.05.21.png";
 import imgPhoneScam from "@/imports/image-13.png";
 import imgTraffickingVideo from "@/imports/image-11.png";
-import imgTruck from "@/imports/image-12.png";
+import imgTruck  from "@/imports/image-12.png";
 import imgTraffickingPoster from "@/imports/image-10.png";
 import imgTiktokScam from "@/imports/image-14.png";
+import imgFakeNewsBuilding from "@/imports/image (5).png";
+import imgWifiSafety from "@/imports/image (6).png";
+import imgLaoCertTips from "@/imports/image (7).png";
+import imgFakeNewsPaper from "@/imports/image (8).png";
+
 // IMPORTANT: Rename the file to remove spaces before running:
 // "Screenshot 2026-07-19 at 14.30.16.png" -> "logo.png" (or any name without spaces)
 // Then update the path below to match your renamed file
@@ -131,7 +142,7 @@ const T = {
     compose_news: "News", compose_post: "Post",
     compose_info: "Points only for expert-verified posts. Featured bonus for verified posts that spread awareness. Limit: 2 posts + 5 comments per day.",
     compose_remaining: "posts remaining today",
-    compose_ph_news: "What's on your mind? (50-2000 chars)",
+    compose_ph_news: "What's on your mind? (1-500 chars)",
     compose_sources: "Source Links (required)", compose_source_ph: "Source URL",
     compose_topics: "Topic Tags", compose_topics_hint: "pick at least one",
     compose_photos: "Attach Photos", compose_photos_hint: "Drag & drop or tap to upload",
@@ -186,7 +197,7 @@ const T = {
     compose_news: "ຂ່າວ", compose_post: "ໂພສ",
     compose_info: "ຄະແນນສຳລັບໂພສທີ່ຜ່ານການກວດສອບໂດຍຜູ້ຊ່ຽວຊານເທົ່ານັ້ນ. ຈຳກັດ: 2 ໂພສ + 5 ຄອມເມັນຕໍ່ວັນ.",
     compose_remaining: "ໂພສຍັງເຫຼືອ",
-    compose_ph_news: "ມີຫຍັງໃຈຢາກແຊຣ໌? (50-2000 ຕົວອັກສອນ)",
+    compose_ph_news: "ມີຫຍັງໃຈຢາກແຊຣ໌? (1-500 ຕົວອັກສອນ)",
     compose_sources: "ລິ້ງແຫຼ່ງຂໍ້ມູນ (ບັງຄັບ)", compose_source_ph: "URL ແຫຼ່ງຂໍ້ມູນ",
     compose_topics: "ໝວດໝູ່", compose_topics_hint: "ເລືອກຢ່າງໜ້ອຍໜຶ່ງ",
     compose_photos: "ແນບຮູບ", compose_photos_hint: "ລາກ ແລະ ວາງ ຫຼື ແຕະເພື່ອອັບໂຫຼດ",
@@ -414,6 +425,73 @@ const INITIAL_POSTS: Post[] = [
     likes: 1240, comments: 187, reposts: 892, warnedMe: 654,
     points: 60, featuredPoints: true, isNews: true,
     link: "https://www.rfa.org/lao/daily/southeastasia/924-indian-nationals-rescured-from-golden-triangle-sez-01302025003502.html",
+  },
+  {
+    id: "p11", author: { name: "LaoCERT Official", handle: "@laocert", initials: "LC", color: "#dc2626", points: 9999 },
+    content: 'To all our viewers. For those who have seen similar video and pictures recently from unknown website, please be informed that is fake news. They have used AI to imitate the voice and video clips our news presenter and our government leaders. Please take precaution. https://www.facebook.com/share/p/1EHoeZinES/',
+    contentLo: `ມີກຸ່ມຄົນບໍ່ດີ ສ້າງຄວາມປັ່ນປ່ວນ ສ້າງຮູບພາບປອມວ່າ ຕຶກສະພາແຫ່ງຊາດໄຟໄຫມ້. ຖືວ່າເປັນການລະເມີດຕໍ່ກ່ດໝາຍວ່າດ້ວຍສື່ມວນຊົນ ແລະ ກ່ດໝາຍອາຍາທີ່ສ້າງຂ່າວປອມເຮັດໃຫ້ສັງຄົມມີຄວາມແຕກຕື່ນ ແລະ ອາດຖືກດຳເນີນຄະດີຕາມກ່ດໝາຍ. ດັ່ງນັ້ນ, ຂໍໃຫ້ຢຸດຕິການກະທຳນີ້ ແລະ ຂໍໃຫ້ລົບຂ່າວດັ່ງກ່າວອອກໂດຍດ່ວນ ລວມທັງບັນດາເພສອື່ນໆອີກຈຳນວນຫນຶ່ງທີ່ຍັງມີລະເມີດຕໍ່ກ່ດໝາຍໂດຍການໂພສຫຼືແຊຂ່າວລືຂ່າວປອມຕ່າງໆ ອັນເປັນເຫດໃຫ້ສັງຄົມເກֵດຄວາມສັບສົນກໍຂໍໃຫ້ຢຸດຕິເຊັ່ນກັນ.
+
+ຈົ່ງເປັນຜູ້ຊົມໃຊ້ສື່ສັງຄົມອອນລາຍທີ່ມີສະຕິ! ການແບ່ງປັນຂ່າວປອມອາດຈະສົ່ງຜົນກະທົບທີ່ຮ້າຍແຮງກວ່າທີ່ທ່ານຄິດ.`,
+    state: "false",
+    flagReason: "AI-generated fake video impersonating government officials",
+    flagReasonLo: "ວິດີໂອປອມທີ່ສ້າງດ້ວຍ AI ລອມລືກຂະຫຍໍ້ພະນັກງານລັດຖະການ",
+    correction: "This video was created using AI voice cloning and deepfake technology. The National Assembly building was never on fire. Please verify news through official channels only.",
+    correctionLo: "ວິດີໂອນີ້ສ້າງດ້ວຍເຕັກໂນໂລຍີ AI ລອມລືກສຽງ ແລະ deepfake. ຕຶກສະພາແຫ່ງຊາດບໍ່ເຄີຍມີໄຟໄຫມ້. ກະລຸນາກວດສອບຂ່າວຜ່ານຊ່ອງທາງທາງການເທົ່ານັ້ນ.",
+    timestamp: "2h ago",
+    likes: 1247, comments: 89, reposts: 2034, warnedMe: 0,
+    isNews: true,
+    tags: ["DigitalSafety", "FakeNews"],
+    image: imgFakeNewsBuilding,
+    sourceUrl: "https://www.facebook.com/share/p/1EHoeZinES/",
+    points: 0,
+    featuredPoints: false,
+    screeningStage: "completed"
+  },
+  {
+    id: "p12", author: { name: "LaoCERT Official", handle: "@laocert", initials: "LC", color: "#dc2626", points: 9999 },
+    content: "5 Digital Safety Tips from LaoCERT: 1) Lock your computer with Windows+L when away. 2) Never plug unknown USB drives — disable auto-run. 3) Shift+Delete to permanently remove sensitive files. 4) Ctrl+Shift+Delete to clear browser cookies. 5) Ctrl+Shift+N for private browsing. Stay safe online!",
+    contentLo: "5 ຄຳແນະນຳຄວາມປອດໄພດິຈິຕອລຈາກ LaoCERT: 1) ລັອກຄອມພິວເຕີ້ດ້ວຍ Windows+L ເມື່ອອອກຈາກ. 2) ຢ່າເສຍບ USB ທີ່ບໍ່ຮູ້ຈັກ — ປິດ auto-run. 3) Shift+Delete ລຶບໄຟລສຳຄັນແບບຖາວອນ. 4) Ctrl+Shift+Delete ລຶບ cookies browser. 5) Ctrl+Shift+N ເປີດການທ່ອງເວັບສ່ວນຕົວ. ປອດໄພ!",
+    state: "confirmed",
+    timestamp: "1d ago",
+    likes: 892, comments: 45, reposts: 567, warnedMe: 123,
+    isNews: true,
+    tags: ["DigitalSafety", "OnlineScam"],
+    image: imgLaoCertTips,
+    points: 40,
+    featuredPoints: true,
+    screeningStage: "completed"
+  },
+  {
+    id: "p13", author: { name: "WiFi Safety Team", handle: "@wifisafe", initials: "WS", color: "#0891B2", points: 450 },
+    content: "WARNING: Free public WiFi can be dangerous! Unsecured networks allow hackers to steal your data. Always use VPN on public WiFi, verify network names with staff, and avoid accessing banking apps on open networks.",
+    contentLo: "ຄຳເຕືອນ: WiFi ສາທາລະນະຟຣີອາດສ່ຽງອັນຕະລາຍ! ເຄືອຂ່າຍທີ່ບໍ່ປອດໄພອະນຸຍາດໃຫ້ແຮກເກີລັກຂໍ້ມູນຂອງທ່ານ. ສະເໝີໃຊ້ VPN ຢູ່ WiFi ສາທາລະນະ, ຢືນຢັນຊື່ເຄືອຂ່າຍກັບພະນັກງານ, ແລະ ຫຼີກເວັ້ນເຂົ້າເຖິງແອັບທະນາຄານຢູ່ເຄືອຂ່າຍເປີດ.",
+    state: "confirmed",
+    timestamp: "3h ago",
+    likes: 456, comments: 23, reposts: 189, warnedMe: 67,
+    isNews: true,
+    tags: ["DigitalSafety", "DataPrivacy"],
+    image: imgWifiSafety,
+    points: 35,
+    featuredPoints: false,
+    screeningStage: "completed"
+  },
+  {
+    id: "p14", author: { name: "Fact Check Laos", handle: "@factcheck", initials: "FC", color: "#EA580C", points: 780 },
+    content: "FAKE NEWS ALERT: A newspaper article claiming government officials announced a state investment program is FALSE. The image has been doctored with a 'FAKE NEWS' stamp. Always verify official announcements through government portals.",
+    contentLo: "ແຈ້ງເຕືອນຂ່າວປອມ: ບົດຄວາມນັດສືບທີ່ອ້າງວ່າຂະແໜງລັດຖະການປະກາດໂຄງການລົງທຶນຂອງລັດແມ່ນ FALSE. ຮູບພາບໄດ້ຖືກແກ້ໄຂດ້ວຍຕີມຳ 'FAKE NEWS'. ຢືນຢັນການປະກາດທາງການຜ່ານປະຕູລັດຖະບານເສມີ.",
+    state: "false",
+    flagReason: "Doctored image with false government claims",
+    flagReasonLo: "ຮູບພາບທີ່ແກ້ໄຂດ້ວຍການອ້າງອີງລັດຖະບານທີ່ບໍ່ຖືກຕ້ອງ",
+    correction: "No such state investment program exists. The image is fabricated. Official announcements are only made through government.gov.la and verified social media accounts.",
+    correctionLo: "ບໍ່ມີໂຄງການລົງທຶນຂອງລັດແບບນີ້. ຮູບພາບແມ່ນການສ້າງຂຶ້ນ. ການປະກາດທາງການມີພຽງແຕ່ຜ່ານ government.gov.la ແລະ ບັນຊີສື່ສັງຄົມທີ່ຢືນຢັນແລ້ວ.",
+    timestamp: "5h ago",
+    likes: 234, comments: 56, reposts: 89, warnedMe: 12,
+    isNews: true,
+    tags: ["OnlineScam", "DigitalSafety"],
+    image: imgFakeNewsPaper,
+    points: 0,
+    featuredPoints: false,
+    screeningStage: "completed"
   },
 ];
 
@@ -698,7 +776,8 @@ function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLangToggle:
 // ═══════════════════════════════════════════════════════════════════════════════
 //  POST CARD
 // ═══════════════════════════════════════════════════════════════════════════════
-function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, onRepostClick, onImageExpand, onTopicClick }: {
+function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, onRepostClick, onImageExpand, onTopicClick, getScreeningStatus }: {
+  getScreeningStatus: (post: Post) => { isActive: boolean; progress: number; stage: string; message: string; };
   post: Post; lang: Lang; onOpenComments: (id: string) => void;
   onLike: (id: string) => void; onRepost: (id: string) => void; onWarnedMe: (id: string) => void;
   onRepostClick: (post: Post) => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void;
@@ -711,12 +790,6 @@ function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, on
   const content = lang === "lo" && post.contentLo ? post.contentLo : post.content;
   const isLong = content.length > 200;
   const displayContent = showFull || !isLong ? content : content.slice(0, 200) + "...";
-
-  const getLeafState = (): LeafState => {
-    if (post.state === "confirmed") return post.featuredPoints ? "featured" : "verified";
-    if (post.state === "flagged" || post.state === "sla") return "pending";
-    return "none";
-  };
 
   const getStateBanner = () => {
     if (post.state === "flagged") return (
@@ -743,12 +816,28 @@ function PostCard({ post, lang, onOpenComments, onLike, onRepost, onWarnedMe, on
         <p className="text-[11px] text-slate-600 dark:text-slate-400">{t.banner_sla}</p>
       </div>
     );
+    if (post.state === "confirmed") return (
+      <div className="mx-4 mb-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 p-3 flex gap-2.5">
+        <CheckCircle size={16} className="text-emerald-500 shrink-0 mt-0.5" />
+        <div>
+          <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-300">Verified by Expert</p>
+          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 mt-0.5">This post has been reviewed and confirmed accurate. +{post.points} points awarded</p>
+        </div>
+      </div>
+    );
     return null;
   };
 
+  const getLeafState = (): LeafState => {
+    if (post.state === "confirmed") return post.featuredPoints ? "featured" : "verified";
+    if (post.state === "flagged" || post.state === "sla") return "pending";
+    return "none";
+  };
+
+
   return (
     <article className="bg-background border-b border-border">
-      {getStateBanner()}
+        {getStateBanner()}
       <div className="px-4 pt-3 pb-2">
         <div className="flex gap-3">
           <div className="shrink-0">
@@ -867,7 +956,7 @@ function RepostModal({ post, lang, onClose, onRepost }: {
             onChange={(e) => setText(e.target.value)}
             placeholder={t.repost_ph}
             className="flex-1 bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground/60 min-h-[80px]"
-            maxLength={150}
+            maxLength={500}
           />
         </div>
         <div className="text-right text-xs text-muted-foreground mb-4">{150 - text.length} remaining</div>
@@ -1057,7 +1146,7 @@ function ComposeModal({ lang, onClose, onPost }: { lang: Lang; onClose: () => vo
           className="w-full min-h-[120px] bg-transparent text-sm outline-none resize-none placeholder:text-muted-foreground/60 text-foreground leading-relaxed"
         />
         <div className={`text-right text-xs mb-4 ${text.length < 50 ? "text-red-500" : "text-muted-foreground"}`}>
-          {text.length} / 50 min
+          {text.length} / 500 max
         </div>
         <div className="mt-3">
           <p className="text-xs font-semibold mb-1.5">{t.compose_sources}</p>
@@ -1332,7 +1421,8 @@ function ProfileScreen({ lang, user, posts, onLogout }: {
 // ═══════════════════════════════════════════════════════════════════════════════
 //  EXPLORE SCREEN (with Safety Checklist)
 // ═══════════════════════════════════════════════════════════════════════════════
-function ExploreScreen({ lang, posts, onOpenPost, onTopicClick }: { lang: Lang; posts: Post[]; onOpenPost: (id: string) => void; onTopicClick?: (topic: string) => void; }) {
+function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, getScreeningStatus }: {
+  getScreeningStatus: (post: Post) => { isActive: boolean; progress: number; stage: string; message: string; }; lang: Lang; posts: Post[]; onOpenPost: (id: string) => void; onTopicClick?: (topic: string) => void; }) {
   const t = T[lang];
   const [search, setSearch] = useState("");
   const [searchFocus, setSearchFocus] = useState(false);
@@ -1508,7 +1598,8 @@ function ImageExpandModal({ imageUrl, onClose }: { imageUrl: string | null; onCl
 // ═══════════════════════════════════════════════════════════════════════════════
 //  FEED SCREEN
 // ═══════════════════════════════════════════════════════════════════════════════
-function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onCompose, onOpenAlerts, alertCount, onRepostClick, themeMode, onThemeChange, onLangToggle, onImageExpand, onTopicClick }: {
+function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onCompose, onOpenAlerts, alertCount, onRepostClick, themeMode, onThemeChange, onLangToggle, onImageExpand, onTopicClick, getScreeningStatus }: {
+  getScreeningStatus: (post: Post) => { isActive: boolean; progress: number; stage: string; message: string; };
   lang: Lang; posts: Post[]; activeTab: number; onTabChange: (i: number) => void;
   onOpenComments: (id: string) => void; onLike: (id: string) => void; onRepost: (id: string) => void;
   onWarnedMe: (id: string) => void; onCompose: () => void; onOpenAlerts: () => void; alertCount: number;
@@ -1552,7 +1643,7 @@ function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLik
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {/* Compose bar hidden — users use the + button in bottom nav */}
         {filteredPosts.map(post => (
-          <PostCard
+          <AIPostCard
             key={post.id}
             post={post}
             lang={lang}
@@ -1563,6 +1654,7 @@ function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLik
             onRepostClick={onRepostClick}
             onImageExpand={onImageExpand}
             onTopicClick={onTopicClick}
+            screeningStatus={getScreeningStatus(post)}
           />
         ))}
         <div className="py-8 text-center">
@@ -1637,6 +1729,7 @@ export default function App() {
   const [view, setView] = useState<ActiveView>("feed");
   const [feedTab, setFeedTab] = useState(0);
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
+  const { startScreening, getScreeningStatus } = useAIScreening(posts, setPosts);
   const [commentPostId, setCommentPostId] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
   const [alertCount, setAlertCount] = useState(2);
@@ -1669,9 +1762,11 @@ export default function App() {
     setView("feed");
   };
 
-  const handleAddPost = (post: Post) => {
+  const handleAddPost = async (post: Post) => {
     setPosts(prev => [post, ...prev]);
+    setShowCompose(false);
     setPostToast(true);
+    await startScreening(post);
     setTimeout(() => setPostToast(false), 3000);
   };
 
@@ -1750,6 +1845,7 @@ export default function App() {
             onThemeChange={setThemeMode}
             onLangToggle={toggleLang}
             onImageExpand={(url) => setExpandedImage(url)}
+          getScreeningStatus={getScreeningStatus}
             onTopicClick={(topic) => {
               const tabMap: Record<string, number> = {
                 "OnlineScam": 2, "Trafficking": 3, "DigitalSafety": 4,
@@ -1790,7 +1886,7 @@ export default function App() {
         />
       )}
       {showCompose && (
-        <ComposeModal
+        <AIComposeModal
           lang={lang}
           onClose={() => setShowCompose(false)}
           onPost={handleAddPost}
