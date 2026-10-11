@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: backend
+    environment:
+      ADMIN_EMAILS: ${ADMIN_EMAILS:?Set the existing administrator email}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set both HTTPS website origins}
+      SEED_DEMO: "false"
+      MONGODB_URI: ${MONGODB_URI:-}
+      MONGODB_DATABASE: ${MONGODB_DATABASE:-sati}
+    volumes:
+      - sati-data:/data
+    restart: unless-stopped
+  frontend:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: frontend
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+  admin:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: admin
+    ports:
+      - "127.0.0.1:8081:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+volumes:
+  sati-data:

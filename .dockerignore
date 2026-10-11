@@ -1,0 +1,11 @@
+.git
+.env*
+!.env.example
+node_modules
+dist
+admin/dist
+backend/data
+.vercel
+ios
+Launchers
+.DS_Store

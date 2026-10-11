@@ -1,0 +1,9 @@
+{
+  "name": "sati-admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix .. run dev:admin",
+    "build": "npm --prefix .. run build:admin"
+  }
+}

@@ -1,0 +1,7 @@
+import { LayoutDashboard, ListFilter, FileText, Users, ExternalLink, ShieldCheck, LogOut } from 'lucide-react';
+export type AdminTab='Overview'|'Queue'|'Posts'|'Users';
+export const Logo=()=> <img className="brand-logo" src="/images/Satisampasanya_Logo_app.png" alt="Satisampasanya"/>;
+export function Navigation({tab,onChange,onLogout,pending,canManageUsers}:{tab:AdminTab;onChange:(tab:AdminTab)=>void;onLogout:()=>void;pending:number;canManageUsers:boolean}){
+ const items=[{tab:'Overview' as const,icon:LayoutDashboard,label:'Overview'},{tab:'Queue' as const,icon:ListFilter,label:'Review queue'},{tab:'Posts' as const,icon:FileText,label:'All posts'},{tab:'Users' as const,icon:Users,label:'People & access'}];
+ return <aside className="admin-sidebar"><div className="sidebar-brand"><Logo/><div><strong>Sati</strong><small>ADMINISTRATION</small></div></div><span className="nav-caption">WORKSPACE</span><nav aria-label="Admin navigation">{items.filter(item=>item.tab!=='Users'||canManageUsers).map(item=><button key={item.tab} className={tab===item.tab?'active':''} aria-current={tab===item.tab?'page':undefined} onClick={()=>onChange(item.tab)}><item.icon size={20}/>{item.label}{item.tab==='Queue'&&<span className="nav-count">{pending}</span>}</button>)}</nav><div className="sidebar-footer"><a href="http://127.0.0.1:5173" target="_blank" rel="noreferrer"><ExternalLink size={17}/>Open user app</a><button onClick={onLogout}><LogOut size={17}/>Sign out</button><p><ShieldCheck size={15}/>Protected admin workspace</p></div></aside>;
+}

@@ -1,0 +1,9 @@
+{
+  "name": "sati-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix .. run dev:web",
+    "build": "npm --prefix .. run build"
+  }
+}

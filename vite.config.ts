@@ -1,37 +1,17 @@
-import { defineConfig } from 'vite'
-import path from 'path'
+import { defineConfig, loadEnv } from 'vite'
+import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 
-
-function figmaAssetResolver() {
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
   return {
-    name: 'figma-asset-resolver',
-    resolveId(id) {
-      if (id.startsWith('figma:asset/')) {
-        const filename = id.replace('figma:asset/', '')
-        return path.resolve(__dirname, 'src/assets', filename)
-      }
-    },
-  }
-}
-
-export default defineConfig({
-  plugins: [
-    figmaAssetResolver(),
-    // The React and Tailwind plugins are both required for Make, even if
-    // Tailwind is not being actively used – do not remove them
-    react(),
-    tailwindcss(),
-  ],
-  resolve: {
-    alias: {
-      // Alias @ to the src directory
-      '@': path.resolve(__dirname, './src'),
-"@satisampasanya_app": path.resolve(__dirname, "./src/satisampasanya_app"),
-    },
-  },
-
-  // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
+  root: path.resolve(__dirname, 'frontend'),
+  envDir: process.cwd(),
+  build: { outDir: path.resolve(__dirname, 'dist'), emptyOutDir: true },
+  plugins: [react(), tailwindcss(), {name:'admin-redirect', configureServer(server) {server.middlewares.use((req,res,next)=>{if(req.url === '/admin' || req.url === '/admin/'){res.writeHead(302,{Location:'http://127.0.0.1:5174'});res.end();}else next();});}}],
+  resolve: { alias: { '@': path.resolve(__dirname, './frontend/src') } },
+  server: { host: '127.0.0.1', port: 5173, strictPort: true, proxy: { '/api': `http://127.0.0.1:${env.API_PORT || 3001}` } },
   assetsInclude: ['**/*.svg', '**/*.csv'],
+};
 })

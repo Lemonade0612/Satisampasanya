@@ -1,0 +1,8 @@
+{
+  "appId": "la.satisampasanya.app",
+  "appName": "Sati Dev",
+  "webDir": "dist",
+  "ios": {
+    "contentInset": "automatic"
+  }
+}

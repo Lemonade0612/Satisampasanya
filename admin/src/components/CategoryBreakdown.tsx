@@ -1,0 +1,9 @@
+import type {AdminPost} from '../api';
+const colors=['#7434f3','#7abbff','#f5a524','#c9b3fa','#34d399'];
+export function CategoryBreakdown({posts}:{posts:AdminPost[]}){
+ const categories=['Job scam','Investment','Trafficking','Romance','Other'].map(name=>({name,count:0}));
+ const reported=posts.filter(p=>['flagged','sla','confirmed','false'].includes(p.state));
+ reported.forEach(p=>{const tags=p.tags.join(' ').toLowerCase();const index=tags.includes('job')?0:tags.includes('crypto')||tags.includes('invest')?1:tags.includes('trafficking')||tags.includes('border')?2:tags.includes('romance')?3:4;categories[index].count++;});
+ let offset=0;const total=reported.length,circumference=2*Math.PI*64;
+ return <section className="admin-card category-card"><div className="card-heading"><div><h2>What needs attention</h2><p>Flagged and resolved posts by primary topic</p></div></div><div className="donut-content"><svg viewBox="0 0 180 180" role="img" aria-label={`${total} flagged and resolved posts by topic`}><circle cx="90" cy="90" r="64" fill="none" stroke="var(--line)" strokeWidth="19"/>{categories.map((category,i)=>{const length=total?category.count/total*circumference:0;const start=offset;offset+=length;return length?<circle key={category.name} cx="90" cy="90" r="64" fill="none" stroke={colors[i]} strokeWidth="19" strokeDasharray={`${Math.max(0,length-3)} ${circumference-Math.max(0,length-3)}`} strokeDashoffset={-start} transform="rotate(-90 90 90)"/>:null;})}<text x="90" y="89" textAnchor="middle" fill="var(--ink)" fontSize="29" fontWeight="700">{total}</text><text x="90" y="109" textAnchor="middle" fill="var(--muted)" fontSize="12">total posts</text></svg><div className="donut-legend">{categories.map((c,i)=><div key={c.name}><i className="dot" style={{background:colors[i]}}/><span>{c.name}</span><strong>{total?Math.round(c.count/total*100):0}%</strong></div>)}</div></div></section>;
+}

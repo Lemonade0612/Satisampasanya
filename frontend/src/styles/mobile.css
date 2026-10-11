@@ -1,0 +1,15 @@
+html, body, #root { width: 100%; height: 100%; overflow: hidden; }
+body { -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
+.app-shell { height: var(--app-height, 100dvh); }
+.phone-modal { height: var(--app-height, 100dvh); max-width: 28rem; margin-inline: auto; }
+.touch-target { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+button, a, label { -webkit-tap-highlight-color: transparent; }
+button { touch-action: manipulation; }
+button:disabled { cursor: not-allowed; }
+input:not([type="checkbox"]):not([type="file"]), textarea, select { font-size: 16px; }
+input, textarea { scroll-margin-block: 80px; }
+.scrollbar-hide { scrollbar-width: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+@media (max-width: 380px) {
+  .phone-modal header { padding-inline: 8px; }
+}

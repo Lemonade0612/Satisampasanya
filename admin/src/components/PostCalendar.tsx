@@ -1,0 +1,11 @@
+import {useState} from 'react';
+import {ChevronLeft,ChevronRight} from 'lucide-react';
+import type {AdminPost} from '../api';
+export function PostCalendar({posts}:{posts:AdminPost[]}){
+ const [month,setMonth]=useState(()=>new Date(new Date().getFullYear(),new Date().getMonth(),1));const [selected,setSelected]=useState(new Date().getDate());
+ const count=new Date(month.getFullYear(),month.getMonth()+1,0).getDate();const start=(month.getDay()+6)%7;
+ const records=Array.from({length:count},(_,i)=>{const from=new Date(month.getFullYear(),month.getMonth(),i+1),to=new Date(month.getFullYear(),month.getMonth(),i+2);return posts.filter(p=>p.createdAt!>=+from&&p.createdAt!<+to);});
+ const selectedPosts=records[selected-1]||[];const max=Math.max(1,...records.map(p=>p.length));
+ const change=(amount:number)=>{setMonth(new Date(month.getFullYear(),month.getMonth()+amount,1));setSelected(1);};
+ return <section className="admin-card"><div className="card-heading"><div><h2>Posts per day</h2><p>{month.toLocaleDateString('en-US',{month:'long',year:'numeric'})} · {records.reduce((sum,p)=>sum+p.length,0)} posts</p></div><div className="calendar-controls"><button aria-label="Previous month" onClick={()=>change(-1)}><ChevronLeft size={16}/></button><button aria-label="Next month" onClick={()=>change(1)}><ChevronRight size={16}/></button></div></div><div className="post-calendar">{['M','T','W','T','F','S','S'].map((d,i)=><span className="calendar-day-label" key={i}>{d}</span>)}{Array.from({length:start},(_,i)=><span key={`blank${i}`}/>)}{records.map((items,i)=><button key={i} aria-label={`${month.toLocaleDateString('en-US',{month:'long'})} ${i+1}: ${items.length} posts`} aria-pressed={selected===i+1} className={`${items.length?'has-posts':''} ${selected===i+1?'selected':''}`} style={items.length?{background:`rgba(124,58,237,${.2+items.length/max*.7})`}:undefined} onClick={()=>setSelected(i+1)}><span>{i+1}</span>{items.length>0&&<strong>{items.length}</strong>}</button>)}</div><div className="calendar-summary"><strong>{month.toLocaleDateString('en-US',{month:'short'})} {selected}</strong> · {selectedPosts.length} posts · {selectedPosts.filter(p=>p.review).length} reviewed</div><div className="calendar-scale"><span>Fewer</span><i/><span>More posts</span></div></section>;
+}

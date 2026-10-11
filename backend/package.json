@@ -1,0 +1,10 @@
+{
+  "name": "sati-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm --prefix .. run backend",
+    "start": "npm --prefix .. run backend",
+    "test": "npm --prefix .. run test"
+  }
+}
