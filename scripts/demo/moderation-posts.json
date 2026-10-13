@@ -1,0 +1,56 @@
+[
+  {
+    "key": "arrests-awareness",
+    "image": "download.png",
+    "tag": "OnlineScam",
+    "state": "flagged",
+    "severity": "medium",
+    "content": "Sample awareness post: this image claims a scam crackdown and includes arrest numbers. I have not verified its date, location or figures. Find the original article and compare it with a reliable report before sharing. An arrest does not establish guilt, and a photo cannot identify who committed an offence. Avoid naming people shown here. If you receive a suspicious recruitment or payment message, save the evidence and verify it through an independent channel.",
+    "contentLo": "ໂພສຕົວຢ່າງ: ຮູບນີ້ອ້າງເຖິງການປາບປາມການຫຼອກລວງ ແລະ ຈຳນວນຜູ້ຖືກຈັບ. ຍັງບໍ່ໄດ້ກວດສອບວັນທີ ສະຖານທີ່ ຫຼື ຕົວເລກ. ກວດຂ່າວຕົ້ນສະບັບກ່ອນແຊຣ໌. ການຖືກຈັບບໍ່ໄດ້ຢືນຢັນວ່າມີຄວາມຜິດ ແລະ ຢ່າລະບຸຊື່ຄົນໃນຮູບ. ຖ້າໄດ້ຮັບຂໍ້ຄວາມຮັບສະໝັກວຽກ ຫຼື ຂໍໂອນເງິນທີ່ໜ້າສົງໄສ ໃຫ້ເກັບຫຼັກຖານ ແລະ ກວດຜ່ານຊ່ອງທາງອື່ນ.",
+    "note": "Sample: source, date and numbers need verification."
+  },
+  {
+    "key": "fees-satire",
+    "image": "download-1.png",
+    "tag": "DigitalSafety",
+    "state": "clean",
+    "severity": "low",
+    "content": "Sample opinion / satire: apparently transparency needs its own service fee! Joking aside, government offices should explain charges clearly and give receipts. This photo alone cannot prove overcharging or corruption: the service, date and applicable fee schedule still need checking. Ask for an itemised receipt, compare it with the current published schedule, and raise a discrepancy through an official channel. Criticism of public services is not the same as personal abuse.",
+    "contentLo": "ຕົວຢ່າງຄວາມເຫັນແບບເສຍດສີ: ຫຼືວ່າຄວາມໂປ່ງໃສກໍຕ້ອງເສຍຄ່າບໍລິການ! ເວົ້າແທ້ແລ້ວ ຫ້ອງການລັດຄວນອະທິບາຍຄ່າບໍລິການໃຫ້ຊັດ ແລະ ອອກໃບຮັບເງິນ. ຮູບນີ້ຢ່າງດຽວບໍ່ໄດ້ພິສູດວ່າເກັບເງິນເກີນ ຫຼື ມີການສໍ້ລາດ. ຕ້ອງກວດປະເພດບໍລິການ ວັນທີ ແລະ ຕາຕະລາງຄ່າທຳນຽມ. ຂໍໃບຮັບເງິນທີ່ລະບຸລາຍການ ແລະ ແຈ້ງຂໍ້ສົງໄສຜ່ານຊ່ອງທາງທາງການ.",
+    "note": "Sample opinion: political criticism allowed; no claim has been verified."
+  },
+  {
+    "key": "id-privacy",
+    "image": "download-2.png",
+    "tag": "DataPrivacy",
+    "state": "clean",
+    "severity": "low",
+    "content": "Sample privacy reminder: sharing an ID-card screenshot can expose names, faces, dates of birth, document numbers and QR codes. Redact all those details before asking for help online; covering only the main number is not enough. This screenshot does not verify a government announcement or prove that an app is official. Use an independently located official channel to check an e-ID service, and never send an identity document to a stranger in a chat.",
+    "contentLo": "ຕົວຢ່າງຄຳເຕືອນຄວາມສ່ວນຕົວ: ຮູບບັດປະຈຳຕົວອາດເຜີຍຊື່ ໃບໜ້າ ວັນເກີດ ເລກເອກະສານ ແລະ QR. ປິດບັງທຸກລາຍການກ່ອນຂໍຄຳແນະນຳອອນລາຍ; ປິດພຽງເລກບັດບໍ່ພຽງພໍ. ຮູບນີ້ບໍ່ໄດ້ຢືນຢັນປະກາດຂອງລັດ ຫຼື ຢືນຢັນວ່າແອັບເປັນທາງການ. ກວດບໍລິການ e-ID ຜ່ານຊ່ອງທາງທີ່ຫາໄດ້ເອງ ແລະ ຢ່າສົ່ງບັດໃຫ້ຄົນແປກໜ້າ.",
+    "note": "Sample privacy advice; the pictured service is not authenticated."
+  },
+  {
+    "key": "off-topic",
+    "tag": "DigitalSafety",
+    "state": "flagged",
+    "severity": "medium",
+    "content": "Moderation test only — intentionally unrelated caption: my food review is all about noodles, restaurant menus and a cooking recipe. Subscribe to my travel vlog for holiday photos. The attached image has nothing to do with this caption. Adding a safety hashtag should not make this suitable for a community-safety feed.",
+    "contentLo": "ຕົວຢ່າງທົດສອບ — ຂໍ້ຄວາມຈົງໃຈບໍ່ກ່ຽວຂ້ອງ: ຂ້ອຍຮີວິວອາຫານ ຮ້ານອາຫານ ແລະ ສູດອາຫານ. ຕິດຕາມວິດີໂອທ່ຽວຫຼີ້ນຂອງຂ້ອຍ. ຮູບທີ່ແນບບໍ່ກ່ຽວກັບຂໍ້ຄວາມ. ການໃສ່ແຮັດແທັກບໍ່ໄດ້ປ່ຽນຫົວຂໍ້.",
+    "note": "Moderation fixture: deliberately off-topic. Held for review, not approved.",
+    "flags": [
+      "Off-topic content detected — intentionally unrelated test"
+    ]
+  },
+  {
+    "key": "profanity",
+    "tag": "DigitalSafety",
+    "state": "flagged",
+    "severity": "high",
+    "content": "Moderation test only — contains profanity: this fee system is bullshit, and that clerk is a damn idiot. This is an example of an abusive complaint, not a verified accusation. A suitable rewrite would ask for a published fee schedule, an itemised receipt and a clear explanation without insulting staff.",
+    "contentLo": "ຕົວຢ່າງທົດສອບ — ມີຄຳຫຍາບໃນສະບັບອັງກິດ. ນີ້ແມ່ນຕົວຢ່າງຄຳຮ້ອງຮຽນທີ່ໂຈມຕີບຸກຄົນ ບໍ່ແມ່ນຂໍ້ກ່າວຫາທີ່ຢືນຢັນແລ້ວ. ຄວນຂຽນໃໝ່ໂດຍຂໍຕາຕະລາງຄ່າທຳນຽມ ໃບຮັບເງິນທີ່ລະບຸລາຍການ ແລະ ຄຳອະທິບາຍທີ່ຊັດເຈນ ໂດຍບໍ່ດູຖູກພະນັກງານ.",
+    "note": "Moderation fixture: profanity and personal insult. Held for review.",
+    "flags": [
+      "Profanity detected — deliberately abusive test"
+    ]
+  }
+]

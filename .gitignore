@@ -14,3 +14,8 @@ admin/dist/
 *.sqlite-shm
 deployment/*.env
 deployment/backups/
+
+translation/.venv/
+translation/cache/
+translation/__pycache__/
+backend/data/demo-accounts.json

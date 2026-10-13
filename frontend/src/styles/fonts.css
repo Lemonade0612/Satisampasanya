@@ -1,1 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+Lao:wght@400;600&display=swap');
+
+@font-face { font-family: 'BoonHome'; src: url('/fonts/boonhome/boonhome-400.woff') format('woff'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'BoonHome'; src: url('/fonts/boonhome/boonhome-700.woff') format('woff'); font-weight: 600 900; font-style: normal; font-display: swap; }

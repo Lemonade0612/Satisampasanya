@@ -16,6 +16,7 @@ export const AI_SCREENING_CONFIG = {
 //  BILINGUAL TOPIC LABELS
 // ═══════════════════════════════════════════════════════════════════════════════
 export const TOPIC_LABELS: Record<string, { en: string; lo: string }> = {
+  OffTopic: { en: 'OffTopic', lo: 'ນອກຫົວຂໍ້' },
   OnlineScam:    { en: "OnlineScam",    lo: "ການຫຼອກລວງອອນລາຍ" },
   Trafficking:   { en: "Trafficking",   lo: "ການຄ້າມະນຸດ" },
   DigitalSafety: { en: "DigitalSafety", lo: "ຄວາມປອດໄພດິຈິຕອລ" },

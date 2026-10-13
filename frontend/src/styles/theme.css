@@ -2,9 +2,9 @@
 
 :root {
   --font-size: 16px;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-lao: 'Noto Sans Lao', sans-serif;
+  --font-body: 'Inter', 'BoonHome', system-ui, sans-serif;
+  --font-display: 'Space Grotesk', 'BoonHome', system-ui, sans-serif;
+  --font-lao: 'BoonHome', 'Noto Sans Lao', sans-serif;
   --background: #FFFFFF;
   --foreground: #13112B;
   --card: #FFFFFF;

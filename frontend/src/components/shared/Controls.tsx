@@ -35,13 +35,8 @@ export function SocialButtons({ onPress, label }: { onPress: () => void; label: 
   );
 }
 
-export function LangToggle({ lang, onToggle }: { lang: Lang; onToggle: () => void }) {
-  return (
-    <button onClick={onToggle} className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full border border-primary/30 bg-white/70 dark:bg-background/70 text-primary hover:bg-primary/5 active:scale-95 transition-all backdrop-blur-sm">
-      <Globe size={12} />
-      <span className="font-lao text-[11px]">{T[lang].lang_switch}</span>
-    </button>
-  );
+export function LangToggle({lang,onToggle}:{lang:Lang;onToggle:()=>void}){
+ return <button onClick={onToggle} aria-label={lang==='lo'?'ປ່ຽນພາສາ':'Change language'} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-primary/25 bg-background px-4 text-sm font-semibold text-primary shadow-sm"><Globe size={18}/><span className="font-lao">{lang==='lo'?'EN':'ລາວ'}</span></button>;
 }
 
 export function ThemeToggle({ mode, onChange }: { mode: ThemeMode; onChange: (m: ThemeMode) => void }) {
@@ -49,7 +44,7 @@ export function ThemeToggle({ mode, onChange }: { mode: ThemeMode; onChange: (m:
   return (
     <button
       onClick={() => onChange(isDark ? "light" : "dark")}
-      className="p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+      className="min-h-11 min-w-11 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
       title={isDark ? "Switch to light" : "Switch to dark"}
     >
       {isDark ? <Sun size={16} /> : <Moon size={16} />}

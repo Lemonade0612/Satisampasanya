@@ -13,13 +13,13 @@ import { AI_SCREENING_CONFIG } from "./constants";
 const CONTENT_POLICIES = {
   // ── PROFANITY & VULGAR LANGUAGE ──
   profanityEn: [
-    "fuck", "shit", "bitch", "asshole", "damn", "crap", "hell",
+    "fuck", "fucking", "fucked", "shit", "shitty", "bitch", "asshole", "damn", "crap", "hell",
     "bastard", "dick", "pussy", "cock", "whore", "slut", "cunt",
     "motherfucker", "bullshit", "piss", "wanker", "twat",
   ],
   profanityLo: [
-    "ຄວາຍ", "ຫີ", "ຫໍາ", "ແຕດ", "ບັກຊາດໝາ", "ເອີຍ", "ສັດ",
-    "ຄວາຍຊາດ", "ຫີຊາດ", "ໝາຊາດ", "ບ້າ", "ໂງ່", "ຄົນຂີ້ຄ້ານ",
+    "ຫໍາ", "ແຕດ", "ບັກຊາດໝາ",
+    "ຄວາຍຊາດ", "ຫີຊາດ", "ໝາຊາດ", "ເຈົ້າໂງ່", "ຄົນຂີ້ຄ້ານ",
     "ຂີ້ຄ້ານ", "ຂີ້ລາຍ", "ຂີ້ຕົວ", "ຂີ້ກະໂປກ", "ຂີ້ກະໂປກ",
     "ຂີ້ກະໂປກ", "ຂີ້ກະໂປກ", "ຂີ້ກະໂປກ",
   ],
@@ -31,19 +31,18 @@ const CONTENT_POLICIES = {
     "onlyfans", "cam girl", "hookup", "nsfw",
   ],
   sexualLo: [
-    "ເພດ", "ສຳພັນ", "ຮ່ວມເພດ", "ເປືອຍ", "ຮ່ວມຮ່າງ", "xxx",
+    "ຮ່ວມເພດ", "ເປືອຍ", "ຮ່ວມຮ່າງ", "xxx",
     "ຄ້າປະເວນີ", "ໂສເພນີ", "ບ່ອນຄ້າປະເວນີ", "ຄ້າບໍລິການ",
     "ຮູບເປືອຍ", "ວີດີໂອເປືອຍ", "ຄວາມສຳພັນ",
   ],
 
   // ── ANIMAL-RELATED INSULTS ──
   animalInsultsEn: [
-    "pig", "dog", "rat", "snake", "monkey", "donkey",
+    "you pig", "you dog", "you rat", "you monkey", "you donkey",
     "filthy animal", "like a dog", "dirty pig",
   ],
   animalInsultsLo: [
-    "ໝາ", "ຄວາຍ", "ກະຕ່າຍ", "ງູ", "ລີງ", "ລໍ",
-    "ສັດ", "ສັດລ້ຽງ", "ສັດປ່າ", "ຄືສັດ", "ຄືໝາ",
+    "ມຶງຄວາຍ", "ມຶງຄືໝາ", "ບັກຊາດໝາ",
   ],
 
   // ── BIAS / DISCRIMINATION ──
@@ -71,9 +70,9 @@ const CONTENT_POLICIES = {
   ],
   bullyingLo: [
     "ໄປຕາຍ", "ຕາຍໄປ", "ບໍ່ມີຄ່າ", "ບໍ່ມີໃຜມັກ", "ໜ້າກຽດ",
-    "ອ້ວນ", "ຜູ້ແພ້", "ໜ້າສົມເພສ", "ບໍ່ມີສານ", "ໂງ່",
-    "ປິດປາກ", "ໄປໄກ", "ຫາຍໄປ", "ເຍາະເຍີ້ຍ", "ຢີ່ຫີ່",
-    "ອັບອາຍ", "ຂາຍໜ້າ", "ລົມກັນ", "ຂົ່ມເຫັງ", "ຂົ່ມຂີ່",
+    "ເຈົ້າໂງ່", "ມຶງໂງ່",
+    "ປິດປາກ", "ມຶງໄປໄກ", "ມຶງຫາຍໄປ", "ເຍາະເຍີ້ຍ", "ຢີ່ຫີ່",
+    "ອັບອາຍ", "ຂາຍໜ້າ", "ຂົ່ມເຫັງ", "ຂົ່ມຂີ່",
   ],
 
   // ── OFF-TOPIC CONTENT ──
@@ -314,8 +313,8 @@ export const expertQueue = new ExpertQueueManager();
 
 function scanPatterns(content: string, enPatterns: string[], loPatterns: string[]): string[] {
   const contentLower = content.toLowerCase();
-  const enMatches = enPatterns.filter(p => contentLower.includes(p.toLowerCase()));
-  const loMatches = loPatterns.filter(p => contentLower.includes(p.toLowerCase()));
+  const enMatches = enPatterns.filter(p => new RegExp(`(?<![a-z])${p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?![a-z])`, "i").test(contentLower));
+  const loMatches = [...new Set(loPatterns)].filter(p => contentLower.includes(p.toLowerCase()));
   return [...enMatches, ...loMatches];
 }
 
@@ -418,15 +417,11 @@ export function analyzePostContent(post: Post): AIAnalysisResult {
     CONTENT_POLICIES.offTopicEn,
     CONTENT_POLICIES.offTopicLo
   );
-  const hasOnTopicTags = post.tags.some(tag => 
-    ["OnlineScam", "Trafficking", "DigitalSafety", "JobScam", 
-     "CryptoScam", "BorderSafety", "SocialMedia", "PhishingAlert", 
-     "RomanceScam", "DataPrivacy"].includes(tag)
-  );
+  const hasSafetyContext = /scam|fraud|phishing|privacy|password|otp|trafficking|safety|protect|warning|verify|recruiter|passport|ຫຼອກ|ລະຫັດ|ປອດໄພ|ສ່ວນຕົວ|ຄ້າມະນຸດ|ເຕືອນ|ກວດສອບ|government|public service|service fees|fee schedule|receipt|civic|public interest|ລັດຖະບານ|ຄ່າທຳນຽມ|ໃບຮັບເງິນ/i.test(fullContent);
 
-  if (offTopicMatches.length > 0 && !hasOnTopicTags) {
-    severityScore += offTopicMatches.length * 8;
-    flags.push(`📵 Off-topic content detected (${offTopicMatches.length}) — not safety-related`);
+  if (!hasSafetyContext && (!post.repostOf || offTopicMatches.length > 0)) {
+    severityScore += Math.max(1, offTopicMatches.length) * 8;
+    flags.push("📵 Off-topic content detected — explain the connection to community safety or public-interest news");
     policyViolations.push("off_topic");
   }
 

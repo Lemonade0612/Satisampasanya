@@ -88,7 +88,7 @@ and appear in the user feed. A review does not delete the post.
 
 The user app opens in a white theme; users can switch themes during the session.
 The supplied `frontend/public/images/Satisampasanya_Logo_app.png` is used for the splash,
-sign-in, feed, shared brand widget, remaining screen headers, dashboard, browser icon, and native app icon.
+sign-in, feed, shared brand widget, remaining screen headers, dashboard, in-app branding. `assets/app-icon.svg` is the browser and native app icon.
 Unconfigured social sign-in buttons were removed.
 
 ## Live updates in Device Hub
@@ -109,16 +109,16 @@ Posts, comments, reactions, and notifications also synchronize between open
 clients through server-sent events, with a polling fallback.
 
 Native icons, permissions, and Swift changes still require a native rebuild.
-`ios:run` and `ios:live` now automatically regenerate the native icon when the supplied logo is
+`ios:run` and `ios:live` now automatically regenerate the native icon when `assets/app-icon.svg` is
 newer, while preserving direct PNG edits when that file is newer.
-After editing `frontend/public/images/Satisampasanya_Logo_app.png`, run:
+After editing `assets/app-icon.svg`, run:
 
 ```sh
 npm run ios:icon
 npm run ios:live
 ```
 
-The icon command resizes the supplied logo to the opaque PNG required by Xcode. If you edit the PNG
+The icon command renders the SVG icon to the opaque PNG required by Xcode. If you edit the PNG
 directly in Xcode's AppIcon asset, skip `ios:icon` so your PNG is preserved.
 
 For a bundled app that opens without Vite:
@@ -180,7 +180,7 @@ configured. The retained keyword screening engine now runs on every new post and
 - `frontend/src/types/`: shared types.
 - `backend/`: HTTP routes, authentication, SQLite schema, sample data, and tests.
 - `ios/`: native app source; generated builds are ignored.
-- `frontend/public/images/Satisampasanya_Logo_app.png`: shared brand and native icon source.
+- `frontend/public/images/Satisampasanya_Logo_app.png`: shared in-app brand logo.
 
 Exclude `node_modules/`, `dist/`, and native build output when sharing source.
 

@@ -5,7 +5,7 @@ import {spawn} from 'node:child_process';
 try{process.loadEnvFile('.env.local');}catch(error){if(error.code!=='ENOENT')throw error;}
 const mode=process.argv[2];
 if(mode==='backend'){
- const {createApp}=await import('../backend/server.mjs');const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),seed:process.env.SEED_DEMO!=='false',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+ const {createApp}=await import('../backend/server.mjs');const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),seed:false,origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
  app.server.on('error',error=>{console.error(error.code==='EADDRINUSE'?'Backend is already running.':error.message);app.db.close();process.exitCode=1;});
  app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log('Sati backend is ready. Keep this window open; closing it stops the service.'));
  for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));

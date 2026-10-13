@@ -8,6 +8,13 @@ services:
       ADMIN_EMAILS: ${ADMIN_EMAILS:?Set the existing administrator email}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set both HTTPS website origins}
       SEED_DEMO: "false"
+      AI_PROVIDER: ${AI_PROVIDER:-openrouter}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4.1-mini}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1-mini}
+      LOCAL_HELPLINES: ${LOCAL_HELPLINES:-[]}
+      NLLB_URL: http://translation:3002
       MONGODB_URI: ${MONGODB_URI:-}
       MONGODB_DATABASE: ${MONGODB_DATABASE:-sati}
     volumes:
@@ -33,5 +40,13 @@ services:
     depends_on:
       - backend
     restart: unless-stopped
+  translation:
+    build:
+      context: ..
+      dockerfile: translation/Dockerfile
+    volumes:
+      - sati-models:/models
+    restart: unless-stopped
 volumes:
   sati-data:
+  sati-models:

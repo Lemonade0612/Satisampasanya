@@ -1,0 +1,220 @@
+[
+  {
+    "id": 1,
+    "name": "ບຸນມີ",
+    "handle": "@sati_a1",
+    "lang": "lo",
+    "tags": [
+      "ທຶນການສຶກສາ",
+      "ການຫຼອກລວງ"
+    ],
+    "text": "ທຶນຮຽນຟຣີ 100% ຕ່າງປະເທດ! ມີເງິນເດືອນໃຫ້ ບໍ່ຕ້ອງເສັງ ບໍ່ຕ້ອງມີພາສາ. ຮັບສະໝັກດ່ວນ ອາຍຸ 18–35 ປີ. WhatsApp: +856 20 0000 0000 ຫຼື https://short.invalid/scholarships",
+    "image": "image-11.png",
+    "_expect": {
+      "verdict": "needs_expert",
+      "labels": [
+        "scam_risk"
+      ]
+    },
+    "link": "https://short.invalid/scholarships"
+  },
+  {
+    "id": 2,
+    "name": "ວິໄລ",
+    "handle": "@sati_b2",
+    "lang": "lo",
+    "tags": [
+      "ວຽກຕ່າງປະເທດ",
+      "ການຄ້າມະນຸດ"
+    ],
+    "text": "ຮັບສະໝັກພະນັກງານພິມຂໍ້ມູນ ເຮັດວຽກຢູ່ຊາຍແດນ ເງິນເດືອນ 25,000 ບາດ ມີທີ່ພັກ ແລະ ອາຫານຟຣີ ບໍ່ຕ້ອງມີປະສົບການ. ພວກເຮົາຈັດການເດີນທາງໃຫ້ທັງໝົດ ພຽງແຕ່ສົ່ງໜັງສືຜ່ານແດນມາໃຫ້ພວກເຮົາ.",
+    "image": "image-12.png",
+    "_expect": {
+      "verdict": "needs_expert",
+      "labels": [
+        "trafficking_recruitment"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "ດາວ",
+    "handle": "@sati_c3",
+    "lang": "lo",
+    "tags": [
+      "ຂ່າວປອມ",
+      "ຄວາມປອດໄພ"
+    ],
+    "text": "ດ່ວນ!!! ແຊຣ໌ດ່ວນ!!! ມີເດັກຍິງຖືກລັກພາຕົວຫຼາຍພັນຄົນໃນອາທິດນີ້ ບໍ່ມີໃຜບອກຄວາມຈິງ!!! ຖ້າບໍ່ແຊຣ໌ໃຫ້ 10 ກຸ່ມ ຄອບຄົວທ່ານຈະເປັນຕໍ່ໄປ!!!",
+    "_expect": {
+      "verdict": "needs_expert",
+      "labels": [
+        "fear_bait",
+        "misinformation"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "ນິດາ",
+    "handle": "@sati_d4",
+    "lang": "lo",
+    "tags": [
+      "OTP",
+      "ການຫຼອກລວງ"
+    ],
+    "text": "ມີຄົນສົ່ງຂໍ້ຄວາມມາວ່າ «ບັນຊີຂອງທ່ານຖືກລະງັບ ກົດລິ້ງແລ້ວໃສ່ລະຫັດ OTP ພາຍໃນ 10 ນາທີ». ແມ່ນຫຼອກລວງບໍ?",
+    "image": "image_2_apk.png",
+    "_expect": {
+      "verdict": "approved",
+      "labels": []
+    }
+  },
+  {
+    "id": 5,
+    "name": "Mina Park",
+    "handle": "@sati_e5",
+    "lang": "en",
+    "tags": [
+      "RomanceScam",
+      "Investment"
+    ],
+    "text": "Met someone lovely online last month. She says her uncle's crypto platform pays 40% weekly and I only need to deposit $500 to start. She's never asked me for anything else. Should I?",
+    "_expect": {
+      "verdict": "approved",
+      "labels": []
+    }
+  },
+  {
+    "id": 6,
+    "name": "ສົມໃຈ",
+    "handle": "@sati_f6",
+    "lang": "lo",
+    "tags": [
+      "OTP",
+      "ຄວາມປອດໄພດິຈິຕອລ"
+    ],
+    "text": "ລະຫັດ OTP ແມ່ນຄວາມລັບ. ທະນາຄານ ແລະ ເຈົ້າໜ້າທີ່ຈະບໍ່ຂໍລະຫັດ OTP ຈາກທ່ານ. ຢ່າແຊຣ໌ໃຫ້ໃຜ ເຖິງຈະອ້າງວ່າເປັນໃຜກໍຕາມ.",
+    "image": "download-2.png",
+    "_expect": {
+      "verdict": "approved",
+      "labels": [
+        "safe_tip"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "name": "ຄຳ ວົງສະຫວັນ",
+    "handle": "@sati_g7",
+    "lang": "lo",
+    "tags": [
+      "ຂ່າວ",
+      "ການຫຼອກລວງອອນລາຍ"
+    ],
+    "text": "ຂ່າວ: ເຈົ້າໜ້າທີ່ລາຍງານການກວາດລ້າງເຄືອຂ່າຍຫຼອກລວງອອນລາຍ ແລະ ຈັບກຸມຜູ້ຕ້ອງສົງໄສຫຼາຍຮ້ອຍຄົນ. ກວດແຫຼ່ງຂ່າວຕົ້ນສະບັບກ່ອນແຊຣ໌. ການຖືກຈັບບໍ່ໄດ້ໝາຍຄວາມວ່າມີຄວາມຜິດ ແລະ ຢ່າລະບຸຕົວຄົນໃນຮູບ.",
+    "image": "download.png",
+    "_expect": {
+      "verdict": "approved",
+      "labels": [
+        "news"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "name": "Daniel Kim",
+    "handle": "@sati_h8",
+    "lang": "en",
+    "tags": [
+      "ScamAwareness",
+      "Satire"
+    ],
+    "text": "BREAKING: Local man wins a 'free iPhone' after sending his OTP to a stranger. Experts confirm he now owns a very exclusive empty bank account. 😂 Don't be him.",
+    "_expect": {
+      "verdict": "approved",
+      "labels": [
+        "satire",
+        "safe_tip"
+      ]
+    },
+    "image": "image-13.png"
+  },
+  {
+    "id": 9,
+    "name": "Alex R.",
+    "handle": "@sati_i9",
+    "lang": "en",
+    "tags": [],
+    "text": "You people are all f***ing idiots. This app is s***. Total waste of time!!!",
+    "_expect": {
+      "verdict": "caution",
+      "labels": [
+        "profanity_only",
+        "off_topic"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "name": "ແສງ",
+    "handle": "@sati_j10",
+    "lang": "lo",
+    "tags": [],
+    "text": "ແອັບນີ້ ***** ແທ້ໆ ຄົນໃນນີ້ໝົດ ***** ບໍ່ມີຫຍັງດີ!!! *****",
+    "_expect": {
+      "verdict": "caution",
+      "labels": [
+        "profanity_only"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "name": "Sam T.",
+    "handle": "@sati_k11",
+    "lang": "en",
+    "tags": [],
+    "text": "Oh great, another brilliant decision from the people in charge. I'm sure everything will be fixed by tomorrow 🙄👏",
+    "image": "download-1.png",
+    "_expect": {
+      "verdict": "caution",
+      "labels": [
+        "political_sarcasm",
+        "off_topic"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "name": "ມະນີ",
+    "handle": "@sati_l12",
+    "lang": "lo",
+    "tags": [],
+    "text": "ມື້ນີ້ເຫັນຮ້ານກາເຟໃໝ່ຢູ່ແຄມຂອງ ບັນຍາກາດດີຫຼາຍ ແນະນຳໃຫ້ມາລອງ ☕",
+    "_expect": {
+      "verdict": "caution",
+      "labels": [
+        "off_topic"
+      ]
+    },
+    "image": "maxresdefault (1).jpg"
+  },
+  {
+    "id": 13,
+    "name": "ກອງ",
+    "handle": "@sati_m13",
+    "lang": "lo",
+    "tags": [
+      "ການຫຼອກລວງ"
+    ],
+    "text": "ຄົນທີ່ຖືກຫຼອກນີ້ໂງ່ເອງ ຫົວຂວັນແດ່ 555",
+    "_expect": {
+      "verdict": "caution",
+      "labels": [
+        "victim_blaming",
+        "harassment"
+      ]
+    }
+  }
+]

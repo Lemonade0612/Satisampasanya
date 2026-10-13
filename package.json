@@ -13,7 +13,7 @@
     "ios:run": "node scripts/run-ios.mjs",
     "dev:web": "vite",
     "backend": "node --env-file-if-exists=.env.local backend/server.mjs",
-    "test": "node --test backend/server.test.mjs",
+    "test": "node --test backend/*.test.mjs",
     "ios:live": "node scripts/run-ios.mjs --live",
     "typecheck": "tsc --noEmit --noUnusedLocals false --noUnusedParameters false",
     "ios:icon": "node scripts/sync-icon.mjs",
@@ -25,7 +25,9 @@
     "start:frontend": "node scripts/start-service.mjs frontend",
     "start:admin": "node scripts/start-service.mjs admin",
     "start:backend": "node scripts/start-service.mjs backend",
-    "mongo:backup": "node scripts/mongo-backup.mjs backup"
+    "mongo:backup": "node scripts/mongo-backup.mjs backup",
+    "seed:community": "node scripts/seed-community.mjs",
+    "check:acceptance": "node scripts/evaluate-community.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.5.3",

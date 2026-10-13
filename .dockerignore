@@ -9,3 +9,9 @@ backend/data
 ios
 Launchers
 .DS_Store
+
+translation/.venv
+translation/cache
+translation/__pycache__
+
+deployment/*.env

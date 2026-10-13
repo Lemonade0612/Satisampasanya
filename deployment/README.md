@@ -37,3 +37,18 @@ This saves snapshots in `sati_backup_records` and `sati_backup_manifests`.
 The backup includes password hashes, so Atlas access should be restricted.
 Sessions and reset tokens are excluded. Restore only to a new database file;
 existing databases are never overwritten by the restore command.
+
+## One-click deployment on this Mac
+
+Double-click `Launchers/Deploy Locally.command`. This starts Docker Desktop,
+builds all services, copies the current SQLite database into an empty deployment
+volume and opens admin at http://127.0.0.1:8081. The user app is at
+http://127.0.0.1:8080. Later launches preserve the deployment database rather than
+overwriting it. The generated `local.env` is private and ignored by Git. When local models are
+already cached, they are copied once into Docker’s model volume to avoid another model download
+and improve model loading performance.
+This is deployment on your Mac, not a public internet website.
+
+The translation container runs NLLB-200 and a separate text-screening model.
+Download time and memory usage must be allowed for the first startup. NLLB's
+noncommercial/research license must be considered before a commercial rollout.

@@ -29,6 +29,6 @@ export const adminApi = {
   createUser:(data:unknown)=>request<ManagedUser>('/admin/users','POST',data),
   updateUser:(id:string,data:unknown)=>request<ManagedUser>(`/admin/users/${id}`,'PATCH',data),
   dashboard: () => request<AdminData>('/admin/dashboard'),
-  review: (id:string,state:'confirmed'|'false',note:string) => request(`/admin/posts/${id}/review`,'PATCH',{state,note}),
+  review: (id:string,state:'clean'|'confirmed'|'false'|'rejected',note:string) => request(`/admin/posts/${id}/review`,'PATCH',{state,note}),
 };
 export const needsReview = (post:AdminPost) => !post.review && ['flagged','sla'].includes(post.state);

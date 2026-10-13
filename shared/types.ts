@@ -1,8 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 //  TYPES
 // ═══════════════════════════════════════════════════════════════════════════════
-export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla";
-export type ActiveView = "feed" | "explore" | "profile";
+export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla" | "rejected";
+export type ActiveView = "feed" | "explore" | "profile" | "assistant";
 export type ProfileTab = "posts" | "topics" | "points";
 export type AuthView = "welcome" | "login" | "register" | "forgot";
 export type Lang = "en" | "lo";
@@ -26,8 +26,16 @@ export interface ScreeningLog {
   severity?: "low" | "medium" | "high" | "severe";
 }
 
+export interface CheckResult {
+ verdict:'approved'|'caution'|'needs_expert';risk:'low'|'medium'|'high';labels:string[];on_topic:boolean;
+ reasons:{text:string;evidence:string}[];suggested_edit:string;summary:string;language:Lang;checkedAt?:number;
+}
 export interface Post {
+ communityRanking?:{eligible:boolean;score:number;rank:number;parts:{review:number;safety:number;engagement:number}};
+ review?:{state:string;note:string;reviewedAt:number;reviewerName:string};
+ check?:CheckResult;seed?:boolean;frozen?:boolean;
   screening?: {mode:'rules'|'ai'|'rules-fallback';severity:string;flags:string[];note:string;noteLo:string;checkedAt:number};
+  translationText?:string;
   translationStatus?: 'manual'|'generated'|'unavailable'|'failed';
   createdAt?: number;
   contentLanguage?: Lang;
@@ -72,6 +80,7 @@ export interface CurrentUser {
   handle?: string;
   bio?: string;
   followed?: string[];
+  following?: string[];
   avatar?: string | null;
   banner?: string | null;
   name: string;
@@ -95,6 +104,7 @@ export interface AIAnalysisResult {
 }
 
 export interface PostDraft {
+  contentLanguage?:Lang;
   content: string;
   contentLo?: string;
   tags: string[];
@@ -112,7 +122,8 @@ export interface Comment {
 export interface Notification {
   id: string;
   actor_name: string;
-  kind: 'comment'|'like'|'warned'|'repost';
+  review_state?: PostState;
+  kind: 'comment'|'like'|'warned'|'repost'|'review'|'news'|'safety'|'review_requested'|'review_overdue';
   post_id: string;
   created: number;
   read: number;

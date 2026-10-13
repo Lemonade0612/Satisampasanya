@@ -1,3 +1,4 @@
+import {existsSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 import {networkInterfaces} from 'node:os';
 try {process.loadEnvFile('.env.local');} catch(error) {if(error.code!=='ENOENT')throw error;}
@@ -11,6 +12,11 @@ const launch=(args,env)=>{
 };
 const running=async url=>{try{return(await fetch(url,{signal:AbortSignal.timeout(1000)})).ok;}catch{return false;}};
 const args=process.argv.slice(2),admin=args.includes('--admin');
+if(process.env.NLLB_URL&&existsSync('translation/.venv/bin/python')&&!(await running(process.env.NLLB_URL+'/health'))){
+ const ai=spawn(process.execPath,['scripts/start-ai.mjs'],{stdio:'inherit',env:process.env});children.push(ai);
+ ai.on('error',error=>console.error('Local AI could not start: '+error.message));
+ ai.on('exit',code=>{if(code)console.error('Local AI stopped; posts retain labelled keyword screening.');});
+}
 const backendURL=`http://127.0.0.1:${process.env.API_PORT||3001}/api/health`;
 if(await running(backendURL))console.log('Reusing the running Sati backend.');
 else launch(['backend/server.mjs'],{ALLOWED_ORIGINS:[process.env.ALLOWED_ORIGINS,...network].filter(Boolean).join(',')});

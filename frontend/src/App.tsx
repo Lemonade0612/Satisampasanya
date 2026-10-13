@@ -7,6 +7,7 @@ import { AuthScreen } from "./screens/AuthScreen";
 import { FeedScreen } from "./screens/FeedScreen";
 import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
+import { AssistantScreen } from "./screens/AssistantScreen";
 import { AlertsScreen } from "./screens/AlertsScreen";
 import { CommentsModal } from "./components/modals/CommentsModal";
 import { ComposeModal } from "./components/modals/ComposeModal";
@@ -69,7 +70,7 @@ export default function App() {
     setUser(null); setView('feed'); setCommentPostId(null); setShowCompose(false); setRepostPost(null);
   };
   const notifyPosted = () => { setPostToast(true); setTimeout(() => setPostToast(false), 3000); };
-  const handleAddPost = async (post: PostDraft) => { await api.createPost(post); await refresh(); notifyPosted(); };
+  const handleAddPost = async (post: PostDraft,onProgress?:(stage:import('./components/safety/CheckProgress').CheckStage,done?:boolean)=>void) => { await api.createPost(post,onProgress); await refresh(); notifyPosted(); };
   const handleAddComment = async (postId: string, text: string) => { await api.comment(postId,text); await refresh(); };
   const handleRepost = async (post: Post, text: string) => { await api.repost(post.id,text,lang); await refresh(); notifyPosted(); };
   const react = async (postId: string, kind: 'like'|'warned') => {
@@ -124,6 +125,9 @@ export default function App() {
             onWarnedMe={handleWarnedMe}
             onCompose={() => setShowCompose(true)}
             followedTopics={user.followed || []}
+            following={user.following || []}
+            currentUserId={user.id}
+            onFollow={id=>{const current=user.following || [];void handleProfile({following:current.includes(id)?current.filter(value=>value!==id):[...current,id]}).catch(e=>setActionError(e.message));}}
             onOpenAlerts={handleOpenAlerts}
             alertCount={alertCount}
             onRepostClick={setRepostPost}
@@ -132,12 +136,7 @@ export default function App() {
             onLangToggle={toggleLang}
             onImageExpand={(url) => setExpandedImage(url)}
             onTopicClick={(topic) => {
-              const tabMap: Record<string, number> = {
-                "OnlineScam": 2, "Trafficking": 3, "DigitalSafety": 4,
-                "JobScam": 2, "CryptoScam": 2, "BorderSafety": 3,
-                "SocialMedia": 4, "PhishingAlert": 2, "RomanceScam": 2, "DataPrivacy": 4
-              };
-              if (!Object.prototype.hasOwnProperty.call(tabMap,topic)) {setCustomTopic(topic);setFeedTab(0);} else {setCustomTopic(null);setFeedTab(tabMap[topic]);}
+              setCustomTopic(topic); setFeedTab(0);
             }}
           />
         )}
@@ -147,17 +146,18 @@ export default function App() {
             posts={posts} 
             onOpenPost={setCommentPostId} 
             onTopicClick={(topic) => {
-              setFeedTab(topic === "Trafficking" || topic === "BorderSafety" ? 3 : topic === "DigitalSafety" || topic === "SocialMedia" || topic === "DataPrivacy" ? 4 : 2);
+              setCustomTopic(topic); setFeedTab(0);
               setView("feed");
             }}
           />
         )}
+        {view === "assistant" && !showAlerts && <AssistantScreen lang={lang} />}
         {view === "profile" && !showAlerts && (
           <ProfileScreen lang={lang} user={user} posts={posts} onLogout={handleLogout} onUpdate={handleProfile} />
         )}
         {showAlerts && (
           <div className="absolute inset-0 z-40">
-            <AlertsScreen lang={lang} alerts={alerts} onMarkRead={markAlerts} onMarkAllRead={() => markAlerts()} onClose={() => setShowAlerts(false)} />
+            <AlertsScreen lang={lang} alerts={alerts} onMarkRead={markAlerts} onMarkAllRead={() => markAlerts()} onClose={() => setShowAlerts(false)} onOpenPost={id=>{setShowAlerts(false);setCommentPostId(id);}} />
           </div>
         )}
       </div>
@@ -196,7 +196,7 @@ export default function App() {
           {lang === 'lo' ? 'ໂພສແລ້ວ!' : 'Posted!'}
         </div>
       )}
-      <BottomNav active={view} onChange={(v) => { setView(v); setShowAlerts(false); }} lang={lang} alertCount={alertCount} onOpenAlerts={handleOpenAlerts} onCompose={() => setShowCompose(true)} />
+      <BottomNav active={view} onChange={(v) => { setView(v); setShowAlerts(false); }} lang={lang} onCompose={() => setShowCompose(true)} />
     </div>
   );
 }

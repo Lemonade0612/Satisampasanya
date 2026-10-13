@@ -1,6 +1,11 @@
+import {notifyReviewers} from './review-queue.mjs';
+import {assistantUsage,assistantReply} from './assistant.mjs';
+import {translationEnabled,translateText} from './translation.mjs';
 import {accessFor,manageUser} from './access.mjs';
 import { adminSnapshot, reviewPost } from './admin.mjs';
-import { enrichPost, aiAnalyze, aiEnabled } from './intelligence.mjs';
+import {checkPost} from './safety/post-check.mjs';
+import {modelConfigured} from './safety/model.mjs';
+import {hostedTranslate} from './safety/translate.mjs';
 import { createServer } from 'node:http';
 import { randomUUID, randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
@@ -31,7 +36,7 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = true, origins = [], adminEmails = [] } = {}) {
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], adminEmails = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {} } = {}) {
   const db = openStore(database, seed), clients = new Set(), rate = new Map();
   const allowed = new Set([
   // User frontend
@@ -54,7 +59,11 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   ...origins,
 ]);
   const broadcast = () => {for(const client of clients)client.write('event: change\ndata: {}\n\n');};
-  const send = (res, status, value) => { res.writeHead(status, { 'Content-Type':'application/json', 'Cache-Control':'no-store' }); res.end(JSON.stringify(value)); };
+  const send = (res, status, value) => { if(res.getHeader('Content-Type')==='application/x-ndjson'){res.end(JSON.stringify({type:'result',status,value})+'\n');return;} res.writeHead(status, { 'Content-Type':'application/json', 'Cache-Control':'no-store' }); res.end(JSON.stringify(value)); };
+  const sweep=()=>{if(notifyReviewers(db,adminEmails))broadcast();};
+  sweep();
+  const reviewTimer=setInterval(sweep,60000);reviewTimer.unref();
+  const interactionChecks=new Map();
   const server = createServer(async (req, res) => {
     try {
       if (req.headers.origin && !allowed.has(req.headers.origin)) fail('Origin is not allowed.', 403);
@@ -89,7 +98,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if (req.method === 'PATCH' && review) {
           if(!['reviewer','admin'].includes(access.role))fail('Review permission is required.',403);
           const data = await body(req);
-          if (!['confirmed','false'].includes(data.state)) fail('Choose confirmed scam or false alarm.');
+          if (!['clean','confirmed','false','rejected'].includes(data.state)) fail('Choose approved post, confirmed scam, false alarm or reject.');
           const note = text(data.note,1000,true);
           const post = reviewPost(db,review[1],data.state,note,user);
           if (!post) fail('Post not found.',404);
@@ -97,7 +106,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         }
         fail('Route not found.',404);
       }
-      if (req.method === 'GET' && path === '/api/features') return send(res,200,{automaticTranslation:aiEnabled(),screening:aiEnabled()?'ai':'rules'});
+      if (req.method === 'GET' && path === '/api/features') return send(res,200,{automaticTranslation:translationEnabled()||modelConfigured(),translationProvider:translationEnabled()?'NLLB-200':modelConfigured()?'OpenAI':'none',screening:modelConfigured()?'ai':'unavailable',assistant:modelConfigured()});
       if (req.method === 'GET' && path === '/api/health') return send(res, 200, { ok:true });
       if (req.method === 'GET' && path === '/api/events') {
         res.writeHead(200, { 'Content-Type':'text/event-stream', 'Cache-Control':'no-cache', Connection:'keep-alive' });
@@ -105,7 +114,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const interval = setInterval(() => res.write(': keepalive\n\n'), 25000);
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
-      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare('SELECT * FROM posts ORDER BY created DESC LIMIT 200').all().map(p => postView(db,p,user?.id)));
+      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().map(p => postView(db,p,user?.id)));
       if (req.method === 'POST' && ['/api/auth/register','/api/auth/login'].includes(path)) {
         const data = await body(req), email = text(data.email,254,true).toLowerCase();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail('Enter a valid email address.');
@@ -137,17 +146,23 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         try { if (!db.prepare('DELETE FROM resets WHERE token=?').run(digest(token)).changes) fail('Reset link was already used.'); db.prepare('UPDATE users SET password=?,salt=? WHERE id=?').run(hash,salt,row.user_id); db.prepare('DELETE FROM sessions WHERE user_id=?').run(row.user_id); db.exec('COMMIT'); } catch(e) { db.exec('ROLLBACK'); throw e; }
         return send(res,200,{ok:true});
       }
-      const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate))?$/.exec(path);
+      const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate|share))?$/.exec(path);
       if (req.method === 'GET' && match?.[2] === 'comments') {
         if (!db.prepare('SELECT id FROM posts WHERE id=?').get(match[1])) fail('Post not found.',404);
         return send(res,200,db.prepare('SELECT comments.*,users.name FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
       }
       if (!user) fail('Please sign in.',401);
+      if (req.method === 'GET' && path === '/api/assistant/usage') return send(res,200,assistantUsage(db,user.id));
+      if (req.method === 'POST' && path === '/api/assistant') {
+        const data=await body(req);
+        if(!['text','post'].includes(data.kind)||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
+        return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto'},assistantServices));
+      }
       if (req.method === 'POST' && path === '/api/translate') {
         const data=await body(req),value=text(data.text,2000,true);
         if(!['en','lo'].includes(data.target))fail('Choose English or Lao.');
-        const result=await aiAnalyze(data.target==='lo'?value:'',data.target==='en'?value:'');
-        return send(res,200,{text:data.target==='lo'?result.lao:result.english});
+        if(translationEnabled())return send(res,200,{text:await translateText(value,data.target==='lo'?'en':'lo',data.target)});
+        return send(res,200,{text:await hostedTranslation(value,data.target)});
       }
       if (req.method === 'GET' && path === '/api/alerts') return send(res,200,db.prepare('SELECT * FROM notifications WHERE user_id=? ORDER BY created DESC LIMIT 100').all(user.id));
       if (req.method === 'POST' && path === '/api/alerts/read') {
@@ -163,6 +178,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const name = text(data.name ?? user.name,80,true);
         if (data.bio !== undefined) profile.bio = text(data.bio,500);
         if (data.followed !== undefined) { if (!Array.isArray(data.followed) || data.followed.length>10 || data.followed.some(t=>!validTag(t))) fail('Invalid topics.'); profile.followed=cleanTags(data.followed); }
+        if(data.following!==undefined){if(!Array.isArray(data.following)||data.following.length>200||data.following.some(id=>typeof id!=='string'||id===user.id||!db.prepare('SELECT id FROM users WHERE id=?').get(id)))fail('Choose valid community accounts to follow.');profile.following=[...new Set(data.following)];}
         for (const k of ['avatar','banner']) if (data[k] !== undefined) profile[k]=image(data[k]) || null;
         db.prepare('UPDATE users SET name=?,profile=? WHERE id=?').run(name,JSON.stringify(profile),user.id); broadcast();
         return send(res,200,userView(db.prepare('SELECT * FROM users WHERE id=?').get(user.id)));
@@ -170,29 +186,45 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'POST' && path === '/api/posts') {
         const data = await body(req), content = text(data.content,2000), contentLo = text(data.contentLo,2000);
         if (!content && !contentLo) fail('Write your post in English or Lao.');
-        if (!Array.isArray(data.tags) || !data.tags.length || data.tags.length>10 || data.tags.some(t=>!validTag(t))) fail('Use 1–10 hashtags: letters, Lao characters, numbers or underscores, up to 40 characters each.');
+        if (!Array.isArray(data.tags) || data.tags.length>10 || data.tags.some(t=>!validTag(t))) fail('Use up to 10 hashtags: letters, Lao characters, numbers or underscores, up to 40 characters each.');
         const source = link(data.link); if (data.isNews && !source) fail('News posts need a source URL.');
         const since = Date.now()-86400000;
-        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 2) fail('Limit reached: 2 posts per 24 hours.',429);
-        const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
-        await enrichPost(post);
-        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=2)fail('Limit reached: 2 posts per 24 hours.',429);
-        db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now()); broadcast();
+        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 10) fail('Limit reached: 10 posts per 24 hours.',429);
+        const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
+        const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
+        await check(post,{onProgress});
+        if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];
+        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=10)fail('Limit reached: 10 posts per 24 hours.',429);
+        db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now());
+        if(post.state==='flagged')db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),user.id,'Safety review','safety',post.id,Date.now());
+        if(post.isNews)for(const recipient of db.prepare('SELECT id FROM users WHERE id<>?').all(user.id))db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),recipient.id,user.name,'news',post.id,Date.now());
+        sweep();broadcast();
         return send(res,201,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(post.id),user.id));
       }
       if (req.method === 'POST' && match) {
         const row = db.prepare('SELECT * FROM posts WHERE id=?').get(match[1]); if (!row) fail('Post not found.',404);
+        if(match[2]!=='translate'){
+          const current=JSON.parse(row.data);
+          if(!current.check&&!current.review){
+            let pending=interactionChecks.get(row.id);
+            if(!pending){pending=(async()=>{await check(current);db.prepare('UPDATE posts SET data=? WHERE id=?').run(JSON.stringify(current),row.id);sweep();broadcast();})();interactionChecks.set(row.id,pending);}
+            try{await pending;}finally{interactionChecks.delete(row.id);}
+            row.data=db.prepare('SELECT data FROM posts WHERE id=?').get(row.id).data;
+          }
+        }
+        if(JSON.parse(row.data).frozen&&match[2]!=='translate')fail('This post is under expert review. Sharing and reactions are paused.',409);
         const data = await body(req);
         const notify=(kind)=>{if(row.user_id && row.user_id!==user.id)db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),row.user_id,user.name,kind,row.id,Date.now());};
         if (match[2] === 'translate') {
           const post=JSON.parse(row.data);
           if(post.contentLanguage==='lo' || !post.contentLo) {
-            const result=await aiAnalyze(post.contentLanguage==='lo'?'':post.content,post.contentLo||'');
-            if(post.contentLanguage==='lo'){post.content=result.english;post.contentLanguage='en';}else post.contentLo=result.lao;
+            if(translationEnabled()){if(post.contentLanguage==='lo'){post.translationText=await translateText(post.contentLo||post.content,'lo','en');}else post.contentLo=await translateText(post.content,'en','lo');post.translationProvider='NLLB-200';}
+            else{if(post.contentLanguage==='lo'){post.translationText=await hostedTranslation(post.contentLo||post.content,'en');}else post.contentLo=await hostedTranslation(post.content,'lo');}
             post.translationStatus='generated';db.prepare('UPDATE posts SET data=? WHERE id=?').run(JSON.stringify(post),row.id);
           }
           broadcast();return send(res,200,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(row.id),user.id));
         }
+        if (match[2] === 'share') return send(res,200,postView(db,row,user.id));
         if (match[2] === 'comments') {
           const value = text(data.text,1000,true);
           if (db.prepare('SELECT COUNT(*) n FROM comments WHERE user_id=? AND created>?').get(user.id,Date.now()-86400000).n>=5) fail('Limit reached: 5 comments per 24 hours.',429);
@@ -206,18 +238,18 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NOT NULL").get(user.id,Date.now()-86400000).n>=20) fail('Repost limit reached.',429);
           const post={id:randomUUID(),content:value||original.content,contentLo:value?undefined:original.contentLo,contentLanguage:value?(data.lang==='lo'?'lo':'en'):original.contentLanguage,tags:original.tags,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,repostOf:row.id,repostText:value,timestamp:'Just now'};
           if (value && data.lang==='lo') post.contentLo=value;
-          await enrichPost(post);
+          await check(post);
           db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now()); notify('repost');
         } else fail('Route not found.',404);
         broadcast(); return send(res,200,postView(db,row,user.id));
       }
       fail('Route not found.',404);
-    } catch(error) { if (!res.headersSent) send(res,error.status||500,{error:error.status?error.message:'Backend error. Please try again.'}); else res.end(); if (!error.status) console.error(error); }
+    } catch(error) { if (!res.headersSent) send(res,error.status||500,{error:error.status?error.message:'Backend error. Please try again.'}); else {if(res.getHeader('Content-Type')==='application/x-ndjson')res.write(JSON.stringify({type:'error',status:error.status||500,message:error.status?error.message:'Unable to finish checking. Please retry.'})+'\n');res.end();} if (!error.status) console.error(error); }
   });
-  return {server,db,close:async()=>{for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
+  return {server,db,close:async()=>{clearInterval(reviewTimer);for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:process.env.SEED_DEMO!=='false',adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
   app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log(`Sati backend: http://${process.env.API_HOST||'127.0.0.1'}:${process.env.API_PORT||3001}`));
   for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));
 }

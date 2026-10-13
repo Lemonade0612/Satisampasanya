@@ -13,3 +13,10 @@ input, textarea { scroll-margin-block: 80px; }
 @media (max-width: 380px) {
   .phone-modal header { padding-inline: 8px; }
 }
+
+.feed-tabs { scroll-snap-type: x proximity;  }
+.feed-tabs button { scroll-snap-align: start; }
+.font-lao { line-height: 1.7; }
+
+.feed-tabs button { font-size: 15px; }
+@media (max-width: 360px) { .feed-tabs button { font-size: 13px; } }

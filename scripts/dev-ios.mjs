@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
 try { process.loadEnvFile('.env.local'); } catch (error) { if (error.code !== 'ENOENT') throw error; }
@@ -19,24 +20,20 @@ const available = async (url) => {
 try {
   if (process.platform !== 'darwin') throw new Error('The iPhone simulator requires macOS and Xcode.');
   const backend = `http://127.0.0.1:${process.env.API_PORT || 3001}/api/health`;
-  const frontend = 'http://127.0.0.1:5173';
-  const ready = async () => (await available(backend)) && (await available(frontend));
-  if (await ready()) {
-    console.log('Using the development servers already running.');
-  } else {
-    if ((await available(backend)) || (await available(frontend))) throw new Error('Only one development server is running. Stop the previous app/backend session, then press F5 again.');
-    const dev = launch('scripts/dev.mjs');
+  if (!(await available(backend))) {
+    const api = launch('scripts/start-service.mjs', ['backend']);
     const deadline = Date.now() + 30000;
-    while (!(await ready())) {
-      if (stopping || dev.exitCode !== null || dev.signalCode) throw new Error('Development servers stopped before they were ready.');
-      if (Date.now() > deadline) throw new Error('Development servers did not become ready within 30 seconds.');
+    while (!(await available(backend))) {
+      if (stopping || api.exitCode !== null || api.signalCode) throw new Error('Backend stopped before it was ready.');
+      if (Date.now() > deadline) throw new Error('Backend did not become ready within 30 seconds.');
       await delay(300);
     }
   }
+  if (process.env.NLLB_URL && existsSync('translation/.venv/bin/python') && !(await available(process.env.NLLB_URL + '/health'))) launch('scripts/start-ai.mjs');
   if (!stopping) {
-    const native = launch('scripts/run-ios.mjs', ['--live', ...process.argv.slice(2)]);
+    const native = launch('scripts/run-ios.mjs', process.argv.slice(2));
     const code = await new Promise(resolve => native.once('exit', resolve));
     if (code !== 0) { process.exitCode = 1; stop(); }
-    else console.log('iPhone app is open. Keep this F5 session running for backend access and live updates.');
+    else console.log('iPhone app is open. Keep this F5 session running for local backend access. The app screens are bundled; no frontend server is needed.');
   }
 } catch (error) { console.error(error.message); process.exitCode = 1; stop(); }

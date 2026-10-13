@@ -5,10 +5,13 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { randomBytes } from 'node:crypto';
 import { createApp } from './server.mjs';
+import {checkPost} from './safety/post-check.mjs';
+import {guardVerdict} from './safety/checker.mjs';
 import { digest } from './auth.mjs';
 
 async function fixture(options={}) {
-  const app=createApp({database:':memory:',seed:false,...options});
+  const result=text=>guardVerdict({verdict:'approved',risk:'low',labels:[],on_topic:true,reasons:[],suggested_edit:'',summary:/[຀-໿]/.test(text)?'ກວດຂໍ້ຄວາມແລ້ວ.':'The message has been checked.'},text);
+  const app=createApp({database:':memory:',seed:false,hostedTranslation:async()=>{throw Object.assign(new Error('Translation unavailable'),{status:503});},check:post=>checkPost(post,{check:async text=>result(text)}),assistantServices:{check:async text=>result(text),classify:async()=> 'check'},...options});
   await new Promise(r=>app.server.listen(0,'127.0.0.1',r));
   const base=`http://127.0.0.1:${app.server.address().port}/api`;
   const call=async(path,method='GET',data,token,extra={})=>{const response=await fetch(base+path,{method,headers:{...(data?{'Content-Type':'application/json'}:{}),...(token?{Authorization:`Bearer ${token}`} : {}),...extra},body:data?JSON.stringify(data):undefined});return {status:response.status,value:await response.json()};};
@@ -69,8 +72,8 @@ test('profile updates persist and cannot change another user',async()=>{
  const f=await fixture();try{
   const alice=await f.register(),bob=await f.register('bob@example.com');
   await f.call('/posts','POST',draft,alice.token);
-  const update=await f.call('/profile','PATCH',{id:bob.user.id,name:'Alice Updated',bio:'New bio',followed:['DigitalSafety'],avatar:'data:image/jpeg;base64,/9j/2Q=='},alice.token);
-  assert.equal(update.value.id,alice.user.id);assert.equal(update.value.bio,'New bio');
+  const update=await f.call('/profile','PATCH',{id:bob.user.id,name:'Alice Updated',bio:'New bio',following:[bob.user.id],followed:['DigitalSafety'],avatar:'data:image/jpeg;base64,/9j/2Q=='},alice.token);
+  assert.equal(update.value.id,alice.user.id);assert.equal(update.value.bio,'New bio');assert.deepEqual(update.value.following,[bob.user.id]);
   assert.equal((await f.call('/auth/me','GET',undefined,bob.token)).value.name,'bob');
   assert.equal((await f.call('/posts')).value[0].author.name,'Alice Updated');
  }finally{await f.close();}
@@ -81,7 +84,7 @@ test('source validation, attachment limits, origins and actual posting quotas',a
   const user=await f.register();
   for(const invalid of [{...draft,link:'javascript:alert(1)'},{...draft,tags:['bad tag!']},{...draft,image:'data:image/svg+xml;base64,PHN2Zz4='},{...draft,isNews:true,link:''},{...draft,content:'x'.repeat(2001)}])assert.equal((await f.call('/posts','POST',invalid,user.token)).status,400);
   assert.equal((await f.call('/posts','GET',undefined,undefined,{Origin:'https://untrusted.example'})).status,403);
-  const post=(await f.call('/posts','POST',draft,user.token)).value;await f.call('/posts','POST',draft,user.token);
+  const post=(await f.call('/posts','POST',draft,user.token)).value;for(let i=1;i<10;i++)assert.equal((await f.call('/posts','POST',draft,user.token)).status,201);
   assert.equal((await f.call('/posts','POST',draft,user.token)).status,429);
   for(let i=0;i<5;i++)assert.equal((await f.call(`/posts/${post.id}/comments`,'POST',{text:`Reply ${i}`},user.token)).status,200);
   assert.equal((await f.call(`/posts/${post.id}/comments`,'POST',{text:'Over quota'},user.token)).status,429);
@@ -114,12 +117,12 @@ test('password reset expires, invalidates sessions and is single use',async()=>{
  }finally{await f.close();}
 });
 
-test('custom English and Lao hashtags persist and keyword screening runs',async()=>{
+test('custom English and Lao hashtags persist and AI screening runs',async()=>{
  const f=await fixture();try{
   const user=await f.register();
   const posted=await f.call('/posts','POST',{...draft,tags:['MyCommunity','ຄວາມປອດໄພ','mycommunity']},user.token);
   assert.equal(posted.status,201);assert.equal(posted.value.tags.length,2);
-  assert.equal(posted.value.screening.mode,'rules');assert.ok(posted.value.screening.checkedAt);assert.equal(posted.value.screeningStage,'completed');
+  assert.equal(posted.value.screening.mode,'ai');assert.ok(posted.value.screening.checkedAt);assert.equal(posted.value.screeningStage,'completed');
   assert.equal((await f.call('/profile','PATCH',{followed:['MyCommunity','ຄວາມປອດໄພ']},user.token)).status,200);
   const missing=await f.call('/translate','POST',{text:'Hello',target:'lo'},user.token);assert.equal(missing.status,503);
  }finally{await f.close();}
@@ -157,7 +160,7 @@ test('admin access is restricted and review decisions persist in the public feed
   assert.equal(snapshot.status,200);assert.equal(snapshot.value.totals.users,2);
   assert.equal(snapshot.value.users[0].password,undefined);
   assert.equal((await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'confirmed',note:'Evidence checked'},regular.token)).status,403);
-  assert.equal((await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'clean',note:'Evidence checked'},admin.token)).status,400);
+  assert.equal((await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'invalid',note:'Evidence checked'},admin.token)).status,400);
   assert.equal((await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'confirmed',note:'  '},admin.token)).status,400);
   const reviewed=await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'confirmed',note:'Evidence checked'},admin.token);
   assert.equal(reviewed.status,200);assert.equal(reviewed.value.review.reviewerId,admin.user.id);
@@ -208,4 +211,70 @@ test('MongoDB backup payload restores accounts, roles and posts without restorin
   assert.equal(restored.prepare('SELECT COUNT(*) n FROM sessions').get().n,0);
   assert.throws(()=>restoreBackup(restored,snapshot),/empty database/);
  }finally{restored.close();await f.close();}
+});
+
+test('NLLB translation is independent of screening and supplied bilingual text is preserved',async()=>{
+ const {enrichPost}=await import('./intelligence.mjs');
+ const english={content:'Safety guidance',contentLanguage:'en',tags:['DigitalSafety'],state:'clean'};
+ let translations=0,screens=0;
+ await enrichPost(english,{enabled:false,nllb:true,translate:async(text,source,target)=>{translations++;assert.equal(source,'en');assert.equal(target,'lo');return 'ຄຳແນະນຳ';},screen:async()=>{screens++;return {severity:'none',flags:[],note:'Model checked',noteLo:'ກວດແລ້ວ'};}});
+ assert.equal(english.translationProvider,'NLLB-200');assert.equal(english.screening.mode,'ai');assert.equal(translations,1);assert.equal(screens,1);
+ const bilingual={content:'Safety guidance',contentLo:'ຄຳແນະນຳ',contentLanguage:'en',tags:['DigitalSafety'],state:'clean'};
+ await enrichPost(bilingual,{enabled:false,nllb:true,translate:async()=>{throw new Error('Must not replace manual text');},screen:async()=>({severity:'none',flags:[],note:'Checked',noteLo:'ກວດແລ້ວ'})});
+ assert.equal(bilingual.translationStatus,'manual');assert.equal(bilingual.contentLo,'ຄຳແນະນຳ');
+ const offline={content:'Safety guidance',contentLanguage:'en',tags:['DigitalSafety'],state:'clean'};
+ await enrichPost(offline,{enabled:false,nllb:true,translate:async()=>{throw new Error('Offline');},screen:async()=>{throw new Error('Offline');}});
+ assert.equal(offline.content,'Safety guidance');assert.equal(offline.translationStatus,'failed');assert.equal(offline.screening.mode,'rules-fallback');
+});
+
+test('moderation avoids substring insults and safety tags cannot bypass off-topic checks',async()=>{
+ const {enrichPost}=await import('./intelligence.mjs');
+ for(const content of ['A shell protects the equipment. Verify the official safety source.','Scam operators target people; stop and verify the investment.','The government should explain service fees clearly. Citizens deserve transparent information.']){
+  const post=await enrichPost({...draft,content,contentLo:undefined,state:'clean'},{enabled:false,nllb:false});
+  assert.ok(!post.screening.flags.some(f=>/Profanity detected|Animal insults detected/.test(f)),content);
+ }
+ const lao=await enrichPost({...draft,content:'',contentLo:'ສະບາຍດີ ຂ້ອຍມີຄວາມໝັ້ນໃຈໃນຕົນເອງ ແລະ ກວດສອບຄວາມປອດໄພ.',state:'clean'},{enabled:false,nllb:false});
+ assert.ok(!lao.screening.flags.some(f=>/Profanity detected|Animal insults detected/.test(f)));
+
+});
+
+test('assistant quotas are independent per user and kind, persisted and reset by Laos day',async()=>{
+ const f=await fixture();try{
+  const alice=await f.register(),bob=await f.register('bob@example.com');
+  assert.equal((await f.call('/assistant','POST',{text:'Check my OTP safety',kind:'text',lang:'en'})).status,401);
+  for(let i=0;i<20;i++)assert.equal((await f.call('/assistant','POST',{text:'Keep OTP private',kind:'text',lang:'en'},alice.token)).status,200);
+  assert.equal((await f.call('/assistant','POST',{text:'OTP',kind:'text',lang:'en'},alice.token)).status,429);
+  for(let i=0;i<10;i++)assert.equal((await f.call('/assistant','POST',{text:'Verify official safety sources',kind:'post',lang:'en'},alice.token)).status,200);
+  assert.equal((await f.call('/assistant','POST',{text:'OTP',kind:'post',lang:'en'},alice.token)).status,429);
+  assert.deepEqual((await f.call('/assistant/usage','GET',undefined,bob.token)).value,{text:20,post:10});
+  f.db.prepare("UPDATE assistant_usage SET day='2000-01-01' WHERE user_id=?").run(alice.user.id);
+  assert.deepEqual((await f.call('/assistant/usage','GET',undefined,alice.token)).value,{text:20,post:10});
+ }finally{await f.close();}
+});
+
+test('approval and news notifications reach the intended users',async()=>{
+ const f=await fixture({adminEmails:['admin@example.com']});try{
+  const author=await f.register(),viewer=await f.register('viewer@example.com'),admin=await f.register('admin@example.com');
+  const post=(await f.call('/posts','POST',{...draft,isNews:true,link:'https://example.com/source'},author.token)).value;
+  assert.equal((await f.call('/alerts','GET',undefined,viewer.token)).value[0].kind,'news');
+  assert.equal((await f.call('/alerts','GET',undefined,author.token)).value.length,0);
+  assert.equal((await f.call(`/admin/posts/${post.id}/review`,'PATCH',{state:'clean',note:'Approved after source review'},admin.token)).status,200);
+  const notification=(await f.call('/alerts','GET',undefined,author.token)).value[0];
+  assert.equal(notification.kind,'review');assert.equal(notification.review_state,'clean');assert.equal(notification.post_id,post.id);
+ }finally{await f.close();}
+});
+
+test('English assistant screening does not wait for an unnecessary Lao translation',async()=>{
+ const {enrichPost}=await import('./intelligence.mjs');
+ const post=await enrichPost({...draft,contentLo:undefined,contentLanguage:'en',state:'clean'},{enabled:false,nllb:true,translateMissing:false,translate:async()=>{throw Error('Should not translate');},screen:async()=>({severity:'none',flags:[],note:'Screened',noteLo:'ກວດແລ້ວ'})});
+ assert.equal(post.screening.mode,'ai');assert.equal(post.translationStatus,'unavailable');assert.equal(post.contentLo,undefined);
+});
+
+test('AI-approved safety warnings are not escalated solely for scam-related keywords',async()=>{
+ const {enrichPost}=await import('./intelligence.mjs');
+ const screen=async()=>({severity:'none',flags:[],note:'Screened',noteLo:'ກວດແລ້ວ'});
+ const warning=await enrichPost({...draft,content:'Keep your OTP private. Verify the official bank app.',state:'clean'},{enabled:false,nllb:true,screen});
+ assert.equal(warning.screening.severity,'none');assert.equal(warning.state,'clean');
+ const abuse=await enrichPost({...draft,content:'You are a fucking idiot.',state:'clean'},{enabled:false,nllb:true,screen});
+ assert.equal(abuse.state,'flagged');assert.ok(abuse.screening.flags.some(flag=>flag.includes('Profanity detected')));
 });
