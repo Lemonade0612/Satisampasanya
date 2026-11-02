@@ -20,3 +20,5 @@ input, textarea { scroll-margin-block: 80px; }
 
 .feed-tabs button { font-size: 15px; }
 @media (max-width: 360px) { .feed-tabs button { font-size: 13px; } }
+
+html, body, #root { background: #fff; }
