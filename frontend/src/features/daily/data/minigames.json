@@ -1,0 +1,322 @@
+{
+  "needsNativeReview": true,
+  "quickfire": [
+    {
+      "id": "q1",
+      "scamType": "bank_phishing",
+      "isScam": true,
+      "sender": "+856 20 0000 1111",
+      "text": {
+        "en": "BlueLotus Bank: unusual login. Confirm your PIN at blu3lotus.example",
+        "lo": "ທະນາຄານ BlueLotus: ມີການເຂົ້າສູ່ລະບົບຜິດປົກກະຕິ. ຢືນຢັນ PIN ທີ່ blu3lotus.example"
+      },
+      "why": {
+        "en": "Lookalike link (3 instead of e) and asks for your PIN.",
+        "lo": "ລິ້ງຄ້າຍຄື (3 ແທນ e) ແລະ ຂໍ PIN."
+      }
+    },
+    {
+      "id": "q2",
+      "scamType": "bank_phishing",
+      "isScam": false,
+      "sender": "BlueLotus App",
+      "text": {
+        "en": "You received 200,000 kip from Noy. Open the app to see details.",
+        "lo": "ທ່ານໄດ້ຮັບ 200,000 ກີບ ຈາກ ນ້ອຍ. ເປີດແອັບເພື່ອເບິ່ງລາຍລະອຽດ."
+      },
+      "why": {
+        "en": "No link, no request, just tells you to open the app you already use.",
+        "lo": "ບໍ່ມີລິ້ງ, ບໍ່ຂໍຫຍັງ, ພຽງບອກໃຫ້ເປີດແອັບທີ່ທ່ານໃຊ້ຢູ່ແລ້ວ."
+      }
+    },
+    {
+      "id": "q3",
+      "scamType": "fake_job",
+      "isScam": true,
+      "sender": "HR Team 💼",
+      "text": {
+        "en": "Like 10 videos a day, earn 500,000 kip! Pay 100,000 kip to unlock tasks.",
+        "lo": "ກົດໄລ້ 10 ວິດີໂອຕໍ່ມື້ ຮັບ 500,000 ກີບ! ຈ່າຍ 100,000 ກີບເພື່ອປົດລັອກ."
+      },
+      "why": {
+        "en": "Easy money plus a fee to 'unlock' work is a task scam.",
+        "lo": "ເງິນງ່າຍ ບວກກັບຄ່າ 'ປົດລັອກ' ແມ່ນການຫຼອກລວງແບບວຽກ."
+      }
+    },
+    {
+      "id": "q4",
+      "scamType": "fake_job",
+      "isScam": false,
+      "sender": "Your school office",
+      "text": {
+        "en": "Career fair Friday 9am in Hall B. Bring your CV. Free entry.",
+        "lo": "ງານວຽກວັນສຸກ 9 ໂມງ ຫ້ອງ B. ເອົາ CV ມາ. ເຂົ້າຟຣີ."
+      },
+      "why": {
+        "en": "Known sender, public place, no money asked.",
+        "lo": "ຜູ້ສົ່ງທີ່ຮູ້ຈັກ, ສະຖານທີ່ສາທາລະນະ, ບໍ່ຂໍເງິນ."
+      }
+    },
+    {
+      "id": "q5",
+      "scamType": "prize",
+      "isScam": true,
+      "sender": "Lucky Spin Lao",
+      "text": {
+        "en": "Spin and win! You got 5,000,000 kip. Send your ID photo to claim.",
+        "lo": "ໝຸນແລ້ວຊະນະ! ທ່ານໄດ້ 5,000,000 ກີບ. ສົ່ງຮູບບັດປະຈຳຕົວເພື່ອຮັບ."
+      },
+      "why": {
+        "en": "Your ID photo can be used to open accounts in your name.",
+        "lo": "ຮູບບັດຂອງທ່ານອາດຖືກໃຊ້ເປີດບັນຊີໃນຊື່ທ່ານ."
+      }
+    },
+    {
+      "id": "q6",
+      "scamType": "investment",
+      "isScam": true,
+      "sender": "Crypto Mentor",
+      "text": {
+        "en": "Guaranteed 2x in 7 days. Only for you, don't share this group.",
+        "lo": "ຮັບປະກັນ 2 ເທົ່າ ໃນ 7 ມື້. ສຳລັບທ່ານເທົ່ານັ້ນ ຢ່າແຊຣ໌ກຸ່ມນີ້."
+      },
+      "why": {
+        "en": "'Guaranteed' returns plus secrecy.",
+        "lo": "ກຳໄລ 'ຮັບປະກັນ' ບວກຄວາມລັບ."
+      }
+    },
+    {
+      "id": "q7",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Agent Tony",
+      "text": {
+        "en": "Casino job abroad, no interview, we pay your travel. Leave tomorrow.",
+        "lo": "ວຽກຄາສິໂນຕ່າງປະເທດ, ບໍ່ສຳພາດ, ເຮົາຈ່າຍຄ່າເດີນທາງ. ອອກມື້ອື່ນ."
+      },
+      "why": {
+        "en": "No interview, paid travel and a rush: common trafficking lure.",
+        "lo": "ບໍ່ສຳພາດ, ຈ່າຍຄ່າເດີນທາງ ແລະ ເລັ່ງ: ເຫຍື່ອລໍ່ການຄ້າມະນຸດ."
+      }
+    },
+    {
+      "id": "q8",
+      "scamType": "prize",
+      "isScam": false,
+      "sender": "Cousin Kham",
+      "text": {
+        "en": "I won the class quiz 😄 dinner at mum's on Sunday?",
+        "lo": "ຂ້ອຍຊະນະການແຂ່ງຂັນຕອບຄຳຖາມ 😄 ກິນເຂົ້າບ້ານແມ່ວັນອາທິດບໍ?"
+      },
+      "why": {
+        "en": "Known person, no request, no link.",
+        "lo": "ຄົນທີ່ຮູ້ຈັກ, ບໍ່ຂໍຫຍັງ, ບໍ່ມີລິ້ງ."
+      }
+    }
+  ],
+  "links": [
+    {
+      "id": "l1",
+      "brand": "BlueLotus Bank",
+      "options": [
+        "bluelotus-bank.example",
+        "blue1otus-bank.example",
+        "bluelotus-bank.example.verify-now.example",
+        "bluelotusbank-login.example"
+      ],
+      "safe": 0,
+      "why": {
+        "en": "The others swap l for 1, hide the brand in a long domain, or add 'login'.",
+        "lo": "ອັນອື່ນປ່ຽນ l ເປັນ 1, ເຊື່ອງຊື່ໃນໂດເມນຍາວ, ຫຼື ເພີ່ມ 'login'."
+      }
+    },
+    {
+      "id": "l2",
+      "brand": "Lanna Mobile",
+      "options": [
+        "lanna-mobile.example.prize.example",
+        "lannamobile.example",
+        "lanna-mob1le.example",
+        "lannamobile-free-data.example"
+      ],
+      "safe": 1,
+      "why": {
+        "en": "What matters is the real domain right before the first /.",
+        "lo": "ສິ່ງສຳຄັນແມ່ນໂດເມນແທ້ກ່ອນເຄື່ອງໝາຍ / ທຳອິດ."
+      }
+    },
+    {
+      "id": "l3",
+      "brand": "SatiPay Wallet",
+      "options": [
+        "satipay-wallet.example",
+        "satipay-refund.example",
+        "satlpay-wallet.example",
+        "wallet.satipay-wallet.example"
+      ],
+      "safe": 3,
+      "why": {
+        "en": "A subdomain of the real domain is fine. 'satlpay' and 'refund' sites are fakes.",
+        "lo": "ໂດເມນຍ່ອຍຂອງໂດເມນແທ້ໃຊ້ໄດ້. 'satlpay' ແລະ 'refund' ແມ່ນປອມ."
+      }
+    },
+    {
+      "id": "l4",
+      "brand": "Nam Ngum Post",
+      "options": [
+        "namngum-post.example",
+        "namngum-post-parcel.example",
+        "namngum-p0st.example",
+        "parcel-fee-namngum.example"
+      ],
+      "safe": 0,
+      "why": {
+        "en": "'Parcel fee' links are a top delivery scam.",
+        "lo": "ລິ້ງ 'ຄ່າພັດສະດຸ' ແມ່ນການຫຼອກລວງທີ່ພົບຫຼາຍ."
+      }
+    }
+  ],
+  "dashHazards": [
+    {
+      "id": "otp",
+      "icon": "🔑",
+      "flag": "personal_data",
+      "label": {
+        "en": "OTP request",
+        "lo": "ຂໍ OTP"
+      },
+      "tip": {
+        "en": "Never share your OTP, not even with 'the bank'.",
+        "lo": "ຢ່າແຊຣ໌ OTP ແມ່ນແຕ່ກັບ 'ທະນາຄານ'."
+      }
+    },
+    {
+      "id": "link",
+      "icon": "🔗",
+      "flag": "suspicious_link",
+      "label": {
+        "en": "Fake link",
+        "lo": "ລິ້ງປອມ"
+      },
+      "tip": {
+        "en": "Check the domain before tapping.",
+        "lo": "ກວດໂດເມນກ່ອນກົດ."
+      }
+    },
+    {
+      "id": "fee",
+      "icon": "💸",
+      "flag": "upfront_fee",
+      "label": {
+        "en": "Upfront fee",
+        "lo": "ຄ່າທຳນຽມລ່ວງໜ້າ"
+      },
+      "tip": {
+        "en": "Real jobs don't charge to hire you.",
+        "lo": "ວຽກແທ້ບໍ່ເກັບເງິນເພື່ອຈ້າງ."
+      }
+    },
+    {
+      "id": "passport",
+      "icon": "🛂",
+      "flag": "personal_data",
+      "label": {
+        "en": "Passport grab",
+        "lo": "ຍຶດໜັງສືຜ່ານແດນ"
+      },
+      "tip": {
+        "en": "Keep your passport with you.",
+        "lo": "ເກັບໜັງສືຜ່ານແດນໄວ້ກັບຕົວ."
+      }
+    },
+    {
+      "id": "rush",
+      "icon": "⏰",
+      "flag": "urgency",
+      "label": {
+        "en": "'Act now!'",
+        "lo": "'ດ່ວນດຽວນີ້!'"
+      },
+      "tip": {
+        "en": "Scammers rush you so you can't think. Slow down.",
+        "lo": "ຜູ້ຫຼອກລວງເລັ່ງໃຫ້ທ່ານບໍ່ທັນຄິດ. ຊ້າລົງ."
+      }
+    },
+    {
+      "id": "prize",
+      "icon": "🎁",
+      "flag": "too_good",
+      "label": {
+        "en": "Free prize",
+        "lo": "ລາງວັນຟຣີ"
+      },
+      "tip": {
+        "en": "If you didn't enter, you didn't win.",
+        "lo": "ຖ້າບໍ່ໄດ້ສະໝັກ ກໍບໍ່ໄດ້ຊະນະ."
+      }
+    },
+    {
+      "id": "secret",
+      "icon": "🤫",
+      "flag": "off_platform",
+      "label": {
+        "en": "'Keep it secret'",
+        "lo": "'ຢ່າບອກໃຜ'"
+      },
+      "tip": {
+        "en": "Anyone who says 'tell no one' is a red flag. Tell family.",
+        "lo": "ໃຜບອກວ່າ 'ຢ່າບອກໃຜ' ແມ່ນສັນຍານອັນຕະລາຍ. ບອກຄອບຄົວ."
+      }
+    }
+  ],
+  "dashPickups": [
+    {
+      "id": "verify",
+      "icon": "🛡️",
+      "label": {
+        "en": "Verify first",
+        "lo": "ກວດສອບກ່ອນ"
+      },
+      "tip": {
+        "en": "Check with Sati before you trust a message.",
+        "lo": "ກວດກັບ Sati ກ່ອນເຊື່ອຂໍ້ຄວາມ."
+      }
+    },
+    {
+      "id": "call",
+      "icon": "📞",
+      "label": {
+        "en": "Call the real number",
+        "lo": "ໂທເບີແທ້"
+      },
+      "tip": {
+        "en": "Call the bank on the number on your card.",
+        "lo": "ໂທຫາທະນາຄານຕາມເບີຢູ່ຫຼັງບັດ."
+      }
+    },
+    {
+      "id": "family",
+      "icon": "👪",
+      "label": {
+        "en": "Ask family",
+        "lo": "ຖາມຄອບຄົວ"
+      },
+      "tip": {
+        "en": "Talk to someone you trust before paying.",
+        "lo": "ລົມກັບຄົນທີ່ໄວ້ໃຈກ່ອນຈ່າຍເງິນ."
+      }
+    },
+    {
+      "id": "lock",
+      "icon": "🔒",
+      "label": {
+        "en": "Lock your PIN",
+        "lo": "ລັອກ PIN"
+      },
+      "tip": {
+        "en": "Your PIN is only for you.",
+        "lo": "PIN ແມ່ນຂອງທ່ານຜູ້ດຽວ."
+      }
+    }
+  ]
+}

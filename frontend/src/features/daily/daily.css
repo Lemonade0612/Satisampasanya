@@ -1,0 +1,14 @@
+.daily-pop { animation: daily-pop .35s cubic-bezier(.2,.9,.3,1.4); }
+.daily-shake { animation: daily-shake .4s ease; }
+.daily-in { animation: daily-in .3s ease both; }
+.daily-bubble { animation: daily-in .3s ease both; }
+.daily-float { animation: daily-float 2.4s ease-in-out infinite; }
+.daily-btn { min-height: 52px; transition: transform .12s ease, box-shadow .12s ease; }
+.daily-btn:active { transform: scale(.96) translateY(2px); }
+.daily-grad { background: linear-gradient(135deg, #5B21D1, #84ADEF); }
+.daily-flag { transition: background .2s, color .2s; border-radius: 6px; padding: 2px 3px; }
+@keyframes daily-pop { 0% { transform: scale(.6); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+@keyframes daily-shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-8px) } 75% { transform: translateX(8px) } }
+@keyframes daily-in { from { transform: translateY(10px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes daily-float { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-4px) } }
+@media (prefers-reduced-motion: reduce) { .daily-pop, .daily-shake, .daily-in, .daily-bubble, .daily-float { animation: none } }
