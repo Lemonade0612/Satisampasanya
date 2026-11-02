@@ -84,7 +84,7 @@ test('source validation, attachment limits, origins and actual posting quotas',a
   const user=await f.register();
   for(const invalid of [{...draft,link:'javascript:alert(1)'},{...draft,tags:['bad tag!']},{...draft,image:'data:image/svg+xml;base64,PHN2Zz4='},{...draft,isNews:true,link:''},{...draft,content:'x'.repeat(2001)}])assert.equal((await f.call('/posts','POST',invalid,user.token)).status,400);
   assert.equal((await f.call('/posts','GET',undefined,undefined,{Origin:'https://untrusted.example'})).status,403);
-  const post=(await f.call('/posts','POST',draft,user.token)).value;for(let i=1;i<10;i++)assert.equal((await f.call('/posts','POST',draft,user.token)).status,201);
+  const post=(await f.call('/posts','POST',draft,user.token)).value;for(let i=1;i<5;i++)assert.equal((await f.call('/posts','POST',draft,user.token)).status,201);
   assert.equal((await f.call('/posts','POST',draft,user.token)).status,429);
   for(let i=0;i<5;i++)assert.equal((await f.call(`/posts/${post.id}/comments`,'POST',{text:`Reply ${i}`},user.token)).status,200);
   assert.equal((await f.call(`/posts/${post.id}/comments`,'POST',{text:'Over quota'},user.token)).status,429);
@@ -277,4 +277,85 @@ test('AI-approved safety warnings are not escalated solely for scam-related keyw
  assert.equal(warning.screening.severity,'none');assert.equal(warning.state,'clean');
  const abuse=await enrichPost({...draft,content:'You are a fucking idiot.',state:'clean'},{enabled:false,nllb:true,screen});
  assert.equal(abuse.state,'flagged');assert.ok(abuse.screening.flags.some(flag=>flag.includes('Profanity detected')));
+});
+
+test('daily repost cap, cached plain reposts, source attribution and unique completed shares',async()=>{
+ let checked=0;
+ const f=await fixture({check:async post=>{checked++;post.check={verdict:'approved',risk:'low',labels:['safe_tip'],on_topic:true,reasons:[],suggested_edit:'',summary:'Keep your OTP private.',language:'en'};post.state='clean';post.frozen=false;return post;}});
+ try{
+  const author=await f.register('author@example.com'),reader=await f.register('reader@example.com');
+  const original=(await f.call('/posts','POST',draft,author.token)).value;
+  await f.call(`/posts/${original.id}/reposts`,'POST',{text:''},reader.token);
+  assert.equal(checked,1);
+  await f.call(`/posts/${original.id}/reposts`,'POST',{text:''},reader.token);
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM posts WHERE json_extract(data,'$.repostOf')=?").get(original.id).n,1);
+  const feed=(await f.call('/posts')).value;
+  assert.equal(feed.find(p=>p.repostOf)?.originalPost.author.id,author.user.id);
+  for(let i=1;i<10;i++)assert.equal((await f.call(`/posts/${original.id}/reposts`,'POST',{text:'Stay safe '+i},reader.token)).status,200);
+  assert.equal((await f.call(`/posts/${original.id}/reposts`,'POST',{text:'Over cap'},reader.token)).status,429);
+  await f.call(`/posts/${original.id}/share`,'POST',{},reader.token);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM shares').get().n,0);
+  await f.call(`/posts/${original.id}/share`,'POST',{completed:true},reader.token);
+  await f.call(`/posts/${original.id}/share`,'POST',{completed:true},reader.token);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM shares').get().n,1);
+  const updated=(await f.call('/posts')).value.find(p=>p.id===original.id);
+  assert.ok(updated.communityRanking.parts.engagement>0);
+ }finally{await f.close();}
+});
+
+test('public person profiles and activity show the actual actors without private account fields',async()=>{
+ const f=await fixture();try{
+  const author=await f.register('author@example.com'),reader=await f.register('reader@example.com');
+  f.db.prepare('UPDATE users SET profile=? WHERE id=?').run(JSON.stringify({handle:'@reader'}),reader.user.id);
+  const post=(await f.call('/posts','POST',draft,author.token)).value;
+  await f.call(`/posts/${post.id}/reactions`,'POST',{kind:'like',active:true},reader.token);
+  await f.call(`/posts/${post.id}/share`,'POST',{completed:true},reader.token);
+  await f.call(`/posts/${post.id}/comments`,'POST',{text:'Thank you for this reminder.'},reader.token);
+  const activity=(await f.call(`/posts/${post.id}/activity`)).value;
+  assert.equal(activity.likes[0].id,reader.user.id);assert.equal(activity.shares[0].handle,'@reader');
+  assert.deepEqual(activity.helpful,[]);
+  const profile=(await f.call(`/people/${author.user.id}`)).value;
+  assert.equal(profile.posts[0].id,post.id);assert.equal(profile.person.id,author.user.id);
+  assert.equal(profile.person.email,undefined);assert.equal(profile.person.password,undefined);
+  const comments=(await f.call(`/posts/${post.id}/comments`)).value;
+  assert.equal(comments[0].author.handle,'@reader');
+ }finally{await f.close();}
+});
+
+test('admin sign-in rejects members without creating sessions and supports managed staff',async()=>{
+ const f=await fixture({adminEmails:['owner@example.com']});try{
+  const owner=await f.register('owner@example.com');
+  const alice=await f.register('alice@example.com');
+  const bob=await f.register('bob@example.com');
+  const before=f.db.prepare('SELECT COUNT(*) n FROM sessions').get().n;
+  assert.equal((await f.call('/admin/auth/login','POST',{email:'alice@example.com',password:'correct-password'})).status,403);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM sessions').get().n,before);
+  const staff=await f.call('/admin/auth/login','POST',{email:' OWNER@example.com ',password:'correct-password'});
+  assert.equal(staff.status,200);
+  assert.equal((await f.call('/admin/dashboard','GET',undefined,staff.value.token)).status,200);
+  assert.equal((await f.call('/admin/dashboard','GET',undefined,alice.token)).status,403);
+  await f.call('/auth/logout','POST',{},alice.token);
+  assert.equal((await f.call('/auth/me','GET',undefined,alice.token)).status,401);
+  assert.equal((await f.call('/auth/me','GET',undefined,bob.token)).value.id,bob.user.id);
+  assert.equal((await f.call('/auth/me','GET',undefined,owner.token)).status,200);
+ }finally{await f.close();}
+});
+
+
+test('sign-in preserves intentional whitespace in passwords',async()=>{
+ const f=await fixture();try{
+  const data={name:'Whitespace account',email:'spaces@example.com',password:'  correct-password  '};
+  assert.equal((await f.call('/auth/register','POST',data)).status,200);
+  assert.equal((await f.call('/auth/login','POST',data)).status,200);
+  assert.equal((await f.call('/auth/login','POST',{...data,password:data.password.trim()})).status,401);
+ }finally{await f.close();}
+});
+
+test('API home redirects browsers to the separate admin workspace',async()=>{
+ const f=await fixture();try{
+  const response=await fetch(f.base.replace(/\/api$/,''),{redirect:'manual'});
+  assert.equal(response.status,302);
+  assert.equal(response.headers.get('location'),process.env.ADMIN_URL||'http://127.0.0.1:5174');
+  assert.equal((await f.call('/admin/dashboard')).status,401);
+ }finally{await f.close();}
 });

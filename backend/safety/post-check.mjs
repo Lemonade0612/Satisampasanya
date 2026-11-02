@@ -4,8 +4,8 @@ export async function checkPost(post,{check=checkContent,onProgress=()=>{}}={}){
  const text=post.link&&!source.includes(post.link)?source+'\n'+post.link:source;
  const result=await check(text,{onProgress});
  post.check=result;
- post.state=result.verdict==='needs_expert'?'flagged':'clean';
- post.frozen=result.verdict==='needs_expert';
+ post.state=result.verdict!=='approved'?'flagged':'clean';
+ post.frozen=result.verdict!=='approved';
  post.screeningStage=post.frozen?'expert_review':'completed';
  post.screening={mode:'ai',severity:result.risk,flags:[],note:result.summary,noteLo:result.summary,checkedAt:result.checkedAt};
  post.aiSeverity=result.risk==='low'?'none':result.risk;

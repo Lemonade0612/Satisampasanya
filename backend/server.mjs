@@ -1,3 +1,4 @@
+import {postLocked} from './post-lock.mjs';
 import {notifyReviewers} from './review-queue.mjs';
 import {assistantUsage,assistantReply} from './assistant.mjs';
 import {translationEnabled,translateText} from './translation.mjs';
@@ -74,15 +75,19 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
       const url = new URL(req.url, 'http://localhost'), path = url.pathname;
       if (req.method !== 'GET') {
-        const key = `${req.socket.remoteAddress}:${path.startsWith('/api/auth') || path.endsWith('/translate') ? 'auth' : 'write'}`;
+        const key = `${req.socket.remoteAddress}:${(path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 'auth' : 'write'}`;
         const now = Date.now(); const entry = rate.get(key) || { count: 0, until: now + 60000 };
         if (entry.until < now) { entry.count = 0; entry.until = now + 60000; }
         entry.count++; rate.set(key, entry);
-        if (entry.count > (path.startsWith('/api/auth') || path.endsWith('/translate') ? 20 : 120)) fail('Too many requests. Try again shortly.', 429);
+        if (entry.count > ((path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 20 : 120)) fail('Too many requests. Try again shortly.', 429);
         if (rate.size > 1000) for (const [k,v] of rate) if (v.until < now) rate.delete(k);
       }
+      if(req.method === 'GET' && path === '/') {
+        res.writeHead(302, {Location:process.env.ADMIN_URL || 'http://127.0.0.1:5174', 'Cache-Control':'no-store'});
+        return res.end();
+      }
       const user = currentUser(db, req);
-      if (path.startsWith('/api/admin/')) {
+      if (path.startsWith('/api/admin/') && path !== '/api/admin/auth/login') {
         if (!user) fail('Please sign in.',401);
         const access=accessFor(db,user,adminEmails);
         if(access.status!=='active'||!['viewer','reviewer','admin'].includes(access.role))fail('Administrator or insight access is required.',403);
@@ -115,7 +120,19 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
       if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().map(p => postView(db,p,user?.id)));
-      if (req.method === 'POST' && ['/api/auth/register','/api/auth/login'].includes(path)) {
+      const personMatch=/^\/api\/people\/([^/]+)$/.exec(path);
+      if(req.method==='GET'&&personMatch){
+        const person=db.prepare('SELECT id,name,profile FROM users WHERE id=?').get(personMatch[1]);if(!person)fail('Person not found.',404);
+        const posts=db.prepare("SELECT * FROM posts WHERE user_id=? AND COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 100").all(person.id).map(row=>postView(db,row,user?.id));
+        return send(res,200,{person:authorView(person),posts});
+      }
+      const activityMatch=/^\/api\/posts\/([^/]+)\/activity$/.exec(path);
+      if(req.method==='GET'&&activityMatch){
+        if(!db.prepare('SELECT id FROM posts WHERE id=?').get(activityMatch[1]))fail('Post not found.',404);
+        const id=activityMatch[1], people=(sql,...args)=>db.prepare(sql).all(...args).map(authorView);
+        return send(res,200,{likes:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'like'),helpful:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'warned'),shares:people('SELECT u.id,u.name,u.profile FROM users u JOIN shares s ON s.user_id=u.id WHERE s.post_id=? ORDER BY u.name',id),reposts:people("SELECT DISTINCT u.id,u.name,u.profile FROM users u JOIN posts p ON p.user_id=u.id WHERE json_extract(p.data,'$.repostOf')=? AND COALESCE(json_extract(p.data,'$.seedArchived'),0)=0 ORDER BY u.name",id)});
+      }
+      if (req.method === 'POST' && ['/api/auth/register','/api/auth/login','/api/admin/auth/login'].includes(path)) {
         const data = await body(req), email = text(data.email,254,true).toLowerCase();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail('Enter a valid email address.');
         const pw = password(data.password);
@@ -129,6 +146,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           row = db.prepare('SELECT * FROM users WHERE id=?').get(id);
         } else if (!row || !await passwordMatches(pw,row)) fail('Incorrect email or password.',401);
         if(accessFor(db,row,adminEmails).status!=='active')fail('This account is inactive. Contact an administrator.',403);
+        if(path === '/api/admin/auth/login' && !['admin','reviewer','viewer'].includes(accessFor(db,row,adminEmails).role)) fail('This account does not have workspace access.',403);
         db.prepare('INSERT INTO user_access(user_id,last_login) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET last_login=excluded.last_login').run(row.id,Date.now());
         return send(res,200,{user:userView(row),token:session(db,row.id)});
       }
@@ -149,7 +167,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate|share))?$/.exec(path);
       if (req.method === 'GET' && match?.[2] === 'comments') {
         if (!db.prepare('SELECT id FROM posts WHERE id=?').get(match[1])) fail('Post not found.',404);
-        return send(res,200,db.prepare('SELECT comments.*,users.name FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
+        return send(res,200,db.prepare('SELECT comments.*,users.name,users.profile FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
       }
       if (!user) fail('Please sign in.',401);
       if (req.method === 'GET' && path === '/api/assistant/usage') return send(res,200,assistantUsage(db,user.id));
@@ -188,13 +206,13 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if (!content && !contentLo) fail('Write your post in English or Lao.');
         if (!Array.isArray(data.tags) || data.tags.length>10 || data.tags.some(t=>!validTag(t))) fail('Use up to 10 hashtags: letters, Lao characters, numbers or underscores, up to 40 characters each.');
         const source = link(data.link); if (data.isNews && !source) fail('News posts need a source URL.');
-        const since = Date.now()-86400000;
-        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 10) fail('Limit reached: 10 posts per 24 hours.',429);
+        const since = Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00');
+        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 5) fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
         const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
         const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
         await check(post,{onProgress});
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];
-        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=10)fail('Limit reached: 10 posts per 24 hours.',429);
+        if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=5)fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
         db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now());
         if(post.state==='flagged')db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),user.id,'Safety review','safety',post.id,Date.now());
         if(post.isNews)for(const recipient of db.prepare('SELECT id FROM users WHERE id<>?').all(user.id))db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),recipient.id,user.name,'news',post.id,Date.now());
@@ -212,7 +230,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
             row.data=db.prepare('SELECT data FROM posts WHERE id=?').get(row.id).data;
           }
         }
-        if(JSON.parse(row.data).frozen&&match[2]!=='translate')fail('This post is under expert review. Sharing and reactions are paused.',409);
+        if(postLocked(db,row)&&match[2]!=='translate')fail('This post is awaiting moderator review. Likes, comments, reposts and sharing are locked.',409);
         const data = await body(req);
         const notify=(kind)=>{if(row.user_id && row.user_id!==user.id)db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),row.user_id,user.name,kind,row.id,Date.now());};
         if (match[2] === 'translate') {
@@ -224,7 +242,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           }
           broadcast();return send(res,200,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(row.id),user.id));
         }
-        if (match[2] === 'share') return send(res,200,postView(db,row,user.id));
+        if (match[2] === 'share'){if(data.completed===true){db.prepare('INSERT OR IGNORE INTO shares VALUES (?,?,?)').run(row.id,user.id,Date.now());broadcast();}return send(res,200,postView(db,row,user.id));}
         if (match[2] === 'comments') {
           const value = text(data.text,1000,true);
           if (db.prepare('SELECT COUNT(*) n FROM comments WHERE user_id=? AND created>?').get(user.id,Date.now()-86400000).n>=5) fail('Limit reached: 5 comments per 24 hours.',429);
@@ -235,10 +253,13 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           else db.prepare('DELETE FROM reactions WHERE post_id=? AND user_id=? AND kind=?').run(row.id,user.id,data.kind);
         } else if (match[2] === 'reposts') {
           const value = text(data.text,150), original = JSON.parse(row.data);
-          if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NOT NULL").get(user.id,Date.now()-86400000).n>=20) fail('Repost limit reached.',429);
+          if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NOT NULL").get(user.id,Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00')).n>=10) fail('Limit reached: 10 reposts per day. Resets at midnight in Laos.',429);
+          if(!value){const existing=db.prepare("SELECT * FROM posts WHERE user_id=? AND json_extract(data,'$.repostOf')=? AND COALESCE(json_extract(data,'$.repostText'),'')=''").get(user.id,row.id);if(existing)return send(res,200,postView(db,row,user.id));}
           const post={id:randomUUID(),content:value||original.content,contentLo:value?undefined:original.contentLo,contentLanguage:value?(data.lang==='lo'?'lo':'en'):original.contentLanguage,tags:original.tags,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,repostOf:row.id,repostText:value,timestamp:'Just now'};
           if (value && data.lang==='lo') post.contentLo=value;
-          await check(post);
+          if(value)await check(post);else{post.check=original.check;post.screening=original.screening;post.review=original.review;post.frozen=false;}
+          if(postLocked(db,db.prepare('SELECT id,data FROM posts WHERE id=?').get(row.id)))fail('This post is under expert review.',409);
+          if(db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NOT NULL").get(user.id,Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00')).n>=10)fail('Daily repost limit reached.',429);
           db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now()); notify('repost');
         } else fail('Route not found.',404);
         broadcast(); return send(res,200,postView(db,row,user.id));
