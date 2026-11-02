@@ -8,6 +8,8 @@ import { StoryGame, type GameResult } from './games/StoryGame';
 import { RealOrScam } from './games/RealOrScam';
 import { LinkDetective } from './games/LinkDetective';
 import { ScamDash } from './games/ScamDash';
+import { ScamDetective } from './games/ScamDetective';
+import { ScamCall } from './games/ScamCall';
 import { track } from './lib/analytics';
 import { finishSession } from './lib/progress';
 import { playable, scenarioOfTheDay, weeklyLevel } from './lib/scenarios';
@@ -45,6 +47,8 @@ export function DailyScreen({ lang, verifier, onCheckOnSati }: { lang: Lang; ver
     const props = { lang, onExit: exit, onFinish: done };
     if (play.game === 'realorscam') return <RealOrScam key={round} {...props} />;
     if (play.game === 'links') return <LinkDetective key={round} {...props} />;
+    if (play.game === 'detective') return <ScamDetective key={round} {...props} />;
+    if (play.game === 'call') return <ScamCall key={round} {...props} />;
     if (play.game === 'dash') return <ScamDash key={round} {...props} />;
     const list = play.scope === 'daily' ? [scenarioOfTheDay()] : play.scope === 'weekly' ? weeklyLevel() : playable();
     return <StoryGame key={round} {...props} scenarios={list.filter(Boolean)} mode={play.game === 'flags' ? 'flags' : 'full'} />;

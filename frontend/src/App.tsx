@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { MessageCircle } from "lucide-react";
 import { api, hasSession, clearSession, ApiError } from "./lib/api";
 import { usePhoneViewport } from "./hooks/usePhoneViewport";
 import { useLivePosts } from "./hooks/useLivePosts";
@@ -194,6 +195,12 @@ export default function App() {
           imageUrl={expandedImage}
           onClose={() => setExpandedImage(null)}
         />
+      )}
+      {(view === "feed" || view === "explore") && !showAlerts && (
+        <button onClick={() => setView("assistant")} aria-label={lang === 'lo' ? 'ຖາມຜູ້ຊ່ວຍ' : 'Ask the assistant'}
+          className="absolute right-4 bottom-24 z-30 h-12 pl-3 pr-4 rounded-full bg-card border border-border shadow-lg flex items-center gap-2 text-sm font-semibold text-primary active:scale-95 transition-transform font-lao">
+          <MessageCircle size={20} />{lang === 'lo' ? 'ຖາມ Sati' : 'Ask Sati'}
+        </button>
       )}
       {postToast && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-lao whitespace-nowrap">

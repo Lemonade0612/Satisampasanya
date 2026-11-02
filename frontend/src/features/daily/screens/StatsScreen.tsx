@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Flag } from 'lucide-react';
 import { TopBar } from '../components/ui';
 import { DT, FLAG_LABEL, SCAM_LABEL } from '../i18n';
 import { clearEvents, summarize } from '../lib/analytics';
@@ -32,7 +33,7 @@ export function StatsScreen({ lang, onBack }: { lang: Lang; onBack: () => void }
         </section>
         <section className="rounded-2xl border border-border p-3">
           <h3 className="font-bold mb-1 font-lao">{t.most_missed}</h3>
-          {top ? <p className="text-xl font-bold text-red-600 font-lao">🚩 {label(top[0])} <span className="text-sm text-muted-foreground">×{top[1]}</span></p> : <p className="text-sm text-muted-foreground">{t.none}</p>}
+          {top ? <p className="text-xl font-bold text-red-600 font-lao flex items-center gap-2"><Flag size={18} />{label(top[0])} <span className="text-sm text-muted-foreground">×{top[1]}</span></p> : <p className="text-sm text-muted-foreground">{t.none}</p>}
           <ul className="mt-2 text-sm space-y-1">{s.missedSorted.slice(1, 5).map(([f, n]) => <li key={f} className="flex justify-between font-lao"><span>{label(f)}</span><span className="tabular-nums">×{n}</span></li>)}</ul>
         </section>
         <button onClick={() => { if (confirm(t.reset + '?')) { clearEvents(); setS(summarize()); } }} className="text-sm text-muted-foreground underline min-h-11">{t.reset}</button>

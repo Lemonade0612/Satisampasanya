@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, XCircle, Video, MessageCircle, Smartphone } from 'lucide-react';
+import { CheckCircle2, XCircle, Video, MessageCircle, Smartphone, Swords, Flag } from 'lucide-react';
 import { Guide, TrustMeter, TopBar, haptic, type Mood } from '../components/ui';
 import { DT, FLAG_LABEL } from '../i18n';
 import { track } from '../lib/analytics';
@@ -64,7 +64,7 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
         <TrustMeter trust={trust} />
       </TopBar>
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
-        {scenario.boss && <div className="daily-pop text-center text-xs font-bold uppercase tracking-wide text-white daily-grad rounded-full py-1.5">⚔️ {t.boss} · {t.boss_badge}</div>}
+        {scenario.boss && <div className="daily-pop text-center text-xs font-bold uppercase tracking-wide text-white daily-grad rounded-full py-1.5 flex items-center justify-center gap-1.5"><Swords size={14} />{t.boss} · {t.boss_badge}</div>}
         <div className="flex items-center gap-2 text-sm text-muted-foreground"><ChannelIcon size={16} /><span className="font-semibold text-foreground">{scenario.contact}</span><span>· {scenario.title[lang]}</span></div>
         <Guide mood={mood} text={guide} />
         {step.kind === 'chat'
@@ -140,7 +140,7 @@ function FlagView({ lang, step, onDone }: { lang: Lang; step: FlagStep; onDone: 
           }} className={`daily-flag cursor-pointer ${cls}`}>{s.text[lang]}</span>;
         })}
       </div>
-      {tapped.size > 0 && <div className="flex flex-wrap gap-1.5">{[...tapped].map(i => <span key={i} className="daily-pop text-xs font-semibold rounded-full bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300 px-2.5 py-1">🚩 {FLAG_LABEL[step.segments[i].flag!][lang]}</span>)}</div>}
+      {tapped.size > 0 && <div className="flex flex-wrap gap-1.5">{[...tapped].map(i => <span key={i} className="daily-pop text-xs font-semibold rounded-full bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300 px-2.5 py-1 inline-flex items-center gap-1"><Flag size={12} />{FLAG_LABEL[step.segments[i].flag!][lang]}</span>)}</div>}
       {!revealed
         ? <button onClick={() => { const miss = flagIdx.filter(i => !tapped.has(i)).map(i => step.segments[i].flag!); setNext(() => onDone(found, miss)); }} className="daily-btn w-full rounded-2xl daily-grad text-white font-bold">{t.done}</button>
         : <button onClick={next} className="daily-btn daily-in w-full rounded-2xl daily-grad text-white font-bold">{t.next} →</button>}

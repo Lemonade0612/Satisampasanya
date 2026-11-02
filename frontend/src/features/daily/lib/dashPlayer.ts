@@ -1,13 +1,24 @@
 import { load, save } from './storage';
 
-export type Avatar = { skin: number; hair: number; outfit: number; extra: number };
+export type Avatar = { skin: number; hair: number; outfit: number; extra: number; hairColor?: number };
 export type Player = { name: string; country: string; avatar: Avatar };
 export type Entry = { name: string; country: string; score: number; avatar?: Avatar; me?: boolean };
 
-export const SKINS = ['#F6D3B3', '#E3B08A', '#C68A5E', '#8D5A3B'];
-export const OUTFITS = ['#5B21D1', '#E11D48', '#0EA5E9', '#16A34A', '#F59E0B', '#111827'];
-export const HAIRS = 4; // short, long, bun, bald
-export const EXTRAS = ['', '🎓', '🧢', '👓', '🌸'];
+export const SKINS = ['#FBE0C8', '#F6D3B3', '#E3B08A', '#C68A5E', '#A86E45', '#8D5A3B'];
+export const OUTFITS = ['#5B21D1', '#E11D48', '#0EA5E9', '#16A34A', '#F59E0B', '#111827', '#DB2777', '#0F766E'];
+export const HAIR_COLORS = ['#2B1B12', '#141414', '#6B3E1F', '#A0522D', '#C9A15A', '#9CA3AF'];
+export const HAIRS = 6; // short, long, bun, bald, ponytail, curly
+export const EXTRAS = 6; // none, grad cap, cap, glasses, flower, headphones
+
+// Ready-made runners so players can start fast, then tweak.
+export const PRESETS: Avatar[] = [
+  { skin: 2, hair: 2, outfit: 4, extra: 0, hairColor: 0 },
+  { skin: 1, hair: 0, outfit: 2, extra: 2, hairColor: 1 },
+  { skin: 3, hair: 4, outfit: 6, extra: 4, hairColor: 2 },
+  { skin: 0, hair: 3, outfit: 3, extra: 3, hairColor: 5 },
+  { skin: 4, hair: 5, outfit: 7, extra: 5, hairColor: 1 },
+  { skin: 5, hair: 1, outfit: 1, extra: 1, hairColor: 3 },
+];
 
 export const ASEAN: { code: string; flag: string; name: { en: string; lo: string } }[] = [
   { code: 'LA', flag: '🇱🇦', name: { en: 'Laos', lo: 'ລາວ' } },
@@ -22,7 +33,7 @@ export const ASEAN: { code: string; flag: string; name: { en: string; lo: string
   { code: 'BN', flag: '🇧🇳', name: { en: 'Brunei', lo: 'ບຣູໄນ' } },
   { code: 'TL', flag: '🇹🇱', name: { en: 'Timor-Leste', lo: 'ຕີມໍ-ເລສເຕ' } },
 ];
-export const flagOf = (code: string) => ASEAN.find(c => c.code === code)?.flag ?? '🏳️';
+export const flagOf = (code: string) => ASEAN.find(c => c.code === code)?.flag ?? '';
 
 // Demo rivals so the board isn't empty; real scores come from this device until a backend board exists.
 const RIVALS: Entry[] = [

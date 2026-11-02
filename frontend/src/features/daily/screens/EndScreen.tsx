@@ -1,4 +1,4 @@
-import { Trophy, ShieldAlert, Search } from 'lucide-react';
+import { Trophy, ShieldAlert, Search, Flag } from 'lucide-react';
 import { Guide, LikeButton, Streak } from '../components/ui';
 import { DT, FLAG_LABEL } from '../i18n';
 import type { FlagCategory, GameId, Lang } from '../types';
@@ -22,7 +22,7 @@ export function EndScreen({ lang, game, result, streak, onAgain, onHome, onCheck
       <div>
         <h3 className="font-bold mb-2 font-lao">{t.missed_flags}</h3>
         {missed.length
-          ? <ul className="grid gap-2">{missed.map(([f, n]) => <li key={f} className="daily-in flex justify-between rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-900 px-3 py-2 text-sm font-lao"><span>🚩 {FLAG_LABEL[f][lang]}</span><span className="font-bold">×{n}</span></li>)}</ul>
+          ? <ul className="grid gap-2">{missed.map(([f, n]) => <li key={f} className="daily-in flex justify-between rounded-xl border border-red-200 bg-red-50 dark:bg-red-950/40 dark:border-red-900 px-3 py-2 text-sm font-lao"><span className="flex items-center gap-1.5"><Flag size={14} className="text-red-600" />{FLAG_LABEL[f][lang]}</span><span className="font-bold">×{n}</span></li>)}</ul>
           : <Guide mood="happy" text={t.no_missed} />}
       </div>
       <div className="flex justify-center"><LikeButton id={game} lang={lang} /></div>

@@ -35,4 +35,4 @@ export type Scenario = {
 export type QuickCard = { id: string; scamType: ScamType; isScam: boolean; sender: string; text: L10n; why: L10n };
 export type LinkRound = { id: string; brand: string; options: string[]; safe: number; why: L10n };
 
-export type GameId = 'story' | 'flags' | 'realorscam' | 'links' | 'dash';
+export type GameId = 'story' | 'flags' | 'realorscam' | 'links' | 'dash' | 'detective' | 'call';
