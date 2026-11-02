@@ -19,3 +19,5 @@ translation/.venv/
 translation/cache/
 translation/__pycache__/
 backend/data/demo-accounts.json
+
+.playwright-mcp/

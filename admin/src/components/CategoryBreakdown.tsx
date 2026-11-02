@@ -1,9 +1,10 @@
-import {formatCount,type AdminPost} from '../api';
-const colors=['#7434f3','#7abbff','#f5a524','#c9b3fa','#34d399'];
+import {Lightbulb} from 'lucide-react';
+import {formatCount,topicIndex,TOPIC_COLORS,type AdminPost} from '../api';
+import {useT} from '../i18n';
 export function CategoryBreakdown({posts}:{posts:AdminPost[]}){
- const categories=['Job scam','Investment','Trafficking','Romance','Other'].map(name=>({name,count:0}));
+ const t=useT();
  const reported=posts.filter(p=>['flagged','sla','confirmed','false'].includes(p.state));
- reported.forEach(p=>{const tags=p.tags.join(' ').toLowerCase();const index=tags.includes('job')?0:tags.includes('crypto')||tags.includes('invest')?1:tags.includes('trafficking')||tags.includes('border')?2:tags.includes('romance')?3:4;categories[index].count++;});
- let offset=0;const total=reported.length,circumference=2*Math.PI*64;
- return <section className="admin-card category-card"><div className="card-heading"><div><h2>What needs attention</h2><p>Flagged and resolved posts by primary topic</p></div></div><div className="donut-content"><svg viewBox="0 0 180 180" role="img" aria-label={`${total} flagged and resolved posts by topic`}><circle cx="90" cy="90" r="64" fill="none" stroke="var(--line)" strokeWidth="19"/>{categories.map((category,i)=>{const length=total?category.count/total*circumference:0;const start=offset;offset+=length;return length?<circle key={category.name} cx="90" cy="90" r="64" fill="none" stroke={colors[i]} strokeWidth="19" strokeDasharray={`${Math.max(0,length-3)} ${circumference-Math.max(0,length-3)}`} strokeDashoffset={-start} transform="rotate(-90 90 90)"/>:null;})}<text x="90" y="89" textAnchor="middle" fill="var(--ink)" fontSize="29" fontWeight="700">{formatCount(total)}</text><text x="90" y="109" textAnchor="middle" fill="var(--muted)" fontSize="12">flagged posts</text></svg><div className="donut-legend">{categories.map((c,i)=><div key={c.name}><i className="dot" style={{background:colors[i]}}/><span>{c.name}</span><strong>{total?Math.round(c.count/total*100):0}%</strong></div>)}</div></div></section>;
+ const counts=TOPIC_COLORS.map(()=>0);reported.forEach(p=>counts[topicIndex(p)]++);
+ const total=reported.length,max=Math.max(1,...counts),pct=(n:number)=>total?Math.round(n/total*100):0;
+ return <section className="sd-card"><div className="sd-card-head"><div><h2>{t.topics}</h2><p>{t.topicsSub(total)}</p></div></div><div className="sd-topics">{t.topicNames.map((name,i)=><div className="sd-topic-row" key={name}><strong>{name}</strong><span className="sd-track" role="img" aria-label={`${name}: ${counts[i]}, ${pct(counts[i])}%`}><i style={{width:`${counts[i]/max*100}%`,background:TOPIC_COLORS[i]}}/></span><span className="mono">{formatCount(counts[i])} · {pct(counts[i])}%</span></div>)}</div>{pct(counts[4])>50&&<p className="sd-tip"><Lightbulb size={16}/><span>{t.tip}</span></p>}</section>;
 }
