@@ -179,7 +179,6 @@
   "dashHazards": [
     {
       "id": "otp",
-      "icon": "🔑",
       "flag": "personal_data",
       "label": {
         "en": "OTP request",
@@ -192,7 +191,6 @@
     },
     {
       "id": "link",
-      "icon": "🔗",
       "flag": "suspicious_link",
       "label": {
         "en": "Fake link",
@@ -205,7 +203,6 @@
     },
     {
       "id": "fee",
-      "icon": "💸",
       "flag": "upfront_fee",
       "label": {
         "en": "Upfront fee",
@@ -218,7 +215,6 @@
     },
     {
       "id": "passport",
-      "icon": "🛂",
       "flag": "personal_data",
       "label": {
         "en": "Passport grab",
@@ -231,7 +227,6 @@
     },
     {
       "id": "rush",
-      "icon": "⏰",
       "flag": "urgency",
       "label": {
         "en": "'Act now!'",
@@ -244,7 +239,6 @@
     },
     {
       "id": "prize",
-      "icon": "🎁",
       "flag": "too_good",
       "label": {
         "en": "Free prize",
@@ -257,7 +251,6 @@
     },
     {
       "id": "secret",
-      "icon": "🤫",
       "flag": "off_platform",
       "label": {
         "en": "'Keep it secret'",
@@ -272,7 +265,6 @@
   "dashPickups": [
     {
       "id": "verify",
-      "icon": "🛡️",
       "label": {
         "en": "Verify first",
         "lo": "ກວດສອບກ່ອນ"
@@ -284,7 +276,6 @@
     },
     {
       "id": "call",
-      "icon": "📞",
       "label": {
         "en": "Call the real number",
         "lo": "ໂທເບີແທ້"
@@ -296,7 +287,6 @@
     },
     {
       "id": "family",
-      "icon": "👪",
       "label": {
         "en": "Ask family",
         "lo": "ຖາມຄອບຄົວ"
@@ -308,7 +298,6 @@
     },
     {
       "id": "lock",
-      "icon": "🔒",
       "label": {
         "en": "Lock your PIN",
         "lo": "ລັອກ PIN"

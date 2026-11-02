@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Flag, ShieldCheck } from 'lucide-react';
 import mini from '../data/minigames.json';
 import { Guide, TrustMeter, TopBar, haptic, type Mood } from '../components/ui';
 import { DT } from '../i18n';
@@ -6,10 +7,13 @@ import { track } from '../lib/analytics';
 import type { Lang, QuickCard } from '../types';
 import type { GameResult } from './StoryGame';
 
-const cards = mini.quickfire as QuickCard[];
+const all = mini.quickfire as QuickCard[];
+const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x, y) => x[0] - y[0]).map(([, v]) => v);
 
 export function RealOrScam({ lang, onExit, onFinish }: { lang: Lang; onExit: () => void; onFinish: (r: GameResult) => void }) {
   const t = DT[lang];
+  // Fresh order every play so scam and safe cards never follow a pattern.
+  const [cards] = useState(() => shuffle(all));
   const [i, setI] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [score, setScore] = useState(0);
@@ -38,12 +42,12 @@ export function RealOrScam({ lang, onExit, onFinish }: { lang: Lang; onExit: () 
         <div key={card.id} className={`daily-in rounded-3xl border-2 p-4 bg-card shadow-sm ${answer === null ? 'border-border' : right ? 'border-green-500' : 'border-red-500 daily-shake'}`}>
           <p className="text-xs text-muted-foreground mb-2">{card.sender}</p>
           <p className="text-[17px] font-lao leading-relaxed">{card.text[lang]}</p>
-          {answer !== null && <p className="daily-pop mt-3 text-sm font-bold">{card.isScam ? `🚩 ${t.scam}` : `✅ ${t.safe}`}</p>}
+          {answer !== null && <p className={`daily-pop mt-3 text-sm font-bold flex items-center gap-1.5 ${card.isScam ? 'text-red-600' : 'text-green-700'}`}>{card.isScam ? <Flag size={16} /> : <ShieldCheck size={16} />}{card.isScam ? t.scam : t.safe}</p>}
         </div>
         {answer === null
           ? <div className="grid grid-cols-2 gap-3">
-              <button onClick={() => pick(true)} className="daily-btn rounded-2xl bg-red-500 text-white font-bold text-lg shadow-[0_4px_0_#991b1b]">🚩 {t.scam}</button>
-              <button onClick={() => pick(false)} className="daily-btn rounded-2xl bg-green-600 text-white font-bold text-lg shadow-[0_4px_0_#14532d]">✅ {t.safe}</button>
+              <button onClick={() => pick(true)} className="daily-btn rounded-2xl bg-red-500 text-white font-bold text-lg shadow-[0_4px_0_#991b1b] flex items-center justify-center gap-2"><Flag size={20} />{t.scam}</button>
+              <button onClick={() => pick(false)} className="daily-btn rounded-2xl bg-green-600 text-white font-bold text-lg shadow-[0_4px_0_#14532d] flex items-center justify-center gap-2"><ShieldCheck size={20} />{t.safe}</button>
             </div>
           : <button onClick={next} className="daily-btn daily-in w-full rounded-2xl daily-grad text-white font-bold">{t.next} →</button>}
       </div>
