@@ -2,7 +2,7 @@
 //  TYPES
 // ═══════════════════════════════════════════════════════════════════════════════
 export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla" | "rejected";
-export type ActiveView = "feed" | "explore" | "profile" | "assistant";
+export type ActiveView = "feed" | "explore" | "profile" | "assistant" | "daily";
 export type ProfileTab = "posts" | "topics" | "points";
 export type AuthView = "welcome" | "login" | "register" | "forgot";
 export type Lang = "en" | "lo";
@@ -27,6 +27,7 @@ export interface ScreeningLog {
 }
 
 export interface CheckResult {
+ source?:'training';
  verdict:'approved'|'caution'|'needs_expert';risk:'low'|'medium'|'high';labels:string[];on_topic:boolean;
  reasons:{text:string;evidence:string}[];suggested_edit:string;summary:string;language:Lang;checkedAt?:number;
 }
@@ -53,6 +54,7 @@ export interface Post {
   comments: number;
   reposts: number;
   warnedMe: number;
+  shares?: number;
   flagReason?: string;
   flagReasonLo?: string;
   correction?: string;
@@ -63,6 +65,8 @@ export interface Post {
   image?: string;
   hasVideo?: boolean;
   link?: string;
+  interactionPeople?: Author[];
+  originalPost?: Post;
   repostOf?: string;
   repostText?: string;
   // AI Screening fields

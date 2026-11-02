@@ -1,12 +1,13 @@
 import {MongoClient} from 'mongodb';
 import {randomUUID} from 'node:crypto';
-export const backupTables=['users','user_access','posts','comments','reactions','notifications','access_audit'];
+export const backupTables=['users','user_access','posts','comments','reactions','notifications','access_audit','shares'];
 export function collectBackup(db){
  db.exec('BEGIN');
  try{const tables=Object.fromEntries(backupTables.map(table=>[table,db.prepare(`SELECT * FROM ${table}`).all().map(row=>({...row}))]));db.exec('COMMIT');return tables;}
  catch(error){db.exec('ROLLBACK');throw error;}
 }
 export function restoreBackup(db,tables){
+ tables={...tables,shares:tables.shares||[]};
  if(backupTables.some(table=>!Array.isArray(tables[table])))throw new Error('Backup is incomplete.');
  if(db.prepare('SELECT COUNT(*) n FROM users').get().n||db.prepare('SELECT COUNT(*) n FROM posts').get().n)throw new Error('Restore requires an empty database.');
  db.exec('BEGIN');
@@ -34,5 +35,5 @@ export async function uploadBackup(tables){return withMongo(async db=>{
 export async function downloadBackup(backupId){return withMongo(async db=>{
  const manifest=await db.collection('sati_backup_manifests').findOne({backupId,status:'complete',version:1});
  if(!manifest)throw new Error('Backup was not found or is incomplete.');
- const tables={};for(const table of backupTables){tables[table]=(await db.collection('sati_backup_records').find({backupId,table}).toArray()).map(row=>row.payload);if(tables[table].length!==manifest.counts[table])throw new Error('Backup record counts do not match.');}return tables;
+ const tables={};for(const table of backupTables){tables[table]=(await db.collection('sati_backup_records').find({backupId,table}).toArray()).map(row=>row.payload);if(tables[table].length!==(manifest.counts[table]??(table==='shares'?0:undefined)))throw new Error('Backup record counts do not match.');}return tables;
 });}

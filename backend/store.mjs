@@ -1,3 +1,4 @@
+import {postLocked} from './post-lock.mjs';
 import {communityRanking} from './ranking.mjs';
 import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, mkdirSync } from 'node:fs';
@@ -30,20 +31,24 @@ export function authorView(row) {
   const hue=[...handle].reduce((value,char)=>(value*31+char.charCodeAt(0))%360,0);
   return { id: row.id, name: row.name, handle, initials: row.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase(), color: `hsl(${hue} 62% 42%)`, points: 0 };
 }
-export function postView(db, row, userId) {
+export function postView(db, row, userId, depth=0) {
   const post = JSON.parse(row.data);
   if (row.user_id) post.author = authorView(db.prepare('SELECT * FROM users WHERE id=?').get(row.user_id));
+  if(post.repostOf&&depth===0){const original=db.prepare('SELECT * FROM posts WHERE id=?').get(post.repostOf);if(original)post.originalPost=postView(db,original,userId,1);}
+  post.frozen=postLocked(db,row);
   const reactions = db.prepare('SELECT kind,COUNT(*) n FROM reactions WHERE post_id=? GROUP BY kind').all(row.id);
   post.likes = (post.likes || 0) + (reactions.find(r => r.kind === 'like')?.n || 0);
   post.warnedMe = (post.warnedMe || 0) + (reactions.find(r => r.kind === 'warned')?.n || 0);
   post.comments = db.prepare('SELECT COUNT(*) n FROM comments WHERE post_id=?').get(row.id).n;
   post.reposts = (post.reposts || 0) + db.prepare("SELECT COUNT(*) n FROM posts WHERE json_extract(data,'$.repostOf')=?").get(row.id).n;
+  post.interactionPeople=db.prepare('SELECT DISTINCT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? ORDER BY u.name LIMIT 3').all(row.id).map(authorView);
   const mine = userId ? db.prepare('SELECT kind FROM reactions WHERE post_id=? AND user_id=?').all(row.id, userId).map(r => r.kind) : [];
   const trustedEngagement=db.prepare('SELECT kind,COUNT(*) n FROM reactions WHERE post_id=? AND user_id<>? GROUP BY kind').all(row.id,row.user_id||'');
   const n=kind=>trustedEngagement.find(r=>r.kind===kind)?.n||0;
   const commenters=db.prepare('SELECT COUNT(DISTINCT user_id) n FROM comments WHERE post_id=? AND user_id<>?').get(row.id,row.user_id||'').n;
-  const reposters=db.prepare("SELECT COUNT(DISTINCT user_id) n FROM posts WHERE json_extract(data,'$.repostOf')=? AND user_id<>? AND COALESCE(json_extract(data,'$.frozen'),0)=0").get(row.id,row.user_id||'').n;
-  post.communityRanking=communityRanking(post,{likes:n('like'),helpful:n('warned'),commenters,reposters,createdAt:row.created});
+  post.shares=db.prepare('SELECT COUNT(*) n FROM shares WHERE post_id=?').get(row.id).n;
+  const sharers=db.prepare("SELECT COUNT(*) n FROM (SELECT user_id FROM shares WHERE post_id=? AND user_id<>? UNION SELECT user_id FROM posts WHERE json_extract(data,'$.repostOf')=? AND user_id<>? AND COALESCE(json_extract(data,'$.frozen'),0)=0)").get(row.id,row.user_id||'',row.id,row.user_id||'').n;
+  post.communityRanking=communityRanking(post,{likes:n('like'),helpful:n('warned'),commenters,reposters:sharers,createdAt:row.created});
   delete post.reviewerNotifications;
   delete post._expect;
   const hours=Math.floor((Date.now()-row.created)/3600000);post.timestamp=hours<1?'Just now':hours<24?`${hours}h`:`${Math.floor(hours/24)}d`;

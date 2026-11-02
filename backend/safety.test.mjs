@@ -59,9 +59,9 @@ test('checking progress follows actual provider completion and applies evidence 
  assert.equal((await task).verdict,'approved');assert.deepEqual(stages,['read','links','patterns','verdict']);
 });
 
-test('caution stays visible; needs_expert freezes rather than inventing approvals',async()=>{
+test('caution and needs_expert stay visible with interactions locked',async()=>{
  const one=await checkPost({content:'I like this coffee shop.',contentLanguage:'en'},{check:async()=>guardVerdict(caution,'I like this coffee shop.')});
- assert.equal(one.state,'clean');assert.equal(one.frozen,false);assert.equal(one.check.verdict,'caution');
+ assert.equal(one.state,'flagged');assert.equal(one.frozen,true);assert.equal(one.check.verdict,'caution');
  const text='Send your passport.';
  const two=await checkPost({content:text,contentLanguage:'en'},{check:async()=>guardVerdict({...caution,verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:''},text)});
  assert.equal(two.state,'flagged');assert.equal(two.frozen,true);
@@ -89,9 +89,9 @@ test('post stream sends real stages then result; model failure sends no success'
  }finally{await app.close();}
 });
 
-test('expert-review posts block actions until an authorised review clears the freeze',async()=>{
+for(const level of ['caution','needs_expert']) test(`${level} posts block actions until an authorised review clears the freeze`,async()=>{
  const text='Send your passport.';
- const verdict=guardVerdict({...caution,verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:''},text);
+ const verdict=guardVerdict({...caution,verdict:level,risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:level==='caution'?'Remove the request for a passport.':''},text);
  const app=createApp({database:':memory:',seed:false,adminEmails:['reviewer@invalid.example'],check:post=>checkPost(post,{check:async()=>verdict})});
  await new Promise(resolve=>app.server.listen(0,'127.0.0.1',resolve));const base=`http://127.0.0.1:${app.server.address().port}/api`;
  const call=async(path,data,token,method='POST')=>{const response=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},body:JSON.stringify(data)});return {status:response.status,value:await response.json()};};
