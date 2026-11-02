@@ -37,3 +37,5 @@ export const ageHours = (post:AdminPost) => (Date.now()-(post.createdAt||Date.no
 export const severity = (post:AdminPost) => post.check?.verdict==='caution'?'yellow':'red';
 // Red before yellow, then oldest first, so the riskiest SLA breaches surface at the top.
 export const byPriority = (a:AdminPost,b:AdminPost) => (severity(a)===severity(b)?0:severity(a)==='red'?-1:1) || (a.createdAt||0)-(b.createdAt||0);
+export const TOPIC_COLORS=['var(--topic-job)','var(--topic-invest)','var(--topic-traffic)','var(--topic-romance)','var(--topic-other)'];
+export const topicIndex = (post:AdminPost) => {const tags=post.tags.join(' ').toLowerCase();return tags.includes('job')?0:tags.includes('crypto')||tags.includes('invest')?1:tags.includes('trafficking')||tags.includes('border')?2:tags.includes('romance')?3:4;};
