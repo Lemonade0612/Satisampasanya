@@ -1,0 +1,291 @@
+{
+  "week": "2026-W45",
+  "scenarios": [
+    {
+      "id": "job-whatsapp-01",
+      "scamType": "fake_job",
+      "status": "verified",
+      "verifiedBy": "Sati Expert Panel",
+      "verifiedAt": "2026-10-28",
+      "needsNativeReview": true,
+      "channel": "whatsapp",
+      "contact": "Golden Hands Agency",
+      "title": { "en": "The dream job message", "lo": "ຂໍ້ຄວາມວຽກໃນຝັນ" },
+      "intro": { "en": "A number you don't know messages you on WhatsApp.", "lo": "ເບີທີ່ບໍ່ຮູ້ຈັກສົ່ງຂໍ້ຄວາມຫາທ່ານໃນ WhatsApp." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "Hi! We saw your profile 😊 Restaurant job in Bangkok, 15,000,000 kip/month. No experience needed!", "lo": "ສະບາຍດີ! ພວກເຮົາເຫັນໂປຣໄຟລທ່ານ 😊 ວຽກຮ້ານອາຫານຢູ່ບາງກອກ ເດືອນລະ 15,000,000 ກີບ. ບໍ່ຕ້ອງມີປະສົບການ!" } },
+            { "from": "them", "text": { "en": "Only 3 places left. Reply today!", "lo": "ເຫຼືອພຽງ 3 ບ່ອນ. ຕອບມື້ນີ້!" } }
+          ],
+          "prompt": { "en": "What do you do?", "lo": "ທ່ານຈະເຮັດແນວໃດ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "\"Yes! How do I apply?\"", "lo": "\"ແມ່ນ! ສະໝັກແນວໃດ?\"" }, "consequence": { "en": "They now know you're interested. Next they ask for a 'processing fee'.", "lo": "ເຂົາເຈົ້າຮູ້ວ່າທ່ານສົນໃຈ. ຕໍ່ໄປເຂົາຈະຂໍ 'ຄ່າດຳເນີນການ'." } },
+            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Ask for the company name and look it up", "lo": "ຖາມຊື່ບໍລິສັດ ແລ້ວຄົ້ນຫາ" }, "consequence": { "en": "Smart. Real employers have a registered name, address and office you can check.", "lo": "ສະຫຼາດ. ນາຍຈ້າງແທ້ມີຊື່ທີ່ຈົດທະບຽນ, ທີ່ຢູ່ ແລະ ຫ້ອງການທີ່ກວດສອບໄດ້." } },
+            { "id": "c", "action": "ignore", "correct": true, "text": { "en": "Ignore it", "lo": "ບໍ່ສົນໃຈ" }, "consequence": { "en": "Safe. Unknown numbers offering high pay are a top warning sign.", "lo": "ປອດໄພ. ເບີແປກທີ່ສະເໜີເງິນເດືອນສູງແມ່ນສັນຍານອັນຕະລາຍ." } }
+          ]
+        },
+        {
+          "id": "s2",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "We are Golden Hands, very famous! Just send 1,500,000 kip for visa and ticket. We refund on your first salary.", "lo": "ພວກເຮົາແມ່ນ Golden Hands, ມີຊື່ສຽງຫຼາຍ! ພຽງແຕ່ໂອນ 1,500,000 ກີບ ຄ່າວີຊາ ແລະ ປີ້. ພວກເຮົາຈະຄືນໃຫ້ໃນເງິນເດືອນທຳອິດ." } }
+          ],
+          "prompt": { "en": "They want money first. Your move?", "lo": "ເຂົາຢາກໄດ້ເງິນກ່ອນ. ທ່ານຈະເຮັດຫຍັງ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Send the money", "lo": "ໂອນເງິນ" }, "consequence": { "en": "The number blocks you. The money is gone, and there was never a job.", "lo": "ເບີນັ້ນບລັອກທ່ານ. ເງິນຫາຍ ແລະ ບໍ່ເຄີຍມີວຽກ." } },
+            { "id": "b", "action": "report", "correct": true, "text": { "en": "Refuse and report on Sati", "lo": "ປະຕິເສດ ແລະ ລາຍງານໃນ Sati" }, "consequence": { "en": "Legal jobs never charge you to get hired. Your report warns others.", "lo": "ວຽກຖືກກົດໝາຍບໍ່ເກັບເງິນເພື່ອຈ້າງ. ລາຍງານຂອງທ່ານເຕືອນຄົນອື່ນ." } }
+          ]
+        },
+        {
+          "id": "s3",
+          "kind": "flags",
+          "prompt": { "en": "Tap every red flag in the first message.", "lo": "ແຕະທຸກສັນຍານອັນຕະລາຍໃນຂໍ້ຄວາມ." },
+          "segments": [
+            { "text": { "en": "Hi! We saw your profile. ", "lo": "ສະບາຍດີ! ເຫັນໂປຣໄຟລທ່ານ. " } },
+            { "text": { "en": "15,000,000 kip/month", "lo": "ເດືອນລະ 15,000,000 ກີບ" }, "flag": "too_good" },
+            { "text": { "en": " for restaurant work. ", "lo": " ສຳລັບວຽກຮ້ານອາຫານ. " } },
+            { "text": { "en": "No experience needed!", "lo": "ບໍ່ຕ້ອງມີປະສົບການ!" }, "flag": "too_good" },
+            { "text": { "en": " ", "lo": " " } },
+            { "text": { "en": "Only 3 places left, reply today!", "lo": "ເຫຼືອ 3 ບ່ອນ ຕອບມື້ນີ້!" }, "flag": "urgency" },
+            { "text": { "en": " Send ", "lo": " ໂອນ " } },
+            { "text": { "en": "1,500,000 kip for visa", "lo": "1,500,000 ກີບ ຄ່າວີຊາ" }, "flag": "upfront_fee" },
+            { "text": { "en": " to ", "lo": " ໃຫ້ " } },
+            { "text": { "en": "\"very famous\" Golden Hands", "lo": "Golden Hands \"ທີ່ມີຊື່ສຽງ\"" }, "flag": "unverified_identity" }
+          ]
+        }
+      ],
+      "redFlags": ["too_good", "urgency", "upfront_fee", "unverified_identity"],
+      "explanation": { "en": "High pay, no experience, a rush, and a fee before you start: this is the classic fake job recipe.", "lo": "ເງິນເດືອນສູງ, ບໍ່ຕ້ອງມີປະສົບການ, ເລັ່ງ, ແລະ ເກັບເງິນກ່ອນ: ນີ້ແມ່ນສູດວຽກປອມ." }
+    },
+    {
+      "id": "prize-dm-01",
+      "scamType": "prize",
+      "status": "verified",
+      "verifiedBy": "Sati Expert Panel",
+      "verifiedAt": "2026-10-29",
+      "needsNativeReview": true,
+      "channel": "messenger",
+      "contact": "SuperLucky Giveaway ✔",
+      "title": { "en": "You won a phone!", "lo": "ທ່ານຖືກລາງວັນໂທລະສັບ!" },
+      "intro": { "en": "A page with a blue tick sends you a DM.", "lo": "ເພຈທີ່ມີເຄື່ອງໝາຍສີຟ້າສົ່ງຂໍ້ຄວາມຫາທ່ານ." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "🎉 CONGRATS! You won a new smartphone in our lucky draw!", "lo": "🎉 ຍິນດີນຳ! ທ່ານຖືກລາງວັນໂທລະສັບໃໝ່!" } },
+            { "from": "them", "text": { "en": "Pay 99,000 kip delivery within 1 hour or the prize goes to someone else.", "lo": "ຈ່າຍຄ່າສົ່ງ 99,000 ກີບ ພາຍໃນ 1 ຊົ່ວໂມງ ບໍ່ດັ່ງນັ້ນລາງວັນຈະໄປຫາຄົນອື່ນ." } }
+          ],
+          "prompt": { "en": "You never entered a draw. What now?", "lo": "ທ່ານບໍ່ເຄີຍເຂົ້າຮ່ວມ. ເຮັດແນວໃດ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Pay quickly, it's cheap", "lo": "ຈ່າຍໄວໆ ລາຄາຖືກ" }, "consequence": { "en": "Next they ask for 'tax' and 'insurance'. No phone ever arrives.", "lo": "ຕໍ່ໄປເຂົາຂໍ 'ພາສີ' ແລະ 'ປະກັນ'. ບໍ່ມີໂທລະສັບມາ." } },
+            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Check the page's age and real followers", "lo": "ກວດອາຍຸເພຈ ແລະ ຜູ້ຕິດຕາມແທ້" }, "consequence": { "en": "The page was made 5 days ago. The blue tick is just an emoji in its name.", "lo": "ເພຈສ້າງ 5 ມື້ກ່ອນ. ເຄື່ອງໝາຍສີຟ້າແມ່ນພຽງອີໂມຈິໃນຊື່." } },
+            { "id": "c", "action": "report", "correct": true, "text": { "en": "Report and block", "lo": "ລາຍງານ ແລະ ບລັອກ" }, "consequence": { "en": "You can't win a draw you never entered.", "lo": "ທ່ານບໍ່ສາມາດຖືກລາງວັນທີ່ບໍ່ເຄີຍເຂົ້າຮ່ວມ." } }
+          ]
+        },
+        {
+          "id": "s2",
+          "kind": "flags",
+          "prompt": { "en": "Tap the red flags.", "lo": "ແຕະສັນຍານອັນຕະລາຍ." },
+          "segments": [
+            { "text": { "en": "SuperLucky Giveaway ✔", "lo": "SuperLucky Giveaway ✔" }, "flag": "unverified_identity" },
+            { "text": { "en": ": You ", "lo": ": ທ່ານ" } },
+            { "text": { "en": "won a new smartphone", "lo": "ຖືກລາງວັນໂທລະສັບໃໝ່" }, "flag": "too_good" },
+            { "text": { "en": "! ", "lo": "! " } },
+            { "text": { "en": "Pay 99,000 kip delivery", "lo": "ຈ່າຍຄ່າສົ່ງ 99,000 ກີບ" }, "flag": "upfront_fee" },
+            { "text": { "en": " ", "lo": " " } },
+            { "text": { "en": "within 1 hour", "lo": "ພາຍໃນ 1 ຊົ່ວໂມງ" }, "flag": "urgency" },
+            { "text": { "en": ". Thank you for joining!", "lo": ". ຂອບໃຈທີ່ເຂົ້າຮ່ວມ!" } }
+          ]
+        }
+      ],
+      "redFlags": ["unverified_identity", "too_good", "upfront_fee", "urgency"],
+      "explanation": { "en": "Real prizes never cost money to claim. A fake tick, a fee and a timer are the trap.", "lo": "ລາງວັນແທ້ບໍ່ຕ້ອງເສຍເງິນ. ເຄື່ອງໝາຍປອມ, ຄ່າທຳນຽມ ແລະ ກຳນົດເວລາແມ່ນກັບດັກ." }
+    },
+    {
+      "id": "bank-sms-01",
+      "scamType": "bank_phishing",
+      "status": "verified",
+      "verifiedBy": "Sati Expert Panel",
+      "verifiedAt": "2026-10-30",
+      "needsNativeReview": true,
+      "channel": "sms",
+      "contact": "BLUELOTUS",
+      "title": { "en": "Your account is locked", "lo": "ບັນຊີຂອງທ່ານຖືກລັອກ" },
+      "intro": { "en": "An SMS appears to come from your bank, BlueLotus Bank (fictional).", "lo": "SMS ຄືວ່າມາຈາກທະນາຄານ BlueLotus (ສົມມຸດ)." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "BlueLotus: Your account is LOCKED. Verify now: bluelotus-verify.example/login", "lo": "BlueLotus: ບັນຊີທ່ານຖືກລັອກ. ຢືນຢັນດຽວນີ້: bluelotus-verify.example/login" } }
+          ],
+          "prompt": { "en": "What do you do?", "lo": "ທ່ານຈະເຮັດແນວໃດ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Tap the link and log in", "lo": "ກົດລິ້ງ ແລະ ເຂົ້າສູ່ລະບົບ" }, "consequence": { "en": "It's a copy of the bank page. Your password goes straight to the scammer.", "lo": "ມັນແມ່ນໜ້າປອມ. ລະຫັດຜ່ານຂອງທ່ານໄປຫາຜູ້ຫຼອກລວງ." } },
+            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Open the official bank app instead", "lo": "ເປີດແອັບທະນາຄານທາງການແທນ" }, "consequence": { "en": "Your account is fine. Always check via the app or the number on your card.", "lo": "ບັນຊີທ່ານປົກກະຕິ. ກວດຜ່ານແອັບ ຫຼື ເບີຢູ່ຫຼັງບັດ." } }
+          ]
+        },
+        {
+          "id": "s2",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "BlueLotus staff here. Please read me the 6-digit OTP we just sent to unlock you.", "lo": "ພະນັກງານ BlueLotus. ກະລຸນາບອກລະຫັດ OTP 6 ຕົວທີ່ສົ່ງໄປ." } }
+          ],
+          "prompt": { "en": "Someone calls asking for your OTP.", "lo": "ມີຄົນໂທມາຂໍ OTP." },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Read the code", "lo": "ບອກລະຫັດ" }, "consequence": { "en": "The OTP lets them move money out of your account in seconds.", "lo": "OTP ເຮັດໃຫ້ເຂົາໂອນເງິນອອກຈາກບັນຊີທ່ານພາຍໃນວິນາທີ." } },
+            { "id": "b", "action": "ignore", "correct": true, "text": { "en": "Hang up. Banks never ask for OTP", "lo": "ວາງສາຍ. ທະນາຄານບໍ່ເຄີຍຂໍ OTP" }, "consequence": { "en": "Correct. Nobody real ever needs your OTP.", "lo": "ຖືກຕ້ອງ. ບໍ່ມີໃຜແທ້ທີ່ຕ້ອງການ OTP ຂອງທ່ານ." } }
+          ]
+        },
+        {
+          "id": "s3",
+          "kind": "flags",
+          "prompt": { "en": "Tap the red flags.", "lo": "ແຕະສັນຍານອັນຕະລາຍ." },
+          "segments": [
+            { "text": { "en": "BlueLotus: Your account is ", "lo": "BlueLotus: ບັນຊີທ່ານ" } },
+            { "text": { "en": "LOCKED. Verify now", "lo": "ຖືກລັອກ. ຢືນຢັນດຽວນີ້" }, "flag": "urgency" },
+            { "text": { "en": ": ", "lo": ": " } },
+            { "text": { "en": "bluelotus-verify.example", "lo": "bluelotus-verify.example" }, "flag": "suspicious_link" },
+            { "text": { "en": " and send the ", "lo": " ແລະ ສົ່ງ" } },
+            { "text": { "en": "6-digit OTP", "lo": "OTP 6 ຕົວ" }, "flag": "personal_data" }
+          ]
+        }
+      ],
+      "redFlags": ["urgency", "suspicious_link", "personal_data"],
+      "explanation": { "en": "Banks never send login links by SMS and never ask for your OTP. Use the official app.", "lo": "ທະນາຄານບໍ່ສົ່ງລິ້ງເຂົ້າລະບົບທາງ SMS ແລະ ບໍ່ຂໍ OTP. ໃຊ້ແອັບທາງການ." }
+    },
+    {
+      "id": "invest-tiktok-01",
+      "scamType": "investment",
+      "status": "verified",
+      "verifiedBy": "Sati Expert Panel",
+      "verifiedAt": "2026-10-31",
+      "needsNativeReview": true,
+      "channel": "tiktok",
+      "contact": "Mina_trades",
+      "title": { "en": "The friendly trader", "lo": "ນັກເທຣດທີ່ເປັນມິດ" },
+      "intro": { "en": "Someone you met in comments wants to help you 'get rich'.", "lo": "ຄົນທີ່ຮູ້ຈັກໃນຄອມເມັນຢາກຊ່ວຍໃຫ້ທ່ານ 'ລວຍ'." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "I made 30% in one week with this app 📈 Let's move to Telegram, I'll teach you!", "lo": "ຂ້ອຍໄດ້ກຳໄລ 30% ໃນອາທິດດຽວ 📈 ໄປລົມໃນ Telegram ເດີ ຂ້ອຍຈະສອນ!" } }
+          ],
+          "prompt": { "en": "How do you respond?", "lo": "ທ່ານຕອບແນວໃດ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Move to Telegram", "lo": "ໄປ Telegram" }, "consequence": { "en": "Off the platform, nobody can see or flag the scam. You'll be asked to 'deposit to start'.", "lo": "ອອກນອກແພລດຟອມ ບໍ່ມີໃຜເຫັນ ຫຼື ເຕືອນໄດ້. ເຂົາຈະຂໍໃຫ້ 'ຝາກເງິນເພື່ອເລີ່ມ'." } },
+            { "id": "b", "action": "ignore", "correct": true, "text": { "en": "No thanks, guaranteed profit isn't real", "lo": "ບໍ່ເປັນຫຍັງ, ກຳໄລຮັບປະກັນບໍ່ມີແທ້" }, "consequence": { "en": "Right. No real investment promises big fixed returns.", "lo": "ຖືກ. ການລົງທຶນແທ້ບໍ່ສັນຍາກຳໄລສູງແບບຄົງທີ່." } }
+          ]
+        },
+        {
+          "id": "s2",
+          "kind": "flags",
+          "prompt": { "en": "Tap the red flags.", "lo": "ແຕະສັນຍານອັນຕະລາຍ." },
+          "segments": [
+            { "text": { "en": "I made ", "lo": "ຂ້ອຍໄດ້" } },
+            { "text": { "en": "30% in one week", "lo": "ກຳໄລ 30% ໃນອາທິດດຽວ" }, "flag": "too_good" },
+            { "text": { "en": " with this app. ", "lo": " ກັບແອັບນີ້. " } },
+            { "text": { "en": "Let's move to Telegram", "lo": "ໄປລົມໃນ Telegram" }, "flag": "off_platform" },
+            { "text": { "en": ", just ", "lo": ", ພຽງ" } },
+            { "text": { "en": "deposit 500,000 kip to start", "lo": "ຝາກ 500,000 ກີບເພື່ອເລີ່ມ" }, "flag": "upfront_fee" }
+          ]
+        }
+      ],
+      "redFlags": ["too_good", "off_platform", "upfront_fee"],
+      "explanation": { "en": "A new 'friend', huge returns, and a push to a private app: pause and check before any deposit.", "lo": "'ໝູ່' ໃໝ່, ກຳໄລສູງ, ແລະ ດຶງໄປແອັບສ່ວນຕົວ: ຢຸດ ແລະ ກວດກ່ອນຝາກເງິນ." }
+    },
+    {
+      "id": "boss-recruiter-01",
+      "scamType": "overseas_recruitment",
+      "status": "verified",
+      "verifiedBy": "Sati Expert Panel (real reported pattern, details changed)",
+      "verifiedAt": "2026-11-01",
+      "needsNativeReview": true,
+      "boss": true,
+      "channel": "video",
+      "contact": "Mr. Kevin, SilverRiver Recruitment",
+      "title": { "en": "BOSS: The overseas recruiter", "lo": "ດ່ານບອສ: ນາຍໜ້າຕ່າງປະເທດ" },
+      "intro": { "en": "Based on a pattern verified from real reports. A recruiter video-calls you about an office job abroad.", "lo": "ອີງໃສ່ຮູບແບບທີ່ຢືນຢັນຈາກລາຍງານແທ້. ນາຍໜ້າໂທວິດີໂອກ່ຽວກັບວຽກຫ້ອງການຕ່າງປະເທດ." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "📹 Customer service job, free flight, free housing, $1,200/month. You just need to type fast.", "lo": "📹 ວຽກບໍລິການລູກຄ້າ, ປີ້ຍົນຟຣີ, ທີ່ພັກຟຣີ, $1,200/ເດືອນ. ພຽງແຕ່ພິມໄວ." } },
+            { "from": "them", "text": { "en": "Don't tell your family yet, it's a surprise. Visa is arranged, you fly Friday.", "lo": "ຢ່າບອກຄອບຄົວເທື່ອ ໃຫ້ເປັນເລື່ອງແປກໃຈ. ວີຊາຈັດໃຫ້ແລ້ວ, ບິນວັນສຸກ." } }
+          ],
+          "prompt": { "en": "What's your move?", "lo": "ທ່ານຈະເຮັດຫຍັງ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Agree, keep it secret", "lo": "ຕົກລົງ, ເກັບເປັນຄວາມລັບ" }, "consequence": { "en": "Secrecy cuts you off from people who could spot the danger. This is how people get trapped.", "lo": "ຄວາມລັບຕັດທ່ານອອກຈາກຄົນທີ່ອາດເຫັນອັນຕະລາຍ. ນີ້ແມ່ນວິທີທີ່ຄົນຖືກກັກຂັງ." } },
+            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Tell family and check the agency with the labour office", "lo": "ບອກຄອບຄົວ ແລະ ກວດບໍລິສັດກັບຫ້ອງການແຮງງານ" }, "consequence": { "en": "SilverRiver isn't a licensed agency. Talking to people you trust kept you safe.", "lo": "SilverRiver ບໍ່ແມ່ນບໍລິສັດທີ່ມີໃບອະນຸຍາດ. ການລົມກັບຄົນທີ່ໄວ້ໃຈເຮັດໃຫ້ທ່ານປອດໄພ." } }
+          ]
+        },
+        {
+          "id": "s2",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "At the airport, give your passport to our driver. We keep it safe for you.", "lo": "ຢູ່ສະໜາມບິນ ໃຫ້ໜັງສືຜ່ານແດນກັບຄົນຂັບລົດ. ພວກເຮົາຈະເກັບໄວ້ໃຫ້." } }
+          ],
+          "prompt": { "en": "They want your passport.", "lo": "ເຂົາຢາກໄດ້ໜັງສືຜ່ານແດນ." },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Hand it over", "lo": "ມອບໃຫ້" }, "consequence": { "en": "Without your passport you can't leave or get help. Never give it to an employer.", "lo": "ບໍ່ມີໜັງສືຜ່ານແດນ ທ່ານອອກ ຫຼື ຂໍຄວາມຊ່ວຍເຫຼືອບໍ່ໄດ້. ຢ່າມອບໃຫ້ນາຍຈ້າງ." } },
+            { "id": "b", "action": "report", "correct": true, "text": { "en": "Keep it and report to a hotline", "lo": "ເກັບໄວ້ ແລະ ລາຍງານສາຍດ່ວນ" }, "consequence": { "en": "Your ID always stays with you. Reporting helps protect the next person.", "lo": "ບັດຂອງທ່ານຕ້ອງຢູ່ກັບທ່ານສະເໝີ. ການລາຍງານຊ່ວຍປົກປ້ອງຄົນຕໍ່ໄປ." } }
+          ]
+        },
+        {
+          "id": "s3",
+          "kind": "flags",
+          "prompt": { "en": "Final round: tap every red flag.", "lo": "ຮອບສຸດທ້າຍ: ແຕະທຸກສັນຍານອັນຕະລາຍ." },
+          "segments": [
+            { "text": { "en": "Customer service job, ", "lo": "ວຽກບໍລິການລູກຄ້າ, " } },
+            { "text": { "en": "free flight, free housing, $1,200", "lo": "ປີ້ຟຣີ ທີ່ພັກຟຣີ $1,200" }, "flag": "too_good" },
+            { "text": { "en": ". ", "lo": ". " } },
+            { "text": { "en": "Don't tell your family", "lo": "ຢ່າບອກຄອບຄົວ" }, "flag": "off_platform" },
+            { "text": { "en": ". ", "lo": ". " } },
+            { "text": { "en": "You fly Friday", "lo": "ບິນວັນສຸກ" }, "flag": "urgency" },
+            { "text": { "en": ". ", "lo": ". " } },
+            { "text": { "en": "Give your passport to our driver", "lo": "ໃຫ້ໜັງສືຜ່ານແດນກັບຄົນຂັບ" }, "flag": "personal_data" },
+            { "text": { "en": ". — ", "lo": ". — " } },
+            { "text": { "en": "Mr. Kevin, no company address", "lo": "Mr. Kevin, ບໍ່ມີທີ່ຢູ່ບໍລິສັດ" }, "flag": "unverified_identity" }
+          ]
+        }
+      ],
+      "redFlags": ["too_good", "off_platform", "urgency", "personal_data", "unverified_identity"],
+      "explanation": { "en": "Secrecy, a rush, and taking your passport are serious danger signs. Check agencies with the labour office and keep your documents.", "lo": "ຄວາມລັບ, ການເລັ່ງ, ແລະ ການເອົາໜັງສືຜ່ານແດນ ແມ່ນສັນຍານອັນຕະລາຍຮ້າຍແຮງ. ກວດບໍລິສັດກັບຫ້ອງການແຮງງານ ແລະ ເກັບເອກະສານໄວ້ເອງ." }
+    },
+    {
+      "id": "draft-scholarship-01",
+      "scamType": "fake_job",
+      "status": "draft",
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "needsNativeReview": true,
+      "source": "ai_draft",
+      "channel": "messenger",
+      "contact": "Global Scholar Fund",
+      "title": { "en": "The 'free' scholarship", "lo": "ທຶນການສຶກສາ 'ຟຣີ'" },
+      "intro": { "en": "AI draft: a scholarship that asks for an application fee.", "lo": "ຮ່າງ AI: ທຶນການສຶກສາທີ່ຂໍຄ່າສະໝັກ." },
+      "steps": [
+        {
+          "id": "s1",
+          "kind": "chat",
+          "messages": [
+            { "from": "them", "text": { "en": "You're selected for a full scholarship abroad! Pay 300,000 kip application fee today.", "lo": "ທ່ານຖືກຄັດເລືອກຮັບທຶນເຕັມ! ຈ່າຍຄ່າສະໝັກ 300,000 ກີບມື້ນີ້." } }
+          ],
+          "prompt": { "en": "What do you do?", "lo": "ທ່ານຈະເຮັດແນວໃດ?" },
+          "choices": [
+            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Pay the fee", "lo": "ຈ່າຍຄ່າສະໝັກ" }, "consequence": { "en": "There's no scholarship. Only the fee was real.", "lo": "ບໍ່ມີທຶນ. ມີແຕ່ຄ່າທຳນຽມທີ່ແທ້." } },
+            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Check with your school", "lo": "ກວດກັບໂຮງຮຽນ" }, "consequence": { "en": "Real scholarships are listed by schools and ministries.", "lo": "ທຶນແທ້ມີປະກາດໂດຍໂຮງຮຽນ ແລະ ກະຊວງ." } }
+          ]
+        }
+      ],
+      "redFlags": ["upfront_fee", "urgency", "too_good"],
+      "explanation": { "en": "You can't be 'selected' for something you never applied for.", "lo": "ທ່ານບໍ່ສາມາດ 'ຖືກຄັດເລືອກ' ສຳລັບສິ່ງທີ່ບໍ່ເຄີຍສະໝັກ." }
+    }
+  ]
+}
