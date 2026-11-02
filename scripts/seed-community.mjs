@@ -22,7 +22,7 @@ try{
  // Preserve original records and their discussions in the database, outside the current feed.
  for(const row of db.prepare('SELECT id,data FROM posts').all()){
   const post=JSON.parse(row.data);
-  if((post.isDemo||post.seed)&&!row.id.startsWith('sati-community-')){
+  if((post.isDemo||post.seed)&&!post.seedInteraction&&!row.id.startsWith('sati-community-')){
    post.seedArchived=true;post.seed=true;delete post.image;delete post.isDemo;
    db.prepare('UPDATE posts SET data=? WHERE id=?').run(JSON.stringify(post),row.id);
   }else if(!post.seedArchived){
@@ -34,7 +34,7 @@ try{
  for(let i=0;i<rows.length;i++){
   const entry=rows[i],id=`sati-community-${entry.id}`;
   const existingRow=db.prepare('SELECT data,user_id FROM posts WHERE id=?').get(id);
-  let user=existingRow?.user_id?db.prepare('SELECT * FROM users WHERE id=?').get(existingRow.user_id):entry.id>13?available.find(row=>JSON.parse(row.profile).handle===entry.handle):available.find(row=>!usedUsers.has(row.id));
+  let user=entry.id>13?available.find(row=>JSON.parse(row.profile).handle===entry.handle):existingRow?.user_id?db.prepare('SELECT * FROM users WHERE id=?').get(existingRow.user_id):available.find(row=>!usedUsers.has(row.id));
   if(!user){
    const userId=randomUUID(),email=`community.${entry.id}@sati.invalid`,password=randomBytes(18).toString('base64url'),salt=randomBytes(16).toString('hex');
    db.prepare('INSERT INTO users(id,email,name,password,salt,profile) VALUES (?,?,?,?,?,?)').run(userId,email,entry.name,await passwordHash(password,salt),salt,JSON.stringify({seed:true,handle:entry.handle}));
@@ -56,13 +56,13 @@ try{
    execFileSync('sips',['-Z','800','-s','format','jpeg','frontend/public/images/'+entry.image,'--out',path],{stdio:'pipe'});
    post.image='data:image/jpeg;base64,'+readFileSync(path).toString('base64');post.imageKey=entry.image;
   }
-  if(cached?.check&&cached.checkFingerprint===fingerprint&&!process.argv.includes('--recheck')){post={...post,check:cached.check,screening:cached.screening,state:cached.state,frozen:cached.frozen,checkPending:false,checkFingerprint:fingerprint};}
+  if(cached?.check&&(cached.checkFingerprint===fingerprint||prepare)&&!process.argv.includes('--recheck')){post={...post,check:cached.check,screening:cached.screening,state:cached.state,frozen:cached.frozen,checkPending:false,checkFingerprint:prepare?cached.checkFingerprint:fingerprint};}
   else if(!prepare){
    post=await checkPost(post);post.checkPending=false;post.checkFingerprint=fingerprint;
   }
   if(cached?.review){post.review=cached.review;post.correction=cached.correction;post.state=cached.state;post.frozen=cached.frozen;}
   if(post.check&&entry._expect)report.push({id:entry.id,expected:entry._expect,actual:{verdict:post.check.verdict,labels:post.check.labels},verdictMatch:post.check.verdict===entry._expect.verdict,evidenceValid:post.check.reasons.every(reason=>entry.text.includes(reason.evidence)),languageValid:post.check.language===entry.lang});
-  db.prepare('INSERT INTO posts VALUES (?,?,?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data').run(id,user.id,JSON.stringify(post),Date.now()-i*3600000);
+  db.prepare('INSERT INTO posts VALUES (?,?,?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data,user_id=excluded.user_id').run(id,user.id,JSON.stringify(post),Date.now()-i*3600000);
  }
  writeFileSync('backend/data/demo-accounts.json',JSON.stringify(credentials,null,2)+'\n',{mode:0o600});
  writeFileSync('backend/data/checker-acceptance.json',JSON.stringify(report,null,2)+'\n',{mode:0o600});

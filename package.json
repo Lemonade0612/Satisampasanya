@@ -27,7 +27,9 @@
     "start:backend": "node scripts/start-service.mjs backend",
     "mongo:backup": "node scripts/mongo-backup.mjs backup",
     "seed:community": "node scripts/seed-community.mjs",
-    "check:acceptance": "node scripts/evaluate-community.mjs"
+    "check:acceptance": "node scripts/evaluate-community.mjs",
+    "seed:users": "node --env-file-if-exists=.env.local scripts/create-test-users.mjs",
+    "seed:reviews": "node scripts/seed-review-posts.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.5.3",
