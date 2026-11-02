@@ -1,5 +1,5 @@
 import { T } from "../../lib/translations";
-import { Home, Search, Plus, MessageCircle, User } from "lucide-react";
+import { Home, Search, Plus, MessageCircle, User, Gamepad2 } from "lucide-react";
 import type { ActiveView, Lang } from "../../types";
 
 export function BottomNav({ active, onChange, lang, onCompose }: {
@@ -23,6 +23,11 @@ export function BottomNav({ active, onChange, lang, onCompose }: {
       <button onClick={() => onChange("explore")} className={`flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-14 px-1 py-1.5 rounded-xl transition-colors ${active === "explore" ? "text-primary" : "text-muted-foreground"}`}>
         <Search size={24} />
         <span className="text-xs font-medium">{t.nav_explore}</span>
+      </button>
+
+      <button onClick={() => onChange("daily")} className={`flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-14 px-1 py-1.5 rounded-xl transition-colors ${active === "daily" ? "text-primary" : "text-muted-foreground"}`}>
+        <Gamepad2 size={24} />
+        <span className="text-xs font-medium">{lang === "lo" ? "ເກມ" : "Daily"}</span>
       </button>
 
       <button aria-label={t.compose_post} onClick={onCompose} className="w-14 h-14 -mt-3 rounded-full text-white flex items-center justify-center active:scale-95 transition-transform"

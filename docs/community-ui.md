@@ -31,3 +31,23 @@ AI checks post text and a separately supplied source URL before publication. An 
 High-risk posts keep their interactions locked pending review. Active reviewers and admins receive a persisted notification when review is requested and one reminder after 48 hours. The backend sweeps once per minute and on startup, including overdue work after downtime. Expiry never unlocks a post. Rejecting retains the original post, displays the correction note and keeps the lock. Approving can unlock it. Reviewer notices are internal app notifications, not external email.
 
 Three more photos have separate captions, bringing the prepared set to 26 posts and 21 unique photo attachments. Typed contact details use `.invalid` links and all-zero phone numbers. Six images with printed contact details were edited with the imagegen skill to replace/remove those details. All other source photos were retained. Edited photos replace their source asset in the public directory and are not duplicated in the feed.
+
+## October 14 feed update
+
+The top risk legend is removed; per-post labels remain. Risk explanations collapse into one details panel, repeated evidence is shown once, and the checker is asked for shorter explanations rather than copies of quotes. The page canvas and launch background are white, with neutral dividers and colored controls.
+
+Publication limits are now 5 original posts and 10 reposts per Laos calendar day, resetting at midnight UTC+7. Assistant allowances remain separate. Plain reposts reuse the original valid check and attribute the source in a quoted card; new commentary still needs checking. Repeated plain reposts by one person do not create extra feed copies. Locks on source posts also block their reposts.
+
+Posting/reposting closes after the write completes without waiting for a full feed refresh. Paid checking still completes before new content is published. Actual native-share completion is persisted once per user/post; canceled shares and clipboard copies do not earn share points. Combined unique sharers/reposters, likes, helpful marks and unique commenters affect the capped usefulness score; self-interactions do not earn points.
+
+Two more contact-sanitized photo posts are prepared, for 28 prepared posts and 23 unique photo attachments. Their live verdicts require a working OpenRouter key. Previously completed checks are preserved when preparing posts offline.
+
+## Prepared account interactions
+
+Run `Launchers/Populate Interactions.command` to populate the prepared posts with interactions from prepared accounts. `scripts/seed-interactions.mjs` backs up SQLite first, skips locked/unchecked posts, excludes self-interactions and uses stable IDs so running it again does not multiply existing records. Likes/helpful marks are reactions, comments are readable discussions, reposts reference the original post and shares are persisted fixture activity. These are prepared-account interactions, not organic audience statistics or actual external share deliveries. They affect Popular through the same capped ranking as normal interactions. Live-user posts are untouched.
+
+## People and their own posts
+
+Prepared original posts are balanced across all 13 prepared authors (one to three original posts each), keeping Lao and English captions with their corresponding author pool. Real-user posts are not reassigned. Prepared discussions use all 13 people; different participant rotations provide comments, helpful marks, shares and reposts.
+
+Author names, quoted-original authors and commenter names open a public profile with separate original-post and repost tabs. The people row underneath each feed post opens named activity lists for likes, helpful marks, reposts and shares. These views use actual persisted actor IDs and expose public author fields only, never email addresses, password hashes or private account fields. Previously generated reposts without user activity can be replaced when rebalancing fixtures; reposts with user discussions/reactions are retained.

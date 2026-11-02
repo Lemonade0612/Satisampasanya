@@ -9,6 +9,7 @@ import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { AssistantScreen } from "./screens/AssistantScreen";
 import { AlertsScreen } from "./screens/AlertsScreen";
+import { DailyScreen } from "./features/daily";
 import { CommentsModal } from "./components/modals/CommentsModal";
 import { ComposeModal } from "./components/modals/ComposeModal";
 import { RepostModal } from "./components/modals/RepostModal";
@@ -21,7 +22,7 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [lang, setLang] = useState<Lang>(localStorage.getItem("sati-lang") === "lo" ? "lo" : "en");
   const [user, setUser] = useState<CurrentUser | null>(null);
-  const [view, setView] = useState<ActiveView>("feed");
+  const [view, setView] = useState<ActiveView>(location.hash.startsWith("#/daily") ? "daily" : "feed");
   const [feedTab, setFeedTab] = useState(0);
   const [customTopic,setCustomTopic]=useState<string|null>(null);
   const {posts, error: connectionError, loading, refresh} = useLivePosts(user?.id);
@@ -47,7 +48,7 @@ export default function App() {
   const [showAlerts, setShowAlerts] = useState(false);
   const [repostPost, setRepostPost] = useState<Post | null>(null);
   const [postToast, setPostToast] = useState(false);
-  const [themeMode, setThemeMode] = useState<ThemeMode>("light");
+  const [themeMode, setThemeMode] = useState<ThemeMode>(() => {const saved=localStorage.getItem('sati-theme');return saved==='dark'||saved==='system'?saved:'light';});
   const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,18 +62,19 @@ export default function App() {
   const toggleLang = () => setLang((l: Lang) => l === "en" ? "lo" : "en");
 
   const handleLogin = (u: CurrentUser) => {
+    setActionError('');
     setUser(u);
     setView("feed");
   };
 
   const handleLogout = async () => {
     try { await api.logout(); } catch { /* The local session is already cleared. */ }
-    setUser(null); setView('feed'); setCommentPostId(null); setShowCompose(false); setRepostPost(null);
+    setUser(null); setAlerts([]); setShowAlerts(false); setActionError(''); setView('feed'); setCommentPostId(null); setShowCompose(false); setRepostPost(null);
   };
   const notifyPosted = () => { setPostToast(true); setTimeout(() => setPostToast(false), 3000); };
-  const handleAddPost = async (post: PostDraft,onProgress?:(stage:import('./components/safety/CheckProgress').CheckStage,done?:boolean)=>void) => { await api.createPost(post,onProgress); await refresh(); notifyPosted(); };
+  const handleAddPost = async (post: PostDraft,onProgress?:(stage:import('./components/safety/CheckProgress').CheckStage,done?:boolean)=>void) => { await api.createPost(post,onProgress); void refresh(); notifyPosted(); };
   const handleAddComment = async (postId: string, text: string) => { await api.comment(postId,text); await refresh(); };
-  const handleRepost = async (post: Post, text: string) => { await api.repost(post.id,text,lang); await refresh(); notifyPosted(); };
+  const handleRepost = async (post: Post, text: string) => { await api.repost(post.id,text,lang); void refresh(); notifyPosted(); };
   const react = async (postId: string, kind: 'like'|'warned') => {
     const post=posts.find(p=>p.id===postId); if(!post)return;
     try { setActionError(''); await api.react(postId,kind,!(kind==='like'?post.liked:post.warned)); await refresh(); }
@@ -152,6 +154,7 @@ export default function App() {
           />
         )}
         {view === "assistant" && !showAlerts && <AssistantScreen lang={lang} />}
+        {view === "daily" && !showAlerts && <DailyScreen lang={lang} verifier={user.name || "Sati verifier"} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
         {view === "profile" && !showAlerts && (
           <ProfileScreen lang={lang} user={user} posts={posts} onLogout={handleLogout} onUpdate={handleProfile} />
         )}
@@ -168,6 +171,7 @@ export default function App() {
           lang={lang}
           onClose={() => setCommentPostId(null)}
           onAddComment={handleAddComment}
+          onOpenPost={setCommentPostId}
         />
       )}
       {showCompose && (
@@ -196,7 +200,7 @@ export default function App() {
           {lang === 'lo' ? 'ໂພສແລ້ວ!' : 'Posted!'}
         </div>
       )}
-      <BottomNav active={view} onChange={(v) => { setView(v); setShowAlerts(false); }} lang={lang} onCompose={() => setShowCompose(true)} />
+      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={() => setShowCompose(true)} />
     </div>
   );
 }
