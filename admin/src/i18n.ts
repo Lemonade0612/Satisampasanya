@@ -10,7 +10,40 @@ export const dayDate=(d:Date,lang:Lang)=>lang==='lo'?`${LO_DAYS[d.getDay()]} ${d
 // Waiting time reads in hours up to the 48h target, then in days.
 export const waitLabel=(hours:number,lang:Lang)=>{const [d,h,m]=lang==='lo'?[' ມື້',' ຊມ',' ນທ']:['d','h','m'];return hours<1?`${Math.max(1,Math.round(hours*60))}${m}`:hours<=48?`${Math.floor(hours)}${h}`:`${Math.floor(hours/24)}${d} ${Math.floor(hours%24)}${h}`;};
 export const waitWords=(hours:number,lang:Lang)=>lang==='lo'?(hours<=48?`${Math.floor(hours)} ຊົ່ວໂມງ`:`${Math.floor(hours/24)} ມື້`):(hours<=48?`${Math.floor(hours)} hours`:`${Math.floor(hours/24)} days`);
-const en={
+// Relative age such as "5m ago" / "3 ຊົ່ວໂມງກ່ອນ"; falls back to a short date after 30 days.
+export const ago=(ms:number,lang:Lang)=>{const m=Math.max(0,(Date.now()-ms)/60000);const lo=lang==='lo';if(m<1)return lo?'ຫາກໍ່':'just now';if(m<60)return lo?`${Math.floor(m)} ນາທີກ່ອນ`:`${Math.floor(m)}m ago`;const h=m/60;if(h<24)return lo?`${Math.floor(h)} ຊົ່ວໂມງກ່ອນ`:`${Math.floor(h)}h ago`;const d=h/24;return d<30?(lo?`${Math.floor(d)} ມື້ກ່ອນ`:`${Math.floor(d)}d ago`):shortDate(new Date(ms),lang);};
+export const fullDate=(ms:number,lang:Lang)=>`${shortDate(new Date(ms),lang)} ${new Date(ms).getFullYear()} · ${new Date(ms).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}`;
+const enW={
+ search:'Search',clearSearch:'Clear search',clearFilters:'Clear filters',exportCsv:'Export CSV',noMatch:'Nothing matches these filters.',newBadge:'New',
+ showing:(a:string,b:string,t:string)=>`Showing ${a}–${b} of ${t}`,perPage:'per page',firstPage:'First page',prevPage:'Previous page',nextPage:'Next page',lastPage:'Last page',goPage:(n:number)=>`Page ${n}`,
+ states:{all:'All',needs:'Needs review',flagged:'Flagged',sla:'Overdue',confirmed:'Confirmed scam',false:'False alarm',clean:'Published',rejected:'Rejected'} as Record<string,string>,
+ dateRange:'Date range',anyTime:'Any time',d1:'Last 24 hours',d7:'Last 7 days',d30:'Last 30 days',older:'Older than 30 days',
+ sortBy:'Sort',newest:'Newest first',oldest:'Oldest first',mostWarned:'Most warnings',mostActive:'Most engagement',priority:'Priority',
+ colPost:'Post',colAuthor:'Author',colStatus:'Status',colReceived:'Received',colActivity:'Activity',colAction:'Action',
+ postsHead:'Post library',postsSub:'Every community post. Filter by status and date, then sort to find what needs attention.',searchPosts:'Search content, #tags or author',
+ reviewedBy:(n:string)=>`Reviewed by ${n}`,likes:'Likes',comments:'Comments',reposts:'Reposts',warnings:'Warnings',showMore:'Show more',showLess:'Show less',
+ queueHead:'Open for review',queueSub:'Red before Watch, then oldest first · 48-hour decision target',breach:'Near or past target',searchQueue:'Search the queue',flagged:'Flagged for review',locked:'Interactions locked until reviewed',
+ usersSub:'Manage accounts, roles and access to community insights.',newUser:'New user',totalUsers:'Total users',activeAccounts:'Active accounts',staff:'Staff with access',inactive:'Inactive accounts',
+ staffSub:'Viewers, reviewers and admins',ofTotal:(n:number)=>`${n}% of all accounts`,blocked:'Cannot sign in',
+ roles:{member:'Member',viewer:'Viewer',reviewer:'Reviewer',admin:'Admin'} as Record<string,string>,statuses:{active:'Active',inactive:'Inactive'} as Record<string,string>,
+ allRoles:'All roles',allStatuses:'All statuses',colUser:'User',colRole:'Role',colLastLogin:'Last sign-in',colCreated:'Created',never:'Never',editUser:(n:string)=>`Edit ${n}`,searchUsers:'Search name, email or user ID',accounts:'Accounts',
+};
+const loW:typeof enW={
+ search:'ຄົ້ນຫາ',clearSearch:'ລ້າງການຄົ້ນຫາ',clearFilters:'ລ້າງຕົວກອງ',exportCsv:'ສົ່ງອອກ CSV',noMatch:'ບໍ່ມີລາຍການທີ່ກົງກັບຕົວກອງນີ້.',newBadge:'ໃໝ່',
+ showing:(a,b,t)=>`ສະແດງ ${a}–${b} ຈາກ ${t}`,perPage:'ຕໍ່ໜ້າ',firstPage:'ໜ້າທຳອິດ',prevPage:'ໜ້າກ່ອນ',nextPage:'ໜ້າຕໍ່ໄປ',lastPage:'ໜ້າສຸດທ້າຍ',goPage:n=>`ໜ້າ ${n}`,
+ states:{all:'ທັງໝົດ',needs:'ລໍຖ້າກວດ',flagged:'ຖືກແຈ້ງເຕືອນ',sla:'ເກີນກຳນົດ',confirmed:'ຢືນຢັນວ່າຫຼອກລວງ',false:'ແຈ້ງເຕືອນຜິດ',clean:'ເຜີຍແຜ່ແລ້ວ',rejected:'ປະຕິເສດ'},
+ dateRange:'ຊ່ວງເວລາ',anyTime:'ທຸກຊ່ວງເວລາ',d1:'24 ຊົ່ວໂມງຜ່ານມາ',d7:'7 ມື້ຜ່ານມາ',d30:'30 ມື້ຜ່ານມາ',older:'ເກົ່າກວ່າ 30 ມື້',
+ sortBy:'ຮຽງລຳດັບ',newest:'ໃໝ່ສຸດກ່ອນ',oldest:'ເກົ່າສຸດກ່ອນ',mostWarned:'ແຈ້ງເຕືອນຫຼາຍສຸດ',mostActive:'ມີສ່ວນຮ່ວມຫຼາຍສຸດ',priority:'ຕາມຄວາມສຳຄັນ',
+ colPost:'ໂພສ',colAuthor:'ຜູ້ໂພສ',colStatus:'ສະຖານະ',colReceived:'ໄດ້ຮັບ',colActivity:'ການມີສ່ວນຮ່ວມ',colAction:'ຈັດການ',
+ postsHead:'ຄັງໂພສ',postsSub:'ໂພສທັງໝົດໃນຊຸມຊົນ. ກອງຕາມສະຖານະ ແລະ ວັນທີ, ແລ້ວຮຽງເພື່ອຫາໂພສທີ່ຕ້ອງເບິ່ງ.',searchPosts:'ຄົ້ນຫາເນື້ອຫາ, #ແທັກ ຫຼື ຜູ້ໂພສ',
+ reviewedBy:n=>`ກວດໂດຍ ${n}`,likes:'ຖືກໃຈ',comments:'ຄຳເຫັນ',reposts:'ແບ່ງປັນຄືນ',warnings:'ແຈ້ງເຕືອນ',showMore:'ເບິ່ງເພີ່ມ',showLess:'ຫຍໍ້ລົງ',
+ queueHead:'ລໍຖ້າກວດສອບ',queueSub:'ແດງກ່ອນເຝົ້າລະວັງ, ແລ້ວເກົ່າສຸດກ່ອນ · ເປົ້າໝາຍ 48 ຊົ່ວໂມງ',breach:'ໃກ້ ຫຼື ເກີນເປົ້າໝາຍ',searchQueue:'ຄົ້ນຫາໃນຄິວ',flagged:'ຖືກແຈ້ງເຕືອນເພື່ອກວດ',locked:'ປິດການມີສ່ວນຮ່ວມຈົນກວ່າຈະກວດ',
+ usersSub:'ຈັດການບັນຊີ, ບົດບາດ ແລະ ສິດເຂົ້າເຖິງຂໍ້ມູນຊຸມຊົນ.',newUser:'ເພີ່ມຜູ້ໃຊ້',totalUsers:'ຜູ້ໃຊ້ທັງໝົດ',activeAccounts:'ບັນຊີທີ່ໃຊ້ງານ',staff:'ພະນັກງານທີ່ມີສິດ',inactive:'ບັນຊີທີ່ປິດ',
+ staffSub:'ຜູ້ເບິ່ງ, ຜູ້ກວດ ແລະ ຜູ້ດູແລ',ofTotal:n=>`${n}% ຂອງບັນຊີທັງໝົດ`,blocked:'ເຂົ້າລະບົບບໍ່ໄດ້',
+ roles:{member:'ສະມາຊິກ',viewer:'ຜູ້ເບິ່ງ',reviewer:'ຜູ້ກວດ',admin:'ຜູ້ດູແລ'},statuses:{active:'ໃຊ້ງານ',inactive:'ປິດໃຊ້ງານ'},
+ allRoles:'ທຸກບົດບາດ',allStatuses:'ທຸກສະຖານະ',colUser:'ຜູ້ໃຊ້',colRole:'ບົດບາດ',colLastLogin:'ເຂົ້າລະບົບລ່າສຸດ',colCreated:'ສ້າງເມື່ອ',never:'ບໍ່ເຄີຍ',editUser:n=>`ແກ້ໄຂ ${n}`,searchUsers:'ຄົ້ນຫາຊື່, ອີເມວ ຫຼື ID',accounts:'ບັນຊີ',
+};
+const en={...enW,
  overview:'Overview',queue:'Review queue',posts:'All posts',users:'People & access',brandSub:'Safety desk · Admin',openApp:'Open user app',signOut:'Sign out',waiting:(n:number)=>`${n} waiting`,
  live:'Live · updated',autoRefresh:'auto-refresh 15s',offline:'Connection needs attention',connecting:'Connecting…',refresh:'Refresh',refreshing:'Refreshing',light:'Switch to light theme',dark:'Switch to dark theme',language:'Language',
  morning:'Good morning.',afternoon:'Good afternoon.',evening:'Good evening.',heroPre:"Here's the ",heroEm:'safety desk',heroPost:'.',
@@ -32,7 +65,7 @@ const en={
  eyes:'Needs eyes first',eyesSub:'Red before Watch, then the longest wait',seeAll:(n:number)=>`See all ${n} →`,caughtUp:'All caught up. No flagged posts are waiting.',rank:(n:number)=>`Rank ${n}`,
  safeTip:'Likely a safety tip — quick approve?',pastTarget:(w:string)=>`${w} past target`,left:(w:string)=>`${w} left`,review:'Review',viewerCannot:'Insight viewers cannot save reviews',
 };
-const lo:typeof en={
+const lo:typeof en={...loW,
  overview:'ພາບລວມ',queue:'ຄິວກວດສອບ',posts:'ໂພສທັງໝົດ',users:'ຜູ້ໃຊ້ ແລະ ສິດ',brandSub:'ໂຕະຄວາມປອດໄພ · ຜູ້ດູແລ',openApp:'ເປີດແອັບຜູ້ໃຊ້',signOut:'ອອກຈາກລະບົບ',waiting:n=>`ລໍຖ້າ ${n}`,
  live:'ສົດ · ອັບເດດ',autoRefresh:'ໂຫຼດໃໝ່ທຸກ 15 ວິນາທີ',offline:'ການເຊື່ອມຕໍ່ມີບັນຫາ',connecting:'ກຳລັງເຊື່ອມຕໍ່…',refresh:'ໂຫຼດໃໝ່',refreshing:'ກຳລັງໂຫຼດ',light:'ປ່ຽນເປັນໂໝດສະຫວ່າງ',dark:'ປ່ຽນເປັນໂໝດມືດ',language:'ພາສາ',
  morning:'ສະບາຍດີຕອນເຊົ້າ.',afternoon:'ສະບາຍດີຕອນບ່າຍ.',evening:'ສະບາຍດີຕອນແລງ.',heroPre:'ນີ້ແມ່ນ',heroEm:'ໂຕະຄວາມປອດໄພ',heroPost:'',

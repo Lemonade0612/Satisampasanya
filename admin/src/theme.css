@@ -1,8 +1,11 @@
+/* BoonHome for Lao script only (files served from frontend/public); Latin stays in Urbanist. */
+@font-face{font-family:'BoonHome';src:url('/fonts/boonhome/boonhome-400.woff') format('woff');font-weight:400 500;font-style:normal;font-display:swap;unicode-range:U+0E80-0EFF,U+200B-200D,U+25CC}
+@font-face{font-family:'BoonHome';src:url('/fonts/boonhome/boonhome-700.woff') format('woff');font-weight:600 900;font-style:normal;font-display:swap;unicode-range:U+0E80-0EFF,U+200B-200D,U+25CC}
 /* Sati safety desk design tokens. Legacy variables (--bg, --card, …) are mapped so pages not yet restyled follow the same palette. */
 .admin-shell{
- --font-ui:'Urbanist','Noto Sans Lao',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
- --font-mono:'Urbanist','Noto Sans Lao',sans-serif;
- --font-lao:'Noto Sans Lao','Urbanist',sans-serif;
+ --font-ui:'Urbanist','BoonHome','Noto Sans Lao',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+ --font-mono:'Urbanist','BoonHome','Noto Sans Lao',sans-serif;
+ --font-lao:'BoonHome','Noto Sans Lao','Urbanist',sans-serif;
  --page:#F5F4FB;--surface:#FFFFFF;--border:#E3E0F0;--divider:#ECEAF5;--chip:#EFEDF8;
  --text:#16151D;--text-2:#5E5C68;--text-muted:#75737E;
  --brand:#5B3DF5;--brand-ink:#FFFFFF;--brand-text:#5B3DF5;
@@ -229,3 +232,22 @@ body{background:#F5F4FB}
 .sd-chip,.sd-pill.lang{background:var(--surface);box-shadow:inset 0 0 0 1px var(--border)}
 .sd-units i{border-radius:6px}
 @media(max-width:820px){.sd-shell{padding:8px;gap:8px}.sd-sidebar-inner{height:auto}.sd-hero h1{font-size:30px}}
+
+/* Brand sidebar: theme-violet panel on the left; workspace on the right stays white. */
+.sd-sidebar{background:linear-gradient(180deg,var(--brand) 0%,#3E22C9 100%);color:#fff;box-shadow:0 12px 32px #5B3DF533}
+.admin-shell.admin-dark .sd-sidebar{background:linear-gradient(180deg,#3A23B8 0%,#1F1270 100%);box-shadow:var(--shadow)}
+.sd-logo{border-color:transparent}
+.sd-brand strong{color:#fff}
+.sd-brand small{color:#DCD5FF}
+.sd-nav button{color:#EEEAFF}
+.sd-nav button svg{color:#CFC6FF}
+.sd-nav button:hover{background:#FFFFFF1F}
+.sd-nav button.active{background:#fff;color:var(--brand);box-shadow:0 6px 16px #1A0E6E40}
+.sd-nav button.active svg{color:var(--brand)}
+.sd-sidebar-foot{border-top-color:#FFFFFF2E}
+.sd-app-link{color:#EEEAFF}.sd-app-link:hover{color:#fff;background:#FFFFFF1F}
+.sd-user{background:#FFFFFF1F}
+.sd-user strong{color:#fff}
+.sd-user small{color:#DCD5FF}
+.sd-user .sd-avatar{background:#fff;color:var(--brand)}
+.sd-signout{background:#FFFFFF26;color:#fff;box-shadow:none}.sd-signout:hover{background:#fff;color:var(--red-text)}
