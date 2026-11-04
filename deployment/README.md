@@ -23,8 +23,9 @@ A new volume is empty. To keep local records, stop the local backend and copy
 its `backend/data/sati.sqlite` plus any matching WAL file into the volume before
 exposing either website. Keep a separate backup and verify the records after
 migration. Do not delete the volume when updating the application.
-For a new deployment, register the ADMIN_EMAILS account before opening public
-registration. User roles after bootstrap are managed in People & access.
+For a new deployment, register your account, then run
+`docker compose -f deployment/compose.yaml exec backend node scripts/promote-admin.mjs <email>`.
+Existing deployments that relied on ADMIN_EMAILS must run this once after upgrading. User roles after bootstrap are managed in People & access.
 
 The optional MongoDB feature is backup/restore, not a replacement for SQLite.
 After setting a complete MONGODB_URI privately, an operator can execute:

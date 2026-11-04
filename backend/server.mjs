@@ -38,7 +38,7 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], adminEmails = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
   const db = openStore(database, seed), clients = new Set(), rate = new Map();
   const allowed = new Set([
   // User frontend
@@ -62,7 +62,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
 ]);
   const broadcast = () => {for(const client of clients)client.write('event: change\ndata: {}\n\n');};
   const send = (res, status, value) => { if(res.getHeader('Content-Type')==='application/x-ndjson'){res.end(JSON.stringify({type:'result',status,value})+'\n');return;} res.writeHead(status, { 'Content-Type':'application/json', 'Cache-Control':'no-store' }); res.end(JSON.stringify(value)); };
-  const sweep=()=>{if(notifyReviewers(db,adminEmails))broadcast();};
+  const sweep=()=>{if(notifyReviewers(db))broadcast();};
   sweep();
   const reviewTimer=setInterval(sweep,60000);reviewTimer.unref();
   let pushing=Promise.resolve();
@@ -93,16 +93,16 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       const user = currentUser(db, req);
       if (path.startsWith('/api/admin/') && path !== '/api/admin/auth/login') {
         if (!user) fail('Please sign in.',401);
-        const access=accessFor(db,user,adminEmails);
+        const access=accessFor(db,user);
         if(access.status!=='active'||!['viewer','reviewer','admin'].includes(access.role))fail('Administrator or insight access is required.',403);
         if(path==='/api/admin/users'||/^\/api\/admin\/users\/[^/]+$/.test(path)){
           if(access.role!=='admin')fail('Only administrators can manage users.',403);
           const id=path.split('/')[4];
           if((req.method==='POST'&&!id)||(req.method==='PATCH'&&id)){
-            const value=await manageUser(db,user,await body(req),id,adminEmails);broadcast();return send(res,id?200:201,value);
+            const value=await manageUser(db,user,await body(req),id);broadcast();return send(res,id?200:201,value);
           }
         }
-        if (req.method === 'GET' && path === '/api/admin/dashboard') return send(res,200,adminSnapshot(db,user,adminEmails));
+        if (req.method === 'GET' && path === '/api/admin/dashboard') return send(res,200,adminSnapshot(db,user));
         const review = /^\/api\/admin\/posts\/([^/]+)\/review$/.exec(path);
         if (req.method === 'PATCH' && review) {
           if(!['reviewer','admin'].includes(access.role))fail('Review permission is required.',403);
@@ -149,8 +149,8 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           db.prepare('INSERT INTO user_access(user_id,created) VALUES (?,?)').run(id,Date.now());
           row = db.prepare('SELECT * FROM users WHERE id=?').get(id);
         } else if (!row || !await passwordMatches(pw,row)) fail('Incorrect email or password.',401);
-        if(accessFor(db,row,adminEmails).status!=='active')fail('This account is inactive. Contact an administrator.',403);
-        if(path === '/api/admin/auth/login' && !['admin','reviewer','viewer'].includes(accessFor(db,row,adminEmails).role)) fail('This account does not have workspace access.',403);
+        if(accessFor(db,row).status!=='active')fail('This account is inactive. Contact an administrator.',403);
+        if(path === '/api/admin/auth/login' && !['admin','reviewer','viewer'].includes(accessFor(db,row).role)) fail('This account does not have workspace access.',403);
         db.prepare('INSERT INTO user_access(user_id,last_login) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET last_login=excluded.last_login').run(row.id,Date.now());
         return send(res,200,{user:userView(row),token:session(db,row.id)});
       }
@@ -281,7 +281,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   return {server,db,deliver,close:async()=>{clearInterval(reviewTimer);clearInterval(pushTimer);await pushing;push?.close?.();for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
   app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;const port=process.env.API_PORT||3001;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
   app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log(`Sati backend: http://${process.env.API_HOST||'127.0.0.1'}:${process.env.API_PORT||3001}`));
   for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));

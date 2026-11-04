@@ -73,13 +73,13 @@ queue, searchable posts and searchable registered accounts. Sample posts stay
 labelled. Expert workloads are omitted because assignment data is not tracked.
 Topic counts include every tag, so a post can appear in multiple topics.
 
-Register your account in the user app first. In `.env.local`, authorize its email:
+Register your account in the user app first, then promote it once:
 
-```env
-ADMIN_EMAILS=your-existing-account@example.com
+```sh
+node scripts/promote-admin.mjs your-existing-account@example.com
 ```
 
-Restart the backend (or restart F5), then sign in at `http://127.0.0.1:5174` using that account.
+Then sign in at `http://127.0.0.1:5174` using that account.
 Multiple admins can be separated with commas. With an empty allowlist,
 no accounts can access admin data. The dashboard never exposes passwords or
 session tokens. Review a flagged post, select confirmed scam or false alarm,
@@ -223,8 +223,9 @@ filtered list to CSV. Passwords are hashed; existing passwords are never shown.
 - Reviewer: read insights and save review decisions.
 - Admin: manage users, insights and reviews.
 
-ADMIN_EMAILS bootstraps administrator access for existing accounts. An explicitly
-managed account's saved role takes precedence. Access/password changes revoke
+`scripts/promote-admin.mjs` bootstraps the first administrator from an existing
+account. Staff roles come only from accounts managed in People & access; a
+self-registered account is always a member, whatever its email. Access/password changes revoke
 its sessions. Inactive accounts cannot sign in. Administrators cannot deactivate
 or demote themselves; the last active administrator is protected. Access changes
 are logged in SQLite. Historic registration/login dates appear as unknown when

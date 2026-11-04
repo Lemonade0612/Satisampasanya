@@ -23,5 +23,5 @@ try{
   db.prepare('INSERT INTO posts VALUES (?,NULL,?,?) ON CONFLICT(id) DO UPDATE SET data=excluded.data').run(id,JSON.stringify(post),Date.now());
   console.log(`${id}: ${post.check.verdict} · ${post.check.labels.join(', ')}`);
  }
- notifyReviewers(db,(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean));
+ notifyReviewers(db);
 }finally{db.close();}

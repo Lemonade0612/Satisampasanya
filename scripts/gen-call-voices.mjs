@@ -80,11 +80,12 @@ function run(bin, args) {
   // The voice service sometimes drops a request; retry a few times before giving up.
   for (let tries = 1; ; tries++) {
     try { return execFileSync(bin, args, { stdio: 'pipe', timeout: 30000 }); }
-    catch (e) { if (tries >= 4) throw e; execFileSync('sleep', [String(tries * 2)]); }
+    catch (e) { if (tries >= 6) throw e; execFileSync('sleep', [String(tries * 4)]); }
   }
 }
 
 let made = 0, kept = 0;
+const failed = [];
 for (const call of ALL_CALLS) {
   for (const lang of ['lo', 'en']) {
     mkdirSync(join(out, lang), { recursive: true });
@@ -98,7 +99,9 @@ for (const call of ALL_CALLS) {
       // A failed request can leave an empty file; treat it as missing.
       if (manifest[`${lang}/${name}`] === key && existsSync(file) && statSync(file).size > 0) { kept++; return; }
       const raw = join(cache, `${key}.mp3`);
-      if (!existsSync(raw) || statSync(raw).size === 0) run(tts, [...args, '--write-media', raw]);
+      // If the service keeps refusing one line, keep its old clip and move on; a re-run picks it up.
+      try { if (!existsSync(raw) || statSync(raw).size === 0) run(tts, [...args, '--write-media', raw]); }
+      catch { rmSync(raw, { force: true }); failed.push(`${lang}/${name}`); return; }
       run(ffmpeg, ['-y', '-loglevel', 'error', '-i', raw, '-filter_complex', PHONE, '-map', '[o]', '-ac', '1', '-c:a', 'libmp3lame', '-b:a', '48k', file]);
       manifest[`${lang}/${name}`] = key;
       writeFileSync(manifestFile, JSON.stringify(manifest, null, 1));
@@ -108,3 +111,4 @@ for (const call of ALL_CALLS) {
   }
 }
 console.log(`\nDone: ${made} recorded, ${kept} unchanged → ${out}`);
+if (failed.length) { console.log(`${failed.length} failed (old clip kept), re-run to retry:\n  ${failed.join('\n  ')}`); process.exitCode = 1; }

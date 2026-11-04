@@ -8,6 +8,7 @@ import { createApp } from './server.mjs';
 import {checkPost} from './safety/post-check.mjs';
 import {guardVerdict} from './safety/checker.mjs';
 import { digest } from './auth.mjs';
+import { promoteAdmin } from './access.mjs';
 
 async function fixture(options={}) {
   const result=text=>guardVerdict({verdict:'approved',risk:'low',labels:[],on_topic:true,reasons:[],suggested_edit:'',summary:/[຀-໿]/.test(text)?'ກວດຂໍ້ຄວາມແລ້ວ.':'The message has been checked.'},text);
@@ -16,7 +17,8 @@ async function fixture(options={}) {
   const base=`http://127.0.0.1:${app.server.address().port}/api`;
   const call=async(path,method='GET',data,token,extra={})=>{const response=await fetch(base+path,{method,headers:{...(data?{'Content-Type':'application/json'}:{}),...(token?{Authorization:`Bearer ${token}`} : {}),...extra},body:data?JSON.stringify(data):undefined});return {status:response.status,value:await response.json()};};
   const register=async(email='alice@example.com')=>(await call('/auth/register','POST',{name:email.split('@')[0],email,password:'correct-password'})).value;
-  return {...app,base,call,register};
+  const admin=async email=>{const account=await register(email);promoteAdmin(app.db,email);return account;};
+  return {...app,base,call,register,admin};
 }
 const draft={content:'English safety advice',contentLo:'ຄຳແນະນຳຄວາມປອດໄພ',tags:['DigitalSafety']};
 
@@ -150,11 +152,11 @@ test('AI adapter uses structured responses and rejects malformed provider output
 });
 
 test('admin access is restricted and review decisions persist in the public feed',async()=>{
- const f=await fixture({adminEmails:['admin@example.com']});try{
+ const f=await fixture();try{
   assert.equal((await f.call('/admin/dashboard')).status,401);
   const regular=await f.register();
   assert.equal((await f.call('/admin/dashboard','GET',undefined,regular.token)).status,403);
-  const admin=await f.register('admin@example.com');
+  const admin=await f.admin('admin@example.com');
   const posted=await f.call('/posts','POST',draft,regular.token);
   const snapshot=await f.call('/admin/dashboard','GET',undefined,admin.token);
   assert.equal(snapshot.status,200);assert.equal(snapshot.value.totals.users,2);
@@ -173,8 +175,8 @@ test('admin access is restricted and review decisions persist in the public feed
 });
 
 test('admins manage accounts; viewers cannot review or manage; deactivation revokes sessions',async()=>{
- const f=await fixture({adminEmails:['admin@example.com']});try{
-  const admin=await f.register('admin@example.com');
+ const f=await fixture();try{
+  const admin=await f.admin('admin@example.com');
   const create=await f.call('/admin/users','POST',{name:'Insights Analyst',email:'viewer@example.com',password:'correct-password',role:'viewer',unit:'Safety',status:'active'},admin.token);
   assert.equal(create.status,201);assert.equal(create.value.role,'viewer');assert.equal(create.value.password,undefined);
   const viewer=(await f.call('/auth/login','POST',{email:'viewer@example.com',password:'correct-password'})).value;
@@ -192,16 +194,16 @@ test('admins manage accounts; viewers cannot review or manage; deactivation revo
   assert.equal((await f.call('/auth/login','POST',{email:'viewer@example.com',password:'correct-password'})).status,403);
   assert.equal((await f.call(`/admin/users/${admin.user.id}`,'PATCH',{role:'viewer'},admin.token)).status,400);
   assert.equal((await f.call('/admin/users','POST',{name:'Duplicate',email:'viewer@example.com',password:'correct-password'},admin.token)).status,409);
-  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM access_audit').get().n,3);
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM access_audit WHERE action<>'bootstrap-admin'").get().n,3);
  }finally{await f.close();}
 });
 
 test('MongoDB backup payload restores accounts, roles and posts without restoring sessions',async()=>{
  const {collectBackup,restoreBackup}=await import('./mongo-backup.mjs');
  const {openStore}=await import('./store.mjs');
- const f=await fixture({adminEmails:['admin@example.com']});const restored=openStore(':memory:',false);
+ const f=await fixture();const restored=openStore(':memory:',false);
  try{
-  const admin=await f.register('admin@example.com');
+  const admin=await f.admin('admin@example.com');
   const account=await f.call('/admin/users','POST',{name:'Reader',email:'reader@example.com',password:'correct-password',role:'viewer',unit:'Insights'},admin.token);
   await f.call('/posts','POST',draft,admin.token);
   const snapshot=collectBackup(f.db);assert.equal(snapshot.sessions,undefined);assert.equal(snapshot.resets,undefined);
@@ -253,8 +255,8 @@ test('assistant quotas are independent per user and kind, persisted and reset by
 });
 
 test('approval and news notifications reach the intended users',async()=>{
- const f=await fixture({adminEmails:['admin@example.com']});try{
-  const author=await f.register(),viewer=await f.register('viewer@example.com'),admin=await f.register('admin@example.com');
+ const f=await fixture();try{
+  const author=await f.register(),viewer=await f.register('viewer@example.com'),admin=await f.admin('admin@example.com');
   const post=(await f.call('/posts','POST',{...draft,isNews:true,link:'https://example.com/source'},author.token)).value;
   assert.equal((await f.call('/alerts','GET',undefined,viewer.token)).value[0].kind,'news');
   assert.equal((await f.call('/alerts','GET',undefined,author.token)).value.length,0);
@@ -323,8 +325,8 @@ test('public person profiles and activity show the actual actors without private
 });
 
 test('admin sign-in rejects members without creating sessions and supports managed staff',async()=>{
- const f=await fixture({adminEmails:['owner@example.com']});try{
-  const owner=await f.register('owner@example.com');
+ const f=await fixture();try{
+  const owner=await f.admin('owner@example.com');
   const alice=await f.register('alice@example.com');
   const bob=await f.register('bob@example.com');
   const before=f.db.prepare('SELECT COUNT(*) n FROM sessions').get().n;
@@ -379,5 +381,21 @@ test('device tokens receive APNs pushes with the unread badge, once per alert',a
   await f.deliver();assert.equal(sent.length,2,'each alert is pushed only once');
   await f.call('/devices/remove','POST',{token},alice.token);
   assert.equal(f.db.prepare('SELECT COUNT(*) n FROM device_tokens').get().n,0);
+ }finally{await f.close();}
+});
+
+test('registering an email listed in ADMIN_EMAILS grants no staff access; only a managed promotion does',async()=>{
+ // Regression: accessFor used to grant admin to any account whose email matched ADMIN_EMAILS,
+ // so whoever registered that address first (without proving ownership) became an administrator.
+ const f=await fixture({adminEmails:['director@example.com']});try{
+  const squatter=await f.register('director@example.com');
+  assert.equal((await f.call('/admin/dashboard','GET',undefined,squatter.token)).status,403);
+  assert.equal((await f.call('/admin/users','POST',{name:'X',email:'x@example.com',password:'correct-password',role:'admin'},squatter.token)).status,403);
+  assert.equal((await f.call('/admin/auth/login','POST',{email:'director@example.com',password:'correct-password'})).status,403);
+    assert.throws(()=>promoteAdmin(f.db,'nobody@example.com'),/No account/);
+  const owner=await f.register('owner@example.com');
+  promoteAdmin(f.db,'OWNER@example.com');
+  assert.equal((await f.call('/admin/dashboard','GET',undefined,owner.token)).status,200);
+  assert.equal(f.db.prepare("SELECT action FROM access_audit WHERE target_id=?").get(owner.user.id).action,'bootstrap-admin');
  }finally{await f.close();}
 });

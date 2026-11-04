@@ -20,17 +20,17 @@ test('48h review reminders are persisted once per active reviewer and never unlo
  try{
   for(const [id,role,status] of [['r','reviewer','active'],['m','member','active'],['i','reviewer','inactive']]){
    db.prepare('INSERT INTO users(id,email,name,password,salt) VALUES (?,?,?,?,?)').run(id,id+'@invalid',id,'hash','salt');
-   db.prepare('INSERT INTO user_access(user_id,role,status) VALUES (?,?,?)').run(id,role,status);
+   db.prepare('INSERT INTO user_access(user_id,role,status,managed) VALUES (?,?,?,1)').run(id,role,status);
   }
   db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run('p','m',JSON.stringify({content:'Warning',state:'flagged',frozen:true}),now);
-  notifyReviewers(db,[],now);notifyReviewers(db,[],now+1);
+  notifyReviewers(db,now);notifyReviewers(db,now+1);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM notifications').get().n,1);
-  notifyReviewers(db,[],now+48*3600000);notifyReviewers(db,[],now+49*3600000);
+  notifyReviewers(db,now+48*3600000);notifyReviewers(db,now+49*3600000);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM notifications').get().n,2);
   assert.equal(JSON.parse(db.prepare('SELECT data FROM posts').get().data).frozen,true);
   reviewPost(db,'p','rejected','Reviewed: the offer is unsafe.',{id:'r',name:'Reviewer'});
   assert.equal(JSON.parse(db.prepare('SELECT data FROM posts').get().data).frozen,true);
-  notifyReviewers(db,[],now+50*3600000);
+  notifyReviewers(db,now+50*3600000);
   assert.equal(db.prepare('SELECT COUNT(*) n FROM notifications WHERE kind=?').get('review_overdue').n,1);
  }finally{db.close();}
 });
@@ -50,7 +50,7 @@ test('legacy yellow posts lock their reposts and notify the review center until 
  const {postLocked}=await import('./post-lock.mjs');const db=openStore(':memory:');
  try{
   db.prepare('INSERT INTO users(id,email,name,password,salt) VALUES (?,?,?,?,?)').run('r','r@example.test','Reviewer','hash','salt');
-  db.prepare('INSERT INTO user_access(user_id,role) VALUES (?,?)').run('r','reviewer');
+  db.prepare('INSERT INTO user_access(user_id,role,managed) VALUES (?,?,1)').run('r','reviewer');
   db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)').run('yellow',JSON.stringify({state:'clean',frozen:false,check:{verdict:'caution'}}),Date.now());
   db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)').run('copy',JSON.stringify({repostOf:'yellow',frozen:false}),Date.now());
   assert.equal(postLocked(db,db.prepare('SELECT * FROM posts WHERE id=?').get('yellow')),true);
