@@ -11,23 +11,25 @@ function limb(x: number, y: number, a: number, bend: number, len: number) {
   return { kx, ky, fx: kx + Math.sin(b) * len, fy: ky + Math.cos(b) * len };
 }
 
-// Drawn runner so players can build their own look. `step` drives the run cycle; `pose` switches jump/duck.
+// Drawn runner so players can build their own look. It is always size × 1.25 tall, the height every screen was laid out for. `step` drives the run cycle; `pose` switches jump/duck.
 export function DashAvatar({ a, size = 64, step = 0, pose }: { a: Avatar; size?: number; step?: number; pose?: Pose }) {
   const p: Pose = pose ?? (step ? 'run' : 'stand');
   const skin = SKINS[a.skin] ?? SKINS[1], cloth = OUTFITS[a.outfit] ?? OUTFITS[0], HAIR = HAIR_COLORS[a.hairColor ?? 0];
   const sw = Math.sin(step) * 0.75;
   const legs = p === 'run' ? [[sw, sw < 0 ? 1.1 : 0.25], [-sw, -sw < 0 ? 1.1 : 0.25]]
     : p === 'jump' ? [[0.7, 1.4], [-0.25, 0.6]]
-    : p === 'duck' ? [[1.45, 1.45], [-1.25, 0.3]]
+    : p === 'duck' ? [[1.52, 0], [1.4, 2.7]]
     : [[0.08, 0], [-0.08, 0]];
-  const arms = p === 'run' ? [-sw * 1.1, sw * 1.1] : p === 'jump' ? [2.4, -2.2] : p === 'duck' ? [1.7, 1.3] : [0.15, -0.15];
+  const arms = p === 'run' ? [-sw * 1.1, sw * 1.1] : p === 'jump' ? [2.4, -2.2] : p === 'duck' ? [-0.5, 1.3] : [0.15, -0.15];
   const bob = p === 'run' ? -Math.abs(Math.cos(step)) * 2.2 : 0;
-  // Ducking is a low crouch-slide: the upper body drops and leans in, the legs fold under it.
-  const drop = p === 'duck' ? 15 : 0;
-  const lean = p === 'run' ? 'rotate(6 32 56)' : p === 'duck' ? 'rotate(16 32 72)' : '';
+  // Ducking is a low slide, like sliding under a bar: hips drop to the ground, the front leg shoots forward,
+  // the upper body leans back so the head sits low. Drawn as a pose, never squashed.
+  const drop = p === 'duck' ? 24 : 0;
+  const lean = p === 'run' ? 'rotate(6 32 62)' : '';
+  const upper = p === 'duck' ? `rotate(-40 32 ${61 + drop})` : '';
 
   const Leg = ({ i, x }: { i: number; x: number }) => {
-    const hip = 56 + drop, l = limb(x, hip, legs[i][0], legs[i][1], 10);
+    const hip = 61 + drop, l = limb(x, hip, legs[i][0], legs[i][1], 13);
     return <g>
       <polyline points={`${x},${hip} ${l.kx},${l.ky} ${l.fx},${l.fy}`} stroke={INK} strokeOpacity=".22" strokeWidth="8.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       <polyline points={`${x},${hip} ${l.kx},${l.ky} ${l.fx},${l.fy}`} stroke={skin} strokeWidth="6.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
@@ -35,7 +37,7 @@ export function DashAvatar({ a, size = 64, step = 0, pose }: { a: Avatar; size?:
     </g>;
   };
   const Arm = ({ i, x, back }: { i: number; x: number; back?: boolean }) => {
-    const sy = 39 + drop, l = limb(x, sy, arms[i], p === 'run' ? -0.9 : 0.2, 8);
+    const sy = 38 + drop, l = limb(x, sy, arms[i], p === 'run' ? -0.9 : 0.2, 10);
     return <g opacity={back ? 0.85 : 1}>
       <polyline points={`${x},${sy} ${l.kx},${l.ky} ${l.fx},${l.fy}`} stroke={skin} strokeWidth="5.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={l.fx} cy={l.fy} r="3.2" fill={skin} stroke={INK} strokeOpacity=".22" strokeWidth="1" />
@@ -44,19 +46,22 @@ export function DashAvatar({ a, size = 64, step = 0, pose }: { a: Avatar; size?:
   };
 
   return (
-    <svg width={size} height={size * 1.25} viewBox="0 0 64 80" aria-hidden className="overflow-visible">
+    <svg width={size * 1.25 * 64 / 92} height={size * 1.25} viewBox="0 0 64 92" aria-hidden className="overflow-visible">
       <g transform={`translate(0 ${bob}) ${lean}`}>
         <Leg i={1} x={36} />
-        <Arm i={0} x={24} back />
+        <g transform={upper}><Arm i={0} x={24} back /></g>
         <Leg i={0} x={28} />
-        <g transform={`translate(0 ${drop})`}>
+        <g transform={`${upper} translate(0 ${drop})`}>
+        <g transform="translate(32 21) scale(.88) translate(-32 -21)">
         {a.hair === 1 && <path d="M17 20 a15 15 0 0 1 30 0 v16 q-3 3 -6 0 v-14 h-18 v14 q-3 3 -6 0z" fill={HAIR} />}
         {a.hair === 4 && <path d="M44 14 q12 4 8 22 q-2 4 -5 1 q2 -12 -6 -18z" fill={HAIR} />}
         {a.hair === 5 && [[19, 16], [24, 9], [32, 6], [40, 9], [45, 16], [17, 24], [47, 24]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="6.5" fill={HAIR} />)}
-        <rect x="19" y="33" width="26" height="25" rx="9" fill={cloth} stroke={INK} strokeOpacity=".2" strokeWidth="1.2" />
-        <rect x="20" y="51" width="24" height="7" rx="3.5" fill={INK} opacity=".35" />
-        <path d="M26 33.5 l6 5 6 -5" stroke="#fff" strokeOpacity=".7" strokeWidth="2" fill="none" strokeLinejoin="round" />
-        <path d="M27 44 l4 4 6 -7" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        <rect x="20" y="32" width="24" height="31" rx="9" fill={cloth} stroke={INK} strokeOpacity=".2" strokeWidth="1.2" />
+        <rect x="21" y="56" width="22" height="7" rx="3.5" fill={INK} opacity=".35" />
+        <path d="M26 32.5 l6 5 6 -5" stroke="#fff" strokeOpacity=".7" strokeWidth="2" fill="none" strokeLinejoin="round" />
+        <path d="M27 45 l4 4 6 -7" stroke="#fff" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        <g transform="translate(32 21) scale(.88) translate(-32 -21)">
         <circle cx="32" cy="21" r="14" fill={skin} stroke={INK} strokeOpacity=".2" strokeWidth="1.2" />
         {a.hair === 0 && <path d="M18 20 a14 14 0 0 1 28 -2 q-6 -3 -10 2 q-4 -5 -9 -1 q-5 -2 -9 1z" fill={HAIR} />}
         {a.hair === 1 && <path d="M18 21 a14 14 0 0 1 28 -2 q-8 -4 -14 1 q-6 -3 -14 1z" fill={HAIR} />}
@@ -74,7 +79,8 @@ export function DashAvatar({ a, size = 64, step = 0, pose }: { a: Avatar; size?:
         {a.extra === 5 && <g><path d="M17 22 a15 15 0 0 1 30 0" stroke={INK} strokeWidth="2.6" fill="none" /><rect x="14" y="19" width="6" height="10" rx="3" fill="#EF4444" /><rect x="44" y="19" width="6" height="10" rx="3" fill="#EF4444" /></g>}
         {a.extra === 4 && <g transform="translate(20 10)">{[0, 72, 144, 216, 288].map(r => <circle key={r} cx={Math.cos(r * Math.PI / 180) * 3.2} cy={Math.sin(r * Math.PI / 180) * 3.2} r="2.6" fill="#F472B6" />)}<circle r="1.8" fill="#FACC15" /></g>}
         </g>
-        <Arm i={1} x={40} />
+        </g>
+        <g transform={upper}><Arm i={1} x={40} /></g>
       </g>
     </svg>
   );

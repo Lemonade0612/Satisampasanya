@@ -4,6 +4,7 @@ import mini from '../data/minigames.json';
 import { Guide, TrustMeter, TopBar, haptic } from '../components/ui';
 import { DT } from '../i18n';
 import { track } from '../lib/analytics';
+import { useMusic } from '../lib/sound';
 import type { Lang, LinkRound } from '../types';
 import type { GameResult } from './StoryGame';
 
@@ -16,6 +17,7 @@ export function LinkDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
   const [score, setScore] = useState(0);
   const [trust, setTrust] = useState(3);
   const r = rounds[i];
+  useMusic('mystery');
 
   const choose = (k: number) => {
     if (pick !== null) return;

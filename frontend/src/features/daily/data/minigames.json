@@ -112,6 +112,328 @@
         "en": "Known person, no request, no link.",
         "lo": "ຄົນທີ່ຮູ້ຈັກ, ບໍ່ຂໍຫຍັງ, ບໍ່ມີລິ້ງ."
       }
+    },
+    {
+      "id": "q9",
+      "scamType": "bank_phishing",
+      "isScam": true,
+      "sender": "BlueLotus Bank",
+      "text": {
+        "en": "Your card is locked for your safety. Reply with the 6-digit code we just sent to unlock it.",
+        "lo": "ບັດຂອງທ່ານຖືກລັອກເພື່ອຄວາມປອດໄພ. ຕອບກັບດ້ວຍລະຫັດ 6 ຕົວທີ່ເຮົາຫາກໍ່ສົ່ງ ເພື່ອປົດລັອກ."
+      },
+      "why": {
+        "en": "The name looks right, but no bank asks you to send back a code. That code is the key to your account.",
+        "lo": "ຊື່ເບິ່ງຄືແທ້ ແຕ່ບໍ່ມີທະນາຄານໃດໃຫ້ສົ່ງລະຫັດກັບ. ລະຫັດນັ້ນແມ່ນກະແຈບັນຊີ."
+      }
+    },
+    {
+      "id": "q10",
+      "scamType": "fake_job",
+      "isScam": false,
+      "sender": "Vientiane Hotel HR",
+      "text": {
+        "en": "Thanks for applying for the front desk job. Interview Tuesday 10:00 at our lobby. Bring your CV. No fees.",
+        "lo": "ຂອບໃຈທີ່ສະໝັກວຽກຕ້ອນຮັບ. ສຳພາດວັນອັງຄານ 10:00 ທີ່ລັອບບີ້. ເອົາ CV ມາ. ບໍ່ມີຄ່າທຳນຽມ."
+      },
+      "why": {
+        "en": "It matches a job you applied for, meets in person at a real place and asks for no money.",
+        "lo": "ກົງກັບວຽກທີ່ສະໝັກ, ພົບກັນຕົວຈິງ ແລະ ບໍ່ຂໍເງິນ."
+      }
+    },
+    {
+      "id": "q11",
+      "scamType": "investment",
+      "isScam": true,
+      "sender": "Sister-in-law (new number)",
+      "text": {
+        "en": "Hi, it's me, new number! I made 2 million last week on this trading app. Join with my link before the bonus ends tonight.",
+        "lo": "ສະບາຍດີ ແມ່ນເອື້ອຍເອງ ເບີໃໝ່! ອາທິດແລ້ວໄດ້ກຳໄລ 2 ລ້ານ ຈາກແອັບເທຣດນີ້. ສະໝັກຜ່ານລິ້ງກ່ອນໂບນັດໝົດຄືນນີ້."
+      },
+      "why": {
+        "en": "A \"new number\" from family, easy profit and a deadline. Call her old number before believing it.",
+        "lo": "\"ເບີໃໝ່\" ຂອງຄອບຄົວ, ກຳໄລງ່າຍ ແລະ ເສັ້ນຕາຍ. ໂທຫາເບີເກົ່າກ່ອນເຊື່ອ."
+      }
+    },
+    {
+      "id": "q12",
+      "scamType": "prize",
+      "isScam": false,
+      "sender": "Lao Telecom",
+      "text": {
+        "en": "Your monthly 5GB package renews tomorrow. Dial *123# to check your balance.",
+        "lo": "ແພັກເກັດ 5GB ປະຈຳເດືອນຈະຕໍ່ອາຍຸມື້ອື່ນ. ກົດ *123# ເພື່ອກວດຍອດ."
+      },
+      "why": {
+        "en": "A normal reminder that sends you to the official short code, not a link.",
+        "lo": "ການແຈ້ງເຕືອນທຳມະດາ ໃຫ້ກົດລະຫັດທາງການ ບໍ່ແມ່ນລິ້ງ."
+      }
+    },
+    {
+      "id": "q13",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Agent Mr. K",
+      "text": {
+        "en": "Factory job in Thailand, 15,000 baht/month. I keep your passport safe during travel. Leave this week, tell nobody yet.",
+        "lo": "ວຽກໂຮງງານໄທ 15,000 ບາດ/ເດືອນ. ຂ້ອຍຈະເກັບໜັງສືຜ່ານແດນໃຫ້ລະຫວ່າງເດີນທາງ. ໜີໄປອາທິດນີ້ ຢ່າບອກໃຜ."
+      },
+      "why": {
+        "en": "Holding your passport and keeping it secret are trafficking warning signs.",
+        "lo": "ການຍຶດໜັງສືຜ່ານແດນ ແລະ ໃຫ້ປິດລັບ ແມ່ນສັນຍານການຄ້າມະນຸດ."
+      }
+    },
+    {
+      "id": "q14",
+      "scamType": "bank_phishing",
+      "isScam": false,
+      "sender": "BlueLotus Bank",
+      "text": {
+        "en": "We will never ask for your PIN or OTP. If someone does, call the number on the back of your card.",
+        "lo": "ເຮົາຈະບໍ່ຂໍ PIN ຫຼື OTP ຈາກທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ໂທເບີທີ່ຢູ່ຫຼັງບັດ."
+      },
+      "why": {
+        "en": "A safety reminder that asks for nothing and points you to a number you can verify.",
+        "lo": "ການເຕືອນຄວາມປອດໄພ ບໍ່ຂໍຫຍັງ ແລະ ໃຫ້ໂທເບີທີ່ກວດໄດ້."
+      }
+    },
+    {
+      "id": "q15",
+      "scamType": "fake_job",
+      "isScam": true,
+      "sender": "StarTasks App",
+      "text": {
+        "en": "Your balance: 1,850,000 kip ✨ Deposit 300,000 kip to unlock withdrawal.",
+        "lo": "ຍອດເງິນຂອງທ່ານ: 1,850,000 ກີບ ✨ ຝາກ 300,000 ກີບ ເພື່ອປົດລັອກການຖອນ."
+      },
+      "why": {
+        "en": "Task scam. The balance is just a number on their screen. Never pay to get paid.",
+        "lo": "ການຫຼອກແບບວຽກ. ຍອດເງິນເປັນພຽງຕົວເລກໃນໜ້າຈໍຂອງເຂົາ. ຢ່າຈ່າຍເງິນເພື່ອໃຫ້ໄດ້ຮັບເງິນ."
+      }
+    },
+    {
+      "id": "q16",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Recruiter Ms. Lin",
+      "text": {
+        "en": "Small change: the Bangkok office moved to Bokeo. Same salary. A car will meet you at the border, bring your passport.",
+        "lo": "ປ່ຽນແຜນໜ້ອຍໜຶ່ງ: ຫ້ອງການບາງກອກຍ້າຍໄປບໍ່ແກ້ວ. ເງິນເດືອນຄືເກົ່າ. ມີລົດມາຮັບທີ່ດ່ານ ເອົາໜັງສືຜ່ານແດນມາ."
+      },
+      "why": {
+        "en": "When the country or worksite changes at the last minute, stop. This is a documented trafficking pattern.",
+        "lo": "ເມື່ອປະເທດ ຫຼື ບ່ອນເຮັດວຽກປ່ຽນກະທັນຫັນ ໃຫ້ຢຸດ. ນີ້ແມ່ນຮູບແບບການຄ້າມະນຸດທີ່ມີການບັນທຶກ."
+      }
+    },
+    {
+      "id": "q17",
+      "scamType": "fake_job",
+      "isScam": true,
+      "sender": "Hiring Girls 18+ 💕",
+      "text": {
+        "en": "Online chat job! 8,000,000 kip/month, free meals and free room. Just chat with customers. Start this week.",
+        "lo": "ວຽກແຊັດອອນລາຍ! 8,000,000 ກີບ/ເດືອນ ອາຫານຟຣີ ຫ້ອງພັກຟຣີ. ພຽງແຕ່ລົມກັບລູກຄ້າ. ເລີ່ມອາທິດນີ້."
+      },
+      "why": {
+        "en": "'Chat girl' offers in Laos have turned free room and food into debts, with quotas nobody can reach.",
+        "lo": "ວຽກ 'ສາວແຊັດ' ໃນລາວ ເຄີຍປ່ຽນຫ້ອງພັກ ແລະ ອາຫານຟຣີ ເປັນໜີ້ ພ້ອມເປົ້າໝາຍທີ່ບໍ່ມີໃຜເຮັດໄດ້."
+      }
+    },
+    {
+      "id": "q18",
+      "scamType": "investment",
+      "isScam": true,
+      "sender": "Anna 🌹",
+      "text": {
+        "en": "We've talked every night for 3 weeks ❤️ My uncle's crypto platform gave me 40% this month. Let me show you how, just for us.",
+        "lo": "ເຮົາລົມກັນທຸກຄືນມາ 3 ອາທິດແລ້ວ ❤️ ແພລດຟອມຄຣິບໂຕຂອງລຸງໃຫ້ກຳໄລ 40% ເດືອນນີ້. ຂ້ອຍຈະສອນ ສະເພາະເຮົາສອງຄົນ."
+      },
+      "why": {
+        "en": "An online friendship that turns into an investment tip is the classic romance-investment scam.",
+        "lo": "ມິດຕະພາບອອນລາຍທີ່ກາຍເປັນການຊວນລົງທຶນ ແມ່ນການຫຼອກແບບຄວາມຮັກ-ລົງທຶນ."
+      }
+    },
+    {
+      "id": "q19",
+      "scamType": "investment",
+      "isScam": true,
+      "sender": "Lucky Mekong 88 ✅ Licensed",
+      "text": {
+        "en": "Officially licensed online casino! Deposit 100,000 kip, get a 500,000 kip bonus. Withdraw after 3 more deposits.",
+        "lo": "ຄາສິໂນອອນລາຍມີໃບອະນຸຍາດ! ຝາກ 100,000 ກີບ ຮັບໂບນັດ 500,000 ກີບ. ຖອນໄດ້ຫຼັງຝາກອີກ 3 ເທື່ອ."
+      },
+      "why": {
+        "en": "Fake gambling sites are a tool of scam compounds. A 'licensed' badge and a working site prove nothing.",
+        "lo": "ເວັບການພະນັນປອມ ແມ່ນເຄື່ອງມືຂອງແກ໊ງຫຼອກລວງ. ປ້າຍ 'ມີໃບອະນຸຍາດ' ແລະ ເວັບທີ່ໃຊ້ໄດ້ ພິສູດຫຍັງບໍ່ໄດ້."
+      }
+    },
+    {
+      "id": "q20",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Somphone (old classmate)",
+      "text": {
+        "en": "My company in the tech park needs 2 more people. Good pay! Please come 🙏 they said I can go home if I bring friends.",
+        "lo": "ບໍລິສັດຂ້ອຍຢູ່ເຂດເທັກໂນໂລຊີ ຕ້ອງການອີກ 2 ຄົນ. ເງິນດີ! ມາເດີ້ 🙏 ເຂົາບອກວ່າຂ້ອຍກັບບ້ານໄດ້ ຖ້າພາໝູ່ມາ."
+      },
+      "why": {
+        "en": "Some trapped workers are forced to recruit a replacement to be released. A friend's invite is not proof of safety.",
+        "lo": "ຄົນງານທີ່ຖືກກັກບາງຄົນ ຖືກບັງຄັບໃຫ້ຫາຄົນມາແທນ ຈຶ່ງຈະຖືກປ່ອຍ. ການຊວນຂອງໝູ່ບໍ່ໄດ້ພິສູດວ່າປອດໄພ."
+      }
+    },
+    {
+      "id": "q21",
+      "scamType": "fake_job",
+      "isScam": true,
+      "sender": "Golden Star Co. HR",
+      "text": {
+        "en": "Contract attached ✅ Salary 10M kip. Housing free. Leave before 2 years and pay a 30M kip penalty.",
+        "lo": "ແນບສັນຍາແລ້ວ ✅ ເງິນເດືອນ 10 ລ້ານກີບ. ທີ່ພັກຟຣີ. ອອກກ່ອນ 2 ປີ ຕ້ອງຈ່າຍຄ່າປັບ 30 ລ້ານກີບ."
+      },
+      "why": {
+        "en": "A signed contract does not mean safe work. A huge penalty for leaving is a debt trap.",
+        "lo": "ສັນຍາທີ່ເຊັນແລ້ວ ບໍ່ໄດ້ໝາຍຄວາມວ່າວຽກປອດໄພ. ຄ່າປັບໃຫຍ່ຖ້າລາອອກ ແມ່ນກັບດັກໜີ້."
+      }
+    },
+    {
+      "id": "q22",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Training Manager",
+      "text": {
+        "en": "Welcome! For security, the manager keeps your passport and phone during training. You get them back later.",
+        "lo": "ຍິນດີຕ້ອນຮັບ! ເພື່ອຄວາມປອດໄພ ຜູ້ຈັດການຈະເກັບໜັງສືຜ່ານແດນ ແລະ ໂທລະສັບໄວ້ລະຫວ່າງຝຶກອົບຮົມ. ຈະຄືນໃຫ້ພາຍຫຼັງ."
+      },
+      "why": {
+        "en": "Taking your documents or phone is how control starts. Keep your own passport, always.",
+        "lo": "ການເອົາເອກະສານ ຫຼື ໂທລະສັບ ແມ່ນການເລີ່ມຄວບຄຸມ. ເກັບໜັງສືຜ່ານແດນໄວ້ເອງສະເໝີ."
+      }
+    },
+    {
+      "id": "q23",
+      "scamType": "overseas_recruitment",
+      "isScam": true,
+      "sender": "Fast Jobs Thailand",
+      "text": {
+        "en": "No passport needed! We cross the river at night, much faster than the border office. 500,000 kip per person.",
+        "lo": "ບໍ່ຕ້ອງມີໜັງສືຜ່ານແດນ! ຂ້າມນ້ຳຕອນກາງຄືນ ໄວກວ່າດ່ານ. ຄົນລະ 500,000 ກີບ."
+      },
+      "why": {
+        "en": "Crossing without papers leaves you with no protection at all on the other side.",
+        "lo": "ການຂ້າມແດນໂດຍບໍ່ມີເອກະສານ ເຮັດໃຫ້ທ່ານບໍ່ມີການປົກປ້ອງຫຍັງເລີຍຢູ່ອີກຟາກ."
+      }
+    },
+    {
+      "id": "q24",
+      "scamType": "fake_job",
+      "isScam": true,
+      "sender": "StarTasks App",
+      "text": {
+        "en": "Level 5 unlocked 🎉 3 more orders to reach VIP! VIP needs a 1,000,000 kip top-up.",
+        "lo": "ປົດລັອກເລເວລ 5 🎉 ອີກ 3 ອໍເດີ ຮອດ VIP! VIP ຕ້ອງເຕີມ 1,000,000 ກີບ."
+      },
+      "why": {
+        "en": "Task scams are built like games: levels, rewards, then a bigger deposit each time.",
+        "lo": "ການຫຼອກແບບວຽກ ອອກແບບຄືເກມ: ເລເວລ, ລາງວັນ ແລ້ວໃຫ້ຝາກເງິນຫຼາຍຂຶ້ນທຸກເທື່ອ."
+      }
+    },
+    {
+      "id": "q25",
+      "scamType": "investment",
+      "isScam": true,
+      "sender": "CoinMax Platform",
+      "text": {
+        "en": "Your profit: +$2,340 💰 To withdraw, first pay 15% tax to the platform.",
+        "lo": "ກຳໄລຂອງທ່ານ: +$2,340 💰 ເພື່ອຖອນ ຕ້ອງຈ່າຍພາສີ 15% ໃຫ້ແພລດຟອມກ່ອນ."
+      },
+      "why": {
+        "en": "Fake platforms show made-up profits, then invent 'taxes' and 'fees' so you keep paying.",
+        "lo": "ແພລດຟອມປອມສະແດງກຳໄລປອມ ແລ້ວສ້າງ 'ພາສີ' ແລະ 'ຄ່າທຳນຽມ' ໃຫ້ຈ່າຍຕໍ່ໄປ."
+      }
+    },
+    {
+      "id": "q26",
+      "scamType": "fake_job",
+      "isScam": false,
+      "sender": "Aunt Vone",
+      "text": {
+        "en": "Hi Noy! The noodle shop next to my house needs weekend help, 60,000 kip a day. Come meet the owner on Saturday.",
+        "lo": "ສະບາຍດີນ້ອຍ! ຮ້ານເຝີຂ້າງເຮືອນປ້າ ຕ້ອງການຄົນຊ່ວຍທ້າຍອາທິດ ມື້ລະ 60,000 ກີບ. ມາພົບເຈົ້າຂອງຮ້ານວັນເສົາ."
+      },
+      "why": {
+        "en": "Someone you know, a real place nearby, meeting in person, no fees.",
+        "lo": "ຄົນທີ່ຮູ້ຈັກ, ສະຖານທີ່ແທ້ໃກ້ໆ, ພົບກັນຕົວຈິງ, ບໍ່ມີຄ່າທຳນຽມ."
+      }
+    },
+    {
+      "id": "q27",
+      "scamType": "overseas_recruitment",
+      "isScam": false,
+      "sender": "Sister Lae",
+      "text": {
+        "en": "At the agency office in Vientiane. They gave me the contract in Lao to read at home first, and I keep my passport. Interview tomorrow!",
+        "lo": "ຢູ່ຫ້ອງການບໍລິສັດຢູ່ວຽງຈັນ. ເຂົາໃຫ້ສັນຍາເປັນພາສາລາວ ເອົາໄປອ່ານທີ່ເຮືອນກ່ອນ ແລະ ຂ້ອຍເກັບໜັງສືຜ່ານແດນເອງ. ສຳພາດມື້ອື່ນ!"
+      },
+      "why": {
+        "en": "A contract in her own language, time to read it, and she keeps her passport. Good signs.",
+        "lo": "ສັນຍາເປັນພາສາຂອງຕົນ, ມີເວລາອ່ານ ແລະ ເກັບໜັງສືຜ່ານແດນເອງ. ສັນຍານດີ."
+      }
+    },
+    {
+      "id": "q28",
+      "scamType": "fake_job",
+      "isScam": false,
+      "sender": "Provincial Labour Office",
+      "text": {
+        "en": "Free info day on legal work abroad, Thursday 2pm at our office. Ask us to check any agency before you sign.",
+        "lo": "ວັນແນະນຳວຽກຕ່າງປະເທດຖືກກົດໝາຍ ບໍ່ເສຍຄ່າ ວັນພະຫັດ 14:00 ທີ່ຫ້ອງການ. ໃຫ້ເຮົາກວດບໍລິສັດກ່ອນເຊັນສັນຍາ."
+      },
+      "why": {
+        "en": "An official office inviting you in person, charging nothing, and offering to check agencies.",
+        "lo": "ຫ້ອງການທາງການເຊີນໄປພົບ, ບໍ່ເກັບເງິນ ແລະ ຊ່ວຍກວດບໍລິສັດ."
+      }
+    },
+    {
+      "id": "q29",
+      "scamType": "bank_phishing",
+      "isScam": false,
+      "sender": "Big brother Kham",
+      "text": {
+        "en": "Someone made a fake account with my photo and is asking people for money. If they message you, ignore and block!",
+        "lo": "ມີຄົນສ້າງບັນຊີປອມໃຊ້ຮູບອ້າຍ ຂໍເງິນຄົນອື່ນ. ຖ້າເຂົາສົ່ງມາ ບໍ່ຕ້ອງສົນ ບລັອກເລີຍ!"
+      },
+      "why": {
+        "en": "A warning from a known contact, asking for nothing.",
+        "lo": "ຄຳເຕືອນຈາກຄົນທີ່ຮູ້ຈັກ ບໍ່ຂໍຫຍັງ."
+      }
+    },
+    {
+      "id": "q30",
+      "scamType": "prize",
+      "isScam": false,
+      "sender": "Wat Sisaket Committee",
+      "text": {
+        "en": "Boun festival donations are accepted at the temple office. Please ask for a receipt.",
+        "lo": "ຮັບບໍລິຈາກງານບຸນ ທີ່ຫ້ອງການວັດ. ກະລຸນາຂໍໃບຮັບເງິນ."
+      },
+      "why": {
+        "en": "Give in person at a real place and get a receipt. No links, no transfers.",
+        "lo": "ບໍລິຈາກດ້ວຍຕົນເອງ ບ່ອນແທ້ ແລະ ຮັບໃບຮັບເງິນ. ບໍ່ມີລິ້ງ ບໍ່ໂອນ."
+      }
+    },
+    {
+      "id": "q31",
+      "scamType": "investment",
+      "isScam": false,
+      "sender": "BlueLotus App",
+      "text": {
+        "en": "Transfer of 500,000 kip to Khamla S. was successful. Ref 88213.",
+        "lo": "ໂອນ 500,000 ກີບ ໃຫ້ ຄຳຫຼ້າ ສ. ສຳເລັດ. ເລກອ້າງອີງ 88213."
+      },
+      "why": {
+        "en": "Just a receipt for something you did. No link, nothing asked.",
+        "lo": "ພຽງໃບຮັບສິ່ງທີ່ທ່ານເຮັດ. ບໍ່ມີລິ້ງ ບໍ່ຂໍຫຍັງ."
+      }
     }
   ],
   "links": [
@@ -260,6 +582,66 @@
         "en": "Anyone who says 'tell no one' is a red flag. Tell family.",
         "lo": "ໃຜບອກວ່າ 'ຢ່າບອກໃຜ' ແມ່ນສັນຍານອັນຕະລາຍ. ບອກຄອບຄົວ."
       }
+    },
+    {
+      "id": "deposit",
+      "flag": "upfront_fee",
+      "label": {
+        "en": "Pay to withdraw",
+        "lo": "ຈ່າຍເພື່ອຖອນ"
+      },
+      "tip": {
+        "en": "Never pay to unlock your own 'earnings'.",
+        "lo": "ຢ່າຈ່າຍເພື່ອປົດລັອກ 'ລາຍໄດ້' ຂອງຕົນ."
+      }
+    },
+    {
+      "id": "debt",
+      "flag": "too_good",
+      "label": {
+        "en": "'Free' room",
+        "lo": "ຫ້ອງ 'ຟຣີ'"
+      },
+      "tip": {
+        "en": "Free housing can turn into a debt you are forced to work off.",
+        "lo": "ທີ່ພັກຟຣີ ອາດກາຍເປັນໜີ້ທີ່ຖືກບັງຄັບໃຫ້ເຮັດວຽກໃຊ້."
+      }
+    },
+    {
+      "id": "switch",
+      "flag": "unverified_identity",
+      "label": {
+        "en": "Destination changed",
+        "lo": "ປ່ຽນບ່ອນເຮັດວຽກ"
+      },
+      "tip": {
+        "en": "Job moved to another country at the last minute? Stop.",
+        "lo": "ວຽກຍ້າຍໄປປະເທດອື່ນກະທັນຫັນ? ຢຸດ."
+      }
+    },
+    {
+      "id": "recruit",
+      "flag": "off_platform",
+      "label": {
+        "en": "'Bring a friend'",
+        "lo": "'ພາໝູ່ມາ'"
+      },
+      "tip": {
+        "en": "Trapped workers can be forced to recruit friends. Check before you go.",
+        "lo": "ຄົນງານທີ່ຖືກກັກ ອາດຖືກບັງຄັບໃຫ້ຊວນໝູ່. ກວດກ່ອນໄປ."
+      }
+    },
+    {
+      "id": "romance",
+      "flag": "too_good",
+      "label": {
+        "en": "Love + crypto",
+        "lo": "ຮັກ + ຄຣິບໂຕ"
+      },
+      "tip": {
+        "en": "An online sweetheart with an investment tip is a scam.",
+        "lo": "ຄົນຮັກອອນລາຍທີ່ຊວນລົງທຶນ ແມ່ນການຫຼອກລວງ."
+      }
     }
   ],
   "dashPickups": [
@@ -305,6 +687,39 @@
       "tip": {
         "en": "Your PIN is only for you.",
         "lo": "PIN ແມ່ນຂອງທ່ານຜູ້ດຽວ."
+      }
+    },
+    {
+      "id": "contract",
+      "label": {
+        "en": "Read the contract",
+        "lo": "ອ່ານສັນຍາ"
+      },
+      "tip": {
+        "en": "Get it in your language and read it at home first.",
+        "lo": "ຂໍສັນຍາເປັນພາສາຂອງທ່ານ ແລະ ອ່ານທີ່ເຮືອນກ່ອນ."
+      }
+    },
+    {
+      "id": "docs",
+      "label": {
+        "en": "Keep your passport",
+        "lo": "ເກັບໜັງສືຜ່ານແດນເອງ"
+      },
+      "tip": {
+        "en": "Your documents stay with you, always.",
+        "lo": "ເອກະສານຂອງທ່ານຕ້ອງຢູ່ກັບທ່ານສະເໝີ."
+      }
+    },
+    {
+      "id": "hotline",
+      "label": {
+        "en": "Call 1362 / 1300",
+        "lo": "ໂທ 1362 / 1300"
+      },
+      "tip": {
+        "en": "Lao Women's Union 1362, police 1300: help with trafficking worries.",
+        "lo": "ສະຫະພັນແມ່ຍິງລາວ 1362, ຕຳຫຼວດ 1300: ຊ່ວຍເລື່ອງການຄ້າມະນຸດ."
       }
     }
   ]

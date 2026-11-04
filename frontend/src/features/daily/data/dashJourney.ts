@@ -102,25 +102,35 @@ export const ROUTES: Record<string, Stop[]> = {
   ],
 };
 
-// Stops without their own fact show one of these, so every gate still teaches something.
+// Stops without their own fact, and every stop after the first lap, show one of these, so gates keep teaching
+// something new. Facts come from the 2025 US Trafficking in Persons report (Laos), UN experts (2025), US CRS and the FTC.
+// Every number carries its year and scope: identified victims, potential victims and estimates are kept apart.
 export const TIPS: T2[] = [
-  { en: 'Unknown number says you won a prize? Real prizes never ask you to pay a fee first.', lo: 'ເບີແປກບອກວ່າທ່ານຖືກລາງວັນ? ລາງວັນແທ້ບໍ່ເຄີຍໃຫ້ຈ່າຍຄ່າທຳນຽມກ່ອນ.' },
+  { en: 'Real prizes never ask you to pay a fee first.', lo: 'ລາງວັນແທ້ບໍ່ເຄີຍໃຫ້ຈ່າຍຄ່າທຳນຽມກ່ອນ.' },
   { en: 'Banks never ask for your PIN or OTP by message.', lo: 'ທະນາຄານບໍ່ເຄີຍຂໍ PIN ຫຼື OTP ທາງຂໍ້ຄວາມ.' },
-  { en: 'Check the web address letter by letter before you log in.', lo: 'ກວດທີ່ຢູ່ເວັບທຸກຕົວອັກສອນກ່ອນເຂົ້າລະບົບ.' },
   { en: 'A friend asking for money in chat? Call them on their usual number first.', lo: 'ໝູ່ຂໍເງິນໃນແຊັດ? ໂທຫາເບີປົກກະຕິຂອງເຂົາກ່ອນ.' },
-  { en: 'High salary, no skills, travel paid? That job offer is a red flag.', lo: 'ເງິນເດືອນສູງ ບໍ່ຕ້ອງມີທັກສະ ອອກຄ່າເດີນທາງໃຫ້? ນັ້ນແມ່ນສັນຍານອັນຕະລາຍ.' },
   { en: 'Rushing you to act "now" is the oldest scam trick. Slow down.', lo: 'ການເລັ່ງໃຫ້ເຮັດ "ດຽວນີ້" ແມ່ນກົນຫຼອກເກົ່າແກ່ທີ່ສຸດ. ຄ່ອຍໆຄິດ.' },
-  { en: 'Guaranteed investment returns do not exist. Walk away.', lo: 'ການລົງທຶນທີ່ຮັບປະກັນກຳໄລບໍ່ມີແທ້. ຍ່າງໜີ.' },
-  { en: 'Never install an app a stranger sends you to "fix" your account.', lo: 'ຢ່າຕິດຕັ້ງແອັບທີ່ຄົນແປກໜ້າສົ່ງມາເພື່ອ "ແກ້ໄຂ" ບັນຊີ.' },
+  { en: 'The person scamming you may be a victim too, forced to type under threat.', lo: 'ຄົນທີ່ຫຼອກທ່ານ ອາດເປັນຜູ້ເຄາະຮ້າຍເຊັ່ນກັນ ຖືກບັງຄັບໃຫ້ພິມພາຍໃຕ້ການຂົ່ມຂູ່.' },
+  { en: 'Young, educated men are often trafficked into scam work, not only women and girls.', lo: 'ຊາຍໜຸ່ມທີ່ມີການສຶກສາ ມັກຖືກຄ້າມະນຸດໄປເຮັດວຽກຫຼອກລວງ ບໍ່ແມ່ນແຕ່ຜູ້ຍິງ ແລະ ເດັກຍິງ.' },
+  { en: 'A signed contract and a salary do not prove someone is free to leave.', lo: 'ສັນຍາທີ່ເຊັນ ແລະ ເງິນເດືອນ ບໍ່ໄດ້ພິສູດວ່າຄົນນັ້ນອອກໄດ້ຢ່າງເສລີ.' },
+  { en: 'Trafficking can happen inside Laos too, without crossing any border.', lo: 'ການຄ້າມະນຸດເກີດຂຶ້ນພາຍໃນລາວໄດ້ ໂດຍບໍ່ຕ້ອງຂ້າມແດນ.' },
+  { en: '"Free" room and meals can become a debt you are forced to work off.', lo: 'ຫ້ອງພັກ ແລະ ອາຫານ "ຟຣີ" ອາດກາຍເປັນໜີ້ທີ່ຖືກບັງຄັບໃຫ້ເຮັດວຽກໃຊ້.' },
+  { en: 'Some trapped workers are told to recruit a friend to win their own release.', lo: 'ຄົນງານທີ່ຖືກກັກບາງຄົນ ຖືກບອກໃຫ້ຊວນໝູ່ມາ ຈຶ່ງຈະຖືກປ່ອຍ.' },
+  { en: 'A shiny tech park or office building does not prove a job is legal.', lo: 'ເຂດເທັກໂນໂລຊີ ຫຼື ຕຶກຫ້ອງການງາມໆ ບໍ່ໄດ້ພິສູດວ່າວຽກຖືກກົດໝາຍ.' },
+  { en: 'Task scams look like games: levels, rewards, then "deposit to withdraw". The balance is fake.', lo: 'ການຫຼອກແບບວຽກຄືເກມ: ເລເວລ, ລາງວັນ ແລ້ວ "ຝາກເພື່ອຖອນ". ຍອດເງິນເປັນຂອງປອມ.' },
+  { en: 'Job moved from Thailand to "our other branch" at the last minute? That change is the warning.', lo: 'ວຽກຍ້າຍຈາກໄທ ໄປ "ສາຂາອື່ນ" ກະທັນຫັນ? ການປ່ຽນນັ້ນແມ່ນສັນຍານເຕືອນ.' },
+  { en: 'Keep your passport and phone. Whoever holds them holds you.', lo: 'ເກັບໜັງສືຜ່ານແດນ ແລະ ໂທລະສັບໄວ້ເອງ. ໃຜຖືມັນ ກໍ່ຄວບຄຸມທ່ານ.' },
+  { en: 'In 2024, Lao authorities formally identified 85 trafficking victims. That counts recognition, not everyone harmed.', lo: 'ປີ 2024 ທາງການລາວ ຢືນຢັນຜູ້ເຄາະຮ້າຍຈາກການຄ້າມະນຸດ 85 ຄົນ. ນັ້ນແມ່ນຈຳນວນທີ່ຖືກຮັບຮູ້ ບໍ່ແມ່ນທຸກຄົນທີ່ຖືກກະທົບ.' },
+  { en: 'About 1,948 potential victims were released from the Golden Triangle zone in 2024 (US TIP report).', lo: 'ປະມານ 1,948 ຄົນທີ່ອາດເປັນຜູ້ເຄາະຮ້າຍ ຖືກປ່ອຍອອກຈາກເຂດສາມຫຼ່ຽມຄຳ ໃນປີ 2024 (ລາຍງານ TIP ສະຫະລັດ).' },
+  { en: 'Of about 6,364 people removed from the zone (Sep 2022 to Dec 2024), only 25 were formally identified as victims.', lo: 'ໃນປະມານ 6,364 ຄົນທີ່ຖືກນຳອອກຈາກເຂດ (ກ.ຍ. 2022 ຫາ ທ.ວ. 2024) ມີພຽງ 25 ຄົນທີ່ຖືກຢືນຢັນເປັນຜູ້ເຄາະຮ້າຍ.' },
+  { en: 'UN experts reported people of more than 32 nationalities in the Golden Triangle zone (2025).', lo: 'ຜູ້ຊ່ຽວຊານ UN ລາຍງານວ່າມີຄົນຫຼາຍກວ່າ 32 ສັນຊາດ ໃນເຂດສາມຫຼ່ຽມຄຳ (2025).' },
+  { en: 'A rescue count is not a confirmed-victim count, and fewer identified victims does not mean less trafficking.', lo: 'ຈຳນວນຄົນທີ່ຖືກຊ່ວຍ ບໍ່ແມ່ນຈຳນວນຜູ້ເຄາະຮ້າຍທີ່ຢືນຢັນ ແລະ ການຢືນຢັນໜ້ອຍລົງ ບໍ່ໄດ້ໝາຍວ່າການຄ້າມະນຸດຫຼຸດລົງ.' },
+  { en: 'Worried someone is trapped? Lao Women\'s Union 1362, police 1300. Never post their location publicly.', lo: 'ເປັນຫ່ວງວ່າມີຄົນຖືກກັກ? ສະຫະພັນແມ່ຍິງລາວ 1362, ຕຳຫຼວດ 1300. ຢ່າໂພສບ່ອນຢູ່ຂອງເຂົາສາທາລະນະ.' },
 ];
 
+// Seeded once per session so each visit shows a different spread of facts.
+const SEED = Math.floor(Math.random() * TIPS.length);
 export const routeFor = (country: string) => ROUTES[country] ?? ROUTES.LA;
-export const factFor = (stop: Stop, i: number) => stop.fact ?? TIPS[i % TIPS.length];
-
-// Modes are sized for different players: Easy suits young kids and elders (slow, more hearts).
-export const MODES = {
-  easy: { speed: 0.022, hearts: 5 },
-  normal: { speed: 0.032, hearts: 3 },
-  fast: { speed: 0.044, hearts: 3 },
-} as const;
-export type ModeId = keyof typeof MODES;
+// First lap: the stop's own fact. Later laps (and stops without one) draw from TIPS so nothing repeats too soon.
+export const factFor = (stop: Stop, i: number, lap = 0) =>
+  (lap === 0 && stop.fact) ? stop.fact : TIPS[(SEED + i * 7 + lap * 3) % TIPS.length];

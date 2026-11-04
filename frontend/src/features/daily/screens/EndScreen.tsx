@@ -1,5 +1,7 @@
 import { Trophy, ShieldAlert, Search, Flag } from 'lucide-react';
+import { useEffect } from 'react';
 import { Guide, LikeButton, Streak } from '../components/ui';
+import { sfx } from '../lib/sound';
 import { DT, FLAG_LABEL } from '../i18n';
 import type { FlagCategory, GameId, Lang } from '../types';
 import type { GameResult } from '../games/StoryGame';
@@ -8,6 +10,8 @@ export function EndScreen({ lang, game, result, streak, onAgain, onHome, onCheck
   lang: Lang; game: GameId; result: GameResult; streak: number; onAgain: () => void; onHome: () => void; onCheck: () => void;
 }) {
   const t = DT[lang];
+  // Scam Call already played its own fanfare on its results screen.
+  useEffect(() => { if (game !== 'call') sfx(result.failed || result.score <= 0 ? 'lose' : 'win'); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   const missed = Object.entries(result.missed.reduce<Record<string, number>>((m, f) => ({ ...m, [f]: (m[f] || 0) + 1 }), {})) as [FlagCategory, number][];
   return (
     <div className="h-full overflow-y-auto p-5 flex flex-col gap-4">

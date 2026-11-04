@@ -3,6 +3,7 @@ import { CheckCircle2, XCircle, Video, MessageCircle, Smartphone, Swords, Flag }
 import { Guide, TrustMeter, TopBar, haptic, type Mood } from '../components/ui';
 import { DT, FLAG_LABEL } from '../i18n';
 import { track } from '../lib/analytics';
+import { useMusic } from '../lib/sound';
 import type { ChatStep, Choice, FlagCategory, FlagStep, Lang, Scenario } from '../types';
 
 export type GameResult = { score: number; total: number; missed: FlagCategory[]; failed: boolean; scenarioIds: string[] };
@@ -53,6 +54,7 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
     finish(nextScore, nextTotal, nextMissed, false);
   };
 
+  useMusic('mystery');
   if (!scenario || !step) return null;
   const progress = (si + stepIdx / steps.length) / scenarios.length;
   const ChannelIcon = scenario.channel === 'video' ? Video : scenario.channel === 'sms' ? Smartphone : MessageCircle;

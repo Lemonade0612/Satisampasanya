@@ -1,10 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
-import { Pause, Play, Pencil, Trophy, MapPin, Heart, ArrowUp, ArrowDown, Repeat, ChevronDown, X, KeyRound, Link2, Banknote, Stamp, Timer, Gift, EyeOff, ShieldCheck, PhoneCall, Users, Lock, Turtle, Rabbit, Zap, Medal, Lightbulb, Search, CheckCircle2, XCircle, Hand, Flag, type LucideIcon } from 'lucide-react';
+import { Pause, Play, Pencil, Trophy, MapPin, Heart, ArrowUp, ArrowDown, Repeat, ChevronDown, X, KeyRound, Link2, Banknote, Stamp, Timer, Gift, EyeOff, ShieldCheck, PhoneCall, Users, Lock, Medal, Lightbulb, Search, CheckCircle2, XCircle, Hand, Flag, Coins, Home, Shuffle, UserPlus, HeartCrack, FileText, BadgeCheck, Phone, type LucideIcon } from 'lucide-react';
 import mini from '../data/minigames.json';
-import { MODES, factFor, routeFor, type ModeId, type Stop } from '../data/dashJourney';
+import { factFor, routeFor, type Stop } from '../data/dashJourney';
+import { TIERS, getAge, setAge, type AgeTier } from '../lib/age';
+import { AgeGrid } from '../components/AgePicker';
+import { Burst, Combo, Countdown } from '../components/juice';
 import { DashAvatar } from '../components/DashAvatar';
 import { DashScene, GROUND, Landmark } from '../components/DashScene';
 import { TopBar, haptic } from '../components/ui';
+import { setIntensity, sfx, useMusic } from '../lib/sound';
 import { ASEAN, EXTRAS, HAIRS, HAIR_COLORS, OUTFITS, PRESETS, SKINS, addScore, board, flagOf, getPlayer, savePlayer, type Player } from '../lib/dashPlayer';
 import { DT } from '../i18n';
 import { track } from '../lib/analytics';
@@ -14,6 +18,7 @@ import type { GameResult } from './StoryGame';
 
 type Item = { id: string; label: { en: string; lo: string }; tip: { en: string; lo: string }; flag?: FlagCategory };
 type Thing = { x: number; item: Item; good: boolean; air: boolean; done: boolean };
+type FloatText = { id: number; y: number; text: string; good: boolean; born: number };
 type Phase = 'setup' | 'lobby' | 'run' | 'gate' | 'over';
 
 const hazards = mini.dashHazards as Item[];
@@ -22,16 +27,22 @@ const cards = mini.quickfire as QuickCard[];
 // Physics in px and ms. Ground traps need a jump; air pop-ups float at head height and need a duck.
 const GRAVITY = 0.0034, JUMP = 0.95, FAST_FALL = -1.3, DUCK_MS = 560, PLAYER_X = 22, STOP_LEN = 350, HIT_X = 6;
 // Air traps float just above a crouched runner (~55px) and below a standing one (~90px).
-const AIR_TRAP = 60, AIR_PICK = 118, BASE = GROUND * 0.5, RUNNER = 72;
-const ITEM_ICON: Record<string, LucideIcon> = { otp: KeyRound, link: Link2, fee: Banknote, passport: Stamp, rush: Timer, prize: Gift, secret: EyeOff, verify: ShieldCheck, call: PhoneCall, family: Users, lock: Lock };
-const MODE_ICON: Record<ModeId, LucideIcon> = { easy: Turtle, normal: Rabbit, fast: Zap };
+const AIR_TRAP = 60, AIR_PICK = 118, BASE = GROUND * 0.5, RUNNER = 62;
+// Traps and pickups are drawn at this scale so they stay in proportion with the runner.
+const ITEM_SCALE = 0.85;
+const ITEM_ICON: Record<string, LucideIcon> = { otp: KeyRound, link: Link2, fee: Banknote, passport: Stamp, rush: Timer, prize: Gift, secret: EyeOff, verify: ShieldCheck, call: PhoneCall, family: Users, lock: Lock, deposit: Coins, debt: Home, switch: Shuffle, recruit: UserPlus, romance: HeartCrack, contract: FileText, docs: BadgeCheck, hotline: Phone };
 const ItemIcon = ({ id, size }: { id: string; size: number }) => { const I = ITEM_ICON[id] ?? Flag; return <I size={size} />; };
+// Speed setting on top of the age level: the age level sets hearts, traps and timers, this only scales how fast the road moves.
+const SPEEDS = { slow: 0.75, normal: 1, fast: 1.3 } as const;
+type Speed = keyof typeof SPEEDS;
 const pick = <T,>(a: T[]) => a[Math.floor(Math.random() * a.length)];
 
-const fresh = (mode: ModeId) => ({
-  y: 0, vy: 0, jumps: 0, duck: 0, hurt: 0, things: [] as Thing[], dist: 0, stopDist: 0, stop: 0, lap: 1, hearts: MODES[mode].hearts as number,
-  bonus: 0, nextAt: 40, step: 0, missed: [] as FlagCategory[], seen: [] as string[],
+const fresh = (hearts: number) => ({
+  y: 0, vy: 0, jumps: 0, duck: 0, hurt: 0, things: [] as Thing[], dist: 0, stopDist: 0, stop: 0, lap: 1, hearts,
+  bonus: 0, nextAt: 40, step: 0, missed: [] as FlagCategory[], seen: [] as string[], combo: 0, pops: [] as FloatText[],
 });
+// On tall screens the road moves up and a foreground fills the space below, so the action is not squeezed at the bottom.
+const floorFor = (w: number, h: number) => (w && h ? Math.min(36, Math.max(GROUND, GROUND + ((h - w * 1.15) / h) * 100)) : GROUND);
 
 // Runner across an ASEAN country, north to south and looping: jump scam traps, duck scam pop-ups,
 // grab safe habits, and answer a scam check at every landmark.
@@ -39,16 +50,21 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
   const t = DT[lang];
   const [player, setPlayer] = useState<Player | null>(getPlayer);
   const [phase, setPhase] = useState<Phase>(player ? 'lobby' : 'setup');
-  const [mode, setMode] = useState<ModeId>(() => load<ModeId>('sati-dash-mode', 'normal'));
+  const [age, setAgeState] = useState<AgeTier>(getAge);
+  const cfg = TIERS[age].dash;
   const [routeCode, setRouteCode] = useState<string>(() => load<string>('sati-dash-route', player?.country ?? 'LA'));
   const [paused, setPaused] = useState(false);
-  const [sheet, setSheet] = useState<'route' | 'mode' | null>(null);
+  const [pace, setPace] = useState<Speed>(() => { const v = load<string>('sati-dash-speed', 'normal'); return v in SPEEDS ? v as Speed : 'normal'; });
+  const [sheet, setSheet] = useState<'route' | 'level' | null>(null);
+  const [late, setLate] = useState(false);
+  const [floor, setFloor] = useState(GROUND);
+  const area = useRef<HTMLDivElement>(null);
   const [toast, setToast] = useState<{ item: Item; good: boolean; n: number } | null>(null);
   const [card, setCard] = useState<QuickCard | null>(null);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [banner, setBanner] = useState<string | null>(null);
   const [, force] = useState(0);
-  const s = useRef(fresh(mode));
+  const s = useRef(fresh(cfg.hearts));
   const swipe = useRef<{ y: number; done: boolean } | null>(null);
   const g = s.current;
   const route = routeFor(routeCode);
@@ -57,7 +73,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
 
   const jump = () => {
     if (!live) return;
-    if (g.jumps < 2) { g.vy = JUMP * (g.jumps ? 0.82 : 1); g.jumps++; g.duck = 0; navigator.vibrate?.(8); }
+    if (g.jumps < 2) { g.vy = JUMP * (g.jumps ? 0.82 : 1); g.jumps++; g.duck = 0; navigator.vibrate?.(8); sfx('jump'); }
   };
   const duck = () => {
     if (!live) return;
@@ -67,7 +83,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
 
   const finishRun = () => {
     if (player) addScore(player, Math.floor(g.dist) + g.bonus);
-    setPhase('over');
+    sfx('lose'); setPhase('over');
   };
 
   useEffect(() => {
@@ -92,7 +108,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
     let raf = 0, last = performance.now();
     const loop = (now: number) => {
       const dt = Math.min(40, now - last); last = now;
-      const speed = MODES[mode].speed * (1 + 0.15 * (g.lap - 1));
+      const speed = cfg.speed * SPEEDS[pace] * (1 + cfg.lapBoost * (g.lap - 1));
       g.vy -= GRAVITY * dt; g.y = Math.max(0, g.y + g.vy * dt);
       if (g.y === 0) { g.vy = 0; g.jumps = 0; }
       g.duck = Math.max(0, g.duck - dt); g.hurt = Math.max(0, g.hurt - dt);
@@ -100,9 +116,9 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
       if (g.dist > g.nextAt && g.stopDist < STOP_LEN - 40) {
         const good = Math.random() < 0.3;
         // Air pop-ups only after the first stretch, so new players learn the jump first.
-        const air = good ? Math.random() < 0.5 : g.dist > 80 && Math.random() < 0.35;
+        const air = good ? Math.random() < 0.5 : g.dist > cfg.airFrom && Math.random() < cfg.air;
         g.things.push({ x: 110, good, air, item: pick(good ? pickups : hazards), done: false });
-        g.nextAt = g.dist + 32 + Math.random() * 34;
+        g.nextAt = g.dist + cfg.gap[0] + Math.random() * cfg.gap[1];
       }
       const ducking = g.duck > 0 && g.y < 10;
       for (const o of g.things) {
@@ -111,17 +127,19 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         const touching = o.good ? (o.air ? g.y > 60 : g.y < 50) : (o.air ? !ducking && g.y < AIR_TRAP + 50 : g.y < 38);
         if (!touching) continue;
         o.done = true;
-        if (o.good) { g.bonus += 50; haptic(true); setToast({ item: o.item, good: true, n: Date.now() }); continue; }
-        g.hearts--; g.hurt = 700; haptic(false); setToast({ item: o.item, good: false, n: Date.now() });
+        if (o.good) { g.bonus += 50; haptic(true, 'coin'); g.pops.push({ id: now + Math.random(), y: g.y, text: `+50 ${o.item.label[lang]}`, good: true, born: now }); continue; }
+        g.hearts--; g.hurt = 700; haptic(false, 'hurt'); setToast({ item: o.item, good: false, n: Date.now() });
+        g.pops.push({ id: now + Math.random(), y: g.y, text: '−1 ♥', good: false, born: now });
         if (o.item.flag) g.missed.push(o.item.flag);
         track({ type: 'flag_missed', scenarioId: 'dash', flag: o.item.id });
         if (g.hearts <= 0) { finishRun(); return; }
       }
       g.things = g.things.filter(o => o.x > -12);
+      g.pops = g.pops.filter(p => now - p.born < 900);
       if (g.stopDist >= STOP_LEN) {
         const unseen = cards.filter(c => !g.seen.includes(c.id));
         const c = pick(unseen.length ? unseen : cards);
-        g.seen.push(c.id); setCard(c); setAnswer(null); setPhase('gate');
+        g.seen.push(c.id); setCard(c); setAnswer(null); setLate(false); setPhase('gate'); sfx('whoosh');
         return;
       }
       force(n => n + 1);
@@ -129,28 +147,42 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
     };
     raf = requestAnimationFrame(loop);
     return () => { cancelAnimationFrame(raf); window.removeEventListener('keydown', key); };
-  }, [live, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [live, age, pace]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const start = () => {
-    s.current = fresh(mode); save('sati-dash-mode', mode); save('sati-dash-route', routeCode);
+    s.current = fresh(cfg.hearts); save('sati-dash-route', routeCode); setIntensity(0);
     setToast(null); setPaused(false); setPhase('run');
   };
 
   // Leaving the gate moves to the next landmark; after the last one the route loops, faster.
   const nextStop = () => {
     g.stop = (g.stop + 1) % route.length;
-    if (g.stop === 0) { g.lap++; setBanner(t.dash_new_round.replace('{n}', String(g.lap))); }
+    // Each new lap runs faster, so the music does too.
+    if (g.stop === 0) { g.lap++; setIntensity((g.lap - 1) * 0.35); setBanner(t.dash_new_round.replace('{n}', String(g.lap))); }
     g.stopDist = 0; g.things = []; g.nextAt = g.dist + 20;
     setToast(null); setPhase('run');
   };
 
-  const answerGate = (saysScam: boolean) => {
+  // A timed-out gate (saysScam null) counts as wrong. Right answers in a row build a combo worth up to ×3.
+  const answerGate = (saysScam: boolean | null) => {
     if (!card || answer !== null) return;
     const ok = saysScam === card.isScam;
-    setAnswer(saysScam); haptic(ok);
+    setAnswer(saysScam ?? !card.isScam); setLate(saysScam === null); haptic(ok);
     track({ type: 'choice_made', scenarioId: `dash-${card.id}`, scamType: card.scamType, step: card.id, correct: ok });
-    if (ok) { g.bonus += 300; g.hearts = Math.min(MODES[mode].hearts, g.hearts + 1); }
+    if (ok) { g.combo++; g.bonus += 300 * Math.min(g.combo, 3); g.hearts = Math.min(cfg.hearts, g.hearts + 1); }
+    else g.combo = 0;
   };
+
+  // Measure the play area so the road can sit higher on tall phones.
+  useEffect(() => {
+    const el = area.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([e]) => setFloor(floorFor(e.contentRect.width, e.contentRect.height)));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [phase === 'run' || phase === 'gate']); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useMusic(phase === 'run' && !paused ? 'chase' : phase === 'gate' ? 'tense' : null);
 
   if (phase === 'setup' || !player) return (
     <PlayerSetup lang={lang} initial={player} onExit={player ? () => setPhase('lobby') : onExit}
@@ -176,14 +208,25 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         <div className="grid grid-cols-2 gap-2">
           <button onClick={() => setSheet('route')} className="flex items-center gap-2 rounded-2xl border-2 border-border bg-card px-3 min-h-14 text-left">
             <span className="text-2xl">{flagOf(routeCode)}</span>
-            <span className="flex-1 min-w-0"><span className="block text-[11px] text-muted-foreground">{t.dash_pick}</span><span className="block font-bold truncate">{countryName}</span></span>
+            <span className="flex-1 min-w-0"><span className="block text-xs text-muted-foreground whitespace-nowrap">{t.dash_route_l}</span><span className="block font-bold truncate">{countryName}</span></span>
             <ChevronDown size={18} className="text-muted-foreground shrink-0" />
           </button>
-          <button onClick={() => setSheet('mode')} className="flex items-center gap-2 rounded-2xl border-2 border-border bg-card px-3 min-h-14 text-left">
-            <span className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">{(() => { const I = MODE_ICON[mode]; return <I size={20} />; })()}</span>
-            <span className="flex-1 min-w-0"><span className="block text-[11px] text-muted-foreground">{t.dash_mode}</span><span className="block font-bold truncate">{t[`mode_${mode}`]}</span></span>
+          <button onClick={() => setSheet('level')} className="flex items-center gap-2 rounded-2xl border-2 border-border bg-card px-3 min-h-14 text-left">
+            <span className={`w-9 h-9 shrink-0 rounded-xl bg-gradient-to-br ${TIERS[age].tint} text-white flex items-center justify-center`}>{(() => { const I = TIERS[age].icon; return <I size={20} />; })()}</span>
+            <span className="flex-1 min-w-0"><span className="block text-xs text-muted-foreground whitespace-nowrap">{t.dash_level}</span><span className="block font-bold truncate">{t[`age_${age}`]} {TIERS[age].range}</span></span>
             <ChevronDown size={18} className="text-muted-foreground shrink-0" />
           </button>
+        </div>
+        <div className="grid gap-1.5">
+          <p className="text-xs text-muted-foreground">{t.dash_speed}</p>
+          <div role="radiogroup" aria-label={t.dash_speed} className="grid grid-cols-3 gap-1 rounded-2xl bg-muted p-1">
+            {(Object.keys(SPEEDS) as Speed[]).map(k => (
+              <button key={k} role="radio" aria-checked={pace === k} onClick={() => { setPace(k); save('sati-dash-speed', k); }}
+                className={`min-h-11 rounded-xl text-sm font-bold transition-colors ${pace === k ? 'bg-card text-primary shadow-sm' : 'text-muted-foreground'}`}>
+                {t[`speed_${k}`]}
+              </button>
+            ))}
+          </div>
         </div>
 
         <ol className="flex gap-2 overflow-x-auto -mx-4 px-4 pb-1 min-h-[7.5rem]">
@@ -194,7 +237,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         <button onClick={start} className="daily-btn rounded-2xl daily-grad text-white text-lg font-bold shadow-[0_4px_0_#3B0FA0] flex items-center justify-center gap-2"><Play size={20} fill="currentColor" />{t.dash_go}</button>
         <Ranking lang={lang} />
       </div>
-      {sheet && <Sheet title={sheet === 'route' ? t.dash_pick : t.dash_mode} onClose={() => setSheet(null)}>
+      {sheet && <Sheet title={sheet === 'route' ? t.dash_pick : t.age_title} onClose={() => setSheet(null)}>
         {sheet === 'route'
           ? <div className="grid grid-cols-3 gap-2">
               {ASEAN.map(c => (
@@ -205,15 +248,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
                 </button>
               ))}
             </div>
-          : <div className="grid gap-2">
-              {(Object.keys(MODES) as ModeId[]).map(m => (
-                <button key={m} onClick={() => { setMode(m); setSheet(null); }} aria-pressed={mode === m}
-                  className={`flex items-center gap-3 rounded-2xl border-2 px-3 min-h-16 text-left ${mode === m ? 'border-primary bg-primary/10' : 'border-border bg-card'}`}>
-                  <span className="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">{(() => { const I = MODE_ICON[m]; return <I size={24} />; })()}</span>
-                  <span className="flex-1"><span className="block font-bold">{t[`mode_${m}`]}</span><span className="block text-xs text-muted-foreground">{t[`mode_${m}_d`]}</span></span>
-                </button>
-              ))}
-            </div>}
+          : <AgeGrid lang={lang} value={age} onPick={a => { setAge(a); setAgeState(a); setSheet(null); }} />}
       </Sheet>}
     </div>
   );
@@ -250,6 +285,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
   }
 
   const stop = route[g.stop];
+  const base = floor - GROUND / 2; // middle of the road
   const pose = g.duck > 0 && g.y < 10 ? 'duck' : g.y > 0 ? 'jump' : 'run';
   const onDown = (e: React.PointerEvent) => { swipe.current = { y: e.clientY, done: false }; };
   const onMove = (e: React.PointerEvent) => {
@@ -266,15 +302,15 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
       <TopBar onBack={onExit} lang={lang}>
         <span className="font-bold tabular-nums flex items-center gap-1"><Trophy size={18} className="text-amber-500" />{score}</span>
         <span className={`flex items-center gap-0.5 ${g.hurt ? 'daily-shake' : ''}`} aria-label={`${g.hearts}`}>
-          {Array.from({ length: MODES[mode].hearts }, (_, i) => <Heart key={i} size={20} className={i < g.hearts ? 'text-rose-500' : 'text-muted-foreground/30'} fill="currentColor" />)}
+          {Array.from({ length: cfg.hearts }, (_, i) => <Heart key={i} size={20} className={i < g.hearts ? 'text-rose-500' : 'text-muted-foreground/30'} fill="currentColor" />)}
         </span>
         <button onClick={() => setPaused(p => !p)} aria-label={paused ? t.dash_resume : t.dash_pause} className="w-11 h-11 rounded-full bg-muted flex items-center justify-center">{paused ? <Play size={18} /> : <Pause size={18} />}</button>
       </TopBar>
 
-      <div onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={() => { swipe.current = null; }}
+      <div ref={area} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={() => { swipe.current = null; }}
         className="relative flex-1 overflow-hidden touch-none cursor-pointer">
         <div key={`${routeCode}-${stop.id}`} className="daily-fade absolute inset-0">
-          <DashScene scene={stop.scene} kind={stop.kind} dist={g.dist} progress={g.stopDist / STOP_LEN} />
+          <DashScene scene={stop.scene} kind={stop.kind} dist={g.dist} progress={g.stopDist / STOP_LEN} floor={floor} />
         </div>
         {g.hurt > 0 && <div className="absolute inset-0 pointer-events-none bg-red-500/15" />}
 
@@ -287,7 +323,8 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
 
         {g.things.map((o, k) => (
           <div key={k} className={`absolute -translate-x-1/2 flex flex-col items-center transition-[opacity,transform] duration-200 ${o.done ? 'opacity-0 scale-150' : ''}`}
-            style={{ left: `${o.x}%`, bottom: `calc(${BASE}% + ${o.air ? (o.good ? AIR_PICK : AIR_TRAP) : 0}px)` }}>
+            style={{ left: `${o.x}%`, bottom: `calc(${base}% + ${o.air ? (o.good ? AIR_PICK : AIR_TRAP) : 0}px)` }}>
+            <div className="flex flex-col items-center" style={{ transform: `scale(${ITEM_SCALE})`, transformOrigin: 'bottom center' }}>
             {o.good
               ? <span className="daily-float w-10 h-10 rounded-full flex items-center justify-center text-emerald-700 bg-gradient-to-b from-emerald-50 to-emerald-200 ring-[3px] ring-emerald-400 shadow-[0_0_16px_rgba(52,211,153,.8)]"><ItemIcon id={o.item.id} size={20} /></span>
               : o.air
@@ -304,25 +341,28 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
                     </span>
                     <span className="flex gap-5 -mt-px"><span className="w-1 h-4 rounded-b bg-zinc-600" /><span className="w-1 h-4 rounded-b bg-zinc-600" /></span>
                   </span>}
+            </div>
           </div>
         ))}
 
-        <div className="absolute -translate-x-1/2 pointer-events-none" style={{ left: `${PLAYER_X}%`, bottom: `${BASE}%` }}>
-          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-2.5 rounded-full bg-black/30 blur-[1px]" style={{ width: `${54 - Math.min(g.y, 120) / 5}px` }} />
-          <div className={g.hurt && Math.floor(g.hurt / 100) % 2 ? 'opacity-40' : ''} style={{ transform: `translateY(${-g.y}px)${pose === 'duck' ? ' scaleY(.82)' : ''}`, transformOrigin: 'bottom' }}>
+        <div className="absolute -translate-x-1/2 pointer-events-none" style={{ left: `${PLAYER_X}%`, bottom: `${base}%` }}>
+          {g.pops.map(p => <span key={p.id} className={`juice-rise absolute left-1/2 z-20 font-extrabold text-sm whitespace-nowrap rounded-full px-2 py-0.5 shadow font-lao ${p.good ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`} style={{ bottom: `${RUNNER + 8 + p.y}px` }}>{p.text}</span>)}
+          {g.combo > 1 && <span className="absolute left-1/2 -translate-x-1/2 whitespace-nowrap" style={{ bottom: `${RUNNER + 40 + g.y}px` }}><Combo n={g.combo} label={t.combo} /></span>}
+          <div className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-2.5 rounded-full bg-black/30 blur-[1px]" style={{ width: `${46 - Math.min(g.y, 120) / 6}px` }} />
+          <div className={g.hurt && Math.floor(g.hurt / 100) % 2 ? 'opacity-40' : ''} style={{ transform: `translateY(${-g.y}px)` }}>
             <DashAvatar a={player.avatar} size={RUNNER} step={g.step} pose={pose} />
           </div>
         </div>
 
-        {g.dist === 0 && !paused && phase === 'run' && <div className="daily-in absolute inset-x-4 top-14 rounded-2xl bg-white/95 dark:bg-black/75 p-3 text-center font-lao shadow-lg grid gap-1">
-          <p className="font-bold flex items-center justify-center gap-1.5"><Hand size={16} className="text-primary" />{t.dash_tap}</p><p className="text-sm">{t.dash_jump2}</p>
-          <p className="text-xs text-muted-foreground flex items-center justify-center gap-3">
-            <span className="flex items-center gap-1"><ShieldCheck size={14} className="text-emerald-600" />{t.dash_legend_good} +50</span>
-            <span className="flex items-center gap-1"><Flag size={14} className="text-red-600" />{t.dash_legend_trap} −1<Heart size={12} className="text-rose-500" fill="currentColor" /></span>
-          </p>
+        {g.dist === 0 && !paused && phase === 'run' && <div className="juice-slide absolute inset-x-4 top-14 rounded-3xl bg-white/95 dark:bg-black/75 p-3 font-lao shadow-lg grid grid-cols-2 gap-2 text-sm font-bold">
+          <span className="flex items-center gap-2 rounded-2xl bg-primary/10 p-2"><Hand size={18} className="text-primary shrink-0" /><ArrowUp size={16} />{t.dash_jump}</span>
+          <span className="flex items-center gap-2 rounded-2xl bg-primary/10 p-2"><ArrowDown size={18} className="text-primary shrink-0" />{t.dash_duck}</span>
+          <span className="flex items-center gap-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 p-2"><ShieldCheck size={18} className="text-emerald-600 shrink-0" />+50</span>
+          <span className="flex items-center gap-2 rounded-2xl bg-red-50 dark:bg-red-950/40 p-2"><Flag size={18} className="text-red-600 shrink-0" />−1<Heart size={14} className="text-rose-500" fill="currentColor" /></span>
         </div>}
-        {toast && <div key={toast.n} className={`daily-pop absolute top-12 inset-x-3 rounded-2xl bg-card/95 backdrop-blur border-2 p-3 text-sm font-lao shadow-lg ${toast.good ? 'border-emerald-400' : 'border-red-400'}`}>
-          <b className="inline-flex items-center gap-1 align-middle"><span className={toast.good ? 'text-emerald-600' : 'text-red-600'}><ItemIcon id={toast.item.id} size={16} /></span>{toast.good ? t.dash_got : t.dash_hit}: {toast.item.label[lang]}</b> · {toast.item.tip[lang]}
+        {toast && <div key={toast.n} className="juice-slide absolute top-12 inset-x-3 rounded-2xl bg-card/95 backdrop-blur border-2 border-red-400 p-2.5 font-lao shadow-lg flex items-center gap-2.5">
+          <span className="w-10 h-10 shrink-0 rounded-xl bg-red-100 text-red-600 flex items-center justify-center"><ItemIcon id={toast.item.id} size={20} /></span>
+          <span className="min-w-0"><b className="block text-red-600 leading-tight">{toast.item.label[lang]}</b><span className="block text-xs text-muted-foreground leading-snug line-clamp-2">{toast.item.tip[lang]}</span></span>
         </div>}
         {banner && <div className="daily-pop absolute inset-x-6 top-24 rounded-2xl daily-grad text-white text-center font-bold p-3 shadow-lg font-lao flex items-center justify-center gap-2"><Repeat size={18} />{banner}</div>}
         {paused && <div onPointerDown={e => e.stopPropagation()} onPointerUp={e => e.stopPropagation()} className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center gap-3 p-6">
@@ -335,8 +375,9 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
               <div className="absolute left-1/2 -translate-x-1/2 bottom-0 h-full aspect-square"><Landmark kind={stop.kind} /></div>
               <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent"><p className="text-white font-bold flex items-center gap-1"><MapPin size={16} />{t.dash_arrived} {stop.name[lang]}!</p></div>
             </div>
-            <p className="text-sm bg-amber-50 dark:bg-amber-950/40 rounded-xl p-2 flex gap-2"><Lightbulb size={16} className="text-amber-500 shrink-0 mt-0.5" /><span>{factFor(stop, g.stop + g.lap)[lang]}</span></p>
-            <p className="font-bold flex items-center gap-1.5"><Search size={16} className="text-primary" />{t.dash_gate}: {t.dash_gate_q}</p>
+            <p className="text-sm bg-amber-50 dark:bg-amber-950/40 rounded-xl p-2 flex gap-2"><Lightbulb size={16} className="text-amber-500 shrink-0 mt-0.5" /><span>{factFor(stop, g.stop + g.lap, g.lap)[lang]}</span></p>
+            <p className="font-bold flex items-center gap-1.5"><Search size={16} className="text-primary" />{t.dash_gate_q}</p>
+            {cfg.gateSec > 0 && answer === null && <Countdown key={card.id} seconds={cfg.gateSec} onDone={() => answerGate(null)} label={t.time_up} />}
             <div className="rounded-2xl bg-muted p-3"><p className="text-xs text-muted-foreground">{card.sender}</p><p>{card.text[lang]}</p></div>
             {answer === null
               ? <div className="grid grid-cols-2 gap-2">
@@ -344,8 +385,10 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
                   <button onClick={() => answerGate(false)} className="daily-btn rounded-2xl bg-emerald-500 text-white font-bold text-lg flex items-center justify-center gap-2"><ShieldCheck size={18} />{t.safe}</button>
                 </div>
               : <>
-                  <p className={`daily-in rounded-xl p-2 text-sm ${answer === card.isScam ? 'bg-emerald-50 dark:bg-emerald-950/40' : 'bg-red-50 dark:bg-red-950/40'}`}>
-                    <b className="inline-flex items-center gap-1 align-middle">{answer === card.isScam ? <CheckCircle2 size={16} className="text-emerald-600" /> : <XCircle size={16} className="text-red-600" />}{answer === card.isScam ? t.dash_gate_ok : t.dash_gate_bad}</b> {card.why[lang]}
+                  {answer === card.isScam && !late && <div className="relative h-0"><Burst /></div>}
+                  {answer === card.isScam && !late && g.combo > 1 && <div className="flex justify-center"><Combo n={g.combo} label={t.combo} /></div>}
+                  <p className={`daily-in rounded-xl p-2 text-sm ${answer === card.isScam && !late ? 'bg-emerald-50 dark:bg-emerald-950/40' : 'bg-red-50 dark:bg-red-950/40'}`}>
+                    <b className="inline-flex items-center gap-1 align-middle">{answer === card.isScam && !late ? <CheckCircle2 size={16} className="text-emerald-600" /> : <XCircle size={16} className="text-red-600" />}{late ? t.time_up : answer === card.isScam ? t.dash_gate_ok : t.dash_gate_bad}</b> {card.why[lang]}
                   </p>
                   <button onClick={nextStop} className="daily-btn rounded-2xl daily-grad text-white font-bold">{t.dash_continue} →</button>
                 </>}
@@ -438,24 +481,25 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
 function Ranking({ lang }: { lang: Lang }) {
   const t = DT[lang];
   const [tab, setTab] = useState<'players' | 'countries'>('countries');
+  const [all, setAll] = useState(false);
   const { players, countries } = board();
   const medal = (i: number) => i < 3 ? <Medal size={18} className={['text-amber-500', 'text-slate-400', 'text-orange-700'][i]} /> : i + 1;
   return (
     <section className="rounded-3xl border border-border bg-card p-3 font-lao">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="font-bold flex items-center gap-1"><Trophy size={18} className="text-amber-500" />{t.dash_rank}</h3>
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+        <h3 className="font-bold flex items-center gap-1 whitespace-nowrap"><Trophy size={18} className="text-amber-500 shrink-0" />{t.dash_rank}</h3>
         <div className="flex rounded-full bg-muted p-0.5 text-xs">
           {(['countries', 'players'] as const).map(k => <button key={k} onClick={() => setTab(k)} className={`rounded-full px-3 min-h-9 ${tab === k ? 'bg-card shadow font-bold' : ''}`}>{t[`rank_${k}`]}</button>)}
         </div>
       </div>
       <ol className="grid gap-1">
         {tab === 'countries'
-          ? countries.map((c, i) => (
+          ? countries.slice(0, all ? undefined : 5).map((c, i) => (
               <li key={c.code} className="flex items-center gap-2 rounded-xl px-2 py-1.5 odd:bg-muted/50">
                 <span className="w-7 flex justify-center font-bold">{medal(i)}</span><span className="text-xl">{c.flag}</span>
                 <span className="flex-1">{c.name[lang]}</span><span className="font-bold tabular-nums">{c.score}</span>
               </li>))
-          : players.slice(0, 15).map((e, i) => (
+          : players.slice(0, all ? 15 : 5).map((e, i) => (
               <li key={i} className={`flex items-center gap-2 rounded-xl px-2 py-1.5 ${e.me ? 'bg-primary/15 font-bold' : 'odd:bg-muted/50'}`}>
                 <span className="w-7 flex justify-center font-bold">{medal(i)}</span>
                 {e.avatar ? <DashAvatar a={e.avatar} size={22} pose="stand" /> : <span className="text-xl">{flagOf(e.country)}</span>}
@@ -463,6 +507,7 @@ function Ranking({ lang }: { lang: Lang }) {
                 <span className="tabular-nums">{e.score}</span>
               </li>))}
       </ol>
+      <button onClick={() => setAll(v => !v)} className="mt-1 w-full min-h-10 rounded-xl text-sm font-semibold text-primary hover:bg-muted">{all ? t.show_less : t.show_all}</button>
     </section>
   );
 }

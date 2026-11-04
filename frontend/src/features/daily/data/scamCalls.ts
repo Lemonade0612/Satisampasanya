@@ -1,8 +1,12 @@
-import { BookUser, CalendarCheck, KeyRound, Lock, Siren, Timer, VenetianMask, Wallet, ShieldCheck, type LucideIcon } from 'lucide-react';
+import { BookUser, CalendarCheck, Fingerprint, Gift, KeyRound, Lock, Siren, Timer, VenetianMask, Wallet, ShieldCheck, Shuffle, Receipt, Stamp, type LucideIcon } from 'lucide-react';
 import type { FlagCategory, L10n } from '../types';
+import type { Avatar } from '../lib/dashPlayer';
+import type { Room } from '../components/Backdrop';
+import { PERSONAS } from './detectiveCases';
+import { BOUNMY_CALLS, DARA_CALLS, KHAMLA_CALLS, NOY_CALLS, TON_CALLS } from './callDays';
 
-// "Souk's Day": Souk runs a noodle stall in Vientiane. Each play picks one call per time slot,
-// real or scam at random, so the pattern never repeats. Lao strings are drafts (needsNativeReview).
+// Scam Call: pick whose day to play (Souk's noodle stall, or one of the Scam Detective characters in callDays.ts).
+// Each play draws a mix of real and scam calls from that day's pool, so the pattern never repeats. Lao strings are drafts (needsNativeReview).
 
 export type Move = 'trust' | 'check' | 'hangup';
 // Voice-over style per caller. `who` picks the voice (see VOICES in scripts/gen-call-voices.mjs);
@@ -32,6 +36,16 @@ export const SIGNS: Sign[] = [
     body: { en: 'An OTP or PIN is the key to your money. Nobody real needs it.', lo: 'OTP ຫຼື PIN ແມ່ນກະແຈເງິນຂອງທ່ານ. ຄົນແທ້ບໍ່ຕ້ອງການ.' } },
   { id: 'pay', icon: Wallet, name: { en: 'Pay a stranger', lo: 'ຈ່າຍໃຫ້ຄົນແປກໜ້າ' },
     body: { en: 'Money to a personal account or a link, not to the office you know.', lo: 'ເງິນເຂົ້າບັນຊີສ່ວນຕົວ ຫຼື ລິ້ງ ບໍ່ແມ່ນຫ້ອງການທີ່ຮູ້ຈັກ.' } },
+  { id: 'gift', icon: Gift, name: { en: 'Too good to be true', lo: 'ດີເກີນຈິງ' },
+    body: { en: 'A prize, job or profit you never asked for, that costs a little money to unlock.', lo: 'ລາງວັນ, ວຽກ ຫຼື ກຳໄລທີ່ບໍ່ໄດ້ຂໍ ແຕ່ຕ້ອງຈ່າຍໜ້ອຍໜຶ່ງກ່ອນ.' } },
+  { id: 'private', icon: Fingerprint, name: { en: 'Wants private details', lo: 'ຂໍຂໍ້ມູນສ່ວນຕົວ' },
+    body: { en: 'Your address, ID card, or who is home are private. A stranger on the phone does not need them.', lo: 'ທີ່ຢູ່, ບັດປະຈຳຕົວ ຫຼື ໃຜຢູ່ເຮືອນ ແມ່ນເລື່ອງສ່ວນຕົວ. ຄົນແປກໜ້າທາງໂທລະສັບບໍ່ຕ້ອງຮູ້.' } },
+  { id: 'switch', icon: Shuffle, name: { en: 'Plan changed', lo: 'ປ່ຽນແຜນ' },
+    body: { en: 'The country, worksite or job changes at the last minute. That change is the warning.', lo: 'ປະເທດ, ບ່ອນເຮັດວຽກ ຫຼື ວຽກ ປ່ຽນກະທັນຫັນ. ການປ່ຽນນັ້ນແມ່ນສັນຍານເຕືອນ.' } },
+  { id: 'debt', icon: Receipt, name: { en: 'Free now, debt later', lo: 'ຟຣີດຽວນີ້ ໜີ້ພາຍຫຼັງ' },
+    body: { en: 'Free travel, room or meals can be turned into a debt you are forced to work off.', lo: 'ຄ່າເດີນທາງ, ຫ້ອງ ຫຼື ອາຫານຟຣີ ອາດຖືກປ່ຽນເປັນໜີ້ທີ່ຖືກບັງຄັບໃຫ້ເຮັດວຽກໃຊ້.' } },
+  { id: 'docs', icon: Stamp, name: { en: 'Takes your documents', lo: 'ເອົາເອກະສານໄປ' },
+    body: { en: 'Whoever holds your passport or phone controls whether you can leave.', lo: 'ໃຜຖືໜັງສືຜ່ານແດນ ຫຼື ໂທລະສັບ ກໍ່ຄວບຄຸມວ່າທ່ານອອກໄດ້ບໍ່.' } },
   { id: 'match', icon: CalendarCheck, good: true, name: { en: 'Matches your day', lo: 'ກົງກັບມື້ຂອງທ່ານ' },
     body: { en: 'It fits something you really did or expected.', lo: 'ກົງກັບສິ່ງທີ່ທ່ານເຮັດ ຫຼື ລໍຖ້າແທ້.' } },
   { id: 'nothing', icon: ShieldCheck, good: true, name: { en: 'Nothing secret asked', lo: 'ບໍ່ຂໍຂໍ້ມູນລັບ' },
@@ -49,9 +63,9 @@ export const SLOTS: Call[][] = [
       note: l('Souk ordered a gas burner online on Monday. Cash on delivery, 280,000 kip.', 'ສຸກສັ່ງເຕົາແກັສທາງອອນລາຍວັນຈັນ. ຈ່າຍປາຍທາງ 280,000 ກີບ.'),
       caller: l('Unknown number', 'ເບີບໍ່ຮູ້ຈັກ'), number: '+856 20 55•• 1902', saved: false,
       lines: [
-        l("Morning! Delivery rider here. I've got a gas burner for Souk.", 'ສະບາຍດີ! ຄົນສົ່ງເຄື່ອງ. ມີເຕົາແກັສສົ່ງໃຫ້ສຸກ.'),
-        l("I'm parked by the blue gate. It's 280,000 kip cash on delivery.", 'ຈອດຢູ່ປະຕູສີຟ້າ. 280,000 ກີບ ຈ່າຍປາຍທາງ.'),
-        l('You can open the box and check it before you pay.', 'ເປີດກ່ອງກວດກ່ອນຈ່າຍໄດ້ເດີ້.'),
+        l("Morning! Delivery rider here. I've got a gas burner for Souk.", 'ຮາໂລ ສະບາຍດີເດີ້! ຂ້ອຍແມ່ນຄົນສົ່ງເຄື່ອງ, ມີເຕົາແກັສມາສົ່ງໃຫ້ເອື້ອຍສຸກ.'),
+        l("I'm parked by the blue gate. It's 280,000 kip cash on delivery.", 'ຕອນນີ້ຈອດຢູ່ໜ້າປະຕູສີຟ້າເດີ້. ລາຄາ 280,000 ກີບ, ຈ່າຍເງິນສົດປາຍທາງເນາະ.'),
+        l('You can open the box and check it before you pay.', 'ເອື້ອຍເປີດກ່ອງກວດເບິ່ງກ່ອນ ແລ້ວຄ່ອຍຈ່າຍກໍ່ໄດ້ເດີ້.'),
       ],
       moves: { trust: l('Go out, check the box, pay', 'ອອກໄປກວດກ່ອງ ແລ້ວຈ່າຍ'), check: l('Check the order in the app first', 'ກວດຄຳສັ່ງຊື້ໃນແອັບກ່ອນ'), hangup: l('Hang up, it is a stranger', 'ວາງສາຍ ຄົນແປກໜ້າ') },
       outcome: {
@@ -65,9 +79,9 @@ export const SLOTS: Call[][] = [
       note: l('Souk has not ordered anything this month.', 'ເດືອນນີ້ສຸກບໍ່ໄດ້ສັ່ງຫຍັງ.'),
       caller: l('Express Parcel Centre', 'ສູນພັດສະດຸດ່ວນ'), number: '+856 30 92•• 4410', saved: false,
       lines: [
-        l('Hello, your international parcel is held at customs.', 'ສະບາຍດີ, ພັດສະດຸຕ່າງປະເທດຂອງທ່ານຖືກກັກຢູ່ພາສີ.'),
-        l('A tax of 150,000 kip must be paid today or it is destroyed.', 'ຕ້ອງຈ່າຍພາສີ 150,000 ກີບມື້ນີ້ ບໍ່ດັ່ງນັ້ນຈະຖືກທຳລາຍ.'),
-        l("I'll text you a payment link. Enter your card number there.", 'ຈະສົ່ງລິ້ງຈ່າຍເງິນທາງ SMS. ໃສ່ເລກບັດຢູ່ນັ້ນ.'),
+        l('Hello, your international parcel is held at customs.', 'ສະບາຍດີເຈົ້າ, ໂທມາຈາກດ່ານພາສີເດີ້. ພັດສະດຸຈາກຕ່າງປະເທດຂອງທ່ານ ຖືກກັກໄວ້ຢູ່ນີ້.'),
+        l('A tax of 150,000 kip must be paid today or it is destroyed.', 'ທ່ານຕ້ອງຈ່າຍຄ່າພາສີ 150,000 ກີບ ພາຍໃນມື້ນີ້ເລີຍ, ບໍ່ຊັ້ນ ພັດສະດຸຈະຖືກທຳລາຍ.'),
+        l("I'll text you a payment link. Enter your card number there.", 'ຂ້ອຍຈະສົ່ງລິ້ງຈ່າຍເງິນທາງ SMS ໃຫ້ເດີ້. ທ່ານພຽງແຕ່ໃສ່ເລກບັດຢູ່ໃນນັ້ນ.'),
       ],
       moves: { trust: l('Pay the link, just in case', 'ຈ່າຍລິ້ງໄວ້ກ່ອນ'), check: l('Ask: "What is inside and who sent it?"', 'ຖາມ: "ຂ້າງໃນມີຫຍັງ ແລະ ໃຜສົ່ງ?"'), hangup: l('Hang up, no parcel expected', 'ວາງສາຍ ບໍ່ໄດ້ລໍພັດສະດຸ') },
       outcome: {
@@ -83,9 +97,9 @@ export const SLOTS: Call[][] = [
       note: l('Last week Souk reported her bank card lost. The number on the back of her old card ends in 1500.', 'ອາທິດແລ້ວສຸກແຈ້ງບັດທະນາຄານເສຍ. ເບີຫຼັງບັດລົງທ້າຍ 1500.'),
       caller: l('Mekong Bank (card hotline)', 'ທະນາຄານແມ່ຂອງ (ສາຍບັດ)'), number: '1500', saved: false,
       lines: [
-        l('Good morning, this is Mekong Bank. Your replacement card is ready.', 'ສະບາຍດີ, ທະນາຄານແມ່ຂອງ. ບັດໃໝ່ຂອງທ່ານພ້ອມແລ້ວ.'),
-        l('Please collect it at the Thatluang branch with your ID card.', 'ກະລຸນາມາຮັບທີ່ສາຂາທາດຫຼວງ ພ້ອມບັດປະຈຳຕົວ.'),
-        l('We will never ask for your PIN or a code on the phone.', 'ພວກເຮົາບໍ່ເຄີຍຂໍ PIN ຫຼື ລະຫັດທາງໂທລະສັບ.'),
+        l('Good morning, this is Mekong Bank. Your replacement card is ready.', 'ສະບາຍດີເຈົ້າ, ໂທມາຈາກທະນາຄານແມ່ຂອງເດີ້. ບັດໃໝ່ຂອງທ່ານ ເຮັດແລ້ວເຈົ້າ.'),
+        l('Please collect it at the Thatluang branch with your ID card.', 'ທ່ານມາຮັບໄດ້ທີ່ສາຂາທາດຫຼວງ, ຢ່າລືມເອົາບັດປະຈຳຕົວມານຳເດີ້.'),
+        l('We will never ask for your PIN or a code on the phone.', 'ແລະ ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື ລະຫັດໃດໆ ທາງໂທລະສັບເດັດຂາດເຈົ້າ.'),
       ],
       moves: { trust: l('Note it, go to the branch later', 'ຈົດໄວ້ ໄປສາຂາພາຍຫຼັງ'), check: l('Hang up, call 1500 back to confirm', 'ວາງສາຍ ໂທກັບ 1500 ເພື່ອຢືນຢັນ'), hangup: l('Hang up and ignore it', 'ວາງສາຍ ແລະ ບໍ່ສົນໃຈ') },
       outcome: {
@@ -99,9 +113,9 @@ export const SLOTS: Call[][] = [
       note: l("Souk's card works fine. She paid her supplier with it yesterday.", 'ບັດຂອງສຸກໃຊ້ໄດ້ປົກກະຕິ. ມື້ວານຫາກໍ່ຈ່າຍຜູ້ສະໜອງ.'),
       caller: l('Mekong Bank Security', 'ຄວາມປອດໄພທະນາຄານແມ່ຂອງ'), number: '+856 20 77•• 8123', saved: false,
       lines: [
-        l("This is your bank's security desk. A 1,200,000 kip transfer is leaving your account.", 'ນີ້ແມ່ນຝ່າຍຄວາມປອດໄພ. ມີການໂອນ 1,200,000 ກີບ ອອກຈາກບັນຊີທ່ານ.'),
-        l("To cancel it I'm sending a code to your phone. Read it to me.", 'ເພື່ອຍົກເລີກ ຂ້ອຍຈະສົ່ງລະຫັດ. ອ່ານໃຫ້ຂ້ອຍຟັງ.'),
-        l('Hurry, it completes in 60 seconds. Do not hang up.', 'ໄວໆ ອີກ 60 ວິນາທີຈະສຳເລັດ. ຢ່າວາງສາຍ.'),
+        l("This is your bank's security desk. A 1,200,000 kip transfer is leaving your account.", 'ສະບາຍດີ, ຂ້ອຍໂທມາຈາກຝ່າຍຄວາມປອດໄພຂອງທະນາຄານ. ຕອນນີ້ມີຄົນກຳລັງໂອນເງິນ 1,200,000 ກີບ ອອກຈາກບັນຊີທ່ານ!'),
+        l("To cancel it I'm sending a code to your phone. Read it to me.", 'ເພື່ອຍົກເລີກ ຂ້ອຍຈະສົ່ງລະຫັດໄປໂທລະສັບທ່ານ. ໄດ້ຮັບແລ້ວ ອ່ານໃຫ້ຂ້ອຍຟັງເລີຍເດີ້.'),
+        l('Hurry, it completes in 60 seconds. Do not hang up.', 'ໄວໆແດ່! ອີກ 60 ວິນາທີ ເງິນຈະອອກໝົດ. ຢ່າວາງສາຍເດີ້!'),
       ],
       moves: { trust: l('Read out the code', 'ອ່ານລະຫັດໃຫ້'), check: l('Hang up, call the number on the card', 'ວາງສາຍ ໂທເບີຫຼັງບັດ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -117,9 +131,9 @@ export const SLOTS: Call[][] = [
       note: l("Souk's daughter Mai, 10, said she had a sore throat this morning.", 'ລູກສາວມາຍ 10 ປີ ບອກວ່າເຈັບຄໍຕອນເຊົ້າ.'),
       caller: l('Teacher Vanh', 'ອາຈານວັນ'), number: '+856 20 22•• 6071', saved: true,
       lines: [
-        l("Souk, it's Teacher Vanh. Mai has a fever, she's resting in the office.", 'ສຸກ, ອາຈານວັນເດີ້. ມາຍເປັນໄຂ້ ພັກຢູ່ຫ້ອງການ.'),
-        l('Can you or someone in the family come and pick her up?', 'ເຈົ້າ ຫຼື ຄົນໃນຄອບຄົວມາຮັບລາວໄດ້ບໍ່?'),
-        l("She's fine, just tired. No rush, come when you can.", 'ລາວບໍ່ເປັນຫຍັງ ພຽງແຕ່ເມື່ອຍ. ບໍ່ຟ້າວ ມາເວລາສະດວກ.'),
+        l("Souk, it's Teacher Vanh. Mai has a fever, she's resting in the office.", 'ຮາໂລ ສຸກບໍ່? ອາຈານວັນເດີ້. ມາຍເປັນໄຂ້ ຕອນນີ້ນອນພັກຢູ່ຫ້ອງການ.'),
+        l('Can you or someone in the family come and pick her up?', 'ສຸກ ຫຼື ຄົນໃນຄອບຄົວ ມາຮັບລາວໄດ້ບໍ່?'),
+        l("She's fine, just tired. No rush, come when you can.", 'ບໍ່ຕ້ອງເປັນຫ່ວງເດີ້ ລາວພຽງແຕ່ເມື່ອຍ. ບໍ່ຕ້ອງຟ້າວ, ສະດວກເວລາໃດ ກໍ່ມາເວລານັ້ນ.'),
       ],
       moves: { trust: l('Close the stall, go get Mai', 'ປິດຮ້ານ ໄປຮັບມາຍ'), check: l('Call the school office to check', 'ໂທຫາຫ້ອງການໂຮງຮຽນກວດກ່ອນ'), hangup: l('Hang up, could be a trick', 'ວາງສາຍ ອາດແມ່ນກົນ') },
       outcome: {
@@ -133,9 +147,9 @@ export const SLOTS: Call[][] = [
       note: l("Souk's nephew Bee studies in Udon Thani. His number is saved in her phone.", 'ຫຼານບີ ຮຽນຢູ່ອຸດອນ. ເບີລາວບັນທຶກໄວ້ໃນໂທລະສັບ.'),
       caller: l('New number', 'ເບີໃໝ່'), number: '+66 8• ••• 2304', saved: false,
       lines: [
-        l("Aunty, it's me! My phone broke, this is a friend's number.", 'ນ້າ, ຂ້ອຍເອງ! ໂທລະສັບເພ ນີ້ເບີໝູ່.'),
-        l('I crashed my motorbike. The clinic wants 800,000 kip before they treat me.', 'ລົດລົ້ມ. ຄລີນິກຂໍ 800,000 ກີບ ກ່ອນປິ່ນປົວ.'),
-        l("Send it to my friend's account. Please don't tell Mum, she'll panic.", 'ໂອນເຂົ້າບັນຊີໝູ່. ຢ່າບອກແມ່ເດີ້ ລາວຈະຕົກໃຈ.'),
+        l("Aunty, it's me! My phone broke, this is a friend's number.", 'ນ້າ! ຂ້ອຍເອງ! ໂທລະສັບຂ້ອຍເພ, ນີ້ຢືມເບີໝູ່ໂທ.'),
+        l('I crashed my motorbike. The clinic wants 800,000 kip before they treat me.', 'ຂ້ອຍລົດຈັກລົ້ມ... ຄລີນິກບອກວ່າ ຕ້ອງຈ່າຍ 800,000 ກີບກ່ອນ ຈຶ່ງຈະປິ່ນປົວໃຫ້.'),
+        l("Send it to my friend's account. Please don't tell Mum, she'll panic.", 'ນ້າໂອນເຂົ້າບັນຊີໝູ່ຂ້ອຍແດ່. ຢ່າບອກແມ່ເດີ້ ແມ່ຈະຕົກໃຈ.'),
       ],
       moves: { trust: l('Send the money now', 'ໂອນເງິນດຽວນີ້'), check: l('Call Bee on his saved number', 'ໂທຫາບີທາງເບີທີ່ບັນທຶກ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -151,9 +165,9 @@ export const SLOTS: Call[][] = [
       note: l('Mr. Vong delivers rice noodles every Tuesday. Souk always pays him cash at the door.', 'ທ້າວວົງສົ່ງເສັ້ນທຸກວັນອັງຄານ. ສຸກຈ່າຍເງິນສົດທີ່ໜ້າຮ້ານສະເໝີ.'),
       caller: l('Mr. Vong (noodles)', 'ທ້າວວົງ (ເສັ້ນ)'), number: '+856 20 58•• 3317', saved: true,
       lines: [
-        l("Souk, Vong here. Truck's stuck in traffic at Khualuang.", 'ສຸກ, ວົງເດີ້. ລົດຕິດຢູ່ຂົວຫຼວງ.'),
-        l("I'll be there about six instead of five. Same as always.", 'ຈະຮອດປະມານຫົກໂມງ ແທນຫ້າໂມງ. ຄືເກົ່າ.'),
-        l('Pay me when I arrive, no change in price.', 'ຈ່າຍຕອນຮອດ ລາຄາຄືເກົ່າ.'),
+        l("Souk, Vong here. Truck's stuck in traffic at Khualuang.", 'ຮາໂລ ສຸກ, ວົງເດີ້. ລົດຕິດຢູ່ແຖວຂົວຫຼວງ ຫັ້ນແຫຼະ.'),
+        l("I'll be there about six instead of five. Same as always.", 'ຄືຊິຮອດປະມານຫົກໂມງເດີ້ ບໍ່ທັນຫ້າໂມງ. ເຄື່ອງຄືເກົ່າ.'),
+        l('Pay me when I arrive, no change in price.', 'ຮອດແລ້ວຄ່ອຍຈ່າຍ ລາຄາຄືເກົ່າເນາະ.'),
       ],
       moves: { trust: l('OK, see you at six', 'ໂອເຄ ພົບກັນຫົກໂມງ'), check: l('Text Vong to confirm', 'ສົ່ງຂໍ້ຄວາມຫາວົງຢືນຢັນ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -167,9 +181,9 @@ export const SLOTS: Call[][] = [
       note: l('Mr. Vong delivers rice noodles every Tuesday. Souk always pays him cash at the door.', 'ທ້າວວົງສົ່ງເສັ້ນທຸກວັນອັງຄານ. ສຸກຈ່າຍເງິນສົດທີ່ໜ້າຮ້ານສະເໝີ.'),
       caller: l('Vong Noodles Accounts', 'ບັນຊີ ວົງເສັ້ນ'), number: '+856 20 91•• 0045', saved: false,
       lines: [
-        l("Hello, I handle Mr. Vong's accounts now. He's busy driving.", 'ສະບາຍດີ, ຂ້ອຍດູແລບັນຊີໃຫ້ທ້າວວົງ. ລາວຂັບລົດຢູ່.'),
-        l('From this month we only take bank transfer, paid in advance.', 'ແຕ່ເດືອນນີ້ ຮັບແຕ່ໂອນ ຈ່າຍລ່ວງໜ້າ.'),
-        l("Send 1,500,000 kip for the month to this new account, or there's no delivery tonight.", 'ໂອນ 1,500,000 ກີບ ເຂົ້າບັນຊີໃໝ່ນີ້ ບໍ່ດັ່ງນັ້ນຄືນນີ້ບໍ່ສົ່ງ.'),
+        l("Hello, I handle Mr. Vong's accounts now. He's busy driving.", 'ສະບາຍດີເຈົ້າ, ດຽວນີ້ຂ້ອຍເປັນຄົນດູແລບັນຊີໃຫ້ທ້າວວົງເດີ້. ລາວກຳລັງຂັບລົດຢູ່.'),
+        l('From this month we only take bank transfer, paid in advance.', 'ຕັ້ງແຕ່ເດືອນນີ້ໄປ ພວກເຮົາຮັບແຕ່ໂອນເງິນ ແລະ ຕ້ອງຈ່າຍລ່ວງໜ້າເດີ້.'),
+        l("Send 1,500,000 kip for the month to this new account, or there's no delivery tonight.", 'ກະລຸນາໂອນ 1,500,000 ກີບ ຄ່າຂອງທັງເດືອນ ເຂົ້າບັນຊີໃໝ່ນີ້, ບໍ່ຊັ້ນ ຄືນນີ້ບໍ່ມີສົ່ງເດີ້.'),
       ],
       moves: { trust: l('Transfer the month in advance', 'ໂອນລ່ວງໜ້າໝົດເດືອນ'), check: l("Call Vong on his saved number", 'ໂທຫາວົງທາງເບີທີ່ບັນທຶກ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -185,9 +199,9 @@ export const SLOTS: Call[][] = [
       note: l('A neighbour mentioned roadworks on the street this weekend.', 'ເພື່ອນບ້ານເວົ້າວ່າທ້າຍອາທິດນີ້ມີສ້ອມທາງ.'),
       caller: l('Electricity office', 'ຫ້ອງການໄຟຟ້າ'), number: '+856 21 •••• 900', saved: false,
       lines: [
-        l('Good evening, this is the district electricity office.', 'ສະບາຍແລງ, ນີ້ແມ່ນຫ້ອງການໄຟຟ້າເມືອງ.'),
-        l('Power on your street will be off this Sunday, 8 to 12, for roadworks.', 'ວັນອາທິດນີ້ 8 ຫາ 12 ໂມງ ຈະຕັດໄຟຖະໜົນທ່ານ ເພື່ອສ້ອມທາງ.'),
-        l('Nothing to do or pay. Just plan your cooking around it.', 'ບໍ່ຕ້ອງເຮັດ ຫຼື ຈ່າຍຫຍັງ. ພຽງແຕ່ວາງແຜນເຮັດອາຫານ.'),
+        l('Good evening, this is the district electricity office.', 'ສະບາຍດີ, ໂທມາຈາກຫ້ອງການໄຟຟ້າເມືອງເດີ້.'),
+        l('Power on your street will be off this Sunday, 8 to 12, for roadworks.', 'ວັນອາທິດນີ້ ແຕ່ 8 ໂມງ ຫາ 12 ໂມງ ຈະຕັດໄຟຢູ່ຖະໜົນທ່ານ ເພາະມີການສ້ອມທາງ.'),
+        l('Nothing to do or pay. Just plan your cooking around it.', 'ທ່ານບໍ່ຕ້ອງເຮັດຫຍັງ ບໍ່ຕ້ອງຈ່າຍຫຍັງ. ພຽງແຕ່ວາງແຜນແຕ່ງກິນໃຫ້ທັນເດີ້.'),
       ],
       moves: { trust: l('Thank them, plan for Sunday', 'ຂອບໃຈ ວາງແຜນວັນອາທິດ'), check: l('Check the notice board at the village office', 'ກວດປ້າຍແຈ້ງການຢູ່ຫ້ອງການບ້ານ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -201,9 +215,9 @@ export const SLOTS: Call[][] = [
       note: l('Souk paid the electricity bill at the counter two weeks ago. She kept the receipt.', 'ສຸກຈ່າຍຄ່າໄຟທີ່ເຄົາເຕີສອງອາທິດກ່ອນ. ເກັບໃບຮັບເງິນໄວ້.'),
       caller: l('Electricity office', 'ຫ້ອງການໄຟຟ້າ'), number: '+856 20 99•• 7310', saved: false,
       lines: [
-        l('Your electricity bill is three months overdue: 650,000 kip.', 'ຄ່າໄຟຂອງທ່ານຄ້າງສາມເດືອນ: 650,000 ກີບ.'),
-        l('A team is coming to cut your power in one hour.', 'ອີກໜຶ່ງຊົ່ວໂມງທີມງານຈະມາຕັດໄຟ.'),
-        l("Scan the QR I'm sending to pay my officer directly and stop the cut.", 'ສະແກນ QR ທີ່ສົ່ງໃຫ້ ຈ່າຍໃຫ້ພະນັກງານໂດຍກົງ ເພື່ອຢຸດການຕັດ.'),
+        l('Your electricity bill is three months overdue: 650,000 kip.', 'ສະບາຍດີ, ຄ່າໄຟຂອງທ່ານ ຄ້າງມາສາມເດືອນແລ້ວ, ທັງໝົດ 650,000 ກີບ.'),
+        l('A team is coming to cut your power in one hour.', 'ອີກໜຶ່ງຊົ່ວໂມງ ທີມງານຈະລົງໄປຕັດໄຟເລີຍເດີ້.'),
+        l("Scan the QR I'm sending to pay my officer directly and stop the cut.", 'ຖ້າບໍ່ຢາກຖືກຕັດ ໃຫ້ສະແກນ QR ທີ່ຂ້ອຍສົ່ງໃຫ້ ຈ່າຍກັບພະນັກງານຂ້ອຍໂດຍກົງເລີຍ.'),
       ],
       moves: { trust: l('Scan and pay to avoid the cut', 'ສະແກນຈ່າຍ ກັນຖືກຕັດ'), check: l('Find the receipt, call the office number on it', 'ຊອກໃບຮັບເງິນ ໂທເບີຫ້ອງການໃນໃບ'), hangup: l('Hang up', 'ວາງສາຍ') },
       outcome: {
@@ -216,32 +230,62 @@ export const SLOTS: Call[][] = [
   ],
 ];
 
-// One call per slot; reroll until the day has at least two of each, so neither answer is a safe bet.
-export function planDay(): Call[] {
-  for (;;) {
-    const day = SLOTS.map(s => s[Math.random() < 0.5 ? 0 : 1]);
-    const real = day.filter(c => c.real).length;
-    if (real >= 2 && real <= 3) return day;
+// A day is one character's pool of calls. Souk's pool pairs a real call and a scam at each time slot;
+// the other days have eight calls over six time slots (see callDays.ts).
+export type Day = { id: string; room: Room | 'stall'; hero: { name: L10n; age: number; avatar: Avatar }; who: L10n; intro: L10n; balance: number; calls: Call[] };
+const persona = (id: string) => { const p = PERSONAS.find(x => x.id === id)!; return { name: p.name, age: p.age, avatar: p.avatar }; };
+
+export const DAYS: Day[] = [
+  { id: 'souk', room: 'stall', hero: HERO, balance: START_BALANCE, calls: SLOTS.flat(),
+    who: l('Runs a noodle stall', 'ເປີດຮ້ານເຝີ'),
+    intro: l('Souk runs a noodle stall near Talat Sao. Her phone will ring {n} times.', 'ສຸກເປີດຮ້ານເຝີໃກ້ຕະຫຼາດເຊົ້າ. ມື້ນີ້ໂທລະສັບຈະດັງ {n} ເທື່ອ.') },
+  { id: 'ton', room: 'kid', hero: persona('kid'), balance: 2_000_000, calls: TON_CALLS,
+    who: l('Home alone after school', 'ຢູ່ເຮືອນຄົນດຽວຫຼັງເລີກຮຽນ'),
+    intro: l("Ton is home after school with Mum's old phone. It will ring {n} times.", 'ຕົ້ນຢູ່ເຮືອນຫຼັງເລີກຮຽນ ກັບໂທລະສັບເກົ່າຂອງແມ່. ມັນຈະດັງ {n} ເທື່ອ.') },
+  { id: 'noy', room: 'student', hero: persona('student'), balance: 1_500_000, calls: NOY_CALLS,
+    who: l('Hunting for a summer job', 'ຊອກວຽກພາກຮຽນ'),
+    intro: l('Noy is looking for a summer job and waiting on her university application. {n} calls today.', 'ນ້ອຍກຳລັງຊອກວຽກ ແລະ ລໍຖ້າຜົນສະໝັກມະຫາວິທະຍາໄລ. ມື້ນີ້ {n} ສາຍ.') },
+  { id: 'khamla', room: 'parent', hero: persona('parent'), balance: 5_000_000, calls: KHAMLA_CALLS,
+    who: l('Busy day at the shop', 'ມື້ຫຍຸ້ງຢູ່ຮ້ານ'),
+    intro: l('Khamla runs a corner shop and has a son at school. {n} calls between customers.', 'ຄຳຫຼ້າເປີດຮ້ານນ້ອຍ ແລະ ມີລູກຮຽນຢູ່. {n} ສາຍລະຫວ່າງລູກຄ້າ.') },
+  { id: 'bounmy', room: 'elder', hero: persona('elder'), balance: 3_000_000, calls: BOUNMY_CALLS,
+    who: l('A quiet day at home', 'ມື້ງຽບໆຢູ່ເຮືອນ'),
+    intro: l('Grandpa Bounmy lives alone, close to his family. His phone rings {n} times today.', 'ພໍ່ເຖົ້າບຸນມີຢູ່ຄົນດຽວ ໃກ້ຄອບຄົວ. ມື້ນີ້ໂທລະສັບດັງ {n} ເທື່ອ.') },
+  { id: 'dara', room: 'worker', hero: persona('worker'), balance: 4_000_000, calls: DARA_CALLS,
+    who: l('Travelling, dreams of work abroad', 'ກຳລັງເດີນທາງ ຝັນຢາກເຮັດວຽກຕ່າງປະເທດ'),
+    intro: l('Dara is taking the bus to town and hoping to find work abroad. {n} calls on the way.', 'ດາຣາຂີ່ລົດເມເຂົ້າເມືອງ ແລະ ຫວັງຊອກວຽກຕ່າງປະເທດ. {n} ສາຍລະຫວ່າງທາງ.') },
+];
+export const ALL_CALLS = DAYS.flatMap(d => d.calls);
+
+const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x, y) => x[0] - y[0]).map(([, v]) => v);
+// At most one call per time slot, in time order, with real and scam calls mixed so neither answer is a safe bet.
+export function planDay(day: Day, n: number): Call[] {
+  n = Math.min(n, new Set(day.calls.map(c => c.time)).size);
+  for (let tries = 0; ; tries++) {
+    const used = new Set<string>(), pick: Call[] = [];
+    for (const c of shuffle(day.calls)) if (pick.length < n && !used.has(c.time)) { used.add(c.time); pick.push(c); }
+    const real = pick.filter(c => c.real).length;
+    if (tries > 200 || (real >= Math.floor(n * 0.4) && real <= Math.ceil(n * 0.6) && real > 0 && real < n)) return pick.sort((a, b) => a.time.localeCompare(b.time));
   }
 }
 
 export const CT = {
   en: {
-    intro_title: "Souk's day", intro: "Souk runs a noodle stall near Talat Sao. Today her phone rings five times. Some calls are real, some are scams. You decide what she does.",
+    intro_title: "{n}'s day", intro_q: 'Real or scam? You decide.', pick: 'Whose day do you play?', calls_n: 'calls', unsafe: 'Not safe',
     intro_tip: 'Hanging up on everyone is not the answer either: real calls matter too.',
-    start: 'Start the day', balance: 'Savings', knows: 'What Souk knows', answer: 'Answer',
-    in_contacts: 'Saved contact', not_contacts: 'Not in contacts', listen: 'Listening…', decide: 'What does Souk do?',
+    start: 'Start the day', balance: 'Savings', knows: 'What {n} knows', answer: 'Answer',
+    in_contacts: 'Saved contact', not_contacts: 'Not in contacts', listen: 'Listening…', decide: 'What does {n} do?',
     was_real: 'This call was real', was_scam: 'This call was a scam', good: 'Good call', careful: 'Careful and correct', missed: 'Too suspicious', lost: 'Lost',
-    signs: 'Signs in this call', remember: 'Remember', next_call: 'Next call', finish: 'End the day', kip: 'kip',
+    signs: 'Signs in this call', timer_note: 'The caller won\'t wait. Decide before time runs out.', remember: 'Remember', next_call: 'Next call', finish: 'End the day', kip: 'kip',
     day_done: 'Day complete', calls_ok: 'calls handled well', no_voice: 'This phone has no voice for this language, so the call is shown as text.',
   },
   lo: {
-    intro_title: 'ມື້ໜຶ່ງຂອງສຸກ', intro: 'ສຸກເປີດຮ້ານເຝີໃກ້ຕະຫຼາດເຊົ້າ. ມື້ນີ້ໂທລະສັບດັງຫ້າເທື່ອ. ບາງສາຍແທ້ ບາງສາຍຫຼອກ. ທ່ານຕັດສິນໃຈແທນລາວ.',
+    intro_title: 'ມື້ໜຶ່ງຂອງ{n}', intro_q: 'ແທ້ ຫຼື ຫຼອກ? ທ່ານຕັດສິນ.', pick: 'ຫຼິ້ນເປັນມື້ຂອງໃຜ?', calls_n: 'ສາຍ', unsafe: 'ບໍ່ປອດໄພ',
     intro_tip: 'ວາງສາຍທຸກຄົນກໍ່ບໍ່ແມ່ນຄຳຕອບ: ສາຍແທ້ກໍ່ສຳຄັນ.',
-    start: 'ເລີ່ມມື້ໃໝ່', balance: 'ເງິນເກັບ', knows: 'ສິ່ງທີ່ສຸກຮູ້', answer: 'ຮັບສາຍ',
-    in_contacts: 'ເບີທີ່ບັນທຶກ', not_contacts: 'ບໍ່ມີໃນລາຍຊື່', listen: 'ກຳລັງຟັງ…', decide: 'ສຸກຈະເຮັດແນວໃດ?',
+    start: 'ເລີ່ມມື້ໃໝ່', balance: 'ເງິນເກັບ', knows: 'ສິ່ງທີ່{n}ຮູ້', answer: 'ຮັບສາຍ',
+    in_contacts: 'ເບີທີ່ບັນທຶກ', not_contacts: 'ບໍ່ມີໃນລາຍຊື່', listen: 'ກຳລັງຟັງ…', decide: '{n}ຈະເຮັດແນວໃດ?',
     was_real: 'ສາຍນີ້ແມ່ນແທ້', was_scam: 'ສາຍນີ້ແມ່ນການຫຼອກ', good: 'ຕັດສິນໃຈດີ', careful: 'ລະວັງ ແລະ ຖືກຕ້ອງ', missed: 'ສົງໄສເກີນໄປ', lost: 'ເສຍ',
-    signs: 'ສັນຍານໃນສາຍນີ້', remember: 'ຈື່ໄວ້', next_call: 'ສາຍຕໍ່ໄປ', finish: 'ຈົບມື້', kip: 'ກີບ',
+    signs: 'ສັນຍານໃນສາຍນີ້', timer_note: 'ຜູ້ໂທບໍ່ລໍຖ້າ. ຕັດສິນໃຈກ່ອນໝົດເວລາ.', remember: 'ຈື່ໄວ້', next_call: 'ສາຍຕໍ່ໄປ', finish: 'ຈົບມື້', kip: 'ກີບ',
     day_done: 'ຈົບມື້', calls_ok: 'ສາຍທີ່ຮັບມືໄດ້ດີ', no_voice: 'ໂທລະສັບນີ້ບໍ່ມີສຽງພາສາລາວ ຈຶ່ງສະແດງເປັນຂໍ້ຄວາມ.',
   },
 };

@@ -90,25 +90,48 @@ function Strip({ shift, style, children }: { shift: number; style: React.CSSProp
 
 export const GROUND = 16; // % of scene height taken by the road; runner and traps stand on it.
 
-export function DashScene({ scene, kind, dist, progress }: { scene: Scene; kind: LandmarkKind; dist: number; progress: number }) {
+// Foreground below the road on tall screens: verge, bushes, flowers and stones scrolling fastest.
+const Foreground = memo(function Foreground({ city }: { city?: boolean }) {
+  const bloom = ['#F472B6', '#FACC15', '#F8FAFC', '#FB923C'];
+  return (
+    <svg viewBox="0 0 400 120" preserveAspectRatio="none" className="w-full h-full block">
+      {[30, 120, 210, 300, 370].map((x, i) => <g key={x}>
+        {city
+          ? <g><rect x={x - 2} y="8" width="4" height="70" fill="#475569" /><rect x={x - 10} y="4" width="20" height="8" rx="4" fill="#64748B" /><circle cx={x} cy="14" r="5" fill="#FEF3C7" /></g>
+          : <><ellipse cx={x} cy="34" rx={30 + (i % 2) * 10} ry="20" fill="#2F7D4A" /><ellipse cx={x - 14} cy="28" rx="16" ry="14" fill="#3E9A57" /><ellipse cx={x + 12} cy="24" rx="12" ry="11" fill="#4CAF63" /></>}
+      </g>)}
+      {[60, 92, 160, 176, 250, 268, 336, 352].map((x, i) => <g key={x}><line x1={x} y1="62" x2={x} y2="48" stroke="#2F7D4A" strokeWidth="2" /><circle cx={x} cy="46" r="4.5" fill={bloom[i % 4]} /></g>)}
+      {[[80, 92, 14], [196, 104, 10], [320, 88, 16]].map(([x, y, r]) => <ellipse key={x} cx={x} cy={y} rx={r} ry={r * 0.6} fill="#9CA3AF" opacity=".85" />)}
+    </svg>
+  );
+});
+
+// `floor` is where the top of the road sits, in % from the bottom. Tall screens raise it so the
+// action sits in the middle instead of being squeezed into the bottom strip.
+export function DashScene({ scene, kind, dist, progress, floor = GROUND }: { scene: Scene; kind: LandmarkKind; dist: number; progress: number; floor?: number }) {
   const sea = scene.terrain === 'sea';
+  const lift = floor - GROUND; // height of the foreground under the road
   return (
     <div className="absolute inset-0 overflow-hidden" style={{ background: `linear-gradient(${scene.sky[0]},${scene.sky[1]} 70%)` }}>
       <div className="absolute rounded-full" style={{ width: 64, height: 64, right: '14%', top: '14%', background: scene.dusk ? '#FFB86B' : '#FFF6C9', boxShadow: `0 0 60px 20px ${scene.dusk ? '#FFB86B88' : '#FFF6C988'}` }} />
       <Strip shift={dist * 0.06} style={{ top: '6%', height: '18%' }}><Clouds dusk={scene.dusk} /></Strip>
-      {sea && <div className="absolute inset-x-0" style={{ bottom: `${GROUND + 6}%`, height: '16%', background: 'linear-gradient(#5BB8D9,#2E8FB8)' }} />}
-      <Strip shift={dist * 0.2} style={{ bottom: `${GROUND + (sea ? 18 : 6)}%`, height: sea ? '22%' : '38%' }}><Ridge terrain={scene.terrain} seed={1} color={scene.far} amp={sea ? 120 : 190} /></Strip>
-      {!sea && <Strip shift={dist * 0.4} style={{ bottom: `${GROUND + 6}%`, height: '26%' }}><Ridge terrain={scene.terrain === 'karst' ? 'karst' : 'hills'} seed={4} color={scene.mid} amp={170} /></Strip>}
+      {sea && <div className="absolute inset-x-0" style={{ bottom: `${floor + 6}%`, height: '16%', background: 'linear-gradient(#5BB8D9,#2E8FB8)' }} />}
+      <Strip shift={dist * 0.2} style={{ bottom: `${floor + (sea ? 18 : 6)}%`, height: sea ? '22%' : '38%' }}><Ridge terrain={scene.terrain} seed={1} color={scene.far} amp={sea ? 120 : 190} /></Strip>
+      {!sea && <Strip shift={dist * 0.4} style={{ bottom: `${floor + 6}%`, height: '26%' }}><Ridge terrain={scene.terrain === 'karst' ? 'karst' : 'hills'} seed={4} color={scene.mid} amp={170} /></Strip>}
       {/* The landmark sits far behind the road: smaller, slightly hazed and slower than the near trees, so the runner reads as up close. */}
-      <div className="absolute pointer-events-none will-change-transform" style={{ bottom: `${GROUND + 9}%`, left: `${104 - progress * 150}%`, width: '44%', aspectRatio: '1', filter: 'saturate(.85) brightness(1.04)', opacity: 0.95 }}>
+      <div className="absolute pointer-events-none will-change-transform" style={{ bottom: `${floor + 9}%`, left: `${104 - progress * 150}%`, width: '44%', aspectRatio: '1', filter: 'saturate(.85) brightness(1.04)', opacity: 0.95 }}>
         <Landmark kind={kind} />
       </div>
-      <Strip shift={dist * 1.0} style={{ bottom: `${GROUND + 2}%`, height: '20%' }}><NearRow trees={scene.trees} dark={scene.grass} /></Strip>
-      <div className="absolute inset-x-0" style={{ bottom: `${GROUND}%`, height: '4%', background: scene.grass }} />
-      <div className="absolute inset-x-0 bottom-0" style={{ height: `${GROUND}%`, background: 'linear-gradient(#5B6170,#3F4451)' }}>
+      <Strip shift={dist * 1.0} style={{ bottom: `${floor + 2}%`, height: '20%' }}><NearRow trees={scene.trees} dark={scene.grass} /></Strip>
+      <div className="absolute inset-x-0" style={{ bottom: `${floor}%`, height: '4%', background: scene.grass }} />
+      <div className="absolute inset-x-0" style={{ bottom: `${lift}%`, height: `${GROUND}%`, background: 'linear-gradient(#5B6170,#3F4451)' }}>
         <div className="absolute inset-x-0 top-0 h-2" style={{ backgroundImage: 'repeating-linear-gradient(90deg,#F8FAFC 0 22px,#E5484D 22px 44px)', backgroundPositionX: `${-dist * 6.4}px` }} />
         <div className="absolute inset-x-0 top-[62%] h-1.5 rounded" style={{ backgroundImage: 'repeating-linear-gradient(90deg,#FDE68A 0 30px,transparent 30px 64px)', backgroundPositionX: `${-dist * 6.4}px` }} />
+        <div className="absolute inset-x-0 bottom-0 h-1.5" style={{ backgroundImage: 'repeating-linear-gradient(90deg,#F8FAFC 0 22px,#E5484D 22px 44px)', backgroundPositionX: `${-dist * 6.4}px` }} />
       </div>
+      {lift > 0 && <div className="absolute inset-x-0 bottom-0" style={{ height: `${lift}%`, background: `linear-gradient(${scene.grass}, color-mix(in srgb, ${scene.grass} 70%, #0b3d1f))` }}>
+        <Strip shift={dist * 1.6} style={{ top: '4%', height: 'min(70%, 120px)' }}><Foreground city={scene.trees === 'city'} /></Strip>
+      </div>}
     </div>
   );
 }

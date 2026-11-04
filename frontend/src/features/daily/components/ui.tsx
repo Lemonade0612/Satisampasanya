@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Eye, Heart, ShieldCheck, ShieldAlert, Shield, Flame, ArrowLeft } from 'lucide-react';
+import { Eye, Heart, ShieldCheck, ShieldAlert, Shield, Flame, ArrowLeft, Music } from 'lucide-react';
+import { setSoundOn, sfx, useSoundOn, type Sfx } from '../lib/sound';
 import { getLike, toggleLike } from '../lib/progress';
 import { DT } from '../i18n';
 import type { Lang } from '../types';
@@ -55,8 +56,25 @@ export function TopBar({ onBack, children, lang }: { onBack: () => void; childre
     <div className="shrink-0 flex items-center gap-3 px-3 py-2 border-b border-border">
       <button onClick={onBack} aria-label={DT[lang].back} className="w-11 h-11 rounded-full flex items-center justify-center hover:bg-muted"><ArrowLeft size={22} /></button>
       <div className="flex-1 flex items-center justify-between gap-2">{children}</div>
+      <SoundToggle lang={lang} />
     </div>
   );
 }
 
-export function haptic(ok: boolean) { try { navigator.vibrate?.(ok ? 20 : [40, 40, 40]); } catch { /* not supported */ } }
+// Buzz plus a matching sound on every right / wrong moment; pass a different effect (or null) where it fits better.
+export function haptic(ok: boolean, sound: Sfx | null = ok ? 'right' : 'wrong') {
+  try { navigator.vibrate?.(ok ? 20 : [40, 40, 40]); } catch { /* not supported */ }
+  if (sound) sfx(sound);
+}
+
+// Music and sound effects on/off, shared by every game.
+export function SoundToggle({ lang, className = '' }: { lang: Lang; className?: string }) {
+  const on = useSoundOn();
+  return (
+    <button onClick={() => setSoundOn(!on)} aria-pressed={on} aria-label={DT[lang].sound}
+      className={`relative w-11 h-11 shrink-0 rounded-full bg-muted flex items-center justify-center ${on ? 'text-primary' : 'text-muted-foreground'} ${className}`}>
+      <Music size={18} />
+      {!on && <span aria-hidden className="absolute w-6 h-0.5 rounded-full bg-current rotate-45" />}
+    </button>
+  );
+}
