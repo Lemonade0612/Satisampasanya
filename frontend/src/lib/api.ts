@@ -42,6 +42,8 @@ export const api = {
   },
   alerts: () => request<Notification[]>('/alerts'),
   readAlerts: (id?:string) => request('/alerts/read','POST',{id}),
+  registerDevice: (token:string,lang:string) => request('/devices','POST',{token,lang}),
+  removeDevice: (token:string) => request('/devices/remove','POST',{token}),
   me: () => request<CurrentUser>('/auth/me'),
   async logout() { try { await request('/auth/logout','POST'); } finally { clearSession(); } },
   posts: () => request<Post[]>('/posts'),

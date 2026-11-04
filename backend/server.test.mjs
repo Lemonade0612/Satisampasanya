@@ -359,3 +359,25 @@ test('API home redirects browsers to the separate admin workspace',async()=>{
   assert.equal((await f.call('/admin/dashboard')).status,401);
  }finally{await f.close();}
 });
+
+test('device tokens receive APNs pushes with the unread badge, once per alert',async()=>{
+ const sent=[];
+ const f=await fixture({push:async(token,payload)=>{sent.push({token,payload});return {status:token.startsWith('dead')?410:200,reason:''};}});try{
+  const alice=await f.register(),bob=await f.register('bob@example.com');
+  const token='a'.repeat(64),dead='dead'+'0'.repeat(60);
+  assert.equal((await f.call('/devices','POST',{token},undefined)).status,401);
+  assert.equal((await f.call('/devices','POST',{token:'not hex!'},alice.token)).status,400);
+  assert.equal((await f.call('/devices','POST',{token,lang:'lo'},alice.token)).status,200);
+  await f.call('/devices','POST',{token:dead},alice.token);
+  const post=(await f.call('/posts','POST',draft,alice.token)).value;
+  await f.call(`/posts/${post.id}/reactions`,'POST',{kind:'like',active:true},bob.token);
+  await f.deliver();
+  assert.equal(sent.length,2);
+  const push=sent.find(s=>s.token===token).payload;
+  assert.equal(push.aps.badge,1);assert.equal(push.postId,post.id);assert.equal(push.kind,'like');assert.match(push.aps.alert.body,/^bob ມັກໂພສຂອງທ່ານ$/);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM device_tokens WHERE token=?').get(dead).n,0,'expired tokens are dropped');
+  await f.deliver();assert.equal(sent.length,2,'each alert is pushed only once');
+  await f.call('/devices/remove','POST',{token},alice.token);
+  assert.equal(f.db.prepare('SELECT COUNT(*) n FROM device_tokens').get().n,0);
+ }finally{await f.close();}
+});

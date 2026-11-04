@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { MessageCircle } from "lucide-react";
 import { api, hasSession, clearSession, ApiError } from "./lib/api";
 import { usePhoneViewport } from "./hooks/usePhoneViewport";
@@ -16,6 +16,10 @@ import { ComposeModal } from "./components/modals/ComposeModal";
 import { RepostModal } from "./components/modals/RepostModal";
 import { ImageExpandModal } from "./components/modals/ImageExpandModal";
 import { BottomNav } from "./components/feed/BottomNav";
+import { AlertBanner } from "./components/feed/AlertBanner";
+import { startPush, stopPush, setAppBadge, updatePushLang } from "./lib/push";
+import { getProgress } from "./features/daily/lib/progress";
+import { today } from "./features/daily/lib/storage";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
 
 export default function App() {
@@ -41,12 +45,37 @@ export default function App() {
   useEffect(() => { localStorage.setItem('sati-lang', lang); }, [lang]);
   const [commentPostId, setCommentPostId] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
-  const [alerts,setAlerts] = useState<Notification[]>([]);
+  const [alerts,setAlertList] = useState<Notification[]>([]);
+  // On-ground banner: show alerts that arrive while the app is open, never the backlog from sign-in.
+  const seenAlerts=useRef<Set<string>|null>(null);
+  const setAlerts=(value:Notification[])=>{if(!seenAlerts.current)seenAlerts.current=new Set(value.map(a=>a.id));setAlertList(value);};
   const alertCount=alerts.filter(a=>!a.read).length;
   const loadAlerts=async()=>{try{setAlerts(await api.alerts());}catch{/* Feed status already reports connectivity issues. */}};
   useEffect(()=>{let alive=true;if(!user){setAlerts([]);return;}api.alerts().then(value=>{if(alive)setAlerts(value);}).catch(()=>{});return()=>{alive=false;};},[user?.id,posts]);
   const markAlerts=async(id?:string)=>{try{await api.readAlerts(id);await loadAlerts();}catch(e){setActionError((e as Error).message);}};
   const [showAlerts, setShowAlerts] = useState(false);
+  const [banner,setBanner]=useState<Notification|null>(null);
+  const dismissBanner=useCallback(()=>setBanner(null),[]);
+  useEffect(()=>{seenAlerts.current=null;setBanner(null);},[user?.id]);
+  useEffect(()=>{
+    if(!user)return;
+    if(!seenAlerts.current)return;
+    const fresh=alerts.filter(a=>!a.read&&!seenAlerts.current!.has(a.id));
+    for(const a of alerts)seenAlerts.current.add(a.id);
+    if(fresh.length&&!showAlerts)setBanner(fresh[0]);
+  },[alerts]);
+  useEffect(()=>{void setAppBadge(alertCount);},[alertCount]);
+  useEffect(()=>{updatePushLang(lang);},[lang]);
+  useEffect(()=>{
+    if(!user)return;
+    let stop=()=>{};let alive=true;
+    startPush(lang,{onForeground:()=>void loadAlerts(),onOpen:(postId,alertId)=>{setBanner(null);setShowAlerts(false);setCommentPostId(postId);if(alertId)void markAlerts(alertId);}}).then(cleanup=>{if(alive)stop=cleanup;else cleanup();}).catch(error=>console.warn('Push setup failed:',error));
+    const onVisible=()=>{if(document.visibilityState==='visible')void loadAlerts();};
+    document.addEventListener('visibilitychange',onVisible);
+    return()=>{alive=false;stop();document.removeEventListener('visibilitychange',onVisible);};
+  },[user?.id]);
+  const [dailyPending,setDailyPending]=useState(()=>getProgress().lastDay!==today());
+  useEffect(()=>{setDailyPending(getProgress().lastDay!==today());},[view]);
   const [repostPost, setRepostPost] = useState<Post | null>(null);
   const [postToast, setPostToast] = useState(false);
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {const saved=localStorage.getItem('sati-theme');return saved==='dark'||saved==='system'?saved:'light';});
@@ -69,6 +98,7 @@ export default function App() {
   };
 
   const handleLogout = async () => {
+    await stopPush();
     try { await api.logout(); } catch { /* The local session is already cleared. */ }
     setUser(null); setAlerts([]); setShowAlerts(false); setActionError(''); setView('feed'); setCommentPostId(null); setShowCompose(false); setRepostPost(null);
   };
@@ -202,12 +232,13 @@ export default function App() {
           <MessageCircle size={20} />{lang === 'lo' ? 'ຖາມ Sati' : 'Ask Sati'}
         </button>
       )}
+      {banner && <AlertBanner alert={banner} lang={lang} onDismiss={dismissBanner} onOpen={()=>{const b=banner;setBanner(null);void markAlerts(b.id);setShowAlerts(false);setCommentPostId(b.post_id);}} />}
       {postToast && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-lao whitespace-nowrap">
           {lang === 'lo' ? 'ໂພສແລ້ວ!' : 'Posted!'}
         </div>
       )}
-      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={() => setShowCompose(true)} />
+      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={() => setShowCompose(true)} dailyDot={dailyPending && view !== "daily"} />
     </div>
   );
 }

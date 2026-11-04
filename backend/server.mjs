@@ -4,6 +4,7 @@ import {assistantUsage,assistantReply} from './assistant.mjs';
 import {translationEnabled,translateText} from './translation.mjs';
 import {accessFor,manageUser} from './access.mjs';
 import { adminSnapshot, reviewPost } from './admin.mjs';
+import { apnsSender, dispatchPushes } from './push.mjs';
 import {checkPost} from './safety/post-check.mjs';
 import {modelConfigured} from './safety/model.mjs';
 import {hostedTranslate} from './safety/translate.mjs';
@@ -37,7 +38,7 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], adminEmails = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {} } = {}) {
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], adminEmails = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
   const db = openStore(database, seed), clients = new Set(), rate = new Map();
   const allowed = new Set([
   // User frontend
@@ -64,6 +65,9 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   const sweep=()=>{if(notifyReviewers(db,adminEmails))broadcast();};
   sweep();
   const reviewTimer=setInterval(sweep,60000);reviewTimer.unref();
+  let pushing=Promise.resolve();
+  const deliver=()=>{pushing=pushing.then(()=>dispatchPushes(db,push)).catch(error=>console.error('Push dispatch failed:',error.message));return pushing;};
+  const pushTimer=setInterval(deliver,2000);pushTimer.unref();
   const interactionChecks=new Map();
   const server = createServer(async (req, res) => {
     try {
@@ -182,6 +186,13 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if(translationEnabled())return send(res,200,{text:await translateText(value,data.target==='lo'?'en':'lo',data.target)});
         return send(res,200,{text:await hostedTranslation(value,data.target)});
       }
+      if (req.method === 'POST' && path === '/api/devices') {
+        const data=await body(req), token=text(data.token,200,true);
+        if(!/^[0-9a-fA-F]{32,200}$/.test(token)) fail('Invalid device token.');
+        db.prepare('INSERT INTO device_tokens(token,user_id,platform,lang,created) VALUES (?,?,?,?,?) ON CONFLICT(token) DO UPDATE SET user_id=excluded.user_id,lang=excluded.lang,created=excluded.created').run(token,user.id,'ios',data.lang==='lo'?'lo':'en',Date.now());
+        return send(res,200,{ok:true,push:!!push});
+      }
+      if (req.method === 'POST' && path === '/api/devices/remove') { const data=await body(req); db.prepare('DELETE FROM device_tokens WHERE token=? AND user_id=?').run(text(data.token,200,true),user.id); return send(res,200,{ok:true}); }
       if (req.method === 'GET' && path === '/api/alerts') return send(res,200,db.prepare('SELECT * FROM notifications WHERE user_id=? ORDER BY created DESC LIMIT 100').all(user.id));
       if (req.method === 'POST' && path === '/api/alerts/read') {
         const data=await body(req);
@@ -267,7 +278,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       fail('Route not found.',404);
     } catch(error) { if (!res.headersSent) send(res,error.status||500,{error:error.status?error.message:'Backend error. Please try again.'}); else {if(res.getHeader('Content-Type')==='application/x-ndjson')res.write(JSON.stringify({type:'error',status:error.status||500,message:error.status?error.message:'Unable to finish checking. Please retry.'})+'\n');res.end();} if (!error.status) console.error(error); }
   });
-  return {server,db,close:async()=>{clearInterval(reviewTimer);for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
+  return {server,db,deliver,close:async()=>{clearInterval(reviewTimer);clearInterval(pushTimer);await pushing;push?.close?.();for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});

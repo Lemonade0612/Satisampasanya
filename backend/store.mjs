@@ -9,6 +9,8 @@ export function openStore(filename, seed = false) {
   const db = new DatabaseSync(filename);
   db.exec(readFileSync(new URL('./schema.sql', import.meta.url), 'utf8'));
   if(!db.prepare('PRAGMA table_info(notifications)').all().some(column=>column.name==='review_state'))db.exec('ALTER TABLE notifications ADD COLUMN review_state TEXT');
+  // pushed IS NULL marks alerts not yet sent to devices; alerts from before push support count as sent.
+  if(!db.prepare('PRAGMA table_info(notifications)').all().some(column=>column.name==='pushed')){db.exec('ALTER TABLE notifications ADD COLUMN pushed INTEGER');db.exec('UPDATE notifications SET pushed=1');}
   if(!db.prepare('PRAGMA table_info(user_access)').all().some(column=>column.name==='managed'))db.exec('ALTER TABLE user_access ADD COLUMN managed INTEGER NOT NULL DEFAULT 0');
   if (seed && !db.prepare('SELECT COUNT(*) n FROM posts').get().n) {
     const posts = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));

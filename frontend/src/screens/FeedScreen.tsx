@@ -31,7 +31,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
             <button aria-label={lang === "lo" ? "ແຈ້ງເຕືອນ" : "Notifications"} onClick={onOpenAlerts} className="relative min-h-11 min-w-11 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">
               <Bell size={18} />
               {alertCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{alertCount}</span>
+                <span key={alertCount} aria-label={`${alertCount} unread`} className="badge-pop absolute top-0.5 right-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-background">{alertCount > 9 ? "9+" : alertCount}</span>
               )}
             </button>
             <ThemeToggle mode={themeMode} onChange={onThemeChange} />
