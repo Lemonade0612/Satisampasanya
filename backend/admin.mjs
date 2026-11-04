@@ -2,10 +2,10 @@ import {randomUUID} from 'node:crypto';
 import {accessFor,managedUsers} from './access.mjs';
 import { postView } from './store.mjs';
 
-export function adminSnapshot(db,user,adminEmails=[]) {
+export function adminSnapshot(db,user) {
   const posts = db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC").all().map(row => postView(db,row));
-  const access=accessFor(db,user,adminEmails);
-  const users = access.role==='admin'?managedUsers(db,adminEmails):[];
+  const access=accessFor(db,user);
+  const users = access.role==='admin'?managedUsers(db):[];
   return { posts, users, permissions:{role:access.role,canManageUsers:access.role==='admin',canReview:['admin','reviewer'].includes(access.role)}, totals: {
     posts: posts.length, users: db.prepare('SELECT COUNT(*) n FROM users').get().n,
     comments: db.prepare('SELECT COUNT(*) n FROM comments').get().n,

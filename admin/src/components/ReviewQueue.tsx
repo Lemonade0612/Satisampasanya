@@ -1,10 +1,49 @@
-import { useState } from 'react';
-import { adminApi, needsReview, type AdminPost } from '../api';
-export function ReviewQueue({posts,onReviewed,canReview=true}:{posts:AdminPost[];onReviewed:()=>Promise<void>;canReview?:boolean}) {
- const [selected,setSelected]=useState<AdminPost|null>(null);
- const [state,setState]=useState<'clean'|'confirmed'|'false'|'rejected'>('clean');
- const [note,setNote]=useState('');const [busy,setBusy]=useState(false);const [error,setError]=useState('');
- const queue=posts.filter(needsReview).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
- const submit=async()=>{if(!selected)return;setBusy(true);setError('');try{await adminApi.review(selected.id,state,note);await onReviewed();setSelected(null);setNote('');}catch(e){setError((e as Error).message);}finally{setBusy(false);}};
- return <section className="admin-card"><div className="card-heading"><div><h2>Needs review next <span className="admin-badge">{queue.length}</span></h2><p>Oldest flagged posts first · 48-hour review target</p></div></div>{!queue.length&&<p className="admin-muted">All caught up. No flagged posts waiting for review.</p>}{queue.map(p=><article className="admin-queue-row" key={p.id}><div className="queue-post"><strong>{p.content}</strong><p className="admin-muted">{p.author.name} · {p.tags.map(t=>'#'+t).join(' ')}</p><small>{p.screening?.note||p.flagReason||'Flagged for review'}</small></div><div className="queue-deadline"><div className="workload-track"><i className={Date.now()-(p.createdAt||Date.now())>36*3600000?'amber':'blue'} style={{width:`${Math.min(100,Math.max(4,(Date.now()-(p.createdAt||Date.now()))/(48*3600000)*100))}%`}}/></div><small>{Math.max(0,Math.ceil(48-(Date.now()-(p.createdAt||Date.now()))/3600000))}h left · review target · stays locked until review</small></div><button disabled={!canReview} title={canReview?'Review this post':'Insight viewers cannot save reviews'} onClick={()=>{setSelected(p);setNote('');setError('');}}>Review</button></article>)}{selected&&<div className="admin-modal-backdrop"><form className="admin-card admin-review-modal" role="dialog" aria-modal="true" aria-label="Review post" onSubmit={e=>{e.preventDefault();void submit();}}><h2>Review post</h2>{selected.image&&<img src={selected.image} alt="Post attachment" style={{maxWidth:"100%",maxHeight:280,objectFit:"contain",borderRadius:12}}/>}<p>{selected.content}</p>{selected.contentLo&&<p>{selected.contentLo}</p>}{selected.link&&<a href={selected.link} target="_blank" rel="noreferrer">Open source</a>}<label>Decision<select value={state} onChange={e=>setState(e.target.value as typeof state)}><option value="clean">Approve post</option><option value="confirmed">Confirmed scam</option><option value="false">False alarm</option><option value="rejected">Reject — keep interactions locked</option></select></label><label>Review note<textarea required maxLength={1000} value={note} onChange={e=>setNote(e.target.value)} placeholder="Explain the evidence behind your decision"/></label>{error&&<p role="alert">{error}</p>}<div className="admin-actions"><button type="button" disabled={busy} onClick={()=>setSelected(null)}>Cancel</button><button disabled={busy||!note.trim()}>{busy?'Saving…':'Save review'}</button></div></form></div>}</section>;
+import {useMemo,useState} from 'react';
+import {Lock,CircleCheck} from 'lucide-react';
+import {needsReview,byPriority,severity,ageHours,formatCount,type AdminPost} from '../api';
+import {useLang,useT,ago,fullDate,waitLabel} from '../i18n';
+import {ModerationLabels} from './ModerationLabels';
+import {Highlighted} from './NeedsEyesFirst';
+import {ReviewDialog} from './ReviewDialog';
+import {Select,SearchField,FilterTabs,Pager} from './ui';
+
+type Filter='all'|'red'|'yellow'|'breach';
+const sorters:Record<string,(a:AdminPost,b:AdminPost)=>number>={priority:byPriority,oldest:(a,b)=>(a.createdAt||0)-(b.createdAt||0),newest:(a,b)=>(b.createdAt||0)-(a.createdAt||0)};
+
+export function ReviewQueue({posts,onReviewed,canReview=true}:{posts:AdminPost[];onReviewed:()=>Promise<void>;canReview?:boolean}){
+ const t=useT(),lang=useLang();
+ const [filter,setFilter]=useState<Filter>('all'),[search,setSearch]=useState(''),[sort,setSort]=useState('priority');
+ const [page,setPage]=useState(0),[size,setSize]=useState(25),[selected,setSelected]=useState<AdminPost|null>(null);
+ const query=search.trim().toLowerCase();
+ const all=useMemo(()=>posts.filter(needsReview).filter(p=>!query||[p.content,p.contentLo,p.tags.join(' '),p.author.name].join(' ').toLowerCase().includes(query)),[posts,query]);
+ const match=(p:AdminPost,f:Filter)=>f==='all'||(f==='breach'?ageHours(p)>=36:severity(p)===f);
+ const queue=useMemo(()=>all.filter(p=>match(p,filter)).sort(sorters[sort]),[all,filter,sort]);
+ const visible=queue.slice(page*size,(page+1)*size);
+ const tabs=([['all',t.states.all],['red',t.red],['yellow',t.watch],['breach',t.breach]] as const).map(([key,label])=>({key:key as Filter,label,count:all.filter(p=>match(p,key)).length,tone:key==='red'?'red' as const:key==='yellow'?'watch' as const:undefined}));
+ return <section className="sd-card sd-table-card">
+  <div className="sd-card-head"><div><h2>{t.queueHead} <span className="sd-count-badge mono">{formatCount(posts.filter(needsReview).length)}</span></h2><p>{t.queueSub}</p></div></div>
+  <FilterTabs label={t.queue} value={filter} onChange={f=>{setFilter(f);setPage(0);}} items={tabs}/>
+  <div className="sd-toolbar">
+   <SearchField value={search} onChange={v=>{setSearch(v);setPage(0);}} placeholder={t.searchQueue}/>
+   <Select label={t.sortBy} value={sort} onChange={v=>{setSort(v);setPage(0);}} options={[{value:'priority',label:t.priority},{value:'oldest',label:t.oldest},{value:'newest',label:t.newest}]}/>
+  </div>
+  {!queue.length&&<div className="sd-empty-state"><CircleCheck size={22}/><p>{query||filter!=='all'?t.noMatch:t.caughtUp}</p></div>}
+  <ol className="sd-queue">{visible.map(p=>{const hours=ageHours(p),postLang=p.contentLanguage||p.check?.language;
+   return <li key={p.id} className={`sd-qrow ${severity(p)}`}>
+    <div className="sd-qmain">
+     <ModerationLabels post={p}/>
+     <p className="sd-qtext" lang={postLang==='lo'?'lo':undefined}><Highlighted text={p.content} phrases={p.check?.reasons.map(r=>r.evidence)||[]}/></p>
+     <p className="sd-qmeta"><strong>{p.author.name}</strong>{p.tags.length>0&&<span>{p.tags.map(tag=>'#'+tag).join(' ')}</span>}{p.createdAt&&<time title={fullDate(p.createdAt,lang)}>{ago(p.createdAt,lang)}</time>}</p>
+     <p className="sd-qreason"><Lock size={14}/>{p.screening?.note||p.flagReason||t.flagged} · {t.locked}</p>
+    </div>
+    <div className="sd-wait">
+     <strong className="mono">{waitLabel(hours,lang)}</strong>
+     <small>{hours>=48?t.pastTarget(waitLabel(hours-48,lang)):t.left(waitLabel(48-hours,lang))}</small>
+     <span className="sd-overdue" aria-hidden="true"><i className={hours>=48?'':'near'} style={{width:`${Math.min(100,Math.max(4,hours/48*100))}%`}}/></span>
+     <button className="sd-btn primary small" disabled={!canReview} title={canReview?undefined:t.viewerCannot} onClick={()=>setSelected(p)}>{t.review}</button>
+    </div>
+   </li>;})}</ol>
+  <Pager page={page} size={size} total={queue.length} onChange={setPage} onSize={s=>{setSize(s);setPage(0);}}/>
+  {selected&&<ReviewDialog post={selected} onClose={()=>setSelected(null)} onReviewed={onReviewed}/>}
+ </section>;
 }

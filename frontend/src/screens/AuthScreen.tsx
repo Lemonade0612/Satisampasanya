@@ -23,25 +23,25 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
   const handleLogin = async () => {
     if (busy) return;
     const errs: Record<string,string> = {};
-    if (!loginEmail) errs.email = t.err_required; else if (!isValidEmail(loginEmail)) errs.email = t.err_email;
+    if (!loginEmail) errs.email = t.err_required; else if (!isValidEmail(loginEmail.trim())) errs.email = t.err_email;
     if (!loginPw) errs.pw = t.err_required;
     setLoginErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('login', {email: loginEmail, password: loginPw})); }
+    try { onLogin(await api.authenticate('login', {email: loginEmail.trim(), password: loginPw})); }
     catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
   };
   const handleRegister = async () => {
     if (busy) return;
     const errs: Record<string,string> = {};
     if (!regName.trim()) errs.name = t.err_required;
-    if (!regEmail) errs.email = t.err_required; else if (!isValidEmail(regEmail)) errs.email = t.err_email;
+    if (!regEmail) errs.email = t.err_required; else if (!isValidEmail(regEmail.trim())) errs.email = t.err_email;
     if (!regPw) errs.pw = t.err_required; else if (regPw.length < 8) errs.pw = t.err_pw_short;
     if (!regConfirm) errs.confirm = t.err_required; else if (regConfirm !== regPw) errs.confirm = t.err_pw_match;
     setRegErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('register', {name: regName.trim(), email: regEmail, password: regPw})); }
+    try { onLogin(await api.authenticate('register', {name: regName.trim(), email: regEmail.trim(), password: regPw})); }
     catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
   };
   const handleForgot = async () => {
@@ -65,8 +65,8 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
         <h1 className="font-display font-bold mb-3 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
         <p className="text-sm text-muted-foreground leading-relaxed mb-7 font-lao">{t.welcome_sub}</p>
         <div className="flex gap-3">
-          <button onClick={() => setView("login")} className="flex-1 bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_login}</button>
-          <button onClick={() => setView("register")} className="flex-1 border-2 border-primary text-primary font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_register}</button>
+          <button type="button" onClick={() => setView("login")} className="flex-1 bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_login}</button>
+          <button type="button" onClick={() => setView("register")} className="flex-1 border-2 border-primary text-primary font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_register}</button>
         </div>
       </div>
     </div>
@@ -76,22 +76,22 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
       <div className="px-5 pt-3 pb-6 bg-background">
         <div className="flex items-center justify-between mb-5">
-          <button onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
+          <button type="button" onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
           <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
         </div>
         <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{t.login_title}</h2>
         <p className="text-sm text-muted-foreground font-semibold font-lao">{t.login_sub}</p>
       </div>
-      <div className="flex-1 px-5 pt-6 pb-4">{feedback}
+      <form onSubmit={e => {e.preventDefault();void handleLogin();}} className="flex-1 px-5 pt-6 pb-4">{feedback}
         <FormInput value={loginEmail} onChange={(v) => { setLoginEmail(v); setLoginErrors(e => ({...e,email:""})); }} placeholder={t.field_email} type="email" error={loginErrors.email} />
         <FormInput value={loginPw} onChange={(v) => { setLoginPw(v); setLoginErrors(e => ({...e,pw:""})); }} placeholder={t.field_password} type={showLoginPw?"text":"password"} error={loginErrors.pw}
-          right={<button onClick={() => setShowLoginPw(v => !v)} className="text-muted-foreground/60 p-0.5 ml-1">{showLoginPw ? <EyeOff size={16} /> : <Eye size={16} />}</button>} />
-        <div className="flex justify-end mb-5"><button onClick={() => setView("forgot")} className="text-xs font-semibold text-primary font-lao">{t.forgot_link}</button></div>
-        <button onClick={handleLogin} disabled={busy} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mb-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signin}</button>
+          right={<button type="button" onClick={() => setShowLoginPw(v => !v)} className="text-muted-foreground/60 p-0.5 ml-1">{showLoginPw ? <EyeOff size={16} /> : <Eye size={16} />}</button>} />
+        <div className="flex justify-end mb-5"><button type="button" onClick={() => setView("forgot")} className="text-xs font-semibold text-primary font-lao">{t.forgot_link}</button></div>
+        <button type="submit" disabled={busy} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mb-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signin}</button>
         <div className="mt-4 text-center">
-          <button onClick={() => setView("register")} className="text-sm text-muted-foreground font-lao">{t.create_account} <span className="text-primary font-semibold">{t.btn_register}</span></button>
+          <button type="button" onClick={() => setView("register")} className="text-sm text-muted-foreground font-lao">{t.create_account} <span className="text-primary font-semibold">{t.btn_register}</span></button>
         </div>
-      </div>
+      </form>
     </div>
   );
 
@@ -99,7 +99,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
       <div className="px-5 pt-3 pb-6 bg-background">
         <div className="flex items-center justify-between mb-5">
-          <button onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
+          <button type="button" onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
           <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
         </div>
         <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{t.register_title}</h2>
@@ -109,12 +109,12 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
         <FormInput value={regName} onChange={(v) => { setRegName(v); setRegErrors(e=>({...e,name:""})); }} placeholder={t.field_name} error={regErrors.name} />
         <FormInput value={regEmail} onChange={(v) => { setRegEmail(v); setRegErrors(e=>({...e,email:""})); }} placeholder={t.field_email} type="email" error={regErrors.email} />
         <FormInput value={regPw} onChange={(v) => { setRegPw(v); setRegErrors(e=>({...e,pw:""})); }} placeholder={t.field_password} type={showRegPw?"text":"password"} error={regErrors.pw}
-          right={<button onClick={() => setShowRegPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showRegPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
+          right={<button type="button" onClick={() => setShowRegPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showRegPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
         <FormInput value={regConfirm} onChange={(v) => { setRegConfirm(v); setRegErrors(e=>({...e,confirm:""})); }} placeholder={t.field_confirm} type={showConfirmPw?"text":"password"} error={regErrors.confirm}
-          right={<button onClick={() => setShowConfirmPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showConfirmPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
+          right={<button type="button" onClick={() => setShowConfirmPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showConfirmPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
         <button onClick={handleRegister} disabled={busy} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mt-2 mb-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signup}</button>
         <div className="mt-4 text-center">
-          <button onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.have_account} <span className="text-primary font-semibold">{t.btn_signin}</span></button>
+          <button type="button" onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.have_account} <span className="text-primary font-semibold">{t.btn_signin}</span></button>
         </div>
       </div>
     </div>
@@ -124,7 +124,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     <div className="h-full flex flex-col bg-background">
       <div className="px-5 pt-3 pb-6 bg-background">
         <div className="flex items-center justify-between mb-5">
-          <button onClick={() => setView("login")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
+          <button type="button" onClick={() => setView("login")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
           <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
         </div>
         <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{t.forgot_title}</h2>
@@ -147,7 +147,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
           )}
         </div>
         <div className="px-5 pb-6 text-center">
-          <button onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.back_signin}</button>
+          <button type="button" onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.back_signin}</button>
         </div>
       </div>
   );

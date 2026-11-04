@@ -1,12 +1,14 @@
 import { T } from "../../lib/translations";
-import { Home, Search, Plus, MessageCircle, User } from "lucide-react";
+import { Home, Search, Plus, User, Gamepad2 } from "lucide-react";
 import type { ActiveView, Lang } from "../../types";
 
-export function BottomNav({ active, onChange, lang, onCompose }: {
+// Five slots: Home, Explore, compose, Play, Profile. The assistant opens from a floating button instead.
+export function BottomNav({ active, onChange, lang, onCompose, dailyDot = false }: {
   active: ActiveView;
   onChange: (v: ActiveView) => void;
   lang: Lang;
   onCompose: () => void;
+  dailyDot?: boolean;
 }) {
   const t = T[lang];
 
@@ -30,8 +32,12 @@ export function BottomNav({ active, onChange, lang, onCompose }: {
         <Plus size={26} strokeWidth={2.5} />
       </button>
 
-      <button onClick={() => onChange("assistant")} className={`flex flex-col items-center gap-0.5 flex-1 min-h-14 px-1 py-1.5 rounded-xl ${active === "assistant" ? "text-primary" : "text-muted-foreground"}`}>
-        <MessageCircle size={24}/><span className="text-xs font-medium">{lang === "lo" ? "ຜູ້ຊ່ວຍ" : "Assistant"}</span>
+      <button onClick={() => onChange("daily")} className={`flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-14 px-1 py-1.5 rounded-xl transition-colors ${active === "daily" ? "text-primary" : "text-muted-foreground"}`}>
+        <div className="relative">
+          <Gamepad2 size={24} />
+          {dailyDot && <span aria-label={lang === "lo" ? "ເກມມື້ນີ້ຍັງບໍ່ໄດ້ຫຼິ້ນ" : "Today's game not played yet"} className="badge-pop absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full bg-red-500 ring-2 ring-background" />}
+        </div>
+        <span className="text-xs font-medium">{lang === "lo" ? "ເກມ" : "Play"}</span>
       </button>
 
       <button onClick={() => onChange("profile")} className={`flex flex-col items-center gap-0.5 min-w-0 flex-1 min-h-14 px-1 py-1.5 rounded-xl transition-colors ${active === "profile" ? "text-primary" : "text-muted-foreground"}`}>

@@ -13,9 +13,8 @@ try{
   for(let i=0;i<45;i++){await wait(1000);try{run(['info'],{stdio:'pipe'});ready=true;break;}catch{}}
   if(!ready)throw new Error('Docker Desktop did not start. Open Docker Desktop, finish its setup, then retry.');
  }
- if(!process.env.ADMIN_EMAILS?.trim())throw new Error('Set your existing admin account in ADMIN_EMAILS before deployment.');
  const envPath='deployment/local.env';
- writeFileSync(envPath,`ADMIN_EMAILS=${process.env.ADMIN_EMAILS.replace(/[\r\n]/g,'')}\nALLOWED_ORIGINS=http://127.0.0.1:8080,http://127.0.0.1:8081,http://localhost:8080,http://localhost:8081\n`,{mode:0o600});
+ writeFileSync(envPath,`ALLOWED_ORIGINS=http://127.0.0.1:8080,http://127.0.0.1:8081,http://localhost:8080,http://localhost:8081\n`,{mode:0o600});
  const compose=['compose','--project-name','sati-local','--env-file',envPath,'-f','deployment/compose.yaml'];
  run([...compose,'build','frontend','admin','backend']);
  const path=process.env.DATABASE_PATH||'backend/data/sati.sqlite';
@@ -28,6 +27,7 @@ try{
   }finally{try{db.close();}catch{}rmSync(directory,{recursive:true,force:true});}
  }
  run([...compose,'up','-d','frontend','admin','backend']);
+ console.log('To grant the first administrator, register in the app, then run: docker compose --project-name sati-local -f deployment/compose.yaml exec backend node scripts/promote-admin.mjs <email>');
  console.log('Frontend and admin are running. Preparing the optional AI service…');
  try{
   run([...compose,'build','translation']);

@@ -1,7 +1,7 @@
 
 
 export function SatiLogo({ size = 28, className = "" }: { size?: number; className?: string }) {
-  return <img src="/images/Satisampasanya_Logo_app.png" alt="Satisampasanya" width={size} height={size} className={className} style={{objectFit:'contain'}} />;
+  return <img src="/brand-mark.svg" alt="Satisampasanya" width={size} height={size} className={className} style={{objectFit:'contain'}} />;
 }
 
 export function SatiIllustration() {

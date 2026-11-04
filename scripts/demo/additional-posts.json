@@ -1,8 +1,8 @@
 [
   {
     "id": 14,
-    "name": "ສົມໃຈ",
-    "handle": "@sati_f6",
+    "name": "ບຸນມີ",
+    "handle": "@sati_a1",
     "lang": "lo",
     "tags": [
       "OTP",
@@ -13,8 +13,8 @@
   },
   {
     "id": 15,
-    "name": "ສົມໃຈ",
-    "handle": "@sati_f6",
+    "name": "ວິໄລ",
+    "handle": "@sati_b2",
     "lang": "lo",
     "tags": [
       "ການຄ້າມະນຸດ"
@@ -24,8 +24,8 @@
   },
   {
     "id": 16,
-    "name": "Daniel Kim",
-    "handle": "@sati_h8",
+    "name": "Mina Park",
+    "handle": "@sati_e5",
     "lang": "en",
     "tags": [
       "OnlineScam"
@@ -35,8 +35,8 @@
   },
   {
     "id": 17,
-    "name": "ສົມໃຈ",
-    "handle": "@sati_f6",
+    "name": "ດາວ",
+    "handle": "@sati_c3",
     "lang": "lo",
     "tags": [
       "ຄວາມປອດໄພ"
@@ -57,8 +57,8 @@
   },
   {
     "id": 19,
-    "name": "Daniel Kim",
-    "handle": "@sati_h8",
+    "name": "Alex R.",
+    "handle": "@sati_i9",
     "lang": "en",
     "tags": [
       "Politics"
@@ -68,8 +68,8 @@
   },
   {
     "id": 20,
-    "name": "Daniel Kim",
-    "handle": "@sati_h8",
+    "name": "Sam T.",
+    "handle": "@sati_k11",
     "lang": "en",
     "tags": [
       "Fashion"
@@ -79,8 +79,8 @@
   },
   {
     "id": 21,
-    "name": "ສົມໃຈ",
-    "handle": "@sati_f6",
+    "name": "ນິດາ",
+    "handle": "@sati_d4",
     "lang": "lo",
     "tags": [
       "ກວດຂ່າວ"
@@ -90,8 +90,8 @@
   },
   {
     "id": 22,
-    "name": "Daniel Kim",
-    "handle": "@sati_h8",
+    "name": "Mina Park",
+    "handle": "@sati_e5",
     "lang": "en",
     "tags": [
       "Politics"
@@ -123,8 +123,8 @@
   },
   {
     "id": 25,
-    "name": "Daniel Kim",
-    "handle": "@sati_h8",
+    "name": "Alex R.",
+    "handle": "@sati_i9",
     "lang": "en",
     "tags": [
       "OnlineScam"
@@ -135,13 +135,36 @@
   },
   {
     "id": 26,
-    "name": "ສົມໃຈ",
-    "handle": "@sati_f6",
+    "name": "ຄຳ ວົງສະຫວັນ",
+    "handle": "@sati_g7",
     "lang": "lo",
     "tags": [
       "DigitalSafety"
     ],
     "image": "830518834_122184610658637760_2920226695429862328_n.jpg",
     "text": "ເຫັນໂຄສະນາຮຽນຕໍ່ນີ້ ແລ້ວຢາກຮູ້ວ່າຄວນກວດສອບຫຍັງກ່ອນສະໝັກ. ຂ້ອຍຍັງບໍ່ໄດ້ໂອນເງິນ ຫຼືສົ່ງເອກະສານ. ຄວນຖາມຊື່ຫຼັກສູດ, ຄ່າຮຽນ ແລະຊ່ອງທາງຕິດຕໍ່ຂອງມະຫາວິທະຍາໄລໂດຍກົງບໍ?"
+  },
+  {
+    "id": 27,
+    "name": "ແສງ",
+    "handle": "@sati_j10",
+    "lang": "lo",
+    "tags": [
+      "JobScam"
+    ],
+    "image": "Gemini_Generated_Image_p48z1fp48z1fp48z.jpeg",
+    "text": "ທຶນຮຽນຟຣີ 100% ພ້ອມເງິນເດືອນທຸກເດືອນ! ບໍ່ຕ້ອງມີພາສາ ຫຼືປະສົບການ. ຈອງບ່ອນດ່ວນໂດຍໂອນຄ່າສະໝັກກ່ອນ ແລະສົ່ງຮູບບັດປະຈຳຕົວມາທາງ WhatsApp: +856 20 0000 0000. https://study.invalid/apply",
+    "link": "https://study.invalid/apply"
+  },
+  {
+    "id": 28,
+    "name": "Sam T.",
+    "handle": "@sati_k11",
+    "lang": "en",
+    "tags": [
+      "DigitalSafety"
+    ],
+    "image": "Gemini_Generated_Image_eyljnueyljnueylj.jpeg",
+    "text": "A video call is not proof of identity. Someone can use AI to impersonate an official or someone you know. If a caller demands money to resolve a case, end the call, save the messages and verify through an official channel you found independently. Never send your OTP, ID photo or money because a caller threatens you."
   }
 ]

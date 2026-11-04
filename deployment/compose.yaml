@@ -5,7 +5,6 @@ services:
       dockerfile: deployment/Dockerfile
       target: backend
     environment:
-      ADMIN_EMAILS: ${ADMIN_EMAILS:?Set the existing administrator email}
       ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:?Set both HTTPS website origins}
       SEED_DEMO: "false"
       AI_PROVIDER: ${AI_PROVIDER:-openrouter}

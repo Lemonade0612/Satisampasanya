@@ -4,5 +4,12 @@
   "webDir": "dist",
   "ios": {
     "contentInset": "automatic"
+  },
+  "plugins": {
+    "PushNotifications": {
+      "presentationOptions": [
+        "badge"
+      ]
+    }
   }
 }

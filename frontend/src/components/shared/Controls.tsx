@@ -9,7 +9,7 @@ export function FormInput({ value, onChange, placeholder, type = "text", error, 
   return (
     <div className="mb-3">
       <div className={`flex items-center rounded-xl px-4 py-3.5 border transition-all ${error ? "border-red-400 bg-red-50/30" : "border-border bg-muted/50 focus-within:border-primary/60 focus-within:bg-white dark:focus-within:bg-background"}`}>
-        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} type={type}
+        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} aria-label={placeholder} autoComplete={type === "email" ? "username" : type === "password" ? "current-password" : undefined} type={type}
           className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 text-foreground" />
         {right}
       </div>

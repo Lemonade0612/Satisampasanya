@@ -1,8 +1,13 @@
-import {needsReview,type AdminData} from '../api';
-import {Clock3,ShieldCheck,Users,FileText} from 'lucide-react';
+import {needsReview,ageHours,formatCount,type AdminData} from '../api';
+import {useT} from '../i18n';
 export function AdminStats({data}:{data:AdminData}){
- const pending=data.posts.filter(needsReview);const urgent=pending.filter(p=>Date.now()-(p.createdAt||Date.now())>36*3600000).length;
- const reviewed=data.posts.filter(p=>p.review);const timely=reviewed.filter(p=>p.review!.reviewedAt-(p.createdAt||0)<=48*3600000).length;
- const values=[{label:'Waiting for review',value:pending.length,detail:`${urgent} urgent · 48h review target`,icon:Clock3,color:'purple'},{label:'Reviewed within 48h',value:reviewed.length?`${Math.round(timely/reviewed.length*100)}%`:'—',detail:reviewed.length?`${timely} of ${reviewed.length} saved reviews`:'No saved reviews yet',icon:ShieldCheck,color:'blue'},{label:'Scams confirmed',value:data.posts.filter(p=>p.state==='confirmed').length,detail:'Confirmed posts in the database',icon:FileText,color:'amber'},{label:'Community members',value:data.totals.users,detail:`${data.totals.posts} posts · ${data.totals.comments} comments`,icon:Users,color:'green'}];
- return <div className="admin-stats">{values.map(item=><section key={item.label}><div><span>{item.label}</span><span className={`stat-icon ${item.color}`}><item.icon size={18}/></span></div><strong>{item.value}</strong><small>{item.detail}</small></section>)}</div>;
+ const t=useT();
+ const day=Date.now()-24*3600000;const recent=data.posts.filter(p=>(p.createdAt||0)>=day);
+ const pending=data.posts.filter(needsReview);const breaching=pending.filter(p=>ageHours(p)>=36).length;
+ const reviewed=data.posts.filter(p=>p.review);const hours=reviewed.map(p=>(p.review!.reviewedAt-(p.createdAt||p.review!.reviewedAt))/3600000);
+ const median=hours.length?hours.sort((a,b)=>a-b)[Math.floor(hours.length/2)]:null;
+ const flagged=recent.filter(needsReview).length;
+ // A null value renders its fallback words instead of a placeholder dash.
+ const values=[{label:t.backlog,value:pending.length?formatCount(pending.length):null,words:t.clear,detail:breaching?t.nearTarget(breaching):t.notNear,danger:breaching>0},{label:t.posts24,value:recent.length?formatCount(recent.length):null,words:t.noNew,detail:t.totals(data.totals.posts,data.totals.users)},{label:t.flagRate,value:recent.length?`${(flagged/recent.length*100).toFixed(1)}%`:null,words:t.noNew,detail:t.sentReview(flagged)},{label:t.median,value:median===null?null:median<1?`${Math.round(median*60)}m`:`${median.toFixed(1)}h`,words:t.noDecisions,detail:t.decisions(reviewed.length)}];
+ return <section className="sd-kpis" aria-label={t.kpis}>{values.map(item=><div key={item.label}><span>{item.label}</span>{item.value===null?<strong className="words">{item.words}</strong>:<strong className={item.danger?'danger':''}>{item.value}</strong>}<small>{item.detail}</small></div>)}</section>;
 }

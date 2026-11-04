@@ -1,6 +1,5 @@
 import logoImage from "/images/Satisampasanya_Logo_app.png";
 import { T } from "../lib/translations";
-import {RiskLegend} from "../components/safety/RiskLegend";
 import { DailySafetyTip } from "../components/feed/DailySafetyTip";
 import { Bell } from "lucide-react";
 import { ThemeToggle, LangToggle } from "../components/shared/Controls";
@@ -32,7 +31,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
             <button aria-label={lang === "lo" ? "ແຈ້ງເຕືອນ" : "Notifications"} onClick={onOpenAlerts} className="relative min-h-11 min-w-11 p-2 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors">
               <Bell size={18} />
               {alertCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">{alertCount}</span>
+                <span key={alertCount} aria-label={`${alertCount} unread`} className="badge-pop absolute top-0.5 right-0.5 min-w-4 h-4 px-1 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-background">{alertCount > 9 ? "9+" : alertCount}</span>
               )}
             </button>
             <ThemeToggle mode={themeMode} onChange={onThemeChange} />
@@ -51,7 +50,6 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
       {customTopic && <button className="touch-target text-primary text-sm border-b border-border" onClick={()=>onTabChange(0)}>#{customTopic} · {lang==='lo'?'ສະແດງທັງໝົດ':'Show all posts'}</button>}
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide">
         <DailySafetyTip lang={lang} />
-        <RiskLegend lang={lang}/>
         {activeTab===1 && !filteredPosts.length && <p className="p-6 text-center text-sm text-muted-foreground font-lao">{lang==="lo"?"ຕິດຕາມຜູ້ໃຊ້ຈາກໜ້າສຳລັບທ່ານ ເພື່ອເບິ່ງໂພສຢູ່ນີ້.":"Follow people from For you to see their posts here."}</p>}
         {filteredPosts.map(post => (
           <PostCard

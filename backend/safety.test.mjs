@@ -6,6 +6,7 @@ import {checkContent,guardVerdict,askSafety,classifyIntent} from './safety/check
 import {inputLanguage,modelReply} from './safety/model.mjs';
 import {assistantReply,assistantUsage} from './assistant.mjs';
 import {openStore} from './store.mjs';
+import {promoteAdmin} from './access.mjs';
 const approved={verdict:'approved',risk:'low',labels:['safe_tip'],on_topic:true,reasons:[],suggested_edit:'',summary:'Keep your passwords private.'};
 const caution={verdict:'caution',risk:'medium',labels:['off_topic'],on_topic:false,reasons:[{text:'This is about food rather than safety.',evidence:'coffee shop'}],suggested_edit:'Explain the safety connection.',summary:'Please add a safety connection.'};
 
@@ -59,9 +60,9 @@ test('checking progress follows actual provider completion and applies evidence 
  assert.equal((await task).verdict,'approved');assert.deepEqual(stages,['read','links','patterns','verdict']);
 });
 
-test('caution stays visible; needs_expert freezes rather than inventing approvals',async()=>{
+test('caution and needs_expert stay visible with interactions locked',async()=>{
  const one=await checkPost({content:'I like this coffee shop.',contentLanguage:'en'},{check:async()=>guardVerdict(caution,'I like this coffee shop.')});
- assert.equal(one.state,'clean');assert.equal(one.frozen,false);assert.equal(one.check.verdict,'caution');
+ assert.equal(one.state,'flagged');assert.equal(one.frozen,true);assert.equal(one.check.verdict,'caution');
  const text='Send your passport.';
  const two=await checkPost({content:text,contentLanguage:'en'},{check:async()=>guardVerdict({...caution,verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:''},text)});
  assert.equal(two.state,'flagged');assert.equal(two.frozen,true);
@@ -89,15 +90,15 @@ test('post stream sends real stages then result; model failure sends no success'
  }finally{await app.close();}
 });
 
-test('expert-review posts block actions until an authorised review clears the freeze',async()=>{
+for(const level of ['caution','needs_expert']) test(`${level} posts block actions until an authorised review clears the freeze`,async()=>{
  const text='Send your passport.';
- const verdict=guardVerdict({...caution,verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:''},text);
- const app=createApp({database:':memory:',seed:false,adminEmails:['reviewer@invalid.example'],check:post=>checkPost(post,{check:async()=>verdict})});
+ const verdict=guardVerdict({...caution,verdict:level,risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'A recruiter requests your passport.',evidence:'Send your passport'}],summary:'Do not send your passport.',suggested_edit:level==='caution'?'Remove the request for a passport.':''},text);
+ const app=createApp({database:':memory:',seed:false,check:post=>checkPost(post,{check:async()=>verdict})});
  await new Promise(resolve=>app.server.listen(0,'127.0.0.1',resolve));const base=`http://127.0.0.1:${app.server.address().port}/api`;
  const call=async(path,data,token,method='POST')=>{const response=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},body:JSON.stringify(data)});return {status:response.status,value:await response.json()};};
  try{
   const user=(await call('/auth/register',{name:'Mina',email:'mina@invalid.example',password:'correct-password'})).value;
-  const admin=(await call('/auth/register',{name:'Reviewer',email:'reviewer@invalid.example',password:'correct-password'})).value;
+  const admin=(await call('/auth/register',{name:'Reviewer',email:'reviewer@invalid.example',password:'correct-password'})).value;promoteAdmin(app.db,'reviewer@invalid.example');
   const post=(await call('/posts',{content:text,tags:['JobScam']},user.token)).value;
   for(const [action,data] of [['comments',{text:'Reply'}],['reactions',{kind:'like',active:true}],['reposts',{text:'Share',lang:'en'}],['share',{}]])assert.equal((await call(`/posts/${post.id}/${action}`,data,user.token)).status,409);
   assert.equal((await call(`/admin/posts/${post.id}/review`,{state:'clean',note:'Reviewed source and cleared for publication.'},admin.token,'PATCH')).status,200);
@@ -145,4 +146,35 @@ test('post checking includes source links outside the body',async()=>{
  let input;
  await checkPost({content:'Read the safety bulletin.',link:'https://news.invalid/bulletin'},{check:async text=>{input=text;return approved;}});
  assert.equal(input,'Read the safety bulletin.\nhttps://news.invalid/bulletin');
+});
+
+test('both language versions are screened: hidden Lao text cannot ride on approved English',async()=>{
+ // Regression: checkPost screened only the contentLanguage version, so benign English in `content`
+ // with a recruitment offer in `contentLo` went live as clean for Lao readers.
+ const english='Stay safe online, never share your OTP.';
+ const lao='ວຽກໄທ 15,000 ບາດ ບໍ່ຕ້ອງມີປະສົບການ ຕິດຕໍ່ WhatsApp';
+ const seen=[];
+ const flagLao=async text=>{seen.push(text);return text.includes('ວຽກໄທ')
+  ?guardVerdict({verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'ການສະເໜີວຽກທີ່ບໍ່ຕ້ອງມີປະສົບການ ເປັນສັນຍານອັນຕະລາຍ.',evidence:'ບໍ່ຕ້ອງມີປະສົບການ'}],suggested_edit:'',summary:'ລະວັງການສະເໜີວຽກນີ້.'},text)
+  :guardVerdict(approved,text);};
+ const app=createApp({database:':memory:',seed:false,check:(post,options)=>checkPost(post,{...options,check:flagLao})});
+ await new Promise(r=>app.server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${app.server.address().port}/api`;
+ try{
+  const auth=await fetch(base+'/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Mina',email:'mina@invalid.example',password:'correct-password'})}).then(r=>r.json());
+  const post=await fetch(base+'/posts',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${auth.token}`},body:JSON.stringify({content:english,contentLo:lao,contentLanguage:'en',tags:[],link:'https://jobs.invalid/apply'})}).then(r=>r.json());
+  assert.ok(seen.includes(english+'\nhttps://jobs.invalid/apply'));
+  assert.ok(seen.includes(lao+'\nhttps://jobs.invalid/apply'));
+  assert.equal(post.check.verdict,'needs_expert');assert.equal(post.state,'flagged');assert.equal(post.frozen,true);
+  assert.equal(post.check.reasons[0].evidence,'ບໍ່ຕ້ອງມີປະສົບການ');
+ }finally{await app.close();}
+});
+
+test('strictest verdict wins across versions; a single-language post is checked once',async()=>{
+ const calls=[];
+ const by={a:approved,c:{...caution,reasons:[{text:'This is about food rather than safety.',evidence:'coffee'}]}};
+ const post=await checkPost({content:'coffee',contentLo:'ກາເຟ',contentLanguage:'lo'},{check:async text=>{calls.push(text);return guardVerdict(text==='coffee'?by.c:{...by.a,summary:'ກວດແລ້ວ.'},text);}});
+ assert.equal(post.check.verdict,'caution');assert.equal(post.frozen,true);assert.equal(calls.length,2);
+ calls.length=0;
+ await checkPost({content:'ກາເຟ',contentLo:'ກາເຟ',contentLanguage:'lo'},{check:async text=>{calls.push(text);return guardVerdict({...approved,summary:'ກວດແລ້ວ.'},text);}});
+ assert.equal(calls.length,1);
 });

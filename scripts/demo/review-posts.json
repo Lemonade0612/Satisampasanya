@@ -1,0 +1,213 @@
+[
+  {
+    "id": "job-passport",
+    "text": "Urgent border casino jobs! $4,000 monthly, no experience or language skills needed. Send your passport photo now. We arrange travel tonight; do not tell your family. Contact our recruiter only on Telegram.",
+    "tags": [
+      "JobScam",
+      "BorderSafety"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "trafficking_recruitment"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "A recruiter requests identity documents and secret cross-border travel.",
+          "evidence": "Send your passport photo now."
+        }
+      ],
+      "summary": "A recruiter requests identity documents and secret cross-border travel.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "bank-otp",
+    "text": "Your bank account will close in 10 minutes. Send your OTP and banking PIN to our support chat immediately so we can verify your identity. Do not call the bank or your account will be frozen.",
+    "tags": [
+      "PhishingAlert",
+      "DigitalSafety"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "phishing"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "The message requests secret banking credentials under time pressure.",
+          "evidence": "Send your OTP and banking PIN"
+        }
+      ],
+      "summary": "The message requests secret banking credentials under time pressure.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "crypto-deposit",
+    "text": "Guaranteed 30% profit every day with zero risk! Deposit $200 in crypto today and receive $6,000 next week. Pay the activation fee first. Only 3 places left; message our private Telegram now.",
+    "tags": [
+      "CryptoScam",
+      "OnlineScam"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "scam_risk"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "Guaranteed extreme returns and upfront fees are warning signs.",
+          "evidence": "Guaranteed 30% profit every day"
+        }
+      ],
+      "summary": "Guaranteed extreme returns and upfront fees are warning signs.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "scholarship-fee",
+    "text": "Guaranteed overseas scholarships with no exam and no documents checked. Send your ID card and pay our $150 reservation fee today to secure your place. No refunds. Do not contact the university; all communication must go through our WhatsApp agent.",
+    "tags": [
+      "JobScam",
+      "DataPrivacy"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "scam_risk"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "An upfront payment and blocked independent verification require review.",
+          "evidence": "pay our $150 reservation fee today"
+        }
+      ],
+      "summary": "An upfront payment and blocked independent verification require review.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "wallet-recovery",
+    "text": "Lost crypto? Our recovery team guarantees to return all your funds. Send your wallet seed phrase and private key to us in a direct message, then pay the recovery tax first. Act within one hour or your coins will be destroyed.",
+    "tags": [
+      "CryptoScam",
+      "PhishingAlert"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "phishing"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "A wallet recovery message requests credentials that control the funds.",
+          "evidence": "wallet seed phrase and private key"
+        }
+      ],
+      "summary": "A wallet recovery message requests credentials that control the funds.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "border-travel",
+    "text": "Hiring online chat staff across the border, $5,000 monthly with free travel. No interview needed. Our driver collects you tonight. Give the manager your original passport on arrival and keep this opportunity secret from your family.",
+    "tags": [
+      "Trafficking",
+      "BorderSafety"
+    ],
+    "assessment": {
+      "verdict": "needs_expert",
+      "risk": "high",
+      "labels": [
+        "trafficking_recruitment"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "Passport surrender and secret cross-border recruitment require review.",
+          "evidence": "Give the manager your original passport"
+        }
+      ],
+      "summary": "Passport surrender and secret cross-border recruitment require review.",
+      "suggested_edit": ""
+    }
+  },
+  {
+    "id": "abusive-reply",
+    "text": "You are a damn idiot for losing money to that scam. Shut up and stop asking this group for help. Everyone should mock you until you leave.",
+    "tags": [
+      "OnlineScam"
+    ],
+    "assessment": {
+      "verdict": "caution",
+      "risk": "medium",
+      "labels": [
+        "harassment",
+        "victim_blaming",
+        "profanity_only"
+      ],
+      "on_topic": true,
+      "reasons": [
+        {
+          "text": "The post targets a scam victim with insults and exclusion.",
+          "evidence": "Everyone should mock you until you leave."
+        }
+      ],
+      "summary": "The post targets a scam victim with insults and exclusion.",
+      "suggested_edit": "Describe the issue respectfully and explain its connection to community safety."
+    }
+  },
+  {
+    "id": "political-sarcasm",
+    "text": "Our politicians deserve a medal for doing absolutely nothing. Another speech, another parade, still no answers. What a glorious performance.",
+    "tags": [],
+    "assessment": {
+      "verdict": "caution",
+      "risk": "medium",
+      "labels": [
+        "political_sarcasm"
+      ],
+      "on_topic": false,
+      "reasons": [
+        {
+          "text": "Political sarcasm is unrelated to the community safety topic.",
+          "evidence": "Our politicians deserve a medal"
+        }
+      ],
+      "summary": "Political sarcasm is unrelated to the community safety topic.",
+      "suggested_edit": "Describe the issue respectfully and explain its connection to community safety."
+    }
+  },
+  {
+    "id": "profanity-rant",
+    "text": "This is bullshit. Fuck this stupid page and everyone posting here.",
+    "tags": [],
+    "assessment": {
+      "verdict": "caution",
+      "risk": "medium",
+      "labels": [
+        "profanity_only"
+      ],
+      "on_topic": false,
+      "reasons": [
+        {
+          "text": "The post contains profanity directed at the community.",
+          "evidence": "Fuck this stupid page"
+        }
+      ],
+      "summary": "The post contains profanity directed at the community.",
+      "suggested_edit": "Describe the issue respectfully and explain its connection to community safety."
+    }
+  }
+]

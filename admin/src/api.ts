@@ -1,17 +1,17 @@
 const TOKEN_KEY='sati-admin-session';
-export const hasSession=()=>!!localStorage.getItem(TOKEN_KEY);
-export const clearSession=()=>localStorage.removeItem(TOKEN_KEY);
+export const hasSession=()=>!!sessionStorage.getItem(TOKEN_KEY);
+export const clearSession=()=>sessionStorage.removeItem(TOKEN_KEY);
 export class ApiError extends Error {constructor(message:string,public status:number){super(message);}}
 async function request<T>(path:string,method='GET',data?:unknown):Promise<T>{
  let response:Response;
- try{response=await fetch('/api'+path,{method,headers:{...(data===undefined?{}:{'Content-Type':'application/json'}),...(hasSession()?{Authorization:`Bearer ${localStorage.getItem(TOKEN_KEY)}`}:{})},body:data===undefined?undefined:JSON.stringify(data)});}
+ try{response=await fetch((import.meta.env.VITE_API_URL || '/api')+path,{method,headers:{...(data===undefined?{}:{'Content-Type':'application/json'}),...(hasSession()?{Authorization:`Bearer ${sessionStorage.getItem(TOKEN_KEY)}`}:{})},body:data===undefined?undefined:JSON.stringify(data)});}
  catch{throw new ApiError('Cannot reach the backend. Start the Backend F5 configuration and retry.',0);}
- const value=await response.json();
+ const value=await response.json().catch(()=>{throw new ApiError('The service returned an invalid response. Please retry.',response.status||502);});
  if(!response.ok)throw new ApiError(value.error||'Request failed.',response.status);
  return value;
 }
 export const api={
- async authenticate(_mode:'login',data:{email:string;password:string}){const result=await request<{token:string;user:{name:string}}>('/auth/login','POST',data);localStorage.setItem(TOKEN_KEY,result.token);return result.user;},
+ async authenticate(_mode:'login',data:{email:string;password:string}){const result=await request<{token:string;user:{name:string}}>('/admin/auth/login','POST',data);sessionStorage.setItem(TOKEN_KEY,result.token);return result.user;},
  async logout(){try{await request('/auth/logout','POST');}finally{clearSession();}}
 };
 
@@ -31,4 +31,11 @@ export const adminApi = {
   dashboard: () => request<AdminData>('/admin/dashboard'),
   review: (id:string,state:'clean'|'confirmed'|'false'|'rejected',note:string) => request(`/admin/posts/${id}/review`,'PATCH',{state,note}),
 };
-export const needsReview = (post:AdminPost) => !post.review && ['flagged','sla'].includes(post.state);
+export const needsReview = (post:AdminPost) => !post.review && (post.frozen || ['flagged','sla'].includes(post.state) || ['caution','needs_expert'].includes(post.check?.verdict || ''));
+export const formatCount = (value:number) => new Intl.NumberFormat('en-US',{notation:value>=10000?'compact':'standard',maximumFractionDigits:1}).format(value);
+export const ageHours = (post:AdminPost) => (Date.now()-(post.createdAt||Date.now()))/3600000;
+export const severity = (post:AdminPost) => post.check?.verdict==='caution'?'yellow':'red';
+// Red before yellow, then oldest first, so the riskiest SLA breaches surface at the top.
+export const byPriority = (a:AdminPost,b:AdminPost) => (severity(a)===severity(b)?0:severity(a)==='red'?-1:1) || (a.createdAt||0)-(b.createdAt||0);
+export const TOPIC_COLORS=['var(--topic-job)','var(--topic-invest)','var(--topic-traffic)','var(--topic-romance)','var(--topic-other)'];
+export const topicIndex = (post:AdminPost) => {const tags=post.tags.join(' ').toLowerCase();return tags.includes('job')?0:tags.includes('crypto')||tags.includes('invest')?1:tags.includes('trafficking')||tags.includes('border')?2:tags.includes('romance')?3:4;};
