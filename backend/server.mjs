@@ -271,6 +271,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,adminEmails:(process.env.ADMIN_EMAILS||'').split(',').filter(Boolean),origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;const port=process.env.API_PORT||3001;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
   app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log(`Sati backend: http://${process.env.API_HOST||'127.0.0.1'}:${process.env.API_PORT||3001}`));
   for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));
 }
