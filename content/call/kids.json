@@ -1,0 +1,507 @@
+{
+ "//": "REVIEW-LO: every Lao string here is a draft until a native speaker checks it. Format: content/README.md",
+ "days": [
+  {
+   "id": "saeng",
+   "bands": [
+    "kids"
+   ],
+   "room": "kid",
+   "balance": 2000000,
+   "hero": {
+    "name": {
+     "en": "Saeng",
+     "lo": "ແສງ"
+    },
+    "age": 11,
+    "avatar": {
+     "skin": 0,
+     "hair": 1,
+     "outfit": 0,
+     "extra": 0
+    }
+   },
+   "who": {
+    "en": "Saturday at home",
+    "lo": "ວັນເສົາຢູ່ເຮືອນ"
+   },
+   "intro": {
+    "en": "Saeng is home on Saturday with Dad's phone. It will ring {n} times.",
+    "lo": "ແສງຢູ່ເຮືອນວັນເສົາ ກັບໂທລະສັບຂອງພໍ່. ມື້ນີ້ມັນຈະດັງ {n} ເທື່ອ."
+   },
+   "calls": [
+    {
+     "id": "sa-aunt",
+     "real": true,
+     "voice": {
+      "who": "woman",
+      "rate": -6,
+      "pitch": 0
+     },
+     "time": "09:00",
+     "place": {
+      "en": "Eating breakfast",
+      "lo": "ກິນເຂົ້າເຊົ້າ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Aunt Vanh said she would call about going to the market.",
+      "lo": "ປ້າວັນບອກວ່າຈະໂທມາ ເລື່ອງໄປຕະຫຼາດ."
+     },
+     "caller": {
+      "en": "Aunt Vanh",
+      "lo": "ປ້າວັນ"
+     },
+     "number": "+856 20 58•• 4417",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Morning Saeng, it's Aunt Vanh!",
+       "lo": "ສະບາຍດີແສງ, ປ້າວັນເອງເດີ້!"
+      },
+      {
+       "en": "I am going to the morning market at ten. Do you want to come?",
+       "lo": "ປ້າຈະໄປຕະຫຼາດເຊົ້າ ຕອນສິບໂມງ. ແສງຢາກໄປນຳບໍ່?"
+      },
+      {
+       "en": "Ask your dad first, then call me back.",
+       "lo": "ຖາມພໍ່ກ່ອນເດີ້ ແລ້ວໂທກັບຫາປ້າ."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Say yes, after asking Dad",
+       "lo": "ຕອບວ່າໄປ ຫຼັງຖາມພໍ່"
+      },
+      "check": {
+       "en": "Call Aunt Vanh back on her saved number",
+       "lo": "ໂທກັບຫາປ້າວັນ ເບີທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up without answering",
+       "lo": "ວາງສາຍ ບໍ່ຕອບ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Dad says yes. Saeng buys sticky rice with Aunt Vanh.",
+       "lo": "ພໍ່ອະນຸຍາດ. ແສງໄປຊື້ເຂົ້າໜຽວກັບປ້າວັນ."
+      },
+      "check": {
+       "en": "Aunt Vanh answers right away: \"Smart girl!\"",
+       "lo": "ປ້າວັນຮັບທັນທີ: \"ຫຼານສະຫຼາດຫຼາຍ!\""
+      },
+      "hangup": {
+       "en": "Aunt Vanh goes to the market alone and wonders what happened.",
+       "lo": "ປ້າວັນໄປຕະຫຼາດຄົນດຽວ ແລະ ສົງໄສວ່າເກີດຫຍັງຂຶ້ນ."
+      }
+     },
+     "signs": [
+      "known",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "A family number you saved, asking nothing secret, is fine to talk to.",
+      "lo": "ເບີຄອບຄົວທີ່ບັນທຶກໄວ້ ແລະ ບໍ່ຂໍຫຍັງລັບ ລົມໄດ້ເລີຍ."
+     }
+    },
+    {
+     "id": "sa-account",
+     "real": false,
+     "voice": {
+      "who": "man",
+      "rate": 14,
+      "pitch": 4
+     },
+     "time": "10:00",
+     "place": {
+      "en": "Playing a game",
+      "lo": "ຫຼິ້ນເກມ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Saeng plays a farming game. She has never given the game her phone number.",
+      "lo": "ແສງຫຼິ້ນເກມປູກຜັກ. ບໍ່ເຄີຍໃຫ້ເບີໂທກັບເກມ."
+     },
+     "caller": {
+      "en": "Game Support",
+      "lo": "ຝ່າຍຊ່ວຍເຫຼືອເກມ"
+     },
+     "number": "+856 30 52•• 7781",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Hello! This is game support. Your account will be deleted today.",
+       "lo": "ສະບາຍດີ! ນີ້ແມ່ນຝ່າຍຊ່ວຍເຫຼືອເກມ. ບັນຊີເກມຂອງນ້ອງຈະຖືກລຶບມື້ນີ້."
+      },
+      {
+       "en": "To keep it, tell me your password now.",
+       "lo": "ຖ້າຢາກເກັບໄວ້ ບອກລະຫັດຜ່ານມາດຽວນີ້ເລີຍ."
+      },
+      {
+       "en": "Be quick, only five minutes left. No need to ask an adult.",
+       "lo": "ໄວໆເດີ້ ເຫຼືອແຕ່ຫ້ານາທີ. ບໍ່ຕ້ອງຖາມຜູ້ໃຫຍ່ດອກ."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Tell them the password",
+       "lo": "ບອກລະຫັດຜ່ານ"
+      },
+      "check": {
+       "en": "Say \"I will ask Dad first\"",
+       "lo": "ບອກວ່າ \"ຂໍຖາມພໍ່ກ່ອນ\""
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "They log in and take the farm. Saeng loses two years of play.",
+       "lo": "ເຂົາເຂົ້າບັນຊີ ແລ້ວເອົາຟາມໄປ. ແສງເສຍເກມທີ່ຫຼິ້ນມາສອງປີ."
+      },
+      "check": {
+       "en": "Dad says games never phone you. The caller has already hung up.",
+       "lo": "ພໍ່ບອກວ່າເກມບໍ່ເຄີຍໂທຫາ. ຜູ້ໂທວາງສາຍໄປແລ້ວ."
+      },
+      "hangup": {
+       "en": "The game is still there the next morning. Nothing was deleted.",
+       "lo": "ມື້ອື່ນເຊົ້າ ເກມຍັງຢູ່ຄືເກົ່າ. ບໍ່ມີຫຍັງຖືກລຶບ."
+      }
+     },
+     "signs": [
+      "mask",
+      "clock",
+      "code",
+      "hush"
+     ],
+     "flags": [
+      "unverified_identity",
+      "urgency",
+      "personal_data"
+     ],
+     "remember": {
+      "en": "Your password is only for you. Real games never call to ask for it.",
+      "lo": "ລະຫັດຜ່ານແມ່ນຂອງເຈົ້າຄົນດຽວ. ເກມແທ້ບໍ່ເຄີຍໂທມາຂໍ."
+     }
+    },
+    {
+     "id": "sa-teacher",
+     "real": true,
+     "voice": {
+      "who": "woman",
+      "rate": -8,
+      "pitch": 2
+     },
+     "time": "11:00",
+     "place": {
+      "en": "Doing homework",
+      "lo": "ເຮັດການບ້ານ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Saeng's class is making a science poster for Monday.",
+      "lo": "ຫ້ອງຂອງແສງ ກຳລັງເຮັດໂປສເຕີວິທະຍາສາດ ສົ່ງວັນຈັນ."
+     },
+     "caller": {
+      "en": "Teacher Dao",
+      "lo": "ຄູດາວ"
+     },
+     "number": "+856 20 96•• 2210",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Hello Saeng, it's Teacher Dao.",
+       "lo": "ສະບາຍດີແສງ, ຄູດາວເອງເດີ້."
+      },
+      {
+       "en": "Remember to bring coloured pens for the poster on Monday.",
+       "lo": "ຢ່າລືມເອົາບິກສີມາ ເຮັດໂປສເຕີວັນຈັນເດີ້."
+      },
+      {
+       "en": "Say hello to your dad for me. See you at school!",
+       "lo": "ຝາກສະບາຍດີພໍ່ນຳເດີ້. ພົບກັນທີ່ໂຮງຮຽນ!"
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Say thank you, you will bring them",
+       "lo": "ຂອບໃຈຄູ ຈະເອົາມາ"
+      },
+      "check": {
+       "en": "Check it is Teacher Dao's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຄູດາວທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "On Monday Saeng's poster is the most colourful in class.",
+       "lo": "ວັນຈັນ ໂປສເຕີຂອງແສງ ມີສີສັນງາມທີ່ສຸດໃນຫ້ອງ."
+      },
+      "check": {
+       "en": "It is Teacher Dao. Nothing secret was asked.",
+       "lo": "ແມ່ນຄູດາວແທ້. ບໍ່ໄດ້ຂໍຫຍັງລັບ."
+      },
+      "hangup": {
+       "en": "Saeng forgets the pens and has to borrow some on Monday.",
+       "lo": "ແສງລືມບິກສີ ຕ້ອງຢືມໝູ່ວັນຈັນ."
+      }
+     },
+     "signs": [
+      "known",
+      "match",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "A teacher you know, calling about school and asking nothing secret: that is fine.",
+      "lo": "ຄູທີ່ຮູ້ຈັກ ໂທເລື່ອງໂຮງຮຽນ ແລະ ບໍ່ຂໍຫຍັງລັບ: ລົມໄດ້."
+     }
+    },
+    {
+     "id": "sa-address",
+     "real": false,
+     "voice": {
+      "who": "man",
+      "rate": 8,
+      "pitch": -4
+     },
+     "time": "13:00",
+     "place": {
+      "en": "After lunch",
+      "lo": "ຫຼັງກິນເຂົ້າທ່ຽງ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Nobody in the family is waiting for a parcel.",
+      "lo": "ບໍ່ມີໃຜໃນຄອບຄົວລໍຖ້າພັດສະດຸ."
+     },
+     "caller": {
+      "en": "Unknown number",
+      "lo": "ເບີບໍ່ຮູ້ຈັກ"
+     },
+     "number": "+856 20 91•• 3306",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Hi, I have a parcel for your house.",
+       "lo": "ສະບາຍດີ, ມີພັດສະດຸມາສົ່ງເຮືອນນ້ອງ."
+      },
+      {
+       "en": "What is your address? And are your parents home right now?",
+       "lo": "ເຮືອນນ້ອງຢູ່ໃສ? ຕອນນີ້ພໍ່ແມ່ຢູ່ເຮືອນບໍ່?"
+      },
+      {
+       "en": "Just tell me. It is a secret surprise for them.",
+       "lo": "ບອກມາເລີຍ ມັນເປັນຂອງຂວັນລັບໃຫ້ພໍ່ແມ່."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Give the address and say you are alone",
+       "lo": "ບອກທີ່ຢູ່ ແລະ ບອກວ່າຢູ່ຄົນດຽວ"
+      },
+      "check": {
+       "en": "Say \"Please talk to my dad\"",
+       "lo": "ບອກວ່າ \"ລົມກັບພໍ່ຂ້ອຍເດີ້\""
+      },
+      "hangup": {
+       "en": "Hang up and tell Dad",
+       "lo": "ວາງສາຍ ແລ້ວບອກພໍ່"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "A stranger now knows where Saeng lives and when she is alone. Dad is worried when he hears.",
+       "lo": "ຄົນແປກໜ້າຮູ້ວ່າແສງຢູ່ໃສ ແລະ ຢູ່ຄົນດຽວເວລາໃດ. ພໍ່ເປັນຫ່ວງຫຼາຍເມື່ອຮູ້."
+      },
+      "check": {
+       "en": "The caller will not talk to Dad and hangs up. There was no parcel.",
+       "lo": "ຜູ້ໂທບໍ່ຍອມລົມກັບພໍ່ ແລ້ວວາງສາຍ. ບໍ່ມີພັດສະດຸແທ້."
+      },
+      "hangup": {
+       "en": "Dad says: \"Well done for telling me.\"",
+       "lo": "ພໍ່ບອກວ່າ: \"ເກັ່ງຫຼາຍທີ່ບອກພໍ່.\""
+      }
+     },
+     "signs": [
+      "private",
+      "hush",
+      "mask"
+     ],
+     "flags": [
+      "personal_data",
+      "unverified_identity"
+     ],
+     "remember": {
+      "en": "Your address and who is home are private. Let an adult talk to strangers.",
+      "lo": "ທີ່ຢູ່ ແລະ ໃຜຢູ່ເຮືອນ ແມ່ນເລື່ອງສ່ວນຕົວ. ໃຫ້ຜູ້ໃຫຍ່ລົມກັບຄົນແປກໜ້າ."
+     }
+    },
+    {
+     "id": "sa-friend",
+     "real": true,
+     "voice": {
+      "who": "woman",
+      "rate": 4,
+      "pitch": 6
+     },
+     "time": "14:30",
+     "place": {
+      "en": "Reading comics",
+      "lo": "ອ່ານກາຕູນ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Saeng's best friend Nok lives two houses away.",
+      "lo": "ນົກ ໝູ່ສະໜິດຂອງແສງ ຢູ່ຫ່າງໄປສອງເຮືອນ."
+     },
+     "caller": {
+      "en": "Nok",
+      "lo": "ນົກ"
+     },
+     "number": "+856 20 54•• 8820",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Saeng! It's Nok. Want to play badminton?",
+       "lo": "ແສງ! ນົກເອງ. ໄປຕີດອກປີກໄກ່ກັນບໍ່?"
+      },
+      {
+       "en": "My mum will watch us in front of my house.",
+       "lo": "ແມ່ຂ້ອຍຈະນັ່ງເບິ່ງຢູ່ໜ້າເຮືອນ."
+      },
+      {
+       "en": "Ask your dad, then come over!",
+       "lo": "ຖາມພໍ່ເຈົ້າກ່ອນ ແລ້ວມາເລີຍເດີ້!"
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Say yes, after asking Dad",
+       "lo": "ຕອບວ່າໄປ ຫຼັງຖາມພໍ່"
+      },
+      "check": {
+       "en": "Check it is Nok's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຂອງນົກທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Dad says yes. They play until dinner.",
+       "lo": "ພໍ່ອະນຸຍາດ. ສອງຄົນຫຼິ້ນຈົນຮອດເວລາກິນເຂົ້າແລງ."
+      },
+      "check": {
+       "en": "It is Nok. Saeng runs over with her racket.",
+       "lo": "ແມ່ນນົກແທ້. ແສງແລ່ນໄປພ້ອມໄມ້ຕີ."
+      },
+      "hangup": {
+       "en": "Nok waits outside, then plays alone.",
+       "lo": "ນົກລໍຖ້າຢູ່ໜ້າເຮືອນ ແລ້ວຫຼິ້ນຄົນດຽວ."
+      }
+     },
+     "signs": [
+      "known",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "A friend you know, and a plan your family can see: that is a real call.",
+      "lo": "ໝູ່ທີ່ຮູ້ຈັກ ແລະ ແຜນທີ່ຄອບຄົວຮູ້: ແມ່ນສາຍແທ້."
+     }
+    },
+    {
+     "id": "sa-prize",
+     "real": false,
+     "voice": {
+      "who": "woman",
+      "rate": 16,
+      "pitch": 6
+     },
+     "time": "14:30",
+     "place": {
+      "en": "Reading comics",
+      "lo": "ອ່ານກາຕູນ"
+     },
+     "stake": 1000000,
+     "note": {
+      "en": "Saeng has never entered a lucky draw.",
+      "lo": "ແສງບໍ່ເຄີຍສົ່ງຊື່ຊິງໂຊກ."
+     },
+     "caller": {
+      "en": "Lucky Draw Centre",
+      "lo": "ສູນຊິງໂຊກ"
+     },
+     "number": "+856 30 50•• 1164",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Congratulations! You won a new phone in our lucky draw!",
+       "lo": "ຍິນດີນຳ! ນ້ອງໄດ້ລາງວັນໂທລະສັບໃໝ່ ຈາກການຊິງໂຊກ!"
+      },
+      {
+       "en": "We just sent a code to your dad's phone. Read it to me.",
+       "lo": "ເຮົາຫາກໍ່ສົ່ງລະຫັດໄປໂທລະສັບຂອງພໍ່. ອ່ານໃຫ້ຟັງແດ່."
+      },
+      {
+       "en": "Don't tell your dad yet, so it stays a surprise!",
+       "lo": "ຢ່າເພີ່ງບອກພໍ່ເດີ້ ເພື່ອໃຫ້ເປັນຂອງຂວັນລັບ!"
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Read the code",
+       "lo": "ອ່ານລະຫັດໃຫ້ຟັງ"
+      },
+      "check": {
+       "en": "Show the message to Dad first",
+       "lo": "ເອົາຂໍ້ຄວາມໃຫ້ພໍ່ເບິ່ງກ່ອນ"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "The code opened Dad's bank app. 1,000,000 kip is gone, and there is no phone.",
+       "lo": "ລະຫັດນັ້ນເປີດແອັບທະນາຄານຂອງພໍ່. ເງິນ 1,000,000 ກີບຫາຍໄປ ແລະ ບໍ່ມີໂທລະສັບ."
+      },
+      "check": {
+       "en": "Dad reads it: \"Do not share this code.\" He blocks the number.",
+       "lo": "ພໍ່ອ່ານ: \"ຢ່າບອກລະຫັດນີ້ໃຫ້ໃຜ.\" ແລ້ວບລັອກເບີນັ້ນ."
+      },
+      "hangup": {
+       "en": "Nothing is lost. Saeng tells Dad about the strange call.",
+       "lo": "ບໍ່ເສຍຫຍັງ. ແສງບອກພໍ່ເລື່ອງສາຍແປກໆ."
+      }
+     },
+     "signs": [
+      "gift",
+      "code",
+      "hush"
+     ],
+     "flags": [
+      "too_good",
+      "personal_data"
+     ],
+     "remember": {
+      "en": "A prize you never entered is a trick. A code is a key: never read it out.",
+      "lo": "ລາງວັນທີ່ບໍ່ເຄີຍສະໝັກ ແມ່ນກົນລວງ. ລະຫັດແມ່ນກະແຈ: ຢ່າອ່ານໃຫ້ໃຜຟັງ."
+     }
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,668 @@
+{
+ "//": "REVIEW-LO: every Lao string here is a draft until a native speaker checks it. Format: content/README.md",
+ "days": [
+  {
+   "id": "khampan",
+   "bands": [
+    "elder"
+   ],
+   "room": "elder",
+   "balance": 6000000,
+   "hero": {
+    "name": {
+     "en": "Grandma Khampan",
+     "lo": "ແມ່ຕູ້ຄຳປານ"
+    },
+    "age": 70,
+    "avatar": {
+     "skin": 2,
+     "hair": 1,
+     "outfit": 3,
+     "extra": 3
+    }
+   },
+   "who": {
+    "en": "Retired teacher, lives near her daughter",
+    "lo": "ຄູບຳນານ ຢູ່ໃກ້ລູກສາວ"
+   },
+   "intro": {
+    "en": "Grandma Khampan is a retired teacher. Her phone rings {n} times today.",
+    "lo": "ແມ່ຕູ້ຄຳປານ ເປັນຄູບຳນານ. ມື້ນີ້ໂທລະສັບຂອງທ່ານດັງ {n} ເທື່ອ."
+   },
+   "calls": [
+    {
+     "id": "kp-daughter",
+     "real": true,
+     "voice": {
+      "who": "woman",
+      "rate": -6,
+      "pitch": 0
+     },
+     "time": "08:00",
+     "place": {
+      "en": "Sweeping the yard",
+      "lo": "ກວາດເດີ່ນ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Her daughter Phet takes her to the hospital for a check-up every month.",
+      "lo": "ລູກສາວ ເພັດ ພາທ່ານໄປກວດສຸຂະພາບທີ່ໂຮງໝໍທຸກເດືອນ."
+     },
+     "caller": {
+      "en": "Daughter Phet",
+      "lo": "ລູກສາວ ເພັດ"
+     },
+     "number": "+856 20 55•• 7310",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Mum, it's Phet. Did you sleep well?",
+       "lo": "ແມ່, ເພັດເອງ. ນອນຫຼັບດີບໍ່?"
+      },
+      {
+       "en": "I will bring your blood pressure medicine on Sunday.",
+       "lo": "ວັນອາທິດ ລູກຈະເອົາຢາຄວາມດັນໄປໃຫ້ເດີ້."
+      },
+      {
+       "en": "Call me if you need anything.",
+       "lo": "ຕ້ອງການຫຍັງ ໂທຫາລູກເດີ້."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Chat and say thank you",
+       "lo": "ລົມ ແລະ ຂອບໃຈລູກ"
+      },
+      "check": {
+       "en": "Check it is Phet's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຂອງເພັດທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Phet comes on Sunday with the medicine and some fruit.",
+       "lo": "ວັນອາທິດ ເພັດມາພ້ອມຢາ ແລະ ໝາກໄມ້."
+      },
+      "check": {
+       "en": "It is Phet. They talk about the grandchildren.",
+       "lo": "ແມ່ນເພັດແທ້. ລົມກັນເລື່ອງຫຼານ."
+      },
+      "hangup": {
+       "en": "Phet worries and drives over to check on her.",
+       "lo": "ເພັດເປັນຫ່ວງ ເລີຍຂັບລົດມາເບິ່ງ."
+      }
+     },
+     "signs": [
+      "known",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "Family on a saved number, asking for nothing: enjoy the call.",
+      "lo": "ຄອບຄົວໂທຈາກເບີທີ່ບັນທຶກໄວ້ ແລະ ບໍ່ຂໍຫຍັງ: ລົມໄດ້ຕາມສະບາຍ."
+     }
+    },
+    {
+     "id": "kp-safe",
+     "real": false,
+     "voice": {
+      "who": "man",
+      "rate": 10,
+      "pitch": -12
+     },
+     "time": "09:00",
+     "place": {
+      "en": "Drinking morning tea",
+      "lo": "ດື່ມຊາຕອນເຊົ້າ"
+     },
+     "stake": 5000000,
+     "note": {
+      "en": "Grandma Khampan has never had any trouble with the police or her bank.",
+      "lo": "ແມ່ຕູ້ຄຳປານບໍ່ເຄີຍມີບັນຫາກັບຕຳຫຼວດ ຫຼື ທະນາຄານ."
+     },
+     "caller": {
+      "en": "Police officer",
+      "lo": "ເຈົ້າໜ້າທີ່ຕຳຫຼວດ"
+     },
+     "number": "+856 30 59•• 2048",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Hello madam. I am a police officer. Your bank account was used to launder money.",
+       "lo": "ສະບາຍດີທ່ານ. ຂ້ອຍແມ່ນເຈົ້າໜ້າທີ່ຕຳຫຼວດ. ບັນຊີທະນາຄານຂອງທ່ານ ຖືກໃຊ້ຟອກເງິນ."
+      },
+      {
+       "en": "To protect your money, move all of it to a safe account today.",
+       "lo": "ເພື່ອປົກປ້ອງເງິນຂອງທ່ານ ກະລຸນາໂອນເງິນທັງໝົດ ໄປບັນຊີປອດໄພ ພາຍໃນມື້ນີ້."
+      },
+      {
+       "en": "This case is secret. Do not tell your children.",
+       "lo": "ຄະດີນີ້ເປັນຄວາມລັບ. ຢ່າບອກລູກຫຼານ."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Transfer the savings to the \"safe account\"",
+       "lo": "ໂອນເງິນເກັບ ໄປ \"ບັນຊີປອດໄພ\""
+      },
+      "check": {
+       "en": "Hang up and call the bank on the number on your card",
+       "lo": "ວາງສາຍ ແລ້ວໂທຫາທະນາຄານ ດ້ວຍເບີທີ່ຢູ່ຫຼັງບັດ"
+      },
+      "hangup": {
+       "en": "Hang up and tell Phet",
+       "lo": "ວາງສາຍ ແລ້ວບອກເພັດ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "5,000,000 kip goes to a stranger. There is no safe account.",
+       "lo": "ເງິນ 5,000,000 ກີບ ໄປເຂົ້າບັນຊີຄົນແປກໜ້າ. ບໍ່ມີບັນຊີປອດໄພແທ້."
+      },
+      "check": {
+       "en": "The bank says her account is fine, and police never ask for transfers by phone.",
+       "lo": "ທະນາຄານບອກວ່າບັນຊີຂອງທ່ານປົກກະຕິ ແລະ ຕຳຫຼວດບໍ່ເຄີຍໃຫ້ໂອນເງິນທາງໂທລະສັບ."
+      },
+      "hangup": {
+       "en": "Phet comes over and they report the number together.",
+       "lo": "ເພັດມາຫາ ແລະ ລາຍງານເບີນັ້ນນຳກັນ."
+      }
+     },
+     "signs": [
+      "mask",
+      "scare",
+      "clock",
+      "hush",
+      "pay"
+     ],
+     "flags": [
+      "unverified_identity",
+      "urgency",
+      "upfront_fee"
+     ],
+     "remember": {
+      "en": "Police and banks never ask you to move money to a \"safe account\". Hang up, check, tell family.",
+      "lo": "ຕຳຫຼວດ ແລະ ທະນາຄານ ບໍ່ເຄີຍໃຫ້ທ່ານໂອນເງິນໄປ \"ບັນຊີປອດໄພ\". ວາງສາຍ, ກວດສອບ, ບອກຄອບຄົວ."
+     }
+    },
+    {
+     "id": "kp-volunteer",
+     "real": true,
+     "voice": {
+      "who": "woman",
+      "rate": -8,
+      "pitch": 2
+     },
+     "time": "10:30",
+     "place": {
+      "en": "Watering the vegetables",
+      "lo": "ຫົດນ້ຳຜັກ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "The village health volunteer checks blood pressure at the village office every month.",
+      "lo": "ອາສາສະໝັກສາທາລະນະສຸກບ້ານ ວັດຄວາມດັນທີ່ຫ້ອງການບ້ານທຸກເດືອນ."
+     },
+     "caller": {
+      "en": "Health volunteer Mon",
+      "lo": "ອາສາສະໝັກ ມອນ"
+     },
+     "number": "+856 20 23•• 6651",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Good morning, Grandma. It is Mon, the village health volunteer.",
+       "lo": "ສະບາຍດີແມ່ຕູ້. ມອນເອງ ອາສາສະໝັກສາທາລະນະສຸກບ້ານ."
+      },
+      {
+       "en": "Blood pressure checks are tomorrow morning at the village office. It costs nothing.",
+       "lo": "ມື້ອື່ນເຊົ້າ ມີວັດຄວາມດັນ ຢູ່ຫ້ອງການບ້ານ. ບໍ່ເສຍເງິນ."
+      },
+      {
+       "en": "Bring your health book if you have it.",
+       "lo": "ຖ້າມີປຶ້ມສຸຂະພາບ ເອົາມານຳເດີ້."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Say you will come",
+       "lo": "ຕອບວ່າຈະໄປ"
+      },
+      "check": {
+       "en": "Check it is Mon's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຂອງມອນທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Her blood pressure is good, and she chats with the neighbours.",
+       "lo": "ຄວາມດັນປົກກະຕິ ແລະ ທ່ານໄດ້ລົມກັບເພື່ອນບ້ານ."
+      },
+      "check": {
+       "en": "It is Mon. No money, no codes, just a reminder.",
+       "lo": "ແມ່ນມອນແທ້. ບໍ່ຂໍເງິນ ບໍ່ຂໍລະຫັດ ແຈ້ງໃຫ້ຮູ້ເທົ່ານັ້ນ."
+      },
+      "hangup": {
+       "en": "She misses the check this month.",
+       "lo": "ເດືອນນີ້ທ່ານເລີຍບໍ່ໄດ້ວັດຄວາມດັນ."
+      }
+     },
+     "signs": [
+      "known",
+      "match",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "A local helper you know, asking for nothing: that is a real call.",
+      "lo": "ຄົນໃນບ້ານທີ່ຮູ້ຈັກ ແລະ ບໍ່ຂໍຫຍັງ: ແມ່ນສາຍແທ້."
+     }
+    },
+    {
+     "id": "kp-prize",
+     "real": false,
+     "voice": {
+      "who": "woman",
+      "rate": 14,
+      "pitch": 6
+     },
+     "time": "10:30",
+     "place": {
+      "en": "Watering the vegetables",
+      "lo": "ຫົດນ້ຳຜັກ"
+     },
+     "stake": 500000,
+     "note": {
+      "en": "Yesterday a text message said she had won a prize. She never entered a draw.",
+      "lo": "ມື້ວານມີ SMS ບອກວ່າທ່ານໄດ້ລາງວັນ. ທ່ານບໍ່ເຄີຍສົ່ງຊື່ຊິງໂຊກ."
+     },
+     "caller": {
+      "en": "Prize office",
+      "lo": "ຫ້ອງການລາງວັນ"
+     },
+     "number": "+856 30 58•• 9902",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Congratulations! You won a new motorbike in our lucky draw!",
+       "lo": "ຍິນດີນຳທ່ານ! ທ່ານໄດ້ລາງວັນລົດຈັກໃໝ່ ຈາກການຊິງໂຊກ!"
+      },
+      {
+       "en": "Just pay 500,000 kip tax first, and we deliver it tomorrow.",
+       "lo": "ພຽງແຕ່ຈ່າຍຄ່າພາສີ 500,000 ກີບກ່ອນ ມື້ອື່ນເຮົາຈະເອົາລົດໄປສົ່ງ."
+      },
+      {
+       "en": "Transfer within one hour, or the prize goes to someone else.",
+       "lo": "ໂອນພາຍໃນໜຶ່ງຊົ່ວໂມງ ບໍ່ດັ່ງນັ້ນລາງວັນຈະຕົກເປັນຂອງຄົນອື່ນ."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Pay the \"tax\"",
+       "lo": "ຈ່າຍ \"ຄ່າພາສີ\""
+      },
+      "check": {
+       "en": "Ask Phet to look at the message",
+       "lo": "ໃຫ້ເພັດເບິ່ງຂໍ້ຄວາມ"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "500,000 kip is gone. No motorbike ever comes.",
+       "lo": "ເສຍເງິນ 500,000 ກີບ. ບໍ່ມີລົດຈັກມາສົ່ງ."
+      },
+      "check": {
+       "en": "Phet says: \"A real prize never asks you to pay first.\"",
+       "lo": "ເພັດບອກວ່າ: \"ລາງວັນແທ້ ບໍ່ເຄີຍໃຫ້ຈ່າຍເງິນກ່ອນ.\""
+      },
+      "hangup": {
+       "en": "Her savings are safe.",
+       "lo": "ເງິນເກັບຍັງຢູ່ຄົບ."
+      }
+     },
+     "signs": [
+      "gift",
+      "pay",
+      "clock"
+     ],
+     "flags": [
+      "too_good",
+      "upfront_fee",
+      "urgency"
+     ],
+     "remember": {
+      "en": "You cannot win a draw you never entered. A prize that costs money first is a scam.",
+      "lo": "ບໍ່ມີໃຜຖືກລາງວັນ ທີ່ບໍ່ເຄີຍສົ່ງຊື່ຊິງໂຊກ. ລາງວັນທີ່ຕ້ອງຈ່າຍເງິນກ່ອນ ແມ່ນການຫຼອກລວງ."
+     }
+    },
+    {
+     "id": "kp-grandson",
+     "real": true,
+     "voice": {
+      "who": "man",
+      "rate": -4,
+      "pitch": 6
+     },
+     "time": "13:00",
+     "place": {
+      "en": "After lunch",
+      "lo": "ຫຼັງກິນເຂົ້າທ່ຽງ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Her grandson Kong studies in Vientiane and calls most weeks.",
+      "lo": "ຫຼານຊາຍ ກອງ ຮຽນຢູ່ວຽງຈັນ ແລະ ໂທມາເກືອບທຸກອາທິດ."
+     },
+     "caller": {
+      "en": "Grandson Kong",
+      "lo": "ຫຼານ ກອງ"
+     },
+     "number": "+856 20 97•• 1288",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Grandma! It's Kong. I passed my exam!",
+       "lo": "ແມ່ຕູ້! ກອງເອງ. ຫຼານເສັງຜ່ານແລ້ວ!"
+      },
+      {
+       "en": "I will come home for the school break next month.",
+       "lo": "ເດືອນໜ້າ ຫຼານຈະກັບບ້ານຕອນພັກຮຽນ."
+      },
+      {
+       "en": "Do you want anything from the city?",
+       "lo": "ແມ່ຕູ້ຢາກໄດ້ຫຍັງຈາກໃນເມືອງບໍ່?"
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Congratulate him and chat",
+       "lo": "ສະແດງຄວາມຍິນດີ ແລະ ລົມກັນ"
+      },
+      "check": {
+       "en": "Check it is Kong's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຂອງກອງທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Kong is happy. She asks for nothing but a visit.",
+       "lo": "ກອງດີໃຈຫຼາຍ. ແມ່ຕູ້ຂໍແຕ່ໃຫ້ຫຼານມາຢາມ."
+      },
+      "check": {
+       "en": "It is Kong, on his usual number. No money asked.",
+       "lo": "ແມ່ນກອງແທ້ ໂທຈາກເບີເກົ່າ. ບໍ່ຂໍເງິນ."
+      },
+      "hangup": {
+       "en": "Kong is sad his grandma missed his good news.",
+       "lo": "ກອງເສຍໃຈ ທີ່ແມ່ຕູ້ບໍ່ຮັບຂ່າວດີ."
+      }
+     },
+     "signs": [
+      "known",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "Family on their usual number, sharing news and asking for nothing: a real call.",
+      "lo": "ຄອບຄົວໂທຈາກເບີເກົ່າ ເລົ່າຂ່າວ ແລະ ບໍ່ຂໍຫຍັງ: ແມ່ນສາຍແທ້."
+     }
+    },
+    {
+     "id": "kp-accident",
+     "real": false,
+     "voice": {
+      "who": "man",
+      "rate": 14,
+      "pitch": 12
+     },
+     "time": "15:00",
+     "place": {
+      "en": "Afternoon rest",
+      "lo": "ພັກຜ່ອນຕອນບ່າຍ"
+     },
+     "stake": 3000000,
+     "note": {
+      "en": "Kong called at lunch from his usual number. He sounded well.",
+      "lo": "ຕອນທ່ຽງ ກອງໂທມາຈາກເບີເກົ່າ ແລະ ສະບາຍດີ."
+     },
+     "caller": {
+      "en": "Unknown number",
+      "lo": "ເບີບໍ່ຮູ້ຈັກ"
+     },
+     "number": "+856 20 93•• 4470",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Grandma, it's me! I crashed the motorbike. This is a friend's phone.",
+       "lo": "ແມ່ຕູ້, ຫຼານເອງ! ຫຼານຂີ່ລົດຈັກລົ້ມ. ນີ້ແມ່ນໂທລະສັບໝູ່."
+      },
+      {
+       "en": "The hospital needs 3,000,000 kip now, or they will not treat me.",
+       "lo": "ໂຮງໝໍຕ້ອງການ 3,000,000 ກີບດຽວນີ້ ບໍ່ດັ່ງນັ້ນເຂົາບໍ່ປິ່ນປົວໃຫ້."
+      },
+      {
+       "en": "Please don't tell Mum. Send it to my friend's account.",
+       "lo": "ຢ່າບອກແມ່ເດີ້. ໂອນເຂົ້າບັນຊີໝູ່ຫຼານໄດ້ເລີຍ."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Send the money",
+       "lo": "ໂອນເງິນໄປ"
+      },
+      "check": {
+       "en": "Hang up and call Kong's saved number",
+       "lo": "ວາງສາຍ ແລ້ວໂທຫາເບີຂອງກອງທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up and call Phet",
+       "lo": "ວາງສາຍ ແລ້ວໂທຫາເພັດ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "3,000,000 kip goes to a stranger. Kong was never hurt.",
+       "lo": "ເງິນ 3,000,000 ກີບ ໄປເຂົ້າບັນຊີຄົນແປກໜ້າ. ກອງບໍ່ໄດ້ເປັນຫຍັງເລີຍ."
+      },
+      "check": {
+       "en": "Kong answers from his room: \"I am fine, Grandma!\"",
+       "lo": "ກອງຮັບສາຍຢູ່ຫ້ອງ: \"ຫຼານສະບາຍດີ ແມ່ຕູ້!\""
+      },
+      "hangup": {
+       "en": "Phet calls Kong. He is safe, and she reports the number.",
+       "lo": "ເພັດໂທຫາກອງ. ກອງປອດໄພດີ ແລະ ເພັດລາຍງານເບີນັ້ນ."
+      }
+     },
+     "signs": [
+      "scare",
+      "clock",
+      "hush",
+      "pay"
+     ],
+     "flags": [
+      "urgency",
+      "unverified_identity",
+      "upfront_fee"
+     ],
+     "remember": {
+      "en": "New number + emergency + \"don't tell Mum\" = hang up and call family on the number you saved.",
+      "lo": "ເບີໃໝ່ + ເຫດດ່ວນ + \"ຢ່າບອກແມ່\" = ວາງສາຍ ແລ້ວໂທຫາຄອບຄົວ ດ້ວຍເບີທີ່ບັນທຶກໄວ້."
+     }
+    },
+    {
+     "id": "kp-charity",
+     "real": false,
+     "voice": {
+      "who": "woman",
+      "rate": 10,
+      "pitch": 0
+     },
+     "time": "16:30",
+     "place": {
+      "en": "Evening at home",
+      "lo": "ຕອນແລງຢູ່ເຮືອນ"
+     },
+     "stake": 1000000,
+     "note": {
+      "en": "The news said there was flooding in the south this week.",
+      "lo": "ອາທິດນີ້ ຂ່າວບອກວ່າມີນ້ຳຖ້ວມຢູ່ພາກໃຕ້."
+     },
+     "caller": {
+      "en": "Flood Relief Fund",
+      "lo": "ກອງທຶນຊ່ວຍນ້ຳຖ້ວມ"
+     },
+     "number": "+856 30 54•• 3317",
+     "saved": false,
+     "lines": [
+      {
+       "en": "Hello madam. Families in the south have lost everything in the flood.",
+       "lo": "ສະບາຍດີທ່ານ. ຫຼາຍຄອບຄົວຢູ່ພາກໃຕ້ ເສຍທຸກຢ່າງຍ້ອນນ້ຳຖ້ວມ."
+      },
+      {
+       "en": "Please donate 1,000,000 kip. Send it to my personal account, it is faster.",
+       "lo": "ກະລຸນາບໍລິຈາກ 1,000,000 ກີບ. ໂອນເຂົ້າບັນຊີສ່ວນຕົວຂອງຂ້ອຍເລີຍ ໄວກວ່າ."
+      },
+      {
+       "en": "Today only. The truck leaves tonight.",
+       "lo": "ມື້ນີ້ເທົ່ານັ້ນ. ລົດຂົນເຄື່ອງຈະອອກຄືນນີ້."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Send the donation",
+       "lo": "ໂອນເງິນບໍລິຈາກ"
+      },
+      "check": {
+       "en": "Give through the village office or the temple instead",
+       "lo": "ບໍລິຈາກຜ່ານຫ້ອງການບ້ານ ຫຼື ວັດແທນ"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "The money goes to the caller, not to the flood families.",
+       "lo": "ເງິນໄປເຂົ້າກະເປົາຜູ້ໂທ ບໍ່ແມ່ນຄອບຄົວທີ່ຖືກນ້ຳຖ້ວມ."
+      },
+      "check": {
+       "en": "She gives at the village office and gets a receipt. The help is real.",
+       "lo": "ທ່ານບໍລິຈາກທີ່ຫ້ອງການບ້ານ ແລະ ໄດ້ໃບຮັບເງິນ. ການຊ່ວຍເຫຼືອເຖິງມືແທ້."
+      },
+      "hangup": {
+       "en": "Her money is safe, and she can still give another way.",
+       "lo": "ເງິນຍັງຢູ່ ແລະ ທ່ານຍັງຊ່ວຍໄດ້ ດ້ວຍວິທີອື່ນ."
+      }
+     },
+     "signs": [
+      "pay",
+      "clock",
+      "mask"
+     ],
+     "flags": [
+      "upfront_fee",
+      "urgency",
+      "unverified_identity"
+     ],
+     "remember": {
+      "en": "Real charities never need your money in a personal account today. Give where you get a receipt.",
+      "lo": "ອົງການກຸສົນແທ້ ບໍ່ເຄີຍໃຫ້ໂອນເຂົ້າບັນຊີສ່ວນຕົວແບບຟ້າວ. ບໍລິຈາກບ່ອນທີ່ໄດ້ໃບຮັບເງິນ."
+     }
+    },
+    {
+     "id": "kp-neighbour",
+     "real": true,
+     "voice": {
+      "who": "man",
+      "rate": -8,
+      "pitch": -4
+     },
+     "time": "16:30",
+     "place": {
+      "en": "Evening at home",
+      "lo": "ຕອນແລງຢູ່ເຮືອນ"
+     },
+     "stake": 0,
+     "note": {
+      "en": "Her neighbour Sone often borrows tools and always brings them back.",
+      "lo": "ເພື່ອນບ້ານ ສອນ ມັກຢືມເຄື່ອງມື ແລະ ສົ່ງຄືນທຸກເທື່ອ."
+     },
+     "caller": {
+      "en": "Neighbour Sone",
+      "lo": "ເພື່ອນບ້ານ ສອນ"
+     },
+     "number": "+856 20 56•• 0937",
+     "saved": true,
+     "lines": [
+      {
+       "en": "Good evening, Auntie. It is Sone from next door.",
+       "lo": "ສະບາຍດີຕອນແລງ ປ້າ. ສອນເອງ ເຮືອນຖັດໄປ."
+      },
+      {
+       "en": "Can I borrow your ladder to fix my roof tomorrow?",
+       "lo": "ມື້ອື່ນ ຂໍຢືມຂັ້ນໄດໄປແປງຫຼັງຄາແດ່ໄດ້ບໍ່?"
+      },
+      {
+       "en": "I will bring it back before lunch.",
+       "lo": "ຈະເອົາມາສົ່ງຄືນກ່ອນທ່ຽງເດີ້."
+      }
+     ],
+     "moves": {
+      "trust": {
+       "en": "Say yes",
+       "lo": "ຕອບວ່າໄດ້"
+      },
+      "check": {
+       "en": "Check it is Sone's saved number",
+       "lo": "ກວດວ່າແມ່ນເບີຂອງສອນທີ່ບັນທຶກໄວ້"
+      },
+      "hangup": {
+       "en": "Hang up",
+       "lo": "ວາງສາຍ"
+      }
+     },
+     "outcome": {
+      "trust": {
+       "en": "Sone fixes his roof and brings the ladder back with some mangoes.",
+       "lo": "ສອນແປງຫຼັງຄາແລ້ວ ເອົາຂັ້ນໄດມາສົ່ງຄືນ ພ້ອມໝາກມ່ວງ."
+      },
+      "check": {
+       "en": "It is Sone. No secrets, no money.",
+       "lo": "ແມ່ນສອນແທ້. ບໍ່ຂໍລະຫັດ ບໍ່ຂໍເງິນ."
+      },
+      "hangup": {
+       "en": "Sone knocks on the door instead.",
+       "lo": "ສອນເລີຍມາເຄາະປະຕູແທນ."
+      }
+     },
+     "signs": [
+      "known",
+      "nothing"
+     ],
+     "flags": [],
+     "remember": {
+      "en": "A saved number and a normal favour, with no money or codes: a real call.",
+      "lo": "ເບີທີ່ບັນທຶກໄວ້ ຂໍຄວາມຊ່ວຍເຫຼືອທຳມະດາ ບໍ່ຂໍເງິນ ຫຼື ລະຫັດ: ແມ່ນສາຍແທ້."
+     }
+    }
+   ]
+  }
+ ]
+}
