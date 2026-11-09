@@ -10,6 +10,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, statSync, writeFileSync } 
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { build } from 'esbuild';
+import { spoken } from './lib/lao-speech.mjs';
 
 const VOICES = {
   lo: { man: 'lo-LA-ChanthavongNeural', woman: 'lo-LA-KeomanyNeural' },
@@ -31,35 +32,6 @@ await build({ entryPoints: ['frontend/src/features/daily/data/scamCalls.ts'], bu
 const { ALL_CALLS } = await import(pathToFileURL(tmp).href);
 rmSync(tmp);
 
-// --- What the voice says (the screen keeps digits; the voice gets words) ---
-const D = ['ສູນ', 'ໜຶ່ງ', 'ສອງ', 'ສາມ', 'ສີ່', 'ຫ້າ', 'ຫົກ', 'ເຈັດ', 'ແປດ', 'ເກົ້າ'];
-function laoUnder1M(n) {
-  let s = '';
-  for (const [v, w] of [[100000, 'ແສນ'], [10000, 'ໝື່ນ'], [1000, 'ພັນ'], [100, 'ຮ້ອຍ']]) {
-    const k = Math.floor(n / v); n %= v;
-    if (k) s += D[k] + w;
-  }
-  const t = Math.floor(n / 10), u = n % 10;
-  if (t) s += (t === 1 ? '' : t === 2 ? 'ຊາວ' : D[t]) + (t === 2 ? '' : 'ສິບ');
-  if (u) s += u === 1 && t ? 'ເອັດ' : D[u];
-  return s;
-}
-function laoNumber(n) {
-  if (n === 0) return D[0];
-  const m = Math.floor(n / 1e6), r = n % 1e6;
-  return (m ? laoNumber(m) + 'ລ້ານ' : '') + (r ? laoUnder1M(r) : '');
-}
-// Latin abbreviations as a Lao speaker says them.
-const LAO_SAY = { PIN: 'ພິນ', QR: 'ຄິວອາ', SMS: 'ເອັສເອັມເອັສ', CV: 'ຊີວີ', OTP: 'ໂອທີພີ', ID: 'ໄອດີ' };
-function spokenLao(text) {
-  return text
-    .replace(/(\d{1,2}):(\d{2})/g, (_, h, m) => `${laoNumber(+h)}ໂມງ ${laoNumber(+m)}ນາທີ`)
-    .replace(/\d{1,3}(?:,\d{3})+|\d+/g, x => laoNumber(Number(x.replace(/,/g, ''))))
-    .replace(/\b(PIN|QR|SMS|CV|OTP|ID)\b/g, x => LAO_SAY[x])
-    // "..." is a hesitation; a comma gives the voice a short natural pause instead of reading dots.
-    .replace(/\.\.\.|…/g, ',');
-}
-const spoken = (text, lang) => lang === 'lo' ? spokenLao(text) : text.replace(/…/g, '...');
 
 // Extreme rate/pitch shifts are what make neural voices sound synthetic; keep the caller's character but cap it.
 // A small per-line wobble keeps a three-line call from sounding like one flat recording.

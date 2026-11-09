@@ -4,7 +4,12 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "prebuild": "node scripts/check-content.mjs",
     "build": "vite build",
+    "audio": "node scripts/gen-audio.mjs && node scripts/gen-call-voices.mjs",
+    "audio:check": "node scripts/gen-audio.mjs --check",
+    "check:content": "node scripts/check-content.mjs",
+    "scan:thaiisms": "node scripts/scan-thaiisms.mjs",
     "dev": "node scripts/dev.mjs --open",
     "dev:devices": "node scripts/dev.mjs --host 0.0.0.0",
     "simulator:open": "node scripts/open-simulator.mjs",
