@@ -156,3 +156,28 @@
  .sd-pager{flex-direction:column;align-items:stretch}
  .sd-pages{justify-content:center;flex-wrap:wrap}
 }
+
+/* Scenario review and moderation log (existing tokens only, so light and dark themes both work). */
+.sd-status.s-draft{background:var(--watch-bg);color:var(--watch-text)}
+.sd-status.s-approved,.sd-status.s-submitted{background:color-mix(in srgb,var(--brand) 12%,var(--surface));color:var(--brand-text)}
+.sd-status.s-live,.sd-status.s-restored{background:var(--ok-bg);color:var(--ok-text)}
+.sd-status.s-retired{background:var(--chip);color:var(--text-muted)}
+/* Scenario rows reuse the queue row, without its red 'urgent' bar: only drafts waiting for review are highlighted. */
+.sd-qrow.sd-scn{border-left:4px solid var(--divider)}
+.sd-qrow.sd-scn.draft{border-left-color:var(--watch-bar)}
+.sd-scn .sd-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.sd-scn-actions{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.sd-scn-preview{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px;padding:12px;border-radius:12px;background:var(--chip)}
+.sd-scn-col{font-size:14px;line-height:1.6;min-width:0}
+.sd-scn-col h3{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);margin-bottom:6px}
+.sd-scn-col p,.sd-scn-col ul{margin:0 0 8px}
+.sd-scn-col ul{padding-left:0;list-style:none}
+.sd-scn-step{border-top:1px solid color-mix(in srgb,var(--text-muted) 25%,transparent);padding-top:8px;margin-top:8px}
+.sd-scn-msg{padding:6px 10px;border-radius:10px;background:var(--surface)}
+.sd-scn-msg.me{margin-left:24px}
+.sd-scn-col mark{background:var(--red-bg);color:var(--red-text);border-radius:4px;padding:0 2px}
+.admin-shell .sd-table.sd-log td:first-child{min-width:0;width:1%;white-space:nowrap}
+.sd-log td:nth-child(3){min-width:220px}
+.sd-log td:nth-child(4){white-space:nowrap}
+.sd-log-item{overflow-wrap:break-word}
+@media (max-width:720px){.sd-scn-preview{grid-template-columns:1fr}}

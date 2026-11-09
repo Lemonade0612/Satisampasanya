@@ -1,13 +1,17 @@
-import { api, request } from "../lib/api";
+import { api, request, ApiError } from "../lib/api";
+import { BandChooser } from "../components/shared/BandSheet";
 import logoImage from "/images/Satisampasanya_Logo_app.png";
 import { T } from "../lib/translations";
 import { useState } from "react";
 import { LangToggle, FormInput } from "../components/shared/Controls";
 import { SatiIllustration, SatiLogo } from "../components/shared/Brand";
 import { ArrowLeft, EyeOff, Eye, Check } from "lucide-react";
-import type { Lang, CurrentUser, AuthView } from "../types";
+import type { Lang, CurrentUser, AuthView, Band } from "../types";
 
-export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLangToggle: () => void; onLogin: (u: CurrentUser) => void; }) {
+// Server down or unreachable (or a proxy error page): play offline instead of showing an error.
+const unreachable = (e: unknown) => e instanceof ApiError && (e.status === 0 || e.status >= 500);
+
+export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: { lang: Lang; onLangToggle: () => void; onLogin: (u: CurrentUser) => void; onGuest: () => void; onOffline: () => void; }) {
   const t = T[lang];
   const [busy, setBusy] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -17,6 +21,8 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
   const [view, setView] = useState<AuthView>(new URLSearchParams(window.location.search).has("reset") ? "forgot" : "welcome");
   const [loginEmail, setLoginEmail] = useState(""); const [loginPw, setLoginPw] = useState(""); const [showLoginPw, setShowLoginPw] = useState(false); const [loginErrors, setLoginErrors] = useState<Record<string,string>>({});
   const [regName, setRegName] = useState(""); const [regEmail, setRegEmail] = useState(""); const [regPw, setRegPw] = useState(""); const [regConfirm, setRegConfirm] = useState(""); const [showRegPw, setShowRegPw] = useState(false); const [showConfirmPw, setShowConfirmPw] = useState(false); const [regErrors, setRegErrors] = useState<Record<string,string>>({});
+  // Sign-up age step: only the chosen group is sent. A birth year, if used, never leaves BandChooser.
+  const [regStep, setRegStep] = useState<"form" | "age">("form"); const [regBand, setRegBand] = useState<Band | null>(null);
   const [forgotEmail, setForgotEmail] = useState(""); const [forgotError, setForgotError] = useState(""); const [resetSent, setResetSent] = useState(false);
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
@@ -29,7 +35,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     if (Object.keys(errs).length > 0) return;
     setBusy(true); setAuthError('');
     try { onLogin(await api.authenticate('login', {email: loginEmail.trim(), password: loginPw})); }
-    catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
+    catch (e) { if (unreachable(e)) onOffline(); else setAuthError((e as Error).message); } finally { setBusy(false); }
   };
   const handleRegister = async () => {
     if (busy) return;
@@ -40,9 +46,10 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     if (!regConfirm) errs.confirm = t.err_required; else if (regConfirm !== regPw) errs.confirm = t.err_pw_match;
     setRegErrors(errs);
     if (Object.keys(errs).length > 0) return;
+    if (!regBand) { setRegStep("age"); return; }
     setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('register', {name: regName.trim(), email: regEmail.trim(), password: regPw})); }
-    catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
+    try { onLogin(await api.authenticate('register', {name: regName.trim(), email: regEmail.trim(), password: regPw, ageBand: regBand})); }
+    catch (e) { if (unreachable(e)) onOffline(); else { setAuthError((e as Error).message); setRegStep("form"); } } finally { setBusy(false); }
   };
   const handleForgot = async () => {
     if (busy) return;
@@ -68,6 +75,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
           <button type="button" onClick={() => setView("login")} className="flex-1 bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_login}</button>
           <button type="button" onClick={() => setView("register")} className="flex-1 border-2 border-primary text-primary font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_register}</button>
         </div>
+        <button type="button" onClick={onGuest} className="w-full mt-3 min-h-11 text-sm font-semibold text-muted-foreground underline font-lao">{lang === 'lo' ? 'ຫຼິ້ນເກມໂດຍບໍ່ມີບັນຊີ' : 'Play games without an account'}</button>
       </div>
     </div>
   );
@@ -92,6 +100,23 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
           <button type="button" onClick={() => setView("register")} className="text-sm text-muted-foreground font-lao">{t.create_account} <span className="text-primary font-semibold">{t.btn_register}</span></button>
         </div>
       </form>
+    </div>
+  );
+
+  if (view === "register" && regStep === "age") return (
+    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+      <div className="px-5 pt-3 pb-4 bg-background">
+        <div className="flex items-center justify-between mb-5">
+          <button type="button" aria-label={lang === 'lo' ? 'ກັບ' : 'Back'} onClick={() => setRegStep("form")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
+          <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
+        </div>
+        <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{lang === 'lo' ? 'ໃຜຈະໃຊ້ບັນຊີນີ້?' : 'Who will use this account?'}</h2>
+        <p className="text-sm text-muted-foreground font-semibold font-lao">{lang === 'lo' ? 'ເນື້ອຫາ, ເກມ ແລະ ຖາມ Sati ຈະປັບໃຫ້ເໝາະກັບກຸ່ມອາຍຸນີ້. ເກັບແຕ່ກຸ່ມອາຍຸ, ບໍ່ເກັບວັນເກີດ.' : 'Posts, games and Ask Sati are set for this age group. Only the group is saved, never a birthday.'}</p>
+      </div>
+      <div className="flex-1 px-5 pb-6 grid gap-4 content-start">{feedback}
+        <BandChooser lang={lang} value={regBand} onPick={setRegBand} account />
+        <button onClick={handleRegister} disabled={busy || !regBand} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao disabled:opacity-50" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signup}</button>
+      </div>
     </div>
   );
 

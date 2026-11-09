@@ -29,3 +29,5 @@ html, body, #root { background: #fff; }
 .badge-pop { animation: badge-pop .3s ease-out; }
 @keyframes badge-pop { 0% { transform: scale(.4); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) { .alert-banner, .badge-pop { animation: none; } }
+/* Elders' larger-text option (toggled in the feed header): every rem-based size grows together. */
+html.sati-large-text { font-size: calc(var(--font-size, 16px) * 1.15); }

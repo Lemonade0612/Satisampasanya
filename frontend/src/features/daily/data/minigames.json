@@ -3,6 +3,7 @@
   "quickfire": [
     {
       "id": "q1",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "bank_phishing",
       "isScam": true,
       "sender": "+856 20 0000 1111",
@@ -17,6 +18,7 @@
     },
     {
       "id": "q2",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "bank_phishing",
       "isScam": false,
       "sender": "BlueLotus App",
@@ -31,6 +33,7 @@
     },
     {
       "id": "q3",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": true,
       "sender": "HR Team 💼",
@@ -45,6 +48,7 @@
     },
     {
       "id": "q4",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": false,
       "sender": "Your school office",
@@ -59,6 +63,7 @@
     },
     {
       "id": "q5",
+      "bands": ["kids", "youth", "adult", "elder"],
       "scamType": "prize",
       "isScam": true,
       "sender": "Lucky Spin Lao",
@@ -73,6 +78,7 @@
     },
     {
       "id": "q6",
+      "bands": ["youth", "adult"],
       "scamType": "investment",
       "isScam": true,
       "sender": "Crypto Mentor",
@@ -87,6 +93,7 @@
     },
     {
       "id": "q7",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Agent Tony",
@@ -101,6 +108,7 @@
     },
     {
       "id": "q8",
+      "bands": ["kids", "youth"],
       "scamType": "prize",
       "isScam": false,
       "sender": "Cousin Kham",
@@ -115,6 +123,7 @@
     },
     {
       "id": "q9",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "bank_phishing",
       "isScam": true,
       "sender": "BlueLotus Bank",
@@ -129,6 +138,7 @@
     },
     {
       "id": "q10",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": false,
       "sender": "Vientiane Hotel HR",
@@ -143,6 +153,7 @@
     },
     {
       "id": "q11",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "investment",
       "isScam": true,
       "sender": "Sister-in-law (new number)",
@@ -157,6 +168,7 @@
     },
     {
       "id": "q12",
+      "bands": ["kids", "youth", "adult", "elder"],
       "scamType": "prize",
       "isScam": false,
       "sender": "Lao Telecom",
@@ -171,6 +183,7 @@
     },
     {
       "id": "q13",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Agent Mr. K",
@@ -185,6 +198,8 @@
     },
     {
       "id": "q14",
+      "bands": ["kids", "youth", "adult", "elder"],
+      "essential": true,
       "scamType": "bank_phishing",
       "isScam": false,
       "sender": "BlueLotus Bank",
@@ -199,6 +214,7 @@
     },
     {
       "id": "q15",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": true,
       "sender": "StarTasks App",
@@ -213,6 +229,7 @@
     },
     {
       "id": "q16",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Recruiter Ms. Lin",
@@ -227,6 +244,7 @@
     },
     {
       "id": "q17",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": true,
       "sender": "Hiring Girls 18+ 💕",
@@ -241,6 +259,7 @@
     },
     {
       "id": "q18",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "investment",
       "isScam": true,
       "sender": "Anna 🌹",
@@ -255,6 +274,7 @@
     },
     {
       "id": "q19",
+      "bands": ["adult"],
       "scamType": "investment",
       "isScam": true,
       "sender": "Lucky Mekong 88 ✅ Licensed",
@@ -269,6 +289,7 @@
     },
     {
       "id": "q20",
+      "bands": ["youth", "adult", "elder"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Somphone (old classmate)",
@@ -283,6 +304,7 @@
     },
     {
       "id": "q21",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": true,
       "sender": "Golden Star Co. HR",
@@ -297,6 +319,7 @@
     },
     {
       "id": "q22",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Training Manager",
@@ -311,6 +334,7 @@
     },
     {
       "id": "q23",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": true,
       "sender": "Fast Jobs Thailand",
@@ -325,6 +349,7 @@
     },
     {
       "id": "q24",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": true,
       "sender": "StarTasks App",
@@ -339,6 +364,7 @@
     },
     {
       "id": "q25",
+      "bands": ["youth", "adult"],
       "scamType": "investment",
       "isScam": true,
       "sender": "CoinMax Platform",
@@ -353,6 +379,7 @@
     },
     {
       "id": "q26",
+      "bands": ["youth"],
       "scamType": "fake_job",
       "isScam": false,
       "sender": "Aunt Vone",
@@ -367,6 +394,7 @@
     },
     {
       "id": "q27",
+      "bands": ["youth", "adult"],
       "scamType": "overseas_recruitment",
       "isScam": false,
       "sender": "Sister Lae",
@@ -381,6 +409,7 @@
     },
     {
       "id": "q28",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "isScam": false,
       "sender": "Provincial Labour Office",
@@ -395,6 +424,7 @@
     },
     {
       "id": "q29",
+      "bands": ["kids", "youth", "adult", "elder"],
       "scamType": "bank_phishing",
       "isScam": false,
       "sender": "Big brother Kham",
@@ -409,6 +439,7 @@
     },
     {
       "id": "q30",
+      "bands": ["adult", "elder"],
       "scamType": "prize",
       "isScam": false,
       "sender": "Wat Sisaket Committee",
@@ -423,6 +454,7 @@
     },
     {
       "id": "q31",
+      "bands": ["adult", "elder"],
       "scamType": "investment",
       "isScam": false,
       "sender": "BlueLotus App",
@@ -433,6 +465,213 @@
       "why": {
         "en": "Just a receipt for something you did. No link, nothing asked.",
         "lo": "ພຽງໃບຮັບສິ່ງທີ່ທ່ານເຮັດ. ບໍ່ມີລິ້ງ ບໍ່ຂໍຫຍັງ."
+      }
+    },
+    {
+      "id": "k1",
+      "bands": [
+        "kids",
+        "youth"
+      ],
+      "scamType": "game_item",
+      "isScam": true,
+      "sender": "FreeSkinz",
+      "text": {
+        "en": "FREE 999 skins! 🎁 Log in here: freeskinz-game.example",
+        "lo": "ສະກິນຟຣີ 999 ອັນ! 🎁 ເຂົ້າລະບົບທີ່ນີ້: freeskinz-game.example"
+      },
+      "why": {
+        "en": "Free stuff + a strange link that wants your login. Tell a trusted adult.",
+        "lo": "ຂອງຟຣີ + ລິ້ງແປກທີ່ຂໍການເຂົ້າລະບົບ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      }
+    },
+    {
+      "id": "k2",
+      "bands": [
+        "kids"
+      ],
+      "scamType": "game_item",
+      "isScam": true,
+      "sender": "DiamondShop",
+      "text": {
+        "en": "Diamonds 90% off! Send me the code from your mum’s phone.",
+        "lo": "ເພັດຫຼຸດ 90%! ສົ່ງລະຫັດຈາກໂທລະສັບແມ່ມາ."
+      },
+      "why": {
+        "en": "A code from SMS is a key to money. Never share it.",
+        "lo": "ລະຫັດຈາກ SMS ແມ່ນກະແຈເງິນ. ຢ່າແບ່ງປັນ."
+      }
+    },
+    {
+      "id": "k3",
+      "bands": [
+        "kids"
+      ],
+      "scamType": "stranger",
+      "isScam": true,
+      "sender": "Mali_12",
+      "text": {
+        "en": "Hi, I’m 12 too 😊 Which school? Let’s chat on another app. Don’t tell your mum.",
+        "lo": "ສະບາຍດີ ຂ້ອຍກໍ 12 ປີ 😊 ຮຽນໃສ? ໄປລົມແອັບອື່ນເນາະ. ຢ່າບອກແມ່."
+      },
+      "why": {
+        "en": "Asks where you study, moves to a private app and wants a secret. Tell a trusted adult.",
+        "lo": "ຖາມບ່ອນຮຽນ, ຍ້າຍໄປແອັບສ່ວນຕົວ ແລະ ຢາກໃຫ້ເປັນຄວາມລັບ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      }
+    },
+    {
+      "id": "k4",
+      "bands": [
+        "kids",
+        "youth"
+      ],
+      "scamType": "prize",
+      "isScam": true,
+      "sender": "WinnerAlert",
+      "text": {
+        "en": "You are our 1,000,000th visitor! Tap to claim a free phone 📱",
+        "lo": "ທ່ານເປັນຜູ້ເຂົ້າຊົມຄົນທີ 1,000,000! ກົດເພື່ອຮັບໂທລະສັບຟຣີ 📱"
+      },
+      "why": {
+        "en": "Nobody wins just for visiting. It’s a trap link.",
+        "lo": "ບໍ່ມີໃຜຖືກລາງວັນເພາະເຂົ້າເບິ່ງ. ແມ່ນລິ້ງກັບດັກ."
+      }
+    },
+    {
+      "id": "k5",
+      "bands": [
+        "kids"
+      ],
+      "scamType": "stranger",
+      "isScam": false,
+      "sender": "Class 4B (Teacher Vanh)",
+      "text": {
+        "en": "Homework for Monday is page 12. Have a nice weekend!",
+        "lo": "ການບ້ານວັນຈັນແມ່ນໜ້າ 12. ພັກຜ່ອນໃຫ້ມ່ວນ!"
+      },
+      "why": {
+        "en": "Your real class group, and it asks for nothing.",
+        "lo": "ກຸ່ມຫ້ອງແທ້ ແລະ ບໍ່ຂໍຫຍັງ."
+      }
+    },
+    {
+      "id": "k6",
+      "bands": [
+        "kids"
+      ],
+      "scamType": "stranger",
+      "isScam": false,
+      "sender": "Mum",
+      "text": {
+        "en": "I’m at the market, home at 6. Want mango sticky rice? 🥭",
+        "lo": "ແມ່ຢູ່ຕະຫຼາດ ກັບຮອດ 6 ໂມງ. ເອົາເຂົ້າໜຽວໝາກມ່ວງບໍ? 🥭"
+      },
+      "why": {
+        "en": "A saved contact, normal family chat, nothing secret.",
+        "lo": "ເບີທີ່ບັນທຶກໄວ້, ລົມກັນປົກກະຕິ, ບໍ່ມີຄວາມລັບ."
+      }
+    },
+    {
+      "id": "k7",
+      "bands": [
+        "kids"
+      ],
+      "scamType": "stranger",
+      "isScam": true,
+      "sender": "GiftBuddy 🎁",
+      "text": {
+        "en": "I have a gift for you! Send a selfie and your home address. Our secret 🤫",
+        "lo": "ມີຂອງຂວັນໃຫ້! ສົ່ງເຊວຟີ ແລະ ທີ່ຢູ່ເຮືອນມາ. ເປັນຄວາມລັບເດີ້ 🤫"
+      },
+      "why": {
+        "en": "Strangers asking for photos, your address or secrets are not safe. Tell a trusted adult.",
+        "lo": "ຄົນແປກໜ້າທີ່ຂໍຮູບ, ທີ່ຢູ່ ຫຼື ຄວາມລັບ ບໍ່ປອດໄພ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      }
+    },
+    {
+      "id": "e1",
+      "bands": [
+        "adult",
+        "elder"
+      ],
+      "scamType": "impersonation",
+      "isScam": true,
+      "sender": "\"Police\"",
+      "text": {
+        "en": "This is the police. Your account is used for crime. Move your money to our safe account now.",
+        "lo": "ນີ້ແມ່ນຕຳຫຼວດ. ບັນຊີທ່ານໃຊ້ກໍ່ອາຊະຍາກຳ. ໂອນເງິນມາບັນຊີປອດໄພດຽວນີ້."
+      },
+      "why": {
+        "en": "Police never ask you to move money.",
+        "lo": "ຕຳຫຼວດບໍ່ເຄີຍໃຫ້ໂອນເງິນ."
+      }
+    },
+    {
+      "id": "e2",
+      "bands": [
+        "elder"
+      ],
+      "scamType": "family_emergency",
+      "isScam": true,
+      "sender": "New number",
+      "text": {
+        "en": "Grandpa, it’s me! New phone. I need 2,000,000 kip now. Don’t tell Mum.",
+        "lo": "ພໍ່ຕູ້ ແມ່ນຫຼານເອງ! ໂທລະສັບໃໝ່. ຕ້ອງການ 2,000,000 ກີບດຽວນີ້. ຢ່າບອກແມ່."
+      },
+      "why": {
+        "en": "New number + money now + secret. Call the old number.",
+        "lo": "ເບີໃໝ່ + ເງິນດຽວນີ້ + ຄວາມລັບ. ໂທເບີເກົ່າ."
+      }
+    },
+    {
+      "id": "e3",
+      "bands": [
+        "elder"
+      ],
+      "scamType": "prize",
+      "isScam": true,
+      "sender": "Lao Lucky Draw",
+      "text": {
+        "en": "You won 30,000,000 kip! Pay 300,000 kip tax to receive it.",
+        "lo": "ທ່ານຖືກ 30,000,000 ກີບ! ຈ່າຍພາສີ 300,000 ກີບ ເພື່ອຮັບ."
+      },
+      "why": {
+        "en": "Real prizes never ask you to pay first.",
+        "lo": "ລາງວັນແທ້ບໍ່ໃຫ້ຈ່າຍກ່ອນ."
+      }
+    },
+    {
+      "id": "e4",
+      "bands": [
+        "elder"
+      ],
+      "scamType": "impersonation",
+      "isScam": true,
+      "sender": "EDL-Electric",
+      "text": {
+        "en": "Power cut in 1 hour. Pay 350,000 kip to this personal account.",
+        "lo": "ຕັດໄຟໃນ 1 ຊົ່ວໂມງ. ຈ່າຍ 350,000 ກີບ ໃສ່ບັນຊີສ່ວນຕົວນີ້."
+      },
+      "why": {
+        "en": "Companies don’t use personal accounts or 1-hour threats.",
+        "lo": "ບໍລິສັດບໍ່ໃຊ້ບັນຊີສ່ວນຕົວ ຫຼື ຂູ່ 1 ຊົ່ວໂມງ."
+      }
+    },
+    {
+      "id": "e5",
+      "bands": [
+        "elder"
+      ],
+      "scamType": "impersonation",
+      "isScam": false,
+      "sender": "Village Chief Somsak",
+      "text": {
+        "en": "Village meeting Sunday 9am at the temple hall. Bring your family book.",
+        "lo": "ປະຊຸມບ້ານວັນອາທິດ 9 ໂມງ ທີ່ສາລາວັດ. ເອົາປຶ້ມສຳມະໂນຄົວມາ."
+      },
+      "why": {
+        "en": "In person, a known person, and no money asked.",
+        "lo": "ພົບຕົວຈິງ, ຄົນຮູ້ຈັກ ແລະ ບໍ່ຂໍເງິນ."
       }
     }
   ],
@@ -496,11 +735,32 @@
         "en": "'Parcel fee' links are a top delivery scam.",
         "lo": "ລິ້ງ 'ຄ່າພັດສະດຸ' ແມ່ນການຫຼອກລວງທີ່ພົບຫຼາຍ."
       }
+    },
+    {
+      "id": "l5",
+      "bands": [
+        "kids",
+        "youth"
+      ],
+      "brand": "Rainbow Quest (game)",
+      "options": [
+        "rainbowquest.example",
+        "rainb0wquest.example",
+        "rainbowquest-free-gems.example",
+        "rainbowquest.example.claim-now.example"
+      ],
+      "safe": 0,
+      "why": {
+        "en": "Only the plain name is real. The others swap o for 0, add 'free gems', or hide the name in a long address.",
+        "lo": "ມີແຕ່ຊື່ທຳມະດາທີ່ແທ້. ອັນອື່ນປ່ຽນ o ເປັນ 0, ເພີ່ມ 'free gems' ຫຼື ເຊື່ອງຊື່ໃນທີ່ຢູ່ຍາວ."
+      }
     }
   ],
   "dashHazards": [
     {
       "id": "otp",
+      "bands": ["kids", "youth", "adult", "elder"],
+      "essential": true,
       "flag": "personal_data",
       "label": {
         "en": "OTP request",
@@ -513,6 +773,7 @@
     },
     {
       "id": "link",
+      "bands": ["kids", "youth", "adult", "elder"],
       "flag": "suspicious_link",
       "label": {
         "en": "Fake link",
@@ -525,6 +786,7 @@
     },
     {
       "id": "fee",
+      "bands": ["youth", "adult", "elder"],
       "flag": "upfront_fee",
       "label": {
         "en": "Upfront fee",
@@ -537,6 +799,7 @@
     },
     {
       "id": "passport",
+      "bands": ["youth", "adult"],
       "flag": "personal_data",
       "label": {
         "en": "Passport grab",
@@ -549,6 +812,7 @@
     },
     {
       "id": "rush",
+      "bands": ["kids", "youth", "adult", "elder"],
       "flag": "urgency",
       "label": {
         "en": "'Act now!'",
@@ -561,6 +825,7 @@
     },
     {
       "id": "prize",
+      "bands": ["kids", "youth", "adult", "elder"],
       "flag": "too_good",
       "label": {
         "en": "Free prize",
@@ -573,6 +838,8 @@
     },
     {
       "id": "secret",
+      "bands": ["kids", "youth", "adult", "elder"],
+      "essential": true,
       "flag": "off_platform",
       "label": {
         "en": "'Keep it secret'",
@@ -585,6 +852,7 @@
     },
     {
       "id": "deposit",
+      "bands": ["youth", "adult"],
       "flag": "upfront_fee",
       "label": {
         "en": "Pay to withdraw",
@@ -597,6 +865,7 @@
     },
     {
       "id": "debt",
+      "bands": ["youth", "adult"],
       "flag": "too_good",
       "label": {
         "en": "'Free' room",
@@ -609,6 +878,7 @@
     },
     {
       "id": "switch",
+      "bands": ["youth", "adult"],
       "flag": "unverified_identity",
       "label": {
         "en": "Destination changed",
@@ -621,6 +891,7 @@
     },
     {
       "id": "recruit",
+      "bands": ["youth", "adult"],
       "flag": "off_platform",
       "label": {
         "en": "'Bring a friend'",
@@ -633,6 +904,7 @@
     },
     {
       "id": "romance",
+      "bands": ["youth", "adult", "elder"],
       "flag": "too_good",
       "label": {
         "en": "Love + crypto",

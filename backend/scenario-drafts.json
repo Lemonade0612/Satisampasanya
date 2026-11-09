@@ -1,0 +1,57 @@
+[
+  {
+    "id": "draft-scholarship-01",
+    "bands": ["youth"],
+    "scamType": "fake_job",
+    "needsNativeReview": true,
+    "channel": "messenger",
+    "contact": "Global Scholar Fund",
+    "title": { "en": "The 'free' scholarship", "lo": "ທຶນການສຶກສາ 'ຟຣີ'" },
+    "intro": { "en": "AI draft: a scholarship that asks for an application fee.", "lo": "ຮ່າງ AI: ທຶນການສຶກສາທີ່ຂໍຄ່າສະໝັກ." },
+    "steps": [
+      {
+        "id": "s1",
+        "kind": "chat",
+        "messages": [
+          { "from": "them", "text": { "en": "You're selected for a full scholarship abroad! Pay 300,000 kip application fee today.", "lo": "ທ່ານຖືກຄັດເລືອກຮັບທຶນເຕັມ! ຈ່າຍຄ່າສະໝັກ 300,000 ກີບມື້ນີ້." } }
+        ],
+        "prompt": { "en": "What do you do?", "lo": "ທ່ານຈະເຮັດແນວໃດ?" },
+        "choices": [
+          { "id": "a", "action": "reply", "correct": false, "text": { "en": "Pay the fee", "lo": "ຈ່າຍຄ່າສະໝັກ" }, "consequence": { "en": "There's no scholarship. Only the fee was real.", "lo": "ບໍ່ມີທຶນ. ມີແຕ່ຄ່າທຳນຽມທີ່ແທ້." } },
+          { "id": "b", "action": "verify", "correct": true, "text": { "en": "Check with your school", "lo": "ກວດກັບໂຮງຮຽນ" }, "consequence": { "en": "Real scholarships are listed by schools and ministries.", "lo": "ທຶນແທ້ມີປະກາດໂດຍໂຮງຮຽນ ແລະ ກະຊວງ." } }
+        ]
+      }
+    ],
+    "redFlags": ["upfront_fee", "urgency", "too_good"],
+    "explanation": { "en": "You can't be 'selected' for something you never applied for.", "lo": "ທ່ານບໍ່ສາມາດ 'ຖືກຄັດເລືອກ' ສຳລັບສິ່ງທີ່ບໍ່ເຄີຍສະໝັກ." },
+    "intensity": 2,
+    "topic": "ScholarshipScam"
+  },
+  {
+    "id": "draft-free-diamonds-01",
+    "bands": ["kids"],
+    "intensity": 1,
+    "topic": "GameScam",
+    "scamType": "game_item",
+    "channel": "tiktok",
+    "contact": "FF Diamond Gift 💎",
+    "title": { "en": "Free diamonds for your game?", "lo": "ເພັດຟຣີສຳລັບເກມບໍ?" },
+    "intro": { "en": "AI draft: a TikTok account promises free game diamonds.", "lo": "ຮ່າງ AI: ບັນຊີ TikTok ສັນຍາໃຫ້ເພັດເກມຟຣີ." },
+    "steps": [
+      {
+        "id": "s1",
+        "kind": "chat",
+        "messages": [
+          { "from": "them", "text": { "en": "Congrats! 🎉 You won 5,000 free diamonds! Send your game login and password so we can add them.", "lo": "ຍິນດີດ້ວຍ! 🎉 ເຈົ້າໄດ້ຮັບເພັດຟຣີ 5,000 ເມັດ! ສົ່ງຊື່ເຂົ້າລະບົບ ແລະ ລະຫັດຜ່ານເກມມາ ເພື່ອເຕີມໃຫ້." } }
+        ],
+        "prompt": { "en": "What do you do?", "lo": "ເຈົ້າຈະເຮັດແນວໃດ?" },
+        "choices": [
+          { "id": "a", "action": "reply", "correct": false, "text": { "en": "Send my login", "lo": "ສົ່ງຊື່ເຂົ້າລະບົບ" }, "consequence": { "en": "They take your account and all your items.", "lo": "ເຂົາເອົາບັນຊີ ແລະ ຂອງທັງໝົດຂອງເຈົ້າໄປ." } },
+          { "id": "b", "action": "report", "correct": true, "text": { "en": "Don't reply, tell a trusted adult", "lo": "ບໍ່ຕອບ, ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ" }, "consequence": { "en": "Your account stays safe. Real games never ask for your password.", "lo": "ບັນຊີຂອງເຈົ້າປອດໄພ. ເກມແທ້ບໍ່ເຄີຍຂໍລະຫັດຜ່ານ." } }
+        ]
+      }
+    ],
+    "redFlags": ["too_good", "personal_data"],
+    "explanation": { "en": "Nobody gives away free diamonds for your password. Never share it, even with friends.", "lo": "ບໍ່ມີໃຜແຈກເພັດຟຣີແລກກັບລະຫັດຜ່ານ. ຢ່າບອກລະຫັດຜ່ານໃຜ, ເຖິງແມ່ນໝູ່." }
+  }
+]

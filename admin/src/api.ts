@@ -25,7 +25,22 @@ export interface AdminData {
   totals: {posts:number;users:number;comments:number;reactions:number};
   updatedAt: number;
 }
+export type L10n = {en:string;lo:string};
+export type ScenarioStatus = 'draft'|'approved'|'live'|'rejected';
+type ScenarioStep = {id:string;kind:'chat';messages:{from:string;text:L10n}[];prompt:L10n;choices:{id:string;correct:boolean;text:L10n;consequence:L10n}[]}|{id:string;kind:'flags';prompt:L10n;segments:{text:L10n;flag?:string}[]};
+export interface AdminScenario {
+  id:string;status:ScenarioStatus;bands:string[];intensity:number;topic:string;title:L10n;source:'ai_draft'|'expert';
+  createdAt:number;updatedAt:number;reviewedBy:{id:string;name:string}|null;reviewedAt:number|null;reviewNote:string;
+  scenario:{contact:string;channel:string;intro:L10n;explanation:L10n;warning?:L10n;redFlags:string[];steps:ScenarioStep[]};
+}
+export interface RetiredScenario {id:string;note:string;retiredAt:number;retiredBy:{id:string;name:string}}
+export interface ModerationEntry {id:string;kind:'post'|'scenario';targetId:string;action:string;actor:{id:string;name:string}|null;actorName:string;note:string;detail:Record<string,unknown>;createdAt:number;title:L10n|null}
 export const adminApi = {
+  scenarios: () => request<AdminScenario[]>('/admin/scenarios'),
+  reviewScenario: (id:string,status:ScenarioStatus,note:string) => request<AdminScenario>(`/admin/scenarios/${encodeURIComponent(id)}/review`,'PATCH',{status,note}),
+  moderation: () => request<ModerationEntry[]>('/admin/moderation'),
+  retired: () => request<RetiredScenario[]>('/admin/scenarios/retired'),
+  setRetired: (id:string,retired:boolean,note:string) => request<RetiredScenario[]>(`/admin/scenarios/retired/${encodeURIComponent(id)}`,'PATCH',{retired,note}),
   createUser:(data:unknown)=>request<ManagedUser>('/admin/users','POST',data),
   updateUser:(id:string,data:unknown)=>request<ManagedUser>(`/admin/users/${id}`,'PATCH',data),
   dashboard: () => request<AdminData>('/admin/dashboard'),

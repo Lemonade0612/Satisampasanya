@@ -3,13 +3,16 @@ import { readPhoto } from "../lib/images";
 import { T } from "../lib/translations";
 import { useState } from "react";
 import { AVATAR_GRADIENTS, BANNER_GRADIENTS, TOPIC_LABELS, TOPICS } from "../lib/constants";
-import { Image as ImageIcon, Camera, Pencil, LogOut } from "lucide-react";
+import { Image as ImageIcon, Camera, Pencil, LogOut, ChevronRight } from "lucide-react";
+import { bandLabel } from "../components/shared/BandSheet";
+import { TIERS } from "../features/daily/lib/age";
+import { useBand } from "../lib/band";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, CurrentUser, Post, ProfileTab, LeafState } from "../types";
 
-export function ProfileScreen({ lang, user, posts, onLogout, onUpdate }: {
-  lang: Lang; user: CurrentUser; posts: Post[]; onLogout: () => void; onUpdate: (data: Partial<CurrentUser>) => Promise<void>;
+export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeBand }: {
+  lang: Lang; user: CurrentUser; posts: Post[]; onLogout: () => void; onUpdate: (data: Partial<CurrentUser>) => Promise<void>; onChangeBand: () => void;
 }) {
   const t = T[lang];
   const [tab, setTab] = useState<ProfileTab>("posts");
@@ -208,11 +211,22 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate }: {
           </div>
         )}
       </div>
-      <div className="p-4 border-t border-border">
+      <div className="p-4 border-t border-border grid gap-3">
+        <BandSetting lang={lang} onChange={onChangeBand} />
         <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
-          <LogOut size={16} /> Sign Out
+          <LogOut size={16} /> {lang === 'lo' ? 'ອອກຈາກລະບົບ' : 'Sign out'}
         </button>
       </div>
     </div>
   );
+}
+
+// Settings: the account's age group. A parent can switch to Kids here before handing the phone to a child.
+function BandSetting({ lang, onChange }: { lang: Lang; onChange: () => void }) {
+  const band = useBand(), Icon = TIERS[band].icon;
+  return <button onClick={onChange} className="w-full flex items-center gap-3 p-3 rounded-2xl border border-border text-left font-lao min-h-12">
+    <span className={`w-10 h-10 rounded-xl bg-gradient-to-br ${TIERS[band].tint} text-white flex items-center justify-center shrink-0`}><Icon size={20} /></span>
+    <span className="flex-1"><span className="block text-xs text-muted-foreground">{lang === 'lo' ? 'ກຸ່ມອາຍຸ' : 'Age group'}</span><span className="block font-semibold">{bandLabel(band, lang)}</span></span>
+    <ChevronRight size={18} className="text-muted-foreground" />
+  </button>;
 }

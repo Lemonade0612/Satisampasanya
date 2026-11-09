@@ -1,11 +1,11 @@
-import { LayoutDashboard, ListFilter, FileText, Users, ExternalLink, LogOut } from 'lucide-react';
+import { LayoutDashboard, ListFilter, FileText, Users, ExternalLink, LogOut, Gamepad2, ScrollText } from 'lucide-react';
 import {useT} from '../i18n';
-export type AdminTab='Overview'|'Queue'|'Posts'|'Users';
+export type AdminTab='Overview'|'Queue'|'Posts'|'Scenarios'|'Moderation'|'Users';
 export const Logo=()=> <img className="brand-logo" src="/images/Satisampasanya_Logo_app.png" alt="Satisampasanya"/>;
 // The S mark from the Satisampasanya logo, without the wordmark so it stays legible at icon size.
 export const LogoMark=({size=28}:{size?:number})=> <svg width={size} height={size} viewBox="430 180 1070 1220" aria-hidden="true"><path fill="#6018EB" d="M693 350 965 193 1481 490V650L965 353 845 422 1481 789V1086L1343 1166V891L693 517Z"/><path fill="#7ABBFF" d="M588 411 450 491V788L1085 1155 965 1224 450 927V1086L965 1384 1238 1227V1060L588 685Z"/></svg>;
 export function Navigation({tab,onChange,onLogout,pending,canManageUsers,name,role}:{tab:AdminTab;onChange:(tab:AdminTab)=>void;onLogout:()=>void;pending:number;canManageUsers:boolean;name:string;role:string}){
  const t=useT();
- const items=[{tab:'Overview' as const,icon:LayoutDashboard,label:t.overview},{tab:'Queue' as const,icon:ListFilter,label:t.queue},{tab:'Posts' as const,icon:FileText,label:t.posts},{tab:'Users' as const,icon:Users,label:t.users}];
+ const items=[{tab:'Overview' as const,icon:LayoutDashboard,label:t.overview},{tab:'Queue' as const,icon:ListFilter,label:t.queue},{tab:'Posts' as const,icon:FileText,label:t.posts},{tab:'Scenarios' as const,icon:Gamepad2,label:t.scenarios},{tab:'Moderation' as const,icon:ScrollText,label:t.moderation},{tab:'Users' as const,icon:Users,label:t.users}];
  return <aside className="sd-sidebar"><div className="sd-sidebar-inner"><div className="sd-brand"><span className="sd-logo"><LogoMark/></span><div><strong>Sati</strong><small>{t.brandSub}</small></div></div><nav className="sd-nav" aria-label="Admin navigation">{items.filter(item=>item.tab!=='Users'||canManageUsers).map(item=><button key={item.tab} className={tab===item.tab?'active':''} aria-current={tab===item.tab?'page':undefined} onClick={()=>onChange(item.tab)}><item.icon size={20}/><span className="sd-nav-label">{item.label}</span>{item.tab==='Queue'&&pending>0&&<span className="sd-count" aria-label={t.waiting(pending)}>{pending}</span>}</button>)}</nav><div className="sd-sidebar-foot"><a className="sd-app-link" href={import.meta.env.VITE_APP_URL || 'http://127.0.0.1:5173'} target="_blank" rel="noreferrer"><ExternalLink size={18}/>{t.openApp}</a><div className="sd-user"><span className="sd-avatar">{name[0]?.toUpperCase()}</span><div><strong>{name}</strong><small>{role||'Workspace'}</small></div><button className="sd-signout" aria-label={t.signOut} title={t.signOut} onClick={onLogout}><LogOut size={18}/></button></div></div></div></aside>;
 }

@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm --prefix .. run backend",
+    "dev": "npm --prefix .. run dev:all",
     "start": "npm --prefix .. run backend",
     "test": "npm --prefix .. run test"
   }

@@ -6,6 +6,9 @@ export type ActiveView = "feed" | "explore" | "profile" | "assistant" | "daily";
 export type ProfileTab = "posts" | "topics" | "points";
 export type AuthView = "welcome" | "login" | "register" | "forgot";
 export type Lang = "en" | "lo";
+// Age band the viewer picked. Only this id is stored (on the device, and on the account when signed in),
+// never a birth date or exact age.
+export type Band = "kids" | "youth" | "adult" | "elder";
 export type LeafState = "none" | "pending" | "verified" | "featured";
 export type ThemeMode = "light" | "dark" | "system";
 export type ScreeningStage = "ai_screening" | "expert_review" | "auto_unlock" | "completed";
@@ -63,6 +66,12 @@ export interface Post {
   featuredPoints?: boolean;
   isNews?: boolean;
   image?: string;
+  // Age targeting: no `bands` = everyone; `essential` = safety basics shown to every band.
+  bands?: Band[];
+  essential?: boolean;
+  // Gentle text for Kids; falls back to content/contentLo.
+  contentKids?: string;
+  contentKidsLo?: string;
   hasVideo?: boolean;
   link?: string;
   interactionPeople?: Author[];
@@ -81,6 +90,7 @@ export interface Post {
 
 export interface CurrentUser {
   id?: string;
+  ageBand?: Band | null;
   handle?: string;
   bio?: string;
   followed?: string[];

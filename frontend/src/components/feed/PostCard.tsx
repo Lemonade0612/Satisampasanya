@@ -7,10 +7,12 @@ import { useState } from "react";
 import { Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, Shield, Share2 } from "lucide-react";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { TagChip } from "@/components/ui/TagChip";
+import { postText } from "../../lib/band";
 import type { Post, Lang, LeafState } from "../../types";
 
-export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRepostClick, onImageExpand, onTopicClick, following, onFollow }: {
-  following?:boolean; onFollow?:(id:string)=>void;
+// readOnly (the Kids feed): no comments, reposts, shares or stranger profiles; Kids get gentle text when a post has it.
+export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRepostClick, onImageExpand, onTopicClick, following, onFollow, readOnly = false }: {
+  following?:boolean; onFollow?:(id:string)=>void; readOnly?:boolean;
   post: Post; lang: Lang; onOpenComments: (id: string) => void;
   onLike: (id: string) => void; onRepost: (id: string) => void; onWarnedMe: (id: string) => void;
   onRepostClick: (post: Post) => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void;
@@ -25,7 +27,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   const reposted = false;
   const warned = !!post.warned;
   const [showFull, setShowFull] = useState(false);
-  const content = translatedContent || (post.contentLanguage === "lo" ? post.contentLo || post.content : post.content);
+  const content = (readOnly ? postText(post, lang, "kids") : null) || translatedContent || (post.contentLanguage === "lo" ? post.contentLo || post.content : post.content);
   const isLong = content.length > 200;
   const displayContent = showFull || !isLong ? content : content.slice(0, 200) + "...";
 
@@ -51,7 +53,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
           <AlertOctagon size={16} className="text-red-500 shrink-0 mt-0.5" />
           <p className="text-xs font-semibold text-red-700 dark:text-red-300">{t.banner_false_title}</p>
         </div>
-        <p className="text-[11px] text-red-600 dark:text-red-400 ml-6">{t.banner_correction}{lang === "lo" && post.correctionLo ? post.correctionLo : post.correction}</p>
+        {(post.correction || post.correctionLo) && <p className="text-[11px] text-red-600 dark:text-red-400 ml-6">{t.banner_correction}{lang === "lo" && post.correctionLo ? post.correctionLo : post.correction}</p>}
       </div>
     );
     if (post.state === "sla") return (
@@ -86,7 +88,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5 flex-wrap">
-              <button onClick={()=>post.author.id&&setPeopleTarget({kind:"person",id:post.author.id})} className="font-semibold text-base text-foreground text-left min-h-11">{post.author.name}</button>
+              <button onClick={()=>!readOnly&&post.author.id&&setPeopleTarget({kind:"person",id:post.author.id})} className="font-semibold text-base text-foreground text-left min-h-11">{post.author.name}</button>
               {onFollow && post.author.id && <button onClick={()=>onFollow(post.author.id!)} className="text-xs text-primary min-h-8 px-2 rounded-full bg-primary/5">{lang==="lo"?(following?"ຕິດຕາມແລ້ວ":"ຕິດຕາມ"):(following?"Following":"Follow")}</button>}
               <LeafMark state={getLeafState()} size={14} />
               {post.isNews && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">{t.news_label}</span>}
@@ -147,23 +149,23 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
           </div>
         </div>
       </div>
-      {!!post.interactionPeople?.length&&<button className="flex items-center gap-2 px-4 min-h-11 text-xs text-muted-foreground text-left font-lao" onClick={()=>setPeopleTarget({kind:'activity',id:post.id})}><span className="flex -space-x-2">{post.interactionPeople.map(person=><span key={person.id} className="w-6 h-6 rounded-full border-2 border-background flex items-center justify-center text-white text-[8px]" style={{background:person.color}}>{person.initials}</span>)}</span><span>{post.interactionPeople.map(p=>p.name).join(', ')} · {lang==='lo'?'ເບິ່ງຜູ້ມີສ່ວນຮ່ວມ':'See activity'}</span></button>}
+      {!readOnly&&!!post.interactionPeople?.length&&<button className="flex items-center gap-2 px-4 min-h-11 text-xs text-muted-foreground text-left font-lao" onClick={()=>setPeopleTarget({kind:'activity',id:post.id})}><span className="flex -space-x-2">{post.interactionPeople.map(person=><span key={person.id} className="w-6 h-6 rounded-full border-2 border-background flex items-center justify-center text-white text-[8px]" style={{background:person.color}}>{person.initials}</span>)}</span><span>{post.interactionPeople.map(p=>p.name).join(', ')} · {lang==='lo'?'ເບິ່ງຜູ້ມີສ່ວນຮ່ວມ':'See activity'}</span></button>}
       <div className="flex items-center justify-between px-2 py-2">
         <button disabled={post.frozen} aria-label={lang==='lo'?'ມັກໂພສ':'Like post'} onClick={() => { onLike(post.id); }} className={`disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs transition-colors ${liked ? "text-red-500 bg-red-50 dark:bg-red-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
           <Heart size={16} fill={liked ? "currentColor" : "none"} /> {post.likes}
         </button>
-        <button disabled={post.frozen} aria-label={lang==='lo'?'ຄຳຄິດເຫັນ':'Comments'} onClick={() => onOpenComments(post.id)} className="disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
+        {!readOnly&&<><button disabled={post.frozen} aria-label={lang==='lo'?'ຄຳຄິດເຫັນ':'Comments'} onClick={() => onOpenComments(post.id)} className="disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
           <MessageCircle size={16} /> {post.comments}
         </button>
         <button disabled={post.frozen} aria-label={lang==='lo'?'ແຊຣ໌ໂພສ':'Repost'} onClick={() => onRepostClick(post)} className={`disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs transition-colors ${reposted ? "text-emerald-500 bg-emerald-50 dark:bg-emerald-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
           <Repeat2 size={16} /> {post.reposts}
-        </button>
+        </button></>}
         <button disabled={post.frozen} aria-label={lang==='lo'?'ຊ່ວຍໃຫ້ຂ້ອຍປອດໄພ':'Helped me stay safe'} onClick={() => { onWarnedMe(post.id); }} className={`disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs transition-colors ${warned ? "text-amber-500 bg-amber-50 dark:bg-amber-950/30" : "text-muted-foreground hover:bg-muted/50"}`}>
           <span className="flex flex-col items-center gap-1 max-w-20"><span className="flex items-center gap-1"><Shield size={16} /> {post.warnedMe}</span><span className="text-[10px] leading-tight font-lao text-center">{lang==='lo'?'ຊ່ວຍໃຫ້ປອດໄພ':'Helped me stay safe'}</span></span>
         </button>
-        <button disabled={post.frozen} aria-label={lang === 'lo' ? 'ແບ່ງປັນ' : 'Share post'} onClick={async () => { setShareError('');try{const checked=await request<Post>(`/posts/${post.id}/share`,'POST',{});const value={title:checked.author.name,text:content,...(checked.link?{url:checked.link}:{})};if(navigator.share){await navigator.share(value);await request(`/posts/${post.id}/share`,'POST',{completed:true});}else if(navigator.clipboard)await navigator.clipboard.writeText(content+(checked.link?'\n'+checked.link:''));}catch(error){if((error as Error).name!=='AbortError')setShareError((error as Error).message);} }} className="disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
+        {!readOnly&&<button disabled={post.frozen} aria-label={lang === 'lo' ? 'ແບ່ງປັນ' : 'Share post'} onClick={async () => { setShareError('');try{const checked=await request<Post>(`/posts/${post.id}/share`,'POST',{});const value={title:checked.author.name,text:content,...(checked.link?{url:checked.link}:{})};if(navigator.share){await navigator.share(value);await request(`/posts/${post.id}/share`,'POST',{completed:true});}else if(navigator.clipboard)await navigator.clipboard.writeText(content+(checked.link?'\n'+checked.link:''));}catch(error){if((error as Error).name!=='AbortError')setShareError((error as Error).message);} }} className="disabled:opacity-40 flex items-center gap-1.5 min-h-11 min-w-11 px-2 py-2 rounded-full text-xs text-muted-foreground hover:bg-muted/50 transition-colors">
           <Share2 size={16} /> {post.shares||0}
-        </button>
+        </button>}
       </div>
       {shareError&&<p role="alert" className="px-4 pb-3 text-sm text-red-700 font-lao">{shareError}</p>}
       {peopleTarget&&<PeoplePanel target={peopleTarget} lang={lang} onClose={()=>setPeopleTarget(null)} onOpenPost={onOpenComments}/>}

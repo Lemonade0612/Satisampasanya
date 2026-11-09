@@ -1,6 +1,7 @@
 [
   {
     "id": "p1",
+    "bands": ["kids", "youth", "adult", "elder"],
     "author": {
       "name": "Sarak Sivilay",
       "handle": "@sarak_s",
@@ -51,6 +52,10 @@
   },
   {
     "id": "p3",
+    "bands": ["kids", "youth", "adult", "elder"],
+    "essential": true,
+    "contentKids": "Some phone calls and messages are tricks. Warning signs: a prize you never entered, someone pretending to be from the government, or anyone asking for secret codes. What to do: don't answer, don't click, and tell a trusted adult right away.",
+    "contentKidsLo": "ບາງສາຍໂທ ແລະ ຂໍ້ຄວາມແມ່ນກົນຫຼອກ. ສັນຍານເຕືອນ: ລາງວັນທີ່ບໍ່ເຄີຍເຂົ້າຮ່ວມ, ຄົນທີ່ປອມເປັນລັດຖະບານ ຫຼື ຄົນທີ່ຂໍລະຫັດລັບ. ສິ່ງທີ່ຕ້ອງເຮັດ: ບໍ່ຕອບ, ບໍ່ກົດ ແລະ ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈທັນທີ.",
     "author": {
       "name": "Sati Team",
       "handle": "@sati_team",
@@ -78,6 +83,7 @@
   },
   {
     "id": "p4",
+    "bands": ["youth", "adult"],
     "author": {
       "name": "Bounmy Thao",
       "handle": "@bounmy_t",
@@ -126,6 +132,7 @@
   },
   {
     "id": "p6",
+    "bands": ["youth", "adult"],
     "author": {
       "name": "Phonesavanh K.",
       "handle": "@phsavanh",
@@ -148,6 +155,7 @@
   },
   {
     "id": "p7",
+    "bands": ["youth", "adult", "elder"],
     "author": {
       "name": "Malee Souphanh",
       "handle": "@malee_sp",
@@ -173,6 +181,7 @@
   },
   {
     "id": "p8",
+    "bands": ["youth", "adult", "elder"],
     "author": {
       "name": "Khamla Vongsa",
       "handle": "@khamla_v",
@@ -222,6 +231,7 @@
   },
   {
     "id": "p10",
+    "bands": ["youth", "adult"],
     "author": {
       "name": "Sati Team",
       "handle": "@sati_team",

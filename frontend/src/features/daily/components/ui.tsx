@@ -46,7 +46,7 @@ export function LikeButton({ id, lang, compact }: { id: string; lang: Lang; comp
       onClick={e => { e.stopPropagation(); const next = toggleLike(id); setLike(next); if (next.liked) setBurst(b => b + 1); navigator.vibrate?.(15); }}
       className={`inline-flex items-center gap-1 rounded-full px-3 min-h-11 text-sm font-semibold transition-colors ${like.liked ? 'text-pink-600 bg-pink-50 dark:bg-pink-950/40' : 'text-muted-foreground bg-muted'}`}>
       <Heart key={burst} size={18} fill={like.liked ? 'currentColor' : 'none'} className={like.liked ? 'daily-pop' : ''} />
-      {like.count}{!compact && <span className="sr-only">{DT[lang].like}</span>}
+      {!compact && <span className="sr-only">{DT[lang].like}</span>}
     </button>
   );
 }

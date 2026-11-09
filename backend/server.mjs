@@ -1,9 +1,12 @@
-import {postLocked} from './post-lock.mjs';
+import {postLocked,visibleTo} from './post-lock.mjs';
 import {notifyReviewers} from './review-queue.mjs';
 import {assistantUsage,assistantReply} from './assistant.mjs';
 import {translationEnabled,translateText} from './translation.mjs';
 import {accessFor,manageUser} from './access.mjs';
-import { adminSnapshot, reviewPost } from './admin.mjs';
+import { adminSnapshot, reviewPost, alertNews } from './admin.mjs';
+import {reservedName} from './names.mjs';
+import {isBand,postVisibleToBand,canPostAsBand} from '../shared/bands.mjs';
+import {createScenario,reviewScenario,staffScenarios,publicScenarios,moderationLog,logScreening,setBundledRetired,staffRetired} from './scenarios.mjs';
 import { apnsSender, dispatchPushes } from './push.mjs';
 import {checkPost} from './safety/post-check.mjs';
 import {modelConfigured} from './safety/model.mjs';
@@ -38,8 +41,12 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
-  const db = openStore(database, seed), clients = new Set(), rate = new Map();
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], trustProxy = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
+  const db = openStore(database, seed), clients = new Set(), rate = new Map(), loginFailures = new Map();
+  // Behind nginx every socket is the proxy, so the client address comes from X-Real-IP, which nginx
+  // overwrites with $remote_addr. Without a trusted proxy the header is client-controlled and ignored.
+  const clientIp = req => { const real = trustProxy && req.headers['x-real-ip']; return typeof real === 'string' && real.trim() ? real.trim() : req.socket.remoteAddress; };
+  const LOGIN_FAILURES = 10, LOGIN_LOCK_MS = 15 * 60000;
   const allowed = new Set([
   // User frontend
   'http://localhost:5173',
@@ -79,7 +86,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
       const url = new URL(req.url, 'http://localhost'), path = url.pathname;
       if (req.method !== 'GET') {
-        const key = `${req.socket.remoteAddress}:${(path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 'auth' : 'write'}`;
+        const key = `${clientIp(req)}:${(path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 'auth' : 'write'}`;
         const now = Date.now(); const entry = rate.get(key) || { count: 0, until: now + 60000 };
         if (entry.until < now) { entry.count = 0; entry.until = now + 60000; }
         entry.count++; rate.set(key, entry);
@@ -91,6 +98,10 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         return res.end();
       }
       const user = currentUser(db, req);
+      // The account's stored band wins; guests say which band is playing. Without either, nothing is band-filtered.
+      const requestedBand = url.searchParams.get('band');
+      const band = user?.age_band || (isBand(requestedBand) ? requestedBand : null);
+      const forBand = rows => rows.filter(row => postVisibleToBand(JSON.parse(row.data), band));
       if (path.startsWith('/api/admin/') && path !== '/api/admin/auth/login') {
         if (!user) fail('Please sign in.',401);
         const access=accessFor(db,user);
@@ -103,6 +114,29 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           }
         }
         if (req.method === 'GET' && path === '/api/admin/dashboard') return send(res,200,adminSnapshot(db,user));
+        // Viewers may read scenarios and the log; only reviewers and admins may submit or decide.
+        const canReview=['reviewer','admin'].includes(access.role);
+        if (req.method === 'GET' && path === '/api/admin/scenarios') return send(res,200,staffScenarios(db));
+        if (req.method === 'GET' && path === '/api/admin/moderation') return send(res,200,moderationLog(db));
+        if (req.method === 'GET' && path === '/api/admin/scenarios/retired') return send(res,200,staffRetired(db));
+        const retire = /^\/api\/admin\/scenarios\/retired\/([^/]+)$/.exec(path);
+        if (req.method === 'PATCH' && retire) {
+          if(!canReview)fail('Review permission is required.',403);
+          const data = await body(req);
+          if (typeof data.retired !== 'boolean') fail('Choose retire or restore.');
+          const value=setBundledRetired(db,decodeURIComponent(retire[1]),data.retired,text(data.note,1000,true),user);broadcast();return send(res,200,value);
+        }
+        if (req.method === 'POST' && path === '/api/admin/scenarios') {
+          if(!canReview)fail('Review permission is required.',403);
+          const value=createScenario(db,await body(req),user);broadcast();return send(res,201,value);
+        }
+        const scenarioReview = /^\/api\/admin\/scenarios\/([^/]+)\/review$/.exec(path);
+        if (req.method === 'PATCH' && scenarioReview) {
+          if(!canReview)fail('Review permission is required.',403);
+          const data = await body(req);
+          if (!['approved','live','rejected','draft'].includes(data.status)) fail('Choose approve, make live, reject or return to draft.');
+          const value=reviewScenario(db,scenarioReview[1],data.status,text(data.note,1000,true),user);broadcast();return send(res,200,value);
+        }
         const review = /^\/api\/admin\/posts\/([^/]+)\/review$/.exec(path);
         if (req.method === 'PATCH' && review) {
           if(!['reviewer','admin'].includes(access.role))fail('Review permission is required.',403);
@@ -117,22 +151,24 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       }
       if (req.method === 'GET' && path === '/api/features') return send(res,200,{automaticTranslation:translationEnabled()||modelConfigured(),translationProvider:translationEnabled()?'NLLB-200':modelConfigured()?'OpenAI':'none',screening:modelConfigured()?'ai':'unavailable',assistant:modelConfigured()});
       if (req.method === 'GET' && path === '/api/health') return send(res, 200, { ok:true });
+      // Public: live scenarios for one age band only. Drafts, approved-but-unpublished and rejected rows never leave the server.
+      if (req.method === 'GET' && path === '/api/scenarios') return send(res,200,publicScenarios(db,user?.age_band||requestedBand));
       if (req.method === 'GET' && path === '/api/events') {
         res.writeHead(200, { 'Content-Type':'text/event-stream', 'Cache-Control':'no-cache', Connection:'keep-alive' });
         res.write('event: change\ndata: {}\n\n'); clients.add(res);
         const interval = setInterval(() => res.write(': keepalive\n\n'), 25000);
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
-      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().map(p => postView(db,p,user?.id)));
+      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(JSON.parse(p.data),band))).map(p => postView(db,p,user?.id)));
       const personMatch=/^\/api\/people\/([^/]+)$/.exec(path);
       if(req.method==='GET'&&personMatch){
         const person=db.prepare('SELECT id,name,profile FROM users WHERE id=?').get(personMatch[1]);if(!person)fail('Person not found.',404);
-        const posts=db.prepare("SELECT * FROM posts WHERE user_id=? AND COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 100").all(person.id).map(row=>postView(db,row,user?.id));
+        const posts=db.prepare("SELECT * FROM posts WHERE user_id=? AND COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 100").all(person.id).filter(row=>visibleTo(db,row,user?.id)&&(row.user_id===user?.id||postVisibleToBand(JSON.parse(row.data),band))).map(row=>postView(db,row,user?.id));
         return send(res,200,{person:authorView(person),posts});
       }
       const activityMatch=/^\/api\/posts\/([^/]+)\/activity$/.exec(path);
       if(req.method==='GET'&&activityMatch){
-        if(!db.prepare('SELECT id FROM posts WHERE id=?').get(activityMatch[1]))fail('Post not found.',404);
+        const target=db.prepare('SELECT id,user_id,data FROM posts WHERE id=?').get(activityMatch[1]);if(!target||!visibleTo(db,target,user?.id))fail('Post not found.',404);
         const id=activityMatch[1], people=(sql,...args)=>db.prepare(sql).all(...args).map(authorView);
         return send(res,200,{likes:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'like'),helpful:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'warned'),shares:people('SELECT u.id,u.name,u.profile FROM users u JOIN shares s ON s.user_id=u.id WHERE s.post_id=? ORDER BY u.name',id),reposts:people("SELECT DISTINCT u.id,u.name,u.profile FROM users u JOIN posts p ON p.user_id=u.id WHERE json_extract(p.data,'$.repostOf')=? AND COALESCE(json_extract(p.data,'$.seedArchived'),0)=0 ORDER BY u.name",id)});
       }
@@ -144,11 +180,23 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if (path.endsWith('register')) {
           if (row) fail('An account already uses this email.',409);
           const name = text(data.name,80,true), id = randomUUID(), salt = randomBytes(16).toString('hex');
+          if (reservedName(name)) fail('This display name is reserved. Choose another name.');
           const hash = await passwordHash(pw,salt);
-          try { db.prepare('INSERT INTO users(id,email,name,password,salt) VALUES (?,?,?,?,?)').run(id,email,name,hash,salt); } catch (e) { if (e.message.includes('UNIQUE')) fail('An account already uses this email.',409); throw e; }
+          if (data.ageBand !== undefined && !isBand(data.ageBand)) fail('Choose a valid age group.');
+          try { db.prepare('INSERT INTO users(id,email,name,password,salt,age_band) VALUES (?,?,?,?,?,?)').run(id,email,name,hash,salt,data.ageBand ?? null); } catch (e) { if (e.message.includes('UNIQUE')) fail('An account already uses this email.',409); throw e; }
           db.prepare('INSERT INTO user_access(user_id,created) VALUES (?,?)').run(id,Date.now());
           row = db.prepare('SELECT * FROM users WHERE id=?').get(id);
-        } else if (!row || !await passwordMatches(pw,row)) fail('Incorrect email or password.',401);
+        } else {
+          const now = Date.now(), failures = loginFailures.get(email);
+          if (failures && failures.until > now && failures.count >= LOGIN_FAILURES) fail('Too many failed sign-in attempts. Try again in 15 minutes or reset your password.',429);
+          if (!row || !await passwordMatches(pw,row)) {
+            const entry = failures && failures.until > now ? failures : { count: 0, until: now + LOGIN_LOCK_MS };
+            entry.count++; loginFailures.set(email, entry);
+            if (loginFailures.size > 10000) for (const [k,v] of loginFailures) if (v.until < now) loginFailures.delete(k);
+            fail('Incorrect email or password.',401);
+          }
+          loginFailures.delete(email);
+        }
         if(accessFor(db,row).status!=='active')fail('This account is inactive. Contact an administrator.',403);
         if(path === '/api/admin/auth/login' && !['admin','reviewer','viewer'].includes(accessFor(db,row).role)) fail('This account does not have workspace access.',403);
         db.prepare('INSERT INTO user_access(user_id,last_login) VALUES (?,?) ON CONFLICT(user_id) DO UPDATE SET last_login=excluded.last_login').run(row.id,Date.now());
@@ -166,11 +214,12 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const salt = randomBytes(16).toString('hex'), hash = await passwordHash(pw,salt);
         db.exec('BEGIN');
         try { if (!db.prepare('DELETE FROM resets WHERE token=?').run(digest(token)).changes) fail('Reset link was already used.'); db.prepare('UPDATE users SET password=?,salt=? WHERE id=?').run(hash,salt,row.user_id); db.prepare('DELETE FROM sessions WHERE user_id=?').run(row.user_id); db.exec('COMMIT'); } catch(e) { db.exec('ROLLBACK'); throw e; }
+        loginFailures.delete(db.prepare('SELECT email FROM users WHERE id=?').get(row.user_id)?.email);
         return send(res,200,{ok:true});
       }
       const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate|share))?$/.exec(path);
       if (req.method === 'GET' && match?.[2] === 'comments') {
-        if (!db.prepare('SELECT id FROM posts WHERE id=?').get(match[1])) fail('Post not found.',404);
+        const target=db.prepare('SELECT id,user_id,data FROM posts WHERE id=?').get(match[1]);if (!target||!visibleTo(db,target,user?.id)) fail('Post not found.',404);
         return send(res,200,db.prepare('SELECT comments.*,users.name,users.profile FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
       }
       if (!user) fail('Please sign in.',401);
@@ -178,7 +227,8 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'POST' && path === '/api/assistant') {
         const data=await body(req);
         if(!['text','post'].includes(data.kind)||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
-        return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto'},assistantServices));
+        const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
+        return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto',band:askBand},assistantServices));
       }
       if (req.method === 'POST' && path === '/api/translate') {
         const data=await body(req),value=text(data.text,2000,true);
@@ -205,14 +255,33 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'PATCH' && path === '/api/profile') {
         const data = await body(req), profile = JSON.parse(user.profile);
         const name = text(data.name ?? user.name,80,true);
+        if (name !== user.name && reservedName(name)) fail('This display name is reserved. Choose another name.');
         if (data.bio !== undefined) profile.bio = text(data.bio,500);
+        if (data.ageBand !== undefined && data.ageBand !== user.age_band) {
+          if (!isBand(data.ageBand)) fail('Choose a valid age group.');
+          // Anyone may switch an account to Kids (a parent handing over the phone). Leaving Kids needs the
+          // account password, so a child cannot unlock posting and older content with one tap.
+          if (user.age_band === 'kids') {
+            const failures = loginFailures.get(user.email), now = Date.now();
+            if (failures && failures.until > now && failures.count >= LOGIN_FAILURES) fail('Too many wrong passwords. Try again in 15 minutes.',429);
+            if (typeof data.password !== 'string' || !await passwordMatches(data.password,user)) {
+              const entry = failures && failures.until > now ? failures : { count: 0, until: now + LOGIN_LOCK_MS };
+              entry.count++; loginFailures.set(user.email, entry);
+              fail('A parent or guardian needs to enter the account password to leave Kids mode.',403);
+            }
+            loginFailures.delete(user.email);
+          }
+          db.prepare('UPDATE users SET age_band=? WHERE id=?').run(data.ageBand,user.id);
+        }
         if (data.followed !== undefined) { if (!Array.isArray(data.followed) || data.followed.length>10 || data.followed.some(t=>!validTag(t))) fail('Invalid topics.'); profile.followed=cleanTags(data.followed); }
         if(data.following!==undefined){if(!Array.isArray(data.following)||data.following.length>200||data.following.some(id=>typeof id!=='string'||id===user.id||!db.prepare('SELECT id FROM users WHERE id=?').get(id)))fail('Choose valid community accounts to follow.');profile.following=[...new Set(data.following)];}
         for (const k of ['avatar','banner']) if (data[k] !== undefined) profile[k]=image(data[k]) || null;
         db.prepare('UPDATE users SET name=?,profile=? WHERE id=?').run(name,JSON.stringify(profile),user.id); broadcast();
         return send(res,200,userView(db.prepare('SELECT * FROM users WHERE id=?').get(user.id)));
       }
+      const kidsNoPost = () => { if (!canPostAsBand(user.age_band)) fail('Kids accounts can read and play, but not post, comment or repost.',403); };
       if (req.method === 'POST' && path === '/api/posts') {
+        kidsNoPost();
         const data = await body(req), content = text(data.content,2000), contentLo = text(data.contentLo,2000);
         if (!content && !contentLo) fail('Write your post in English or Lao.');
         if (!Array.isArray(data.tags) || data.tags.length>10 || data.tags.some(t=>!validTag(t))) fail('Use up to 10 hashtags: letters, Lao characters, numbers or underscores, up to 40 characters each.');
@@ -225,13 +294,14 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];
         if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=5)fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
         db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now());
+        logScreening(db,post);
         if(post.state==='flagged')db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),user.id,'Safety review','safety',post.id,Date.now());
-        if(post.isNews)for(const recipient of db.prepare('SELECT id FROM users WHERE id<>?').all(user.id))db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),recipient.id,user.name,'news',post.id,Date.now());
+        if(post.isNews&&['reviewer','admin'].includes(accessFor(db,user).role))alertNews(db,db.prepare('SELECT * FROM posts WHERE id=?').get(post.id));
         sweep();broadcast();
         return send(res,201,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(post.id),user.id));
       }
       if (req.method === 'POST' && match) {
-        const row = db.prepare('SELECT * FROM posts WHERE id=?').get(match[1]); if (!row) fail('Post not found.',404);
+        const row = db.prepare('SELECT * FROM posts WHERE id=?').get(match[1]); if (!row || !visibleTo(db,row,user.id)) fail('Post not found.',404);
         if(match[2]!=='translate'){
           const current=JSON.parse(row.data);
           if(!current.check&&!current.review){
@@ -254,6 +324,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           broadcast();return send(res,200,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(row.id),user.id));
         }
         if (match[2] === 'share'){if(data.completed===true){db.prepare('INSERT OR IGNORE INTO shares VALUES (?,?,?)').run(row.id,user.id,Date.now());broadcast();}return send(res,200,postView(db,row,user.id));}
+        if (match[2] === 'comments' || match[2] === 'reposts') kidsNoPost();
         if (match[2] === 'comments') {
           const value = text(data.text,1000,true);
           if (db.prepare('SELECT COUNT(*) n FROM comments WHERE user_id=? AND created>?').get(user.id,Date.now()-86400000).n>=5) fail('Limit reached: 5 comments per 24 hours.',429);
@@ -271,7 +342,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           if(value)await check(post);else{post.check=original.check;post.screening=original.screening;post.review=original.review;post.frozen=false;}
           if(postLocked(db,db.prepare('SELECT id,data FROM posts WHERE id=?').get(row.id)))fail('This post is under expert review.',409);
           if(db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NOT NULL").get(user.id,Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00')).n>=10)fail('Daily repost limit reached.',429);
-          db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now()); notify('repost');
+          db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now()); if(value)logScreening(db,post); notify('repost');
         } else fail('Route not found.',404);
         broadcast(); return send(res,200,postView(db,row,user.id));
       }
@@ -281,7 +352,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   return {server,db,deliver,close:async()=>{clearInterval(reviewTimer);clearInterval(pushTimer);await pushing;push?.close?.();for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
   app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;const port=process.env.API_PORT||3001;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
   app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log(`Sati backend: http://${process.env.API_HOST||'127.0.0.1'}:${process.env.API_PORT||3001}`));
   for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));

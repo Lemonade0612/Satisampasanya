@@ -1,10 +1,10 @@
 import { Armchair, Backpack, Briefcase, Headphones, type LucideIcon } from 'lucide-react';
-import { load, save } from './storage';
+import { BANDS, getBand, hasBand, setBand, type Band } from '../../../lib/band';
 
-// Age groups tune every game: kids and elders get a calmer pace and visible hints,
-// youth and adults get timers, hidden clues and faster runs.
-export type AgeTier = 'kid' | 'youth' | 'adult' | 'elder';
-export const TIER_IDS: AgeTier[] = ['kid', 'youth', 'adult', 'elder'];
+// Age bands tune how every game plays: kids and elders get a calmer pace and visible hints,
+// youth and adults get timers, hidden clues and faster runs. What content each band sees lives in lib/band.ts.
+export type AgeTier = Band;
+export const TIER_IDS: AgeTier[] = BANDS;
 
 export type TierConfig = {
   icon: LucideIcon; range: string; tint: string;
@@ -17,30 +17,30 @@ export type TierConfig = {
 };
 
 export const TIERS: Record<AgeTier, TierConfig> = {
-  kid: {
+  kids: {
     icon: Backpack, range: '6–14', tint: 'from-amber-400 to-orange-500',
     dash: { speed: 0.022, hearts: 5, air: 0.12, airFrom: 140, gap: [44, 36], gateSec: 0, lapBoost: 0.1 },
-    calls: 3, callSec: 0, quick: 6, quickSec: 0, hiddenClues: false, voice: false,
+    calls: 5, callSec: 0, quick: 6, quickSec: 0, hiddenClues: false, voice: false,
   },
   youth: {
     icon: Headphones, range: '15–24', tint: 'from-fuchsia-500 to-violet-600',
     dash: { speed: 0.038, hearts: 3, air: 0.45, airFrom: 60, gap: [26, 26], gateSec: 7, lapBoost: 0.18 },
-    calls: 5, callSec: 12, quick: 10, quickSec: 6, hiddenClues: true, voice: false,
+    calls: 6, callSec: 12, quick: 10, quickSec: 6, hiddenClues: true, voice: false,
   },
   adult: {
     icon: Briefcase, range: '25–59', tint: 'from-sky-500 to-indigo-600',
     dash: { speed: 0.032, hearts: 3, air: 0.38, airFrom: 80, gap: [30, 28], gateSec: 9, lapBoost: 0.15 },
-    calls: 5, callSec: 15, quick: 10, quickSec: 8, hiddenClues: true, voice: false,
+    calls: 6, callSec: 15, quick: 10, quickSec: 8, hiddenClues: true, voice: false,
   },
   elder: {
     icon: Armchair, range: '60+', tint: 'from-emerald-500 to-teal-600',
     dash: { speed: 0.02, hearts: 5, air: 0.08, airFrom: 160, gap: [46, 38], gateSec: 0, lapBoost: 0.08 },
-    calls: 4, callSec: 0, quick: 6, quickSec: 0, hiddenClues: false, voice: true,
+    calls: 6, callSec: 0, quick: 6, quickSec: 0, hiddenClues: false, voice: true,
   },
 };
 
-const KEY = 'sati-age-tier';
-export const hasAge = () => load<AgeTier | null>(KEY, null) !== null;
-export const getAge = (): AgeTier => { const v = load<AgeTier | null>(KEY, null); return v && v in TIERS ? v : 'youth'; };
-export const setAge = (t: AgeTier) => save(KEY, t);
+// Thin aliases over the shared band store, kept so the games read the same way they always did.
+export const hasAge = hasBand;
+export const getAge = getBand;
+export const setAge = setBand;
 export const tier = () => TIERS[getAge()];

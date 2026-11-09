@@ -1,4 +1,4 @@
-import {CHECK_PROMPT,ASK_PROMPT,INTENT_PROMPT} from './prompts.mjs';
+import {CHECK_PROMPT,INTENT_PROMPT,askPrompt} from './prompts.mjs';
 import {modelReply,inputLanguage,readSafetyConfig} from './model.mjs';
 export const LABELS=['scam_risk','trafficking_recruitment','phishing','impersonation','misinformation','fear_bait','harassment','victim_blaming','profanity_only','off_topic','political_sarcasm','satire','safe_tip','news'];
 const reasonSchema={type:'object',additionalProperties:false,properties:{text:{type:'string'},evidence:{type:'string'}},required:['text','evidence']};
@@ -46,12 +46,12 @@ export async function checkContent(text,{reply=modelReply,onProgress=()=>{}}={})
   return guardVerdict(repaired,text);
  }
 }
-export async function askSafety(text,{reply=modelReply}={}){
+export async function askSafety(text,{reply=modelReply,band='youth'}={}){
  const language=inputLanguage(text);let helplines=[];
  try{helplines=JSON.parse(readSafetyConfig().helplines);}catch{}
  if(!Array.isArray(helplines))helplines=[];
  helplines=helplines.filter(item=>typeof item?.name==='string'&&typeof item?.phone==='string');
- const result=await reply(ASK_PROMPT,{text,language,localHelplines:helplines},{schema:answerSchema,name:'sati_answer'});
+ const result=await reply(askPrompt(band),{text,language,localHelplines:helplines},{schema:answerSchema,name:'sati_answer'});
  if(!result||!Array.isArray(result.steps)||result.steps.length<2||result.steps.length>4||[result.answer,...result.steps,result.question,result.offer].some(value=>!validUserText(value,language))||!result.answer?.trim()||!result.offer?.trim())throw invalid(language);
  const full=[result.answer,...result.steps,result.question,result.offer].join('\n');
  if(/FREEZED|flagged|severity|verdict|targeted harassment|Profanity detected/iu.test(full))throw invalid(language);

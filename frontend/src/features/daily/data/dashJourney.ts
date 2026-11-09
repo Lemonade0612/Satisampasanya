@@ -128,9 +128,22 @@ export const TIPS: T2[] = [
   { en: 'Worried someone is trapped? Lao Women\'s Union 1362, police 1300. Never post their location publicly.', lo: 'ເປັນຫ່ວງວ່າມີຄົນຖືກກັກ? ສະຫະພັນແມ່ຍິງລາວ 1362, ຕຳຫຼວດ 1300. ຢ່າໂພສບ່ອນຢູ່ຂອງເຂົາສາທາລະນະ.' },
 ];
 
+// Kids get these instead of the stop facts and TIPS above, which include trafficking detail.
+export const KIDS_TIPS: T2[] = [
+  { en: 'Your password is only for you. Not even friends get it.', lo: 'ລະຫັດຜ່ານແມ່ນຂອງເຈົ້າຄົນດຽວ. ໝູ່ກໍບໍ່ໃຫ້.' },
+  { en: 'A code sent by SMS is a key. Never tell anyone.', lo: 'ລະຫັດທາງ SMS ແມ່ນກະແຈ. ຢ່າບອກໃຜ.' },
+  { en: 'Free skins or diamonds from a stranger are a trick.', lo: 'ສະກິນ ຫຼື ເພັດຟຣີຈາກຄົນແປກໜ້າ ແມ່ນກົນຫຼອກ.' },
+  { en: '"Keep it secret" means: tell a trusted adult now.', lo: '"ຢ່າບອກໃຜ" ໝາຍຄວາມວ່າ: ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈດຽວນີ້.' },
+  { en: 'Never share your school, address or phone number online.', lo: 'ຢ່າບອກໂຮງຮຽນ, ທີ່ຢູ່ ຫຼື ເບີໂທ ທາງອອນລາຍ.' },
+  { en: 'Never meet an online friend alone. Ask a grown-up first.', lo: 'ຢ່າພົບໝູ່ອອນລາຍຄົນດຽວ. ຖາມຜູ້ໃຫຍ່ກ່ອນ.' },
+  { en: 'Scary messages want you to rush. Stop and show a grown-up.', lo: 'ຂໍ້ຄວາມຂູ່ຢາກໃຫ້ເຈົ້າຟ້າວ. ຢຸດ ແລ້ວໃຫ້ຜູ້ໃຫຍ່ເບິ່ງ.' },
+  { en: 'Telling an adult is never getting in trouble. It’s being smart.', lo: 'ການບອກຜູ້ໃຫຍ່ ບໍ່ແມ່ນຄວາມຜິດ. ແມ່ນຄວາມສະຫຼາດ.' },
+];
+
 // Seeded once per session so each visit shows a different spread of facts.
 const SEED = Math.floor(Math.random() * TIPS.length);
 export const routeFor = (country: string) => ROUTES[country] ?? ROUTES.LA;
 // First lap: the stop's own fact. Later laps (and stops without one) draw from TIPS so nothing repeats too soon.
-export const factFor = (stop: Stop, i: number, lap = 0) =>
-  (lap === 0 && stop.fact) ? stop.fact : TIPS[(SEED + i * 7 + lap * 3) % TIPS.length];
+export const factFor = (stop: Stop, i: number, lap = 0, kids = false) =>
+  kids ? KIDS_TIPS[(SEED + i * 3 + lap) % KIDS_TIPS.length]
+    : (lap === 0 && stop.fact) ? stop.fact : TIPS[(SEED + i * 7 + lap * 3) % TIPS.length];

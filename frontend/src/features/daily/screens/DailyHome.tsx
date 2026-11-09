@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { BarChart3, ShieldCheck, Swords, Flag, Shuffle, Link2, Zap, MessagesSquare, Play, Search, PhoneCall, BellRing, Trophy, X, ChevronDown } from 'lucide-react';
-import { AgeSheet } from '../components/AgePicker';
-import { TIERS, getAge, hasAge, setAge, type AgeTier } from '../lib/age';
+import { useState , type ReactNode } from 'react';
+import { SHOW_EXPERT_PANEL } from '../../../../../shared/flags.mjs';
+import { BarChart3, Swords, Flag, Shuffle, Link2, Zap, MessagesSquare, Play, Search, PhoneCall, BellRing, Trophy, X, ChevronDown } from 'lucide-react';
+import { BandSheet, bandLabel } from '../../../components/shared/BandSheet';
+import { TIERS } from '../lib/age';
+import { useBand, useHasBand, type Band } from '../../../lib/band';
 import { Streak, LikeButton } from '../components/ui';
+import { BaitFeed } from '../../kids/BaitFeed';
 import { DT } from '../i18n';
-import { getProgress } from '../lib/progress';
-import { load, save, today as todayKey } from '../lib/storage';
+import { currentStreak, getProgress } from '../lib/progress';
+import { NUDGE_KEY, load, save, scoped, today as todayKey } from '../lib/storage';
 import { scenarioOfTheDay, weeklyLevel } from '../lib/scenarios';
 import type { GameId, Lang } from '../types';
 
@@ -21,37 +24,40 @@ const GAMES: { id: GameId; icon: typeof Flag; tint: string }[] = [
   { id: 'dash', icon: Zap, tint: 'from-amber-500 to-pink-500' },
 ];
 
-export function DailyHome({ lang, onLaunch, onNav }: { lang: Lang; onLaunch: (l: Launch) => void; onNav: (p: 'stats' | 'admin') => void }) {
+export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lang; onLaunch: (l: Launch) => void; onNav: (p: 'progress') => void; header?: ReactNode; footer?: ReactNode }) {
   const t = DT[lang];
   const p = getProgress();
-  const today = scenarioOfTheDay();
-  const level = weeklyLevel();
+  // One band for the whole app; switching it re-renders today's session and the week right away.
+  const band = useBand();
+  const chosen = useHasBand();
+  const today = scenarioOfTheDay(band);
+  const level = weeklyLevel(band);
   const done = level.filter(s => p.completed.includes(s.id)).length;
   const boss = level.find(s => s.boss);
   // Daily reminder: shows until today's session is played or the player dismisses it.
-  const [nudge, setNudge] = useState(() => p.lastDay !== todayKey() && load<string>('sati-daily-nudge', '') !== todayKey());
-  const hideNudge = () => { save('sati-daily-nudge', todayKey()); setNudge(false); };
-  const [age, setAgeState] = useState<AgeTier | null>(() => hasAge() ? getAge() : null);
-  const [ageOpen, setAgeOpen] = useState(() => !hasAge());
-  const pickAge = (a: AgeTier) => { setAge(a); setAgeState(a); setAgeOpen(false); };
-  const AgeIcon = TIERS[age ?? 'youth'].icon;
+  const [nudge, setNudge] = useState(() => p.lastDay !== todayKey() && load<string>(scoped(NUDGE_KEY), '') !== todayKey());
+  const hideNudge = () => { save(scoped(NUDGE_KEY), todayKey()); setNudge(false); };
+  const age: Band | null = chosen ? band : null;
+  const [ageOpen, setAgeOpen] = useState(() => !chosen);
+  const AgeIcon = TIERS[band].icon;
   return (
     <div className="h-full overflow-y-auto pb-6">
       <header className="daily-grad text-white px-4 pt-5 pb-6 rounded-b-[28px]">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2"><span className="w-9 h-9 rounded-xl bg-white flex items-center justify-center"><img src="/brand-mark.svg" alt="" className="w-7 h-7" /></span><h1 className="text-2xl font-bold font-display">{t.title}</h1></div>
-          <div className="flex items-center gap-1 bg-white/95 rounded-full px-3 py-1"><Streak days={p.streak} /><span className="text-xs text-foreground font-lao">{t.streak}</span></div>
+          <div className="flex items-center gap-2"><span className="w-9 h-9 rounded-xl bg-white flex items-center justify-center"><img src="/brand-mark.svg" alt="" className="w-7 h-7" /></span><h1 className="text-2xl font-bold font-display leading-tight">{t.title}</h1></div>
+          <div className="flex items-center gap-2">{header}<div className="flex items-center gap-1 bg-white/95 rounded-full px-3 py-1"><Streak days={currentStreak(p)} /><span className="text-xs text-foreground font-lao whitespace-nowrap">{t.streak}</span></div></div>
         </div>
         <div className="flex items-center justify-between gap-2 mt-1">
           <p className="text-sm opacity-90 font-lao">{t.subtitle}</p>
           <button onClick={() => setAgeOpen(true)} className="shrink-0 flex items-center gap-1.5 rounded-full bg-white/20 hover:bg-white/30 px-3 min-h-9 text-sm font-bold font-lao">
-            <AgeIcon size={16} />{age ? `${t[`age_${age}`]} ${TIERS[age].range}` : t.age_title}<ChevronDown size={14} />
+            <AgeIcon size={16} />{age ? bandLabel(age, lang) : t.age_title}<ChevronDown size={14} />
           </button>
         </div>
         {today && <button onClick={() => onLaunch({ game: 'story', scope: 'daily' })} className="daily-btn mt-4 w-full flex items-center gap-3 rounded-2xl bg-white text-foreground px-4 py-3 shadow-[0_4px_0_rgba(0,0,0,.15)] text-left">
           <span className="w-11 h-11 rounded-xl daily-grad text-white flex items-center justify-center"><Play size={22} fill="currentColor" /></span>
           <span className="flex-1"><span className="block text-xs text-muted-foreground font-lao">{t.daily_session}</span><span className="block font-bold font-lao">{today.title[lang]}</span></span>
         </button>}
+        {band === 'kids' && <p className="mt-3 text-sm font-semibold opacity-95 font-lao">{t.tell_adult}</p>}
       </header>
 
       {nudge && today && <div role="status" className="daily-pop mx-4 -mt-3 relative z-10 rounded-2xl bg-card border border-border shadow-lg p-3 flex items-center gap-3">
@@ -64,6 +70,9 @@ export function DailyHome({ lang, onLaunch, onNav }: { lang: Lang; onLaunch: (l:
         <button onClick={hideNudge} aria-label="Close" className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center text-muted-foreground"><X size={16} /></button>
       </div>}
 
+      {/* Kids (often guests with no feed) get the bait-post simulator right on the Daily home. */}
+      {band === 'kids' && <div className="mt-2 px-1"><BaitFeed lang={lang} /></div>}
+
       <section className="px-4 mt-5">
         <div className="flex items-center justify-between mb-2"><h2 className="font-bold font-lao">{t.weekly_level}</h2><span className="text-sm text-muted-foreground">{done}/{level.length}</span></div>
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
@@ -74,7 +83,7 @@ export function DailyHome({ lang, onLaunch, onNav }: { lang: Lang; onLaunch: (l:
           ))}
         </div>
         <button onClick={() => onLaunch({ game: 'story', scope: 'weekly' })} className="daily-btn mt-3 w-full rounded-2xl daily-grad text-white font-bold shadow-[0_4px_0_#3B0FA0]">{done ? t.continue : t.start} · {t.weekly_level}</button>
-        {boss && <p className="text-xs text-muted-foreground mt-2 font-lao"><Swords size={12} className="inline -mt-0.5 mr-1" />{t.boss}: {boss.title[lang]} · {t.verified_by} {boss.verifiedBy}</p>}
+        {boss && <p className="text-xs text-muted-foreground mt-2 font-lao"><Swords size={12} className="inline -mt-0.5 mr-1" />{t.boss}: {boss.title[lang]}{SHOW_EXPERT_PANEL && boss.verifiedBy ? ` · ${t.verified_by} ${boss.verifiedBy}` : ''}</p>}
       </section>
 
       <section className="px-4 mt-6">
@@ -92,11 +101,11 @@ export function DailyHome({ lang, onLaunch, onNav }: { lang: Lang; onLaunch: (l:
         </div>
       </section>
 
-      <div className="px-4 mt-6 grid grid-cols-2 gap-3">
-        <button onClick={() => onNav('stats')} className="daily-btn rounded-2xl bg-muted flex items-center justify-center gap-2 font-semibold"><BarChart3 size={18} />{t.stats}</button>
-        <button onClick={() => onNav('admin')} className="daily-btn rounded-2xl bg-muted flex items-center justify-center gap-2 font-semibold"><ShieldCheck size={18} />{t.admin}</button>
+      <div className="px-4 mt-6">
+        <button onClick={() => onNav('progress')} className="daily-btn w-full rounded-2xl bg-muted flex items-center justify-center gap-2 font-semibold font-lao"><BarChart3 size={18} />{t.my_progress}</button>
       </div>
-      {ageOpen && <AgeSheet lang={lang} value={age} onPick={pickAge} onClose={age ? () => setAgeOpen(false) : undefined} />}
+      {footer}
+      {ageOpen && <BandSheet lang={lang} onClose={age ? () => setAgeOpen(false) : undefined} onSaved={() => setAgeOpen(false)} />}
     </div>
   );
 }

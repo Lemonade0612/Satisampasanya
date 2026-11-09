@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sati Dev</string>
+    <string name="title_activity_main">Sati Dev</string>
+    <string name="package_name">la.satisampasanya.app</string>
+    <string name="custom_url_scheme">la.satisampasanya.app</string>
+</resources>

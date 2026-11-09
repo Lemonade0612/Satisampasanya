@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { Pause, Play, Pencil, Trophy, MapPin, Heart, ArrowUp, ArrowDown, Repeat, ChevronDown, X, KeyRound, Link2, Banknote, Stamp, Timer, Gift, EyeOff, ShieldCheck, PhoneCall, Users, Lock, Medal, Lightbulb, Search, CheckCircle2, XCircle, Hand, Flag, Coins, Home, Shuffle, UserPlus, HeartCrack, FileText, BadgeCheck, Phone, type LucideIcon } from 'lucide-react';
 import mini from '../data/minigames.json';
 import { factFor, routeFor, type Stop } from '../data/dashJourney';
-import { TIERS, getAge, setAge, type AgeTier } from '../lib/age';
+import { TIERS } from '../lib/age';
+import { filterByBand, getBand, setBand, useBand, type BandTagged } from '../../../lib/band';
 import { AgeGrid } from '../components/AgePicker';
 import { Burst, Combo, Countdown } from '../components/juice';
 import { DashAvatar } from '../components/DashAvatar';
@@ -16,7 +17,7 @@ import { load, save } from '../lib/storage';
 import type { FlagCategory, Lang, QuickCard } from '../types';
 import type { GameResult } from './StoryGame';
 
-type Item = { id: string; label: { en: string; lo: string }; tip: { en: string; lo: string }; flag?: FlagCategory };
+type Item = BandTagged & { id: string; label: { en: string; lo: string }; tip: { en: string; lo: string }; flag?: FlagCategory };
 type Thing = { x: number; item: Item; good: boolean; air: boolean; done: boolean };
 type FloatText = { id: number; y: number; text: string; good: boolean; born: number };
 type Phase = 'setup' | 'lobby' | 'run' | 'gate' | 'over';
@@ -50,7 +51,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
   const t = DT[lang];
   const [player, setPlayer] = useState<Player | null>(getPlayer);
   const [phase, setPhase] = useState<Phase>(player ? 'lobby' : 'setup');
-  const [age, setAgeState] = useState<AgeTier>(getAge);
+  const age = useBand();
   const cfg = TIERS[age].dash;
   const [routeCode, setRouteCode] = useState<string>(() => load<string>('sati-dash-route', player?.country ?? 'LA'));
   const [paused, setPaused] = useState(false);
@@ -117,7 +118,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         const good = Math.random() < 0.3;
         // Air pop-ups only after the first stretch, so new players learn the jump first.
         const air = good ? Math.random() < 0.5 : g.dist > cfg.airFrom && Math.random() < cfg.air;
-        g.things.push({ x: 110, good, air, item: pick(good ? pickups : hazards), done: false });
+        g.things.push({ x: 110, good, air, item: pick(good ? filterByBand(pickups, getBand()) : filterByBand(hazards, getBand())), done: false });
         g.nextAt = g.dist + cfg.gap[0] + Math.random() * cfg.gap[1];
       }
       const ducking = g.duck > 0 && g.y < 10;
@@ -137,8 +138,9 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
       g.things = g.things.filter(o => o.x > -12);
       g.pops = g.pops.filter(p => now - p.born < 900);
       if (g.stopDist >= STOP_LEN) {
-        const unseen = cards.filter(c => !g.seen.includes(c.id));
-        const c = pick(unseen.length ? unseen : cards);
+        const mine = filterByBand(cards, getBand());
+        const unseen = mine.filter(c => !g.seen.includes(c.id));
+        const c = pick(unseen.length ? unseen : mine);
         g.seen.push(c.id); setCard(c); setAnswer(null); setLate(false); setPhase('gate'); sfx('whoosh');
         return;
       }
@@ -168,7 +170,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
     if (!card || answer !== null) return;
     const ok = saysScam === card.isScam;
     setAnswer(saysScam ?? !card.isScam); setLate(saysScam === null); haptic(ok);
-    track({ type: 'choice_made', scenarioId: `dash-${card.id}`, scamType: card.scamType, step: card.id, correct: ok });
+    track({ type: 'choice_made', scenarioId: `dash-${card.id}`, scamType: card.scamType, step: card.id, correct: ok, scam: card.isScam });
     if (ok) { g.combo++; g.bonus += 300 * Math.min(g.combo, 3); g.hearts = Math.min(cfg.hearts, g.hearts + 1); }
     else g.combo = 0;
   };
@@ -248,7 +250,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
                 </button>
               ))}
             </div>
-          : <AgeGrid lang={lang} value={age} onPick={a => { setAge(a); setAgeState(a); setSheet(null); }} />}
+          : <AgeGrid lang={lang} value={age} onPick={a => { setBand(a); setSheet(null); }} />}
       </Sheet>}
     </div>
   );
@@ -375,7 +377,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
               <div className="absolute left-1/2 -translate-x-1/2 bottom-0 h-full aspect-square"><Landmark kind={stop.kind} /></div>
               <div className="absolute inset-x-0 bottom-0 p-3 bg-gradient-to-t from-black/60 to-transparent"><p className="text-white font-bold flex items-center gap-1"><MapPin size={16} />{t.dash_arrived} {stop.name[lang]}!</p></div>
             </div>
-            <p className="text-sm bg-amber-50 dark:bg-amber-950/40 rounded-xl p-2 flex gap-2"><Lightbulb size={16} className="text-amber-500 shrink-0 mt-0.5" /><span>{factFor(stop, g.stop + g.lap, g.lap)[lang]}</span></p>
+            <p className="text-sm bg-amber-50 dark:bg-amber-950/40 rounded-xl p-2 flex gap-2"><Lightbulb size={16} className="text-amber-500 shrink-0 mt-0.5" /><span>{factFor(stop, g.stop + g.lap, g.lap, age === 'kids')[lang]}</span></p>
             <p className="font-bold flex items-center gap-1.5"><Search size={16} className="text-primary" />{t.dash_gate_q}</p>
             {cfg.gateSec > 0 && answer === null && <Countdown key={card.id} seconds={cfg.gateSec} onDone={() => answerGate(null)} label={t.time_up} />}
             <div className="rounded-2xl bg-muted p-3"><p className="text-xs text-muted-foreground">{card.sender}</p><p>{card.text[lang]}</p></div>

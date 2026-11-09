@@ -167,10 +167,37 @@ test('admin access is restricted and review decisions persist in the public feed
   const reviewed=await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'confirmed',note:'Evidence checked'},admin.token);
   assert.equal(reviewed.status,200);assert.equal(reviewed.value.review.reviewerId,admin.user.id);
   const feed=(await f.call('/posts')).value;
-  assert.equal(feed[0].state,'confirmed');assert.equal(feed[0].correction,'Evidence checked');
-  assert.equal(feed[0].review.note,'Evidence checked');assert.equal(feed[0].screeningStage,'completed');
+  assert.equal(feed[0].state,'confirmed');assert.equal(feed[0].screeningStage,'completed');
+  const staffView=(await f.call('/admin/dashboard','GET',undefined,admin.token)).value.posts[0];
+  assert.equal(staffView.correction,'Evidence checked');assert.equal(staffView.review.note,'Evidence checked');
   const cleared=await f.call(`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'false',note:'Source disproves the claim'},admin.token);
   assert.equal(cleared.value.state,'false');assert.equal(cleared.value.screeningLogs.length,2);
+ }finally{await f.close();}
+});
+
+test('every admin endpoint rejects signed-out users and members, even ones who claim a role',async()=>{
+ const f=await fixture();try{
+  const admin=await f.admin('admin@example.com');
+  const posted=await f.call('/posts','POST',draft,admin.token);
+  // A member cannot grant themselves a role at sign-up or through their profile.
+  const member=(await f.call('/auth/register','POST',{name:'Mallory',email:'mallory@example.com',password:'correct-password',role:'admin'})).value;
+  assert.equal((await f.call('/profile','PATCH',{role:'admin',access:{role:'admin'}},member.token)).status,200);
+  const routes=[
+   ['/admin/dashboard','GET'],
+   ['/admin/users','GET'],
+   ['/admin/users','POST',{name:'Sneaky',email:'sneaky@example.com',password:'correct-password',role:'admin'}],
+   [`/admin/users/${member.user.id}`,'PATCH',{role:'admin'}],
+   [`/admin/posts/${posted.value.id}/review`,'PATCH',{state:'confirmed',note:'Self-approved'}],
+   ['/admin/anything-new','GET'],
+  ];
+  for(const [path,method,data] of routes){
+   assert.equal((await f.call(path,method,data)).status,401,`${method} ${path} signed out`);
+   assert.equal((await f.call(path,method,data,member.token)).status,403,`${method} ${path} as member`);
+  }
+  assert.equal((await f.call('/admin/auth/login','POST',{email:'mallory@example.com',password:'correct-password'})).status,403);
+  assert.equal((await f.call('/admin/dashboard','GET',undefined,admin.token)).value.users.find(u=>u.email==='mallory@example.com').role,'member');
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM users WHERE email='sneaky@example.com'").get().n,0);
+  assert.equal((await f.call('/posts')).value.find(p=>p.id===posted.value.id).review,undefined);
  }finally{await f.close();}
 });
 
@@ -258,9 +285,10 @@ test('approval and news notifications reach the intended users',async()=>{
  const f=await fixture();try{
   const author=await f.register(),viewer=await f.register('viewer@example.com'),admin=await f.admin('admin@example.com');
   const post=(await f.call('/posts','POST',{...draft,isNews:true,link:'https://example.com/source'},author.token)).value;
-  assert.equal((await f.call('/alerts','GET',undefined,viewer.token)).value[0].kind,'news');
+  assert.equal((await f.call('/alerts','GET',undefined,viewer.token)).value.length,0);
   assert.equal((await f.call('/alerts','GET',undefined,author.token)).value.length,0);
   assert.equal((await f.call(`/admin/posts/${post.id}/review`,'PATCH',{state:'clean',note:'Approved after source review'},admin.token)).status,200);
+  assert.equal((await f.call('/alerts','GET',undefined,viewer.token)).value[0].kind,'news');
   const notification=(await f.call('/alerts','GET',undefined,author.token)).value[0];
   assert.equal(notification.kind,'review');assert.equal(notification.review_state,'clean');assert.equal(notification.post_id,post.id);
  }finally{await f.close();}
@@ -397,5 +425,313 @@ test('registering an email listed in ADMIN_EMAILS grants no staff access; only a
   promoteAdmin(f.db,'OWNER@example.com');
   assert.equal((await f.call('/admin/dashboard','GET',undefined,owner.token)).status,200);
   assert.equal(f.db.prepare("SELECT action FROM access_audit WHERE target_id=?").get(owner.user.id).action,'bootstrap-admin');
+ }finally{await f.close();}
+});
+
+test('flagged, rejected and false-alarm posts are hidden from everyone but their author and staff',async()=>{
+ // Regression: moderation only locked interactions. Held posts, with their links and images, stayed in
+ // the public feed, on profiles, and behind comments/activity, even after a reviewer rejected them.
+ const flagged=text=>guardVerdict({verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'Unsolicited job contact over WhatsApp is a recruitment signal.',evidence:'message WhatsApp now'}],suggested_edit:'',summary:'This job offer needs expert review.'},text);
+ const approve=text=>guardVerdict({verdict:'approved',risk:'low',labels:[],on_topic:true,reasons:[],suggested_edit:'',summary:/[຀-໿]/.test(text)?'ກວດຂໍ້ຄວາມແລ້ວ.':'The message has been checked.'},text);
+ const f=await fixture({check:post=>checkPost(post,{check:async text=>text.includes('WhatsApp')?flagged(text):approve(text)})});try{
+  const author=await f.register(),other=await f.register('bob@example.com'),admin=await f.admin('admin@example.com');
+  const held=(await f.call('/posts','POST',{content:'Job in Thailand, message WhatsApp now',tags:['JobScam'],link:'https://evil.invalid/apply'},author.token)).value;
+  const fine=(await f.call('/posts','POST',draft,author.token)).value;
+  assert.equal(held.state,'flagged');
+  const ids=async token=>(await f.call('/posts','GET',undefined,token)).value.map(p=>p.id);
+  const profileIds=async token=>(await f.call(`/people/${author.user.id}`,'GET',undefined,token)).value.posts.map(p=>p.id);
+  for(const token of [undefined,other.token]){
+   assert.ok(!(await ids(token)).includes(held.id));assert.ok((await ids(token)).includes(fine.id));
+   assert.ok(!(await profileIds(token)).includes(held.id));
+   assert.equal((await f.call(`/posts/${held.id}/comments`,'GET',undefined,token)).status,404);
+   assert.equal((await f.call(`/posts/${held.id}/activity`,'GET',undefined,token)).status,404);
+  }
+  assert.equal((await f.call(`/posts/${held.id}/reactions`,'POST',{kind:'like',active:true},other.token)).status,404);
+  assert.equal((await f.call(`/posts/${held.id}/translate`,'POST',{},other.token)).status,404);
+  const own=(await f.call('/posts','GET',undefined,author.token)).value.find(p=>p.id===held.id);
+  assert.equal(own.link,'https://evil.invalid/apply');assert.ok((await profileIds(author.token)).includes(held.id));
+  assert.equal((await f.call(`/posts/${held.id}/comments`,'GET',undefined,author.token)).status,200);
+  // A reviewer rejection keeps it hidden; staff still see everything.
+  await f.call(`/admin/posts/${held.id}/review`,'PATCH',{state:'rejected',note:'Recruitment post'},admin.token);
+  assert.ok(!(await ids(other.token)).includes(held.id));
+  assert.ok((await f.call('/admin/dashboard','GET',undefined,admin.token)).value.posts.some(p=>p.id===held.id));
+  // A plain repost made while the original was clean disappears once the original is marked a false alarm.
+  const repost=await f.call(`/posts/${fine.id}/reposts`,'POST',{text:''},other.token);assert.equal(repost.status,200);
+  const repostId=f.db.prepare("SELECT id FROM posts WHERE json_extract(data,'$.repostOf')=?").get(fine.id).id;
+  assert.ok((await ids(undefined)).includes(repostId));
+  await f.call(`/admin/posts/${fine.id}/review`,'PATCH',{state:'false',note:'Claim disproved'},admin.token);
+  assert.ok(!(await ids(undefined)).includes(fine.id));assert.ok(!(await ids(undefined)).includes(repostId));
+  assert.ok(!(await ids(other.token)).includes(repostId));
+ }finally{await f.close();}
+});
+
+test('news alerts to every user need a staff author or a reviewer approval, and fire once',async()=>{
+ // Regression: any account could set isNews and every user got an in-app alert and APNs push
+ // ("<display name> published a news update"), even when screening had flagged the post.
+ const hold=text=>guardVerdict({verdict:'needs_expert',risk:'high',labels:['trafficking_recruitment'],on_topic:true,reasons:[{text:'Unsolicited job contact over WhatsApp is a recruitment signal.',evidence:'message WhatsApp now'}],suggested_edit:'',summary:'This job offer needs expert review.'},text);
+ const approve=text=>guardVerdict({verdict:'approved',risk:'low',labels:[],on_topic:true,reasons:[],suggested_edit:'',summary:/[຀-໿]/.test(text)?'ກວດຂໍ້ຄວາມແລ້ວ.':'The message has been checked.'},text);
+ const f=await fixture({check:post=>checkPost(post,{check:async text=>text.includes('WhatsApp')?hold(text):approve(text)})});try{
+  const member=await f.register(),viewer=await f.register('viewer@example.com'),admin=await f.admin('admin@example.com');
+  const news=async(token,content)=>(await f.call('/posts','POST',{content,tags:['DigitalSafety'],isNews:true,link:'https://news.invalid/a'},token)).value;
+  const newsAlerts=async()=>f.db.prepare("SELECT post_id FROM notifications WHERE kind='news' AND user_id=?").all(viewer.user.id).map(r=>r.post_id);
+  const flagged=await news(member.token,'Job in Thailand, message WhatsApp now');
+  const clean=await news(member.token,'Police warn about fake bank SMS.');
+  assert.deepEqual(await newsAlerts(),[]);
+  await f.call(`/admin/posts/${flagged.id}/review`,'PATCH',{state:'rejected',note:'Recruitment'},admin.token);
+  assert.deepEqual(await newsAlerts(),[]);
+  await f.call(`/admin/posts/${clean.id}/review`,'PATCH',{state:'clean',note:'Source checked'},admin.token);
+  await f.call(`/admin/posts/${clean.id}/review`,'PATCH',{state:'confirmed',note:'Source checked again'},admin.token);
+  assert.deepEqual(await newsAlerts(),[clean.id]);
+  const staffHeld=await news(admin.token,'Agency says message WhatsApp now for visas');
+  const staffClean=await news(admin.token,'Ministry confirms new hotline.');
+  assert.deepEqual((await newsAlerts()).sort(),[clean.id,staffClean.id].sort());
+  assert.ok(!(await newsAlerts()).includes(staffHeld.id));
+ }finally{await f.close();}
+});
+
+test('display names impersonating Sati or officials are reserved for members',async()=>{
+ const f=await fixture();try{
+  const register=(name,email)=>f.call('/auth/register','POST',{name,email,password:'correct-password'});
+  for(const [i,name] of ['Sati Official','sati','S.A.T.I','S a t i Team','Ѕati Support','Satisampasanya','The 0fficial Page','ສະຕິ ລາວ','ທາງການ'].entries())
+   assert.equal((await register(name,`r${i}@example.com`)).status,400,name);
+  assert.equal((await register('Satit Phommachanh','satit@example.com')).status,200);
+  const user=await f.register();
+  assert.equal((await f.call('/profile','PATCH',{name:'Official Sati'},user.token)).status,400);
+  assert.equal((await f.call('/profile','PATCH',{name:'Alice Safety'},user.token)).status,200);
+  const admin=await f.admin('admin@example.com');
+  assert.equal((await f.call('/admin/users','POST',{name:'Sati Moderation Team',email:'mod@example.com',password:'correct-password',role:'reviewer'},admin.token)).status,201);
+ }finally{await f.close();}
+});
+
+test('rate limits key on the proxy-supplied client IP, which clients cannot spoof without a trusted proxy',async()=>{
+ // Regression: limits keyed on the socket address, so behind nginx every user shared one bucket and
+ // one client could exhaust the 20/min auth allowance for everyone.
+ let n=0;const login=(f,ip)=>f.call('/auth/login','POST',{email:`nobody${n++}@example.com`,password:'wrong-password'},undefined,{'X-Real-IP':ip});
+ let f=await fixture({trustProxy:true});try{
+  for(let i=0;i<20;i++)assert.notEqual((await login(f,'203.0.113.1')).status,429);
+  assert.equal((await login(f,'203.0.113.1')).status,429);
+  assert.notEqual((await login(f,'203.0.113.2')).status,429);
+ }finally{await f.close();}
+ f=await fixture();try{
+  for(let i=0;i<20;i++)await login(f,`198.51.100.${i}`);
+  assert.equal((await login(f,'198.51.100.99')).status,429);
+ }finally{await f.close();}
+});
+
+test('repeated failed sign-ins lock that account only, and a reset clears the lock',async()=>{
+ const f=await fixture({trustProxy:true});try{
+  await f.register();await f.register('bob@example.com');
+  const attempt=(email,password,i)=>f.call('/auth/login','POST',{email,password},undefined,{'X-Real-IP':`192.0.2.${i}`});
+  for(let i=0;i<10;i++)assert.equal((await attempt('alice@example.com','wrong-password',i)).status,401);
+  assert.equal((await attempt('alice@example.com','correct-password',50)).status,429);
+  assert.equal((await f.call('/admin/auth/login','POST',{email:'alice@example.com',password:'correct-password'},undefined,{'X-Real-IP':'192.0.2.51'})).status,429);
+  assert.equal((await attempt('bob@example.com','correct-password',52)).status,200);
+  const token=randomBytes(32).toString('hex');
+  const id=f.db.prepare('SELECT id FROM users WHERE email=?').get('alice@example.com').id;
+  f.db.prepare('INSERT INTO resets VALUES (?,?,?)').run(digest(token),id,Date.now()+60000);
+  assert.equal((await f.call('/auth/reset','POST',{token,password:'new-password-1'},undefined,{'X-Real-IP':'192.0.2.53'})).status,200);
+  assert.equal((await attempt('alice@example.com','new-password-1',54)).status,200);
+ }finally{await f.close();}
+});
+
+test('reviewer identity and notes stay inside the moderation workspace',async()=>{
+ // Regression: reviewerName, reviewerId, the internal note (also copied to correction) and screeningLogs
+ // ("<reviewer>: state. note") were public, and the author's alert and push named the reviewer.
+ const f=await fixture();try{
+  const author=await f.register(),reader=await f.register('bob@example.com'),admin=await f.admin('admin@example.com');
+  const post=(await f.call('/posts','POST',draft,author.token)).value;
+  await f.call(`/admin/posts/${post.id}/review`,'PATCH',{state:'confirmed',note:'Matches a case reported to police'},admin.token);
+  for(const token of [undefined,reader.token,author.token]){
+   const view=(await f.call('/posts','GET',undefined,token)).value.find(p=>p.id===post.id);
+   assert.deepEqual(Object.keys(view.review).sort(),['reviewedAt','state']);
+   assert.equal(view.correction,undefined);assert.equal(view.screeningLogs,undefined);
+   assert.ok(!JSON.stringify(view).includes('admin'),'reviewer name leaked');
+   assert.ok(!JSON.stringify(view).includes('police'),'review note leaked');
+   const profile=(await f.call(`/people/${author.user.id}`,'GET',undefined,token)).value.posts.find(p=>p.id===post.id);
+   assert.equal(profile.review.reviewerName,undefined);
+  }
+  const alert=(await f.call('/alerts','GET',undefined,author.token)).value.find(a=>a.kind==='review');
+  assert.equal(alert.actor_name,'Safety review');
+  const staff=(await f.call('/admin/dashboard','GET',undefined,admin.token)).value.posts.find(p=>p.id===post.id);
+  assert.equal(staff.review.reviewerName,'admin');assert.equal(staff.review.note,'Matches a case reported to police');assert.ok(staff.screeningLogs.length);
+ }finally{await f.close();}
+});
+
+test('assistant passes the age band to Ask without storing it, and rejects unknown bands to youth',async()=>{
+ const bands=[];
+ const f=await fixture({assistantServices:{classify:async()=> 'ask',check:async()=>{throw Error('unused');},ask:async(text,{band})=>{bands.push(band);return {language:'en',answer:'Tell a trusted adult.',steps:['Stop.','Tell someone.'],question:'',offer:'Paste it here.'};}}});
+ try{
+  const alice=await f.register();
+  for(const band of ['kids','elder','nonsense',undefined])assert.equal((await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band},alice.token)).status,200);
+  assert.deepEqual(bands,['kids','elder','youth','youth']);
+  // The band sent with a question is never written; only a band the account chose itself is stored.
+  assert.equal(f.db.prepare('SELECT age_band FROM users WHERE id=?').get(alice.user.id).age_band,null);
+  const stored=JSON.stringify([f.db.prepare('SELECT * FROM users').all(),f.db.prepare('SELECT * FROM assistant_usage').all()]);
+  assert.ok(!/kids|elder/.test(stored));
+  // An account's own band wins over whatever the request says.
+  const kid=(await f.call('/auth/register','POST',{name:'Kid',email:'kid@example.com',password:'correct-password',ageBand:'kids'})).value;
+  bands.length=0;
+  assert.equal((await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band:'adult'},kid.token)).status,200);
+  assert.deepEqual(bands,['kids']);
+ }finally{await f.close();}
+});
+
+const scenarioDrafts=JSON.parse((await import('node:fs')).readFileSync(new URL('./scenario-drafts.json',import.meta.url),'utf8'));
+const kidsScenario=()=>structuredClone(scenarioDrafts.find(s=>s.bands.includes('kids')));
+const staff=async(f,role)=>{const admin=await f.admin(`boss-${role}@example.com`);const email=`${role}@example.com`;
+ assert.equal((await f.call('/admin/users','POST',{name:`A ${role}`,email,password:'correct-password',role,status:'active'},admin.token)).status,201);
+ return {admin,member:(await f.call('/auth/login','POST',{email,password:'correct-password'})).value};};
+
+test('scenario and moderation endpoints reject signed-out users and members; viewers read but cannot decide',async()=>{
+ const f=await fixture();try{
+  const {admin,member:viewer}=await staff(f,'viewer');
+  const created=await f.call('/admin/scenarios','POST',kidsScenario(),admin.token);assert.equal(created.status,201);
+  const member=await f.register('member@example.com');
+  const routes=[['/admin/scenarios','GET'],['/admin/moderation','GET'],['/admin/scenarios','POST',{...kidsScenario(),id:'sneaky-01'}],[`/admin/scenarios/${created.value.id}/review`,'PATCH',{status:'approved',note:'Self-approved'}]];
+  for(const [path,method,data] of routes){
+   assert.equal((await f.call(path,method,data)).status,401,`${method} ${path} signed out`);
+   assert.equal((await f.call(path,method,data,member.token)).status,403,`${method} ${path} as member`);
+  }
+  assert.equal((await f.call('/admin/scenarios','GET',undefined,viewer.token)).status,200);
+  assert.equal((await f.call('/admin/moderation','GET',undefined,viewer.token)).status,200);
+  assert.equal((await f.call('/admin/scenarios','POST',{...kidsScenario(),id:'viewer-01'},viewer.token)).status,403);
+  assert.equal((await f.call(`/admin/scenarios/${created.value.id}/review`,'PATCH',{status:'approved',note:'Viewer'},viewer.token)).status,403);
+  assert.equal(f.db.prepare("SELECT COUNT(*) n FROM scenarios").get().n,1);
+  assert.equal(f.db.prepare("SELECT status FROM scenarios").get().status,'draft');
+ }finally{await f.close();}
+});
+
+test('the public scenario endpoint only ever returns live scenarios for the requested band, without reviewer details',async()=>{
+ const f=await fixture();try{
+  const {member:reviewer}=await staff(f,'reviewer');
+  const pub=async band=>(await f.call(`/scenarios?band=${band}`)).value.scenarios;
+  // A submission cannot set its own status, reviewer or extra fields.
+  const created=await f.call('/admin/scenarios','POST',{...kidsScenario(),status:'live',verifiedBy:'Me',reviewed_by:reviewer.user.id,secret:'x'},reviewer.token);
+  assert.equal(created.status,201);assert.equal(created.value.status,'draft');assert.equal(created.value.scenario.secret,undefined);assert.equal(created.value.scenario.status,undefined);
+  const id=created.value.id;
+  assert.deepEqual(await pub('kids'),[]);
+  const review=(status,note='Checked with a native speaker')=>f.call(`/admin/scenarios/${id}/review`,'PATCH',{status,note},reviewer.token);
+  assert.equal((await review('live')).status,409,'a draft cannot skip approval');
+  assert.equal((await review('approved','  ')).status,400,'a decision needs a note');
+  assert.equal((await review('approved')).status,200);
+  assert.deepEqual(await pub('kids'),[],'approved is not yet live');
+  assert.equal((await review('live')).status,200);
+  const live=await pub('kids');
+  assert.equal(live.length,1);assert.equal(live[0].id,id);assert.equal(live[0].status,'verified');assert.equal(live[0].title.lo,kidsScenario().title.lo);
+  assert.doesNotMatch(JSON.stringify(live),/Checked with a native speaker|reviewer@example|A reviewer|reviewNote|reviewed_by/);
+  assert.deepEqual(await pub('youth'),[],'other bands do not get it');
+  assert.equal((await review('rejected','Pulled after a report')).status,200);
+  assert.deepEqual(await pub('kids'),[]);
+  for(const band of ['kids','youth','adult','elder'])assert.ok((await pub(band)).every(s=>s.status==='verified'));
+  assert.equal((await f.call('/scenarios')).status,400);
+  assert.equal((await f.call('/scenarios?band=everyone')).status,400);
+  // Intensity limits per band are enforced on submission.
+  assert.equal((await f.call('/admin/scenarios','POST',{...kidsScenario(),id:'too-intense-01',intensity:2},reviewer.token)).status,400);
+  assert.equal((await f.call('/admin/scenarios','POST',{...kidsScenario(),id:'elder-trafficking-01',bands:['elder'],intensity:3},reviewer.token)).status,400);
+  assert.equal((await f.call('/admin/scenarios','POST',{...kidsScenario(),id:'no-lao-01',title:{en:'English only'}},reviewer.token)).status,400);
+  assert.equal((await f.call('/admin/scenarios','POST',kidsScenario(),reviewer.token)).status,409);
+ }finally{await f.close();}
+});
+
+test('moderation log records who decided what and when, plus what the AI flagged and why',async()=>{
+ const flagged=post=>{if(/fee/.test(post.content)){post.check={verdict:'needs_expert',risk:'high',labels:[],reasons:[{text:'Upfront fee',evidence:'fee'}],summary:'Asks for an upfront fee.'};post.state='flagged';post.frozen=true;}};
+ const f=await fixture({check:flagged});try{
+  const {admin,member:reviewer}=await staff(f,'reviewer');
+  const before=Date.now();
+  const created=await f.call('/admin/scenarios','POST',kidsScenario(),reviewer.token);
+  await f.call(`/admin/scenarios/${created.value.id}/review`,'PATCH',{status:'approved',note:'Looks right'},reviewer.token);
+  const member=await f.register('poster@example.com');
+  const post=await f.call('/posts','POST',{content:'Pay the agency fee today',tags:['JobScam']},member.token);
+  await f.call(`/admin/posts/${post.value.id}/review`,'PATCH',{state:'confirmed',note:'Known agency scam'},admin.token);
+  const log=(await f.call('/admin/moderation','GET',undefined,reviewer.token)).value;
+  const find=action=>log.find(e=>e.action===action);
+  assert.equal(find('submitted').actor.id,reviewer.user.id);
+  const approved=find('approved');
+  assert.equal(approved.actor.id,reviewer.user.id);assert.equal(approved.note,'Looks right');assert.equal(approved.detail.from,'draft');assert.ok(approved.createdAt>=before);
+  const ai=find('ai_needs_expert');
+  assert.equal(ai.actor,null);assert.equal(ai.actorName,'AI screening');assert.equal(ai.targetId,post.value.id);assert.equal(ai.note,'Asks for an upfront fee.');assert.equal(ai.detail.risk,'high');
+  const human=find('confirmed');assert.equal(human.actor.id,admin.user.id);assert.equal(human.note,'Known agency scam');
+  assert.equal(log.length,4);
+ }finally{await f.close();}
+});
+
+test('reviewers retire and restore built-in scenarios; the public list carries the retired ids and the log records it',async()=>{
+ const f=await fixture();try{
+  const {admin,member:reviewer}=await staff(f,'reviewer');
+  const member=await f.register('member@example.com');
+  const retire=(token,retired=true,note='Outdated phone number in the story',id='bank-sms-01')=>f.call(`/admin/scenarios/retired/${id}`,'PATCH',{retired,note},token);
+  assert.equal((await retire()).status,401);
+  assert.equal((await retire(member.token)).status,403);
+  assert.equal((await f.call('/admin/scenarios/retired','GET',undefined,member.token)).status,403);
+  assert.equal((await retire(reviewer.token,true,'  ')).status,400,'a decision needs a note');
+  assert.equal((await retire(reviewer.token,true,'x','Not An Id!')).status,400);
+  assert.equal((await retire(reviewer.token)).status,200);
+  assert.equal((await retire(reviewer.token)).status,409,'already retired');
+  const pub=(await f.call('/scenarios?band=adult')).value;
+  assert.deepEqual(pub.retired,['bank-sms-01']);assert.deepEqual(pub.scenarios,[]);
+  assert.doesNotMatch(JSON.stringify(pub),/Outdated phone number|reviewer@example/);
+  const staffView=(await f.call('/admin/scenarios/retired','GET',undefined,admin.token)).value;
+  assert.equal(staffView[0].retiredBy.id,reviewer.user.id);assert.equal(staffView[0].note,'Outdated phone number in the story');
+  // A server-managed scenario is taken offline through its own status, not retirement.
+  const created=await f.call('/admin/scenarios','POST',kidsScenario(),reviewer.token);
+  assert.equal((await retire(reviewer.token,true,'No',created.value.id)).status,409);
+  assert.equal((await retire(admin.token,false,'Number fixed in the new app release')).status,200);
+  assert.deepEqual((await f.call('/scenarios?band=adult')).value.retired,[]);
+  const log=(await f.call('/admin/moderation','GET',undefined,admin.token)).value.filter(e=>e.targetId==='bank-sms-01');
+  assert.deepEqual(log.map(e=>[e.action,e.actor.id,e.note]),[['restored',admin.user.id,'Number fixed in the new app release'],['retired',reviewer.user.id,'Outdated phone number in the story']]);
+ }finally{await f.close();}
+});
+
+test('age band: only the band is stored, kids cannot post, comment or repost, and leaving Kids needs the password',async()=>{
+ const f=await fixture();try{
+  const reg=(email,extra)=>f.call('/auth/register','POST',{name:email.split('@')[0],email,password:'correct-password',...extra});
+  assert.equal((await reg('bad@example.com',{ageBand:'toddler'})).status,400);
+  const kid=(await reg('kid@example.com',{ageBand:'kids',birthYear:2015,birthDate:'2015-03-02'})).value;
+  assert.equal(kid.user.ageBand,'kids');
+  // Data minimisation: nothing but the band is kept, even if a client sends more.
+  assert.doesNotMatch(JSON.stringify(f.db.prepare("SELECT * FROM users WHERE email='kid@example.com'").get()),/2015|birth/);
+  const adult=(await reg('adult@example.com',{ageBand:'adult'})).value;
+  const post=await f.call('/posts','POST',draft,adult.token);assert.equal(post.status,201);
+  assert.equal((await f.call('/posts','POST',draft,kid.token)).status,403);
+  assert.equal((await f.call(`/posts/${post.value.id}/comments`,'POST',{text:'hi'},kid.token)).status,403);
+  assert.equal((await f.call(`/posts/${post.value.id}/reposts`,'POST',{text:''},kid.token)).status,403);
+  assert.equal((await f.call(`/posts/${post.value.id}/reactions`,'POST',{kind:'like',active:true},kid.token)).status,200,'reading and liking are fine');
+  // Moving into Kids needs nothing; leaving Kids needs the account password.
+  assert.equal((await f.call('/profile','PATCH',{ageBand:'adult'},kid.token)).status,403);
+  assert.equal((await f.call('/profile','PATCH',{ageBand:'adult',password:'wrong-password'},kid.token)).status,403);
+  assert.equal((await f.call('/posts','POST',draft,kid.token)).status,403,'still kids after failed attempts');
+  const left=await f.call('/profile','PATCH',{ageBand:'youth',password:'correct-password'},kid.token);
+  assert.equal(left.status,200);assert.equal(left.value.ageBand,'youth');
+  assert.equal((await f.call('/posts','POST',draft,kid.token)).status,201);
+  assert.equal((await f.call('/profile','PATCH',{ageBand:'kids'},adult.token)).value.ageBand,'kids');
+  assert.equal((await f.call('/profile','PATCH',{ageBand:'everyone'},kid.token)).status,400);
+ }finally{await f.close();}
+});
+
+test('the feed is filtered by band on the server: intensity limits, and Kids see only reviewed posts',async()=>{
+ const f=await fixture();try{
+  const admin=await f.admin('admin@example.com');
+  await f.call('/profile','PATCH',{ageBand:'adult'},admin.token);
+  const make=async(tags,state)=>{const p=(await f.call('/posts','POST',{content:`About ${tags.join(' ')}`,tags},admin.token)).value;if(state)await f.call(`/admin/posts/${p.id}/review`,'PATCH',{state,note:'Checked'},admin.token);return p.id;};
+  const safetyUnreviewed=await make(['DigitalSafety']);
+  const safetyReviewed=await make(['DigitalSafety'],'clean');
+  const fraud=await make(['CryptoScam'],'confirmed');
+  const trafficking=await make(['Trafficking'],'confirmed');
+  const custom=await make(['ຂ່າວ'],'clean');
+  const ids=async(token,band)=>(await f.call(`/posts${band?`?band=${band}`:''}`,'GET',undefined,token)).value.map(p=>p.id).sort();
+  const sorted=a=>[...a].sort();
+  const kid=(await f.call('/auth/register','POST',{name:'Kid',email:'kid@example.com',password:'correct-password',ageBand:'kids'})).value;
+  const elder=(await f.call('/auth/register','POST',{name:'Grandma',email:'gran@example.com',password:'correct-password',ageBand:'elder'})).value;
+  assert.deepEqual(await ids(kid.token),[safetyReviewed]);
+  assert.deepEqual(await ids(kid.token,'adult'),[safetyReviewed],'a stored band cannot be overridden by the request');
+  assert.deepEqual(await ids(elder.token),sorted([safetyUnreviewed,safetyReviewed,fraud,custom]));
+  assert.deepEqual(await ids(undefined,'kids'),[safetyReviewed],'guests are filtered by the band they choose');
+  assert.deepEqual(await ids(undefined,'youth'),sorted([safetyUnreviewed,safetyReviewed,fraud,trafficking,custom]));
+  assert.equal((await ids(admin.token)).length,5,'authors always see their own posts');
+  // The public profile page applies the same filter.
+  const page=(await f.call(`/people/${admin.user.id}`,'GET',undefined,kid.token)).value.posts.map(p=>p.id);
+  assert.deepEqual(page,[safetyReviewed]);
+  // Scenarios follow the stored band too.
+  assert.equal((await f.call('/scenarios?band=adult','GET',undefined,kid.token)).status,200);
  }finally{await f.close();}
 });

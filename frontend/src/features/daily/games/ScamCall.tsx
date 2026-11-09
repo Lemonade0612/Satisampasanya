@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, BadgeCheck, ChevronRight, CheckCircle2, Clock, Lightbulb, NotebookPen, Phone, PhoneOff, ShieldAlert, ShieldQuestion, Star, ThumbsUp, Volume2, VolumeX, Wallet, XCircle, UserRound } from 'lucide-react';
 import { Burst, Combo, Countdown } from '../components/juice';
 import { getAge, tier, type AgeTier } from '../lib/age';
+import { filterByBand } from '../../../lib/band';
 import { CT, DAYS, SIGNS, planDay, type Call, type Day, type Move } from '../data/scamCalls';
 import { Backdrop } from '../components/Backdrop';
 import { DashAvatar } from '../components/DashAvatar';
@@ -20,7 +21,9 @@ const MOVE_ICON = { trust: ThumbsUp, check: ShieldQuestion, hangup: PhoneOff };
 
 const money = (n: number, lang: Lang) => `${n.toLocaleString('en-US')} ${CT[lang].kip}`;
 // The day closest to the player's own age is suggested first.
-const FOR_AGE: Record<AgeTier, string[]> = { kid: ['ton'], youth: ['noy', 'dara'], adult: ['khamla', 'souk'], elder: ['bounmy'] };
+const FOR_AGE: Record<AgeTier, string[]> = { kids: ['ton'], youth: ['noy', 'dara'], adult: ['khamla', 'souk'], elder: ['bounmy'] };
+// A day written for one band only (as in content/call/<band>.json) is suggested to that band too.
+const forMe = (d: Day, age: AgeTier) => FOR_AGE[age].includes(d.id) || (d.bands?.length === 1 && d.bands[0] === age);
 const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x, y) => x[0] - y[0]).map(([, v]) => v);
 
 // Pick a character's day, then take a handful of calls, each real or scam. The player reads what the hero knows,
@@ -77,7 +80,7 @@ export function ScamCall({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
     const ok = c.real ? m !== 'hangup' : m !== 'trust';
     setMove(m); haptic(ok); setLate(timedOut); setOpenSign(null);
     setCombo(n => ok ? n + 1 : 0);
-    track({ type: 'choice_made', scenarioId: `call-${c.id}`, scamType: c.real ? 'safe' : 'scam', step: m, correct: ok });
+    track({ type: 'choice_made', scenarioId: `call-${c.id}`, scamType: c.real ? 'safe' : 'scam', step: m, correct: ok, scam: !c.real });
     if (ok) setRight(r => r + 1);
     if (!c.real && m === 'trust') { setBalance(b => b - c.stake); setMissed(x => [...x, ...c.flags]); }
     setStage('result');
@@ -106,7 +109,7 @@ export function ScamCall({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         {stage === 'pick' && <>
           <h2 className="text-xl font-extrabold">{t.pick}</h2>
           <div className="grid gap-3">
-            {[...DAYS].sort((a, b) => Number(FOR_AGE[getAge()].includes(b.id)) - Number(FOR_AGE[getAge()].includes(a.id))).map((d, i) => { const mine = FOR_AGE[getAge()].includes(d.id); return (
+            {filterByBand(DAYS, getAge()).sort((a, b) => Number(forMe(b, getAge())) - Number(forMe(a, getAge()))).map((d, i) => { const mine = forMe(d, getAge()); return (
               <button key={d.id} onClick={() => begin(d)} style={{ animationDelay: `${i * 0.05}s` }}
                 className={`daily-in daily-btn flex items-center gap-3 rounded-3xl border-2 bg-card p-2 pr-3 text-left hover:border-primary ${mine ? 'border-primary' : 'border-border'}`}>
                 <span className="relative w-24 h-20 shrink-0 rounded-2xl overflow-hidden">

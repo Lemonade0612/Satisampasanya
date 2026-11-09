@@ -178,3 +178,13 @@ test('strictest verdict wins across versions; a single-language post is checked 
  await checkPost({content:'ກາເຟ',contentLo:'ກາເຟ',contentLanguage:'lo'},{check:async text=>{calls.push(text);return guardVerdict({...approved,summary:'ກວດແລ້ວ.'},text);}});
  assert.equal(calls.length,1);
 });
+
+test('Ask tunes tone to the age band and keeps safety-first wording for every band',async()=>{
+ const response={answer:'Stop and tell a trusted adult.',steps:['Do not reply.','Show a parent.'],question:'',offer:'Paste the message and I can check it.'};
+ const seen=[];
+ for(const band of ['kids','youth','adult','elder',undefined,'bogus'])await askSafety('Someone wants my password',{band,reply:async prompt=>{seen.push(prompt);return response;}});
+ assert.match(seen[0],/child aged 6–14/);assert.match(seen[0],/trusted adult/);
+ assert.match(seen[1],/15–24/);assert.match(seen[2],/detailed/);assert.match(seen[3],/60\+/);
+ assert.match(seen[4],/15–24/);assert.match(seen[5],/15–24/);
+ for(const prompt of seen)assert.match(prompt,/helplines first/);
+});
