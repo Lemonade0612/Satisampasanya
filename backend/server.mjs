@@ -8,6 +8,7 @@ import {reservedName} from './names.mjs';
 import {isBand,postVisibleToBand,canPostAsBand} from '../shared/bands.mjs';
 import {createScenario,reviewScenario,staffScenarios,publicScenarios,moderationLog,logScreening,setBundledRetired,staffRetired} from './scenarios.mjs';
 import { apnsSender, dispatchPushes } from './push.mjs';
+import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mjs';
 import {checkPost} from './safety/post-check.mjs';
 import {modelConfigured} from './safety/model.mjs';
 import {hostedTranslate} from './safety/translate.mjs';
@@ -352,8 +353,16 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   return {server,db,deliver,close:async()=>{clearInterval(reviewTimer);clearInterval(pushTimer);await pushing;push?.close?.();for(const client of clients) client.end();server.closeAllConnections(); await new Promise(r=>server.close(r));db.close();}};
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const app=createApp({database:process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite'),seed:false,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
-  app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;const port=process.env.API_PORT||3001;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
-  app.server.listen(Number(process.env.API_PORT||3001),process.env.API_HOST||'127.0.0.1',()=>console.log(`Sati backend: http://${process.env.API_HOST||'127.0.0.1'}:${process.env.API_PORT||3001}`));
-  for(const signal of ['SIGINT','SIGTERM'])process.on(signal,()=>app.close().then(()=>process.exit(0)));
+  const database=process.env.DATABASE_PATH||resolve('backend/data/sati.sqlite');
+  // Hosts without a disk: pull the newest MongoDB snapshot before anything opens the database.
+  let restored=false,snapshots=null;
+  if(snapshotsEnabled())restored=await restoreSnapshot(database);
+  const seed=process.env.SEED_DEMO==='true'||(snapshotsEnabled()&&!restored);
+  const app=createApp({database,seed,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  if(snapshotsEnabled())snapshots=startSnapshots(app.db,database,{restored});
+  const port=Number(process.env.PORT||process.env.API_PORT||3001),host=process.env.API_HOST||(process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1');
+  app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
+  app.server.listen(port,host,()=>console.log(`Sati backend: http://${host}:${port}`));
+  let stopping=false;
+  for(const signal of ['SIGINT','SIGTERM'])process.on(signal,async()=>{if(stopping)return;stopping=true;try{await snapshots?.flush();}catch(error){console.error('final backup failed:',error.message);}await app.close();process.exit(0);});
 }

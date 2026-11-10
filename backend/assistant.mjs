@@ -1,3 +1,4 @@
+import {RESTING} from './safety/model.mjs';
 import {askSafety,checkContent,classifyIntent} from './safety/checker.mjs';
 const day=()=>new Date(Date.now()+7*3600000).toISOString().slice(0,10);
 export function assistantUsage(db,userId){
@@ -17,5 +18,8 @@ export async function assistantReply(db,userId,{text,kind='text',mode='auto',ban
   }
   const result=await check(text);
   return {mode:'check',language:result.language,check:result,remaining:limit-used.count};
- }catch(error){db.prepare('UPDATE assistant_usage SET count=count-1 WHERE user_id=? AND day=? AND kind=?').run(userId,date,kind);throw error;}
+ }catch(error){db.prepare('UPDATE assistant_usage SET count=count-1 WHERE user_id=? AND day=? AND kind=?').run(userId,date,kind);
+  // Global AI cap reached: a calm answer, not an error screen.
+  if(error.resting){const language=/[\u0E80-\u0EFF]/u.test(text)?'lo':'en';return {mode:'ask',language,answer:RESTING[language],steps:[],remaining:limit-used.count+1};}
+  throw error;}
 }

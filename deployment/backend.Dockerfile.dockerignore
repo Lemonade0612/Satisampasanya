@@ -1,0 +1,8 @@
+# Context for deployment/backend.Dockerfile: only backend/, shared/ and one script are needed.
+**
+!backend/**
+!shared/**
+!scripts/promote-admin.mjs
+backend/data
+backend/**/*.sqlite*
+backend/**/*.test.mjs
