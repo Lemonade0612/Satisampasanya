@@ -4,7 +4,7 @@
 export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla" | "rejected";
 export type ActiveView = "feed" | "explore" | "profile" | "assistant" | "daily";
 export type ProfileTab = "posts" | "topics" | "points";
-export type AuthView = "welcome" | "login" | "register" | "forgot";
+export type AuthView = "welcome" | "login" | "register" | "forgot" | "quick";
 export type Lang = "en" | "lo";
 // Age band the viewer picked. Only this id is stored (on the device, and on the account when signed in),
 // never a birth date or exact age.

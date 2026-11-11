@@ -23,7 +23,9 @@ import { setDailyAccount, today } from "./features/daily/lib/storage";
 import { BandSheet } from "./components/shared/BandSheet";
 import { LangToggle } from "./components/shared/Controls";
 import { GuestChip } from "./components/shared/GuestChip";
-import { canInteract, postsForBand, setBand, setBandSaver, useBand, useLargeText } from "./lib/band";
+import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand, useLargeText } from "./lib/band";
+import { SignupPrompt, type SignupReason } from "./components/shared/QuickSignup";
+import { GuestProfile } from "./screens/GuestProfile";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
 
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
@@ -50,10 +52,13 @@ export default function App() {
   useEffect(() => { document.documentElement.classList.toggle('sati-large-text', largeText); }, [largeText]);
   const [sessionLoading, setSessionLoading] = useState(hasSession());
   const [actionError, setActionError] = useState('');
-  // Guest mode: Sati Daily only, with bundled scenarios and progress on this phone.
-  // 'offline' when the server or sign-in cannot be reached, so a demo never lands on an error screen.
+  // Guest mode: browse the feed, search, games and Daily without an account. Writing anything opens the
+  // quick sign-up prompt. 'offline' (server unreachable) is Sati Daily only, with bundled scenarios.
   const [guest, setGuest] = useState<null | 'guest' | 'offline'>(null);
   const [bandSheet, setBandSheet] = useState(false);
+  const bandChosen = useHasBand();
+  const [signupReason, setSignupReason] = useState<SignupReason | null>(null);
+  const browsing = !user && guest === 'guest';
   // Every user change goes through here: progress is keyed by account, and the account's band wins.
   const applyUser = useCallback((value: CurrentUser | null) => {
     setDailyAccount(value?.id ?? null);
@@ -79,7 +84,7 @@ export default function App() {
     setBandSaver(user ? async (next, password) => { applyUser(await api.profile({ ageBand: next, password })); } : null);
     return () => setBandSaver(null);
   }, [user?.id]);
-  useEffect(() => { if (user) void refresh(); }, [band]);
+  useEffect(() => { void refresh(); }, [band]);
   const leaveGuest = async () => {
     if (guest === 'offline') {
       try { await api.health(); } catch { return; }
@@ -153,13 +158,14 @@ export default function App() {
   const handleAddComment = async (postId: string, text: string) => { await api.comment(postId,text); await refresh(); };
   const handleRepost = async (post: Post, text: string) => { await api.repost(post.id,text,lang); void refresh(); notifyPosted(); };
   const react = async (postId: string, kind: 'like'|'warned') => {
+    if (!user) { setSignupReason('react'); return; }
     const post=allPosts.find(p=>p.id===postId); if(!post)return;
     try { setActionError(''); await api.react(postId,kind,!(kind==='like'?post.liked:post.warned)); await refresh(); }
     catch(error){setActionError((error as Error).message);}
   };
   const handleLike = (id: string) => react(id,'like');
   const handleWarnedMe = (id: string) => react(id,'warned');
-  const handleRepostCount = (id: string) => { const post=posts.find(p=>p.id===id); if(post)setRepostPost(post); };
+  const handleRepostCount = (id: string) => { if (!user) { setSignupReason('post'); return; } const post=posts.find(p=>p.id===id); if(post)setRepostPost(post); };
   const handleProfile = async (data: Partial<CurrentUser>) => { const updated=await api.profile(data); applyUser(updated); await refresh(); };
 
   const handleOpenAlerts = () => {
@@ -177,8 +183,8 @@ export default function App() {
 
   if (sessionLoading) return <div className="app-shell flex items-center justify-center" role="status">{lang === 'lo' ? 'ກຳລັງໂຫຼດ…' : 'Loading your account…'}</div>;
 
-  if (!user && guest) {
-    const offline = guest === 'offline';
+  if (!user && guest === 'offline') {
+    const offline = true;
     return (
       <div className="app-shell w-full max-w-md mx-auto bg-background flex flex-col relative overflow-hidden">
         <div className="flex-1 min-h-0 overflow-hidden relative">
@@ -191,11 +197,11 @@ export default function App() {
     );
   }
 
-  if (!user) {
+  if (!user && !browsing) {
     return (
       <div className="app-shell w-full max-w-md mx-auto bg-background">
         {actionError && <p role="alert" className="text-sm p-3 text-red-600">{actionError}</p>}
-        <AuthScreen lang={lang} onLangToggle={toggleLang} onLogin={handleLogin} onGuest={() => { setGuest('guest'); setView('daily'); }} onOffline={goOffline} />
+        <AuthScreen lang={lang} onLangToggle={toggleLang} onLogin={handleLogin} onGuest={() => { setGuest('guest'); setView('feed'); }} onOffline={goOffline} />
       </div>
     );
   }
@@ -216,11 +222,11 @@ export default function App() {
             onLike={handleLike}
             onRepost={handleRepostCount}
             onWarnedMe={handleWarnedMe}
-            onCompose={() => setShowCompose(true)}
-            followedTopics={user.followed || []}
-            following={user.following || []}
-            currentUserId={user.id}
-            onFollow={id=>{const current=user.following || [];void handleProfile({following:current.includes(id)?current.filter(value=>value!==id):[...current,id]}).catch(e=>setActionError(e.message));}}
+            onCompose={() => user ? setShowCompose(true) : setSignupReason('post')}
+            followedTopics={user?.followed || []}
+            following={user?.following || []}
+            currentUserId={user?.id}
+            onFollow={id=>{if(!user){setSignupReason('follow');return;}const current=user.following || [];void handleProfile({following:current.includes(id)?current.filter(value=>value!==id):[...current,id]}).catch(e=>setActionError(e.message));}}
             onOpenAlerts={handleOpenAlerts}
             alertCount={alertCount}
             onRepostClick={setRepostPost}
@@ -245,9 +251,10 @@ export default function App() {
             }}
           />
         )}
-        {view === "assistant" && !showAlerts && <AssistantScreen lang={lang} />}
+        {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} />}
         {view === "daily" && !showAlerts && <DailyScreen lang={lang} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
-        {view === "profile" && !showAlerts && (
+        {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
+        {view === "profile" && !showAlerts && user && (
           <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} />
         )}
         {showAlerts && (
@@ -265,6 +272,7 @@ export default function App() {
           onAddComment={handleAddComment}
           onOpenPost={setCommentPostId}
           readOnly={!interact}
+          onNeedAccount={user ? undefined : () => setSignupReason('comment')}
         />
       )}
       {showCompose && interact && (
@@ -289,20 +297,21 @@ export default function App() {
         />
       )}
       {(view === "feed" || view === "explore") && !showAlerts && (
-        <button onClick={() => setView("assistant")} aria-label={lang === 'lo' ? 'ຖາມຜູ້ຊ່ວຍ' : 'Ask the assistant'}
+        <button onClick={() => user ? setView("assistant") : setSignupReason('assistant')} aria-label={lang === 'lo' ? 'ຖາມຜູ້ຊ່ວຍ' : 'Ask the assistant'}
           className="absolute right-4 bottom-24 z-30 h-12 pl-3 pr-4 rounded-full bg-card border border-border shadow-lg flex items-center gap-2 text-sm font-semibold text-primary active:scale-95 transition-transform font-lao">
           <MessageCircle size={20} />{lang === 'lo' ? 'ຖາມ Sati' : 'Ask Sati'}
         </button>
       )}
       {/* Existing accounts without a band choose once after sign-in; afterwards it opens from the header or Settings. */}
-      {(!user.ageBand || bandSheet) && <BandSheet lang={lang} onClose={user.ageBand ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} />}
+      {(user ? !user.ageBand : !bandChosen) || bandSheet ? <BandSheet lang={lang} onClose={(user ? user.ageBand : bandChosen) ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} /> : null}
+      {signupReason && !user && <SignupPrompt lang={lang} reason={signupReason} onClose={() => setSignupReason(null)} onDone={u => { setSignupReason(null); setActionError(''); applyUser(u); }} onEmail={() => { setSignupReason(null); setGuest(null); }} />}
       {banner && <AlertBanner alert={banner} lang={lang} onDismiss={dismissBanner} onOpen={()=>{const b=banner;setBanner(null);void markAlerts(b.id);setShowAlerts(false);setCommentPostId(b.post_id);}} />}
       {postToast && (
         <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-50 bg-foreground text-background text-xs font-semibold px-4 py-2 rounded-full shadow-lg font-lao whitespace-nowrap">
           {lang === 'lo' ? 'ໂພສແລ້ວ!' : 'Posted!'}
         </div>
       )}
-      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={interact ? () => setShowCompose(true) : undefined} dailyDot={dailyPending && view !== "daily"} />
+      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={interact ? () => user ? setShowCompose(true) : setSignupReason('post') : undefined} dailyDot={dailyPending && view !== "daily"} />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { LangToggle, FormInput } from "../components/shared/Controls";
 import { SatiIllustration, SatiLogo } from "../components/shared/Brand";
 import { ArrowLeft, EyeOff, Eye, Check } from "lucide-react";
+import { QuickSignup } from "../components/shared/QuickSignup";
 import type { Lang, CurrentUser, AuthView, Band } from "../types";
 
 // Server down or unreachable (or a proxy error page): play offline instead of showing an error.
@@ -29,12 +30,14 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
   const handleLogin = async () => {
     if (busy) return;
     const errs: Record<string,string> = {};
-    if (!loginEmail) errs.email = t.err_required; else if (!isValidEmail(loginEmail.trim())) errs.email = t.err_email;
+    // Quick accounts sign in with their code (sati-xxxxxx) and 4-digit PIN.
+    const code = /^sati-[a-z0-9]{6}$/i.test(loginEmail.trim());
+    if (!loginEmail) errs.email = t.err_required; else if (!code && !isValidEmail(loginEmail.trim())) errs.email = t.err_email;
     if (!loginPw) errs.pw = t.err_required;
     setLoginErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('login', {email: loginEmail.trim(), password: loginPw})); }
+    try { onLogin(await api.authenticate('login', {email: code ? loginEmail.trim().toLowerCase() : loginEmail.trim(), password: loginPw})); }
     catch (e) { if (unreachable(e)) onOffline(); else setAuthError((e as Error).message); } finally { setBusy(false); }
   };
   const handleRegister = async () => {
@@ -71,12 +74,24 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
         </div>
         <h1 className="font-display font-bold mb-3 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
         <p className="text-sm text-muted-foreground leading-relaxed mb-7 font-lao">{t.welcome_sub}</p>
-        <div className="flex gap-3">
-          <button type="button" onClick={() => setView("login")} className="flex-1 bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_login}</button>
-          <button type="button" onClick={() => setView("register")} className="flex-1 border-2 border-primary text-primary font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_register}</button>
+        {/* Simplest first: look around without an account, then a nickname, then email for those who want it. */}
+        <button type="button" onClick={onGuest} className="w-full min-h-14 bg-primary text-white font-semibold rounded-2xl text-base active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{lang === 'lo' ? 'ເລີ່ມເລີຍ — ບໍ່ຕ້ອງມີບັນຊີ' : 'Start — no account needed'}</button>{/* REVIEW-LO */}
+        <div className="flex gap-3 mt-3">
+          <button type="button" onClick={() => setView("quick")} className="flex-1 min-h-12 border-2 border-primary text-primary font-semibold rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{lang === 'lo' ? 'ສ້າງຊື່ຫຼິ້ນ' : 'Join with a nickname'}</button>{/* REVIEW-LO */}
+          <button type="button" onClick={() => setView("login")} className="flex-1 min-h-12 border-2 border-border text-foreground font-semibold rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_login}</button>
         </div>
-        <button type="button" onClick={onGuest} className="w-full mt-3 min-h-11 text-sm font-semibold text-muted-foreground underline font-lao">{lang === 'lo' ? 'ຫຼິ້ນເກມໂດຍບໍ່ມີບັນຊີ' : 'Play games without an account'}</button>
+        <button type="button" onClick={() => setView("register")} className="w-full mt-2 min-h-11 text-xs text-muted-foreground underline font-lao">{lang === 'lo' ? 'ສະໝັກດ້ວຍອີເມວ' : 'Sign up with email'}</button>{/* REVIEW-LO */}
       </div>
+    </div>
+  );
+
+  if (view === "quick") return (
+    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+      <div className="flex items-center justify-between px-5 pt-3 mb-2">
+        <button type="button" aria-label={lang === 'lo' ? 'ກັບ' : 'Back'} onClick={() => setView("welcome")} className="p-2 -ml-2 min-h-11 min-w-11"><ArrowLeft size={20} strokeWidth={1.75} /></button>
+        <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
+      </div>
+      <div className="px-5 pb-8"><QuickSignup lang={lang} onDone={onLogin} /></div>
     </div>
   );
 

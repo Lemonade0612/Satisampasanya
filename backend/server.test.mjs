@@ -735,3 +735,19 @@ test('the feed is filtered by band on the server: intensity limits, and Kids see
   assert.equal((await f.call('/scenarios?band=adult','GET',undefined,kid.token)).status,200);
  }finally{await f.close();}
 });
+
+test('quick sign-up: nickname + band, optional PIN, kids need a PIN, code + PIN signs back in',async()=>{
+  const f=await fixture();
+  try{
+    const open=await f.call('/auth/quick','POST',{name:'Noy',ageBand:'youth'});
+    assert.equal(open.status,200);assert.match(open.value.code,/^sati-[a-z0-9]{6}$/);assert.equal(open.value.pin,false);assert.equal(open.value.user.ageBand,'youth');
+    assert.equal((await f.call('/auth/me','GET',undefined,open.value.token)).status,200);
+    assert.equal((await f.call('/auth/quick','POST',{name:'Kid',ageBand:'kids'})).status,400);
+    assert.equal((await f.call('/auth/quick','POST',{name:'Bad',ageBand:'adult',pin:'12a4'})).status,400);
+    const kid=(await f.call('/auth/quick','POST',{name:'Kid',ageBand:'kids',pin:'4821'})).value;
+    assert.equal((await f.call('/auth/login','POST',{email:kid.code,password:'4821'})).status,200);
+    assert.equal((await f.call('/auth/login','POST',{email:kid.code,password:'0000'})).status,401);
+    assert.equal((await f.call('/profile','PATCH',{ageBand:'youth'},kid.token)).status,403);
+    assert.equal((await f.call('/profile','PATCH',{ageBand:'youth',password:'4821'},kid.token)).value.ageBand,'youth');
+  }finally{await f.close();}
+});

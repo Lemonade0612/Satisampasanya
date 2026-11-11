@@ -29,6 +29,8 @@ const text = (value, max, required = false) => {
   if ((required && !result) || result.length > max) fail(`Text must contain ${required ? '1' : '0'}–${max} characters.`);
   return result;
 };
+const QUICK_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789', QUICK_CODE = /^sati-[a-z0-9]{6}$/;
+const quickEmail = code => `${code}@quick.sati`;
 const password = value => { if (typeof value !== 'string' || value.length < 8 || value.length > 128) fail('Password must contain 8–128 characters.'); return value; };
 const image = value => {
   if (!value) return undefined;
@@ -173,10 +175,36 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const id=activityMatch[1], people=(sql,...args)=>db.prepare(sql).all(...args).map(authorView);
         return send(res,200,{likes:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'like'),helpful:people('SELECT u.id,u.name,u.profile FROM users u JOIN reactions r ON r.user_id=u.id WHERE r.post_id=? AND r.kind=? ORDER BY u.name',id,'warned'),shares:people('SELECT u.id,u.name,u.profile FROM users u JOIN shares s ON s.user_id=u.id WHERE s.post_id=? ORDER BY u.name',id),reposts:people("SELECT DISTINCT u.id,u.name,u.profile FROM users u JOIN posts p ON p.user_id=u.id WHERE json_extract(p.data,'$.repostOf')=? AND COALESCE(json_extract(p.data,'$.seedArchived'),0)=0 ORDER BY u.name",id)});
       }
+      // Quick sign-up for low-tech users: nickname + age group, optional 4-digit PIN. No email.
+      // The account gets a short sign-in code (e.g. sati-k7m2p9) that works with the PIN on another phone.
+      // Kids need a PIN: it is the parent lock for leaving Kids, like the password on a full account.
+      if (req.method === 'POST' && path === '/api/auth/quick') {
+        const data = await body(req), name = text(data.name,40,true);
+        if (reservedName(name)) fail('This display name is reserved. Choose another name.');
+        if (!isBand(data.ageBand)) fail('Choose a valid age group.');
+        const pin = data.pin === undefined || data.pin === '' ? null : String(data.pin);
+        if (pin !== null && !/^\d{4}$/.test(pin)) fail('The PIN must be 4 numbers.');
+        if (data.ageBand === 'kids' && !pin) fail('Kids accounts need a 4-digit parent PIN.');
+        const id = randomUUID(), salt = randomBytes(16).toString('hex');
+        const hash = await passwordHash(pin ?? randomBytes(24).toString('hex'), salt);
+        let code;
+        for (let tries = 0; ; tries++) {
+          code = 'sati-' + Array.from(randomBytes(6), b => QUICK_CHARS[b % QUICK_CHARS.length]).join('');
+          if (!db.prepare('SELECT id FROM users WHERE email=?').get(quickEmail(code))) break;
+          if (tries > 20) fail('Please try again.',503);
+        }
+        db.prepare('INSERT INTO users(id,email,name,password,salt,age_band) VALUES (?,?,?,?,?,?)').run(id,quickEmail(code),name,hash,salt,data.ageBand);
+        db.prepare('INSERT INTO user_access(user_id,created,last_login) VALUES (?,?,?)').run(id,Date.now(),Date.now());
+        const row = db.prepare('SELECT * FROM users WHERE id=?').get(id);
+        return send(res,200,{user:userView(row),token:session(db,row.id),code,pin:!!pin});
+      }
       if (req.method === 'POST' && ['/api/auth/register','/api/auth/login','/api/admin/auth/login'].includes(path)) {
-        const data = await body(req), email = text(data.email,254,true).toLowerCase();
+        const data = await body(req);
+        // A quick account signs in with its code and 4-digit PIN instead of email and password.
+        const quick = path === '/api/auth/login' && typeof data.email === 'string' && QUICK_CODE.test(data.email.trim().toLowerCase());
+        const email = quick ? quickEmail(data.email.trim().toLowerCase()) : text(data.email,254,true).toLowerCase();
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) fail('Enter a valid email address.');
-        const pw = password(data.password);
+        const pw = quick ? (typeof data.password === 'string' && /^\d{4}$/.test(data.password) ? data.password : fail('Enter the 4-digit PIN.')) : password(data.password);
         let row = db.prepare('SELECT * FROM users WHERE email=?').get(email);
         if (path.endsWith('register')) {
           if (row) fail('An account already uses this email.',409);
