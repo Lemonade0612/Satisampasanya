@@ -15,7 +15,7 @@ import type { GameId, Lang } from '../types';
 
 export type Launch = { game: GameId; scope: 'daily' | 'weekly' | 'all' };
 
-const GAMES: { id: GameId; icon: typeof Flag; tint: string }[] = [
+export const GAMES: { id: GameId; icon: typeof Flag; tint: string }[] = [
   { id: 'call', icon: PhoneCall, tint: 'from-blue-500 to-indigo-600' },
   { id: 'detective', icon: Search, tint: 'from-fuchsia-500 to-purple-600' },
   { id: 'story', icon: MessagesSquare, tint: 'from-violet-500 to-indigo-500' },

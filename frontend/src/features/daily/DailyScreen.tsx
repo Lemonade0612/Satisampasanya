@@ -23,7 +23,8 @@ const go = (r: Route) => { location.hash = r === 'home' ? '#/daily' : `#/daily/$
 
 // `homeHeader` is shown in the home header (e.g. the language switch for guests), `homeFooter` floats at the
 // bottom of the home screen (e.g. the offline chip). Neither shows inside a game.
-export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter }: { lang: Lang; onCheckOnSati: () => void; homeHeader?: ReactNode; homeFooter?: ReactNode }) {
+// `start` opens one game straight away (e.g. a "Play today" card in the youth feed).
+export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter, start, onStarted }: { lang: Lang; onCheckOnSati: () => void; homeHeader?: ReactNode; homeFooter?: ReactNode; start?: Launch | null; onStarted?: () => void }) {
   const [route, setRoute] = useState<Route>(readRoute);
   const [play, setPlay] = useState<Launch | null>(null);
   const [result, setResult] = useState<GameResult | null>(null);
@@ -40,6 +41,7 @@ export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter }: { l
   }, []);
 
   const launch = (l: Launch) => { track({ type: 'session_start', mode: `${l.game}:${l.scope}` }); setResult(null); setPlay(l); setRound(r => r + 1); };
+  useEffect(() => { if (start) { launch(start); onStarted?.(); } }, [start]); // eslint-disable-line react-hooks/exhaustive-deps
   const exit = () => { setPlay(null); setResult(null); };
   const done = (r: GameResult) => {
     if (!play) return;

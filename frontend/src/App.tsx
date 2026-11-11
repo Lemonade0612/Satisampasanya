@@ -11,6 +11,7 @@ import { ProfileScreen } from "./screens/ProfileScreen";
 import { AssistantScreen } from "./screens/AssistantScreen";
 import { AlertsScreen } from "./screens/AlertsScreen";
 import { DailyScreen } from "./features/daily";
+import type { Launch } from "./features/daily/screens/DailyHome";
 import { CommentsModal } from "./components/modals/CommentsModal";
 import { ComposeModal } from "./components/modals/ComposeModal";
 import { RepostModal } from "./components/modals/RepostModal";
@@ -50,6 +51,7 @@ export default function App() {
   const band = useBand();
   const largeText = useLargeText();
   const simple = useSimpleMode();
+  const [dailyStart, setDailyStart] = useState<Launch | null>(null);
   const interact = canInteract(band);
   const posts = useMemo(() => postsForBand(allPosts, band), [allPosts, band]);
   useEffect(() => { document.documentElement.classList.toggle('sati-large-text', largeText); }, [largeText]);
@@ -242,6 +244,7 @@ export default function App() {
             onThemeChange={setThemeMode}
             onLangToggle={toggleLang}
             onChangeBand={() => setBandSheet(true)}
+            onPlayGame={game => { setDailyStart({ game, scope: 'all' }); setView('daily'); }}
             onImageExpand={(url) => setExpandedImage(url)}
             onTopicClick={(topic) => {
               setCustomTopic(topic); setFeedTab(0);
@@ -260,7 +263,7 @@ export default function App() {
           />
         )}
         {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} />}
-        {view === "daily" && !showAlerts && <DailyScreen lang={lang} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
+        {view === "daily" && !showAlerts && <DailyScreen lang={lang} start={dailyStart} onStarted={() => setDailyStart(null)} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
         {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
         {view === "profile" && !showAlerts && user && (
           <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} />
