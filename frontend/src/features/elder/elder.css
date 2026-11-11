@@ -1,0 +1,14 @@
+/* Elder mode: high contrast, no shadows, no gradients, visible focus. */
+.elder { background: #fff; color: #13112B; font-family: 'BoonHome', 'Noto Sans Lao', sans-serif; line-height: 1.5; }
+.elder :focus-visible { outline: 3px solid #5B21D1; outline-offset: 3px; }
+.elder button, .elder a { -webkit-tap-highlight-color: transparent; }
+.elder button:active, .elder a:active { transform: scale(0.98); }
+@keyframes elder-zoom { from { transform: scale(1); } to { transform: scale(1.12); } }
+@keyframes elder-fade { from { opacity: 0; transform: translateY(0.5rem); } to { opacity: 1; transform: none; } }
+@keyframes elder-bar { from { width: 5%; } to { width: 92%; } }
+.elder-zoom { animation: elder-zoom 4s ease-in-out infinite alternate; }
+.elder-fade { animation: elder-fade 0.4s ease-out both; }
+.elder-bar { animation: elder-bar 6s ease-out forwards; }
+@media (prefers-reduced-motion: reduce) { .elder-zoom, .elder-fade { animation: none; } }
+/* Beats the global 16px input rule (mobile.css). */
+.elder textarea { font-size: 1.3125rem; }

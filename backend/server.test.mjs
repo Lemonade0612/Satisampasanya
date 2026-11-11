@@ -763,3 +763,16 @@ test('band feeds: one band per post, and a repost follows the original post band
     assert.equal((await f.call('/posts?band=youth')).value[0].country,'TH');
   }finally{await f.close();}
 });
+
+test('Simple mode is saved on the profile and survives a new session',async()=>{
+ const f=await fixture();try{
+  const user=await f.register();
+  assert.equal(user.user.simpleMode,undefined);
+  assert.equal((await f.call('/profile','PATCH',{simpleMode:'yes'},user.token)).status,400);
+  assert.equal((await f.call('/profile','PATCH',{simpleMode:true},user.token)).value.simpleMode,true);
+  const again=(await f.call('/auth/login','POST',{email:'alice@example.com',password:'correct-password'})).value;
+  assert.equal(again.user.simpleMode,true);
+  assert.equal((await f.call('/profile','PATCH',{simpleMode:false},again.token)).value.simpleMode,false);
+  assert.equal((await f.call('/auth/me','GET',undefined,again.token)).value.simpleMode,false);
+ }finally{await f.close();}
+});

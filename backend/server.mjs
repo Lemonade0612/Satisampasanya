@@ -312,6 +312,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         }
         if (data.followed !== undefined) { if (!Array.isArray(data.followed) || data.followed.length>10 || data.followed.some(t=>!validTag(t))) fail('Invalid topics.'); profile.followed=cleanTags(data.followed); }
         if(data.following!==undefined){if(!Array.isArray(data.following)||data.following.length>200||data.following.some(id=>typeof id!=='string'||id===user.id||!db.prepare('SELECT id FROM users WHERE id=?').get(id)))fail('Choose valid community accounts to follow.');profile.following=[...new Set(data.following)];}
+        if (data.simpleMode !== undefined) { if (typeof data.simpleMode !== 'boolean') fail('Invalid setting.'); profile.simpleMode=data.simpleMode; }
         for (const k of ['avatar','banner']) if (data[k] !== undefined) profile[k]=image(data[k]) || null;
         db.prepare('UPDATE users SET name=?,profile=? WHERE id=?').run(name,JSON.stringify(profile),user.id); broadcast();
         return send(res,200,userView(db.prepare('SELECT * FROM users WHERE id=?').get(user.id)));

@@ -28,7 +28,7 @@ import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand, 
 import { SignupPrompt, type SignupReason } from "./components/shared/QuickSignup";
 import { GuestProfile } from "./screens/GuestProfile";
 import { ElderApp } from "./features/elder/ElderApp";
-import { useSimpleMode } from "./lib/simpleMode";
+import { setSimpleModeAccount, useSimpleMode } from "./lib/simpleMode";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
 
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
@@ -67,6 +67,7 @@ export default function App() {
   // Every user change goes through here: progress is keyed by account, and the account's band wins.
   const applyUser = useCallback((value: CurrentUser | null) => {
     setDailyAccount(value?.id ?? null);
+    setSimpleModeAccount(value?.id ?? null, value?.simpleMode);
     if (value?.id) writePref(LAST_ACCOUNT, value.id);
     if (value?.ageBand) setBand(value.ageBand);
     setUser(value);
@@ -188,6 +189,12 @@ export default function App() {
 
   if (sessionLoading) return <div className="app-shell flex items-center justify-center" role="status">{lang === 'lo' ? 'ກຳລັງໂຫຼດ…' : 'Loading your account…'}</div>;
 
+  // Simple mode (Elders by default, or switched on in Profile): the elder shell, Home / Check / Learn, no feed.
+  // Also offline: its message check runs on the phone.
+  if (simple && (user || guest)) return (
+    <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} /></div>
+  );
+
   if (!user && guest === 'offline') {
     const offline = true;
     return (
@@ -210,11 +217,6 @@ export default function App() {
       </div>
     );
   }
-
-  // Simple mode (Elders by default, or switched on in Profile): two big-button screens, no feed or tab bar.
-  if (simple) return (
-    <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} examples={allPosts.filter(p => p.example && p.bands?.includes("elder"))} /></div>
-  );
 
   return (
     <div className="app-shell w-full max-w-md mx-auto bg-background flex flex-col relative overflow-hidden">
@@ -264,7 +266,7 @@ export default function App() {
         )}
         {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} />}
         {view === "daily" && !showAlerts && <DailyScreen lang={lang} start={dailyStart} onStarted={() => setDailyStart(null)} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
-        {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} onCompose={interact ? () => setShowCompose(true) : undefined} onToggleLang={toggleLang} />}
+        {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
         {view === "profile" && !showAlerts && user && (
           <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} onCompose={interact ? () => setShowCompose(true) : undefined} onToggleLang={toggleLang} />
         )}
