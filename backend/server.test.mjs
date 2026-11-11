@@ -792,3 +792,14 @@ test('user posts never reach Elders unless an Elder wrote them, and stay in the 
   assert.ok(youthFeed.includes(y.id));assert.ok(youthFeed.includes(n.id));assert.ok(!youthFeed.includes(e.id));
  }finally{await f.close();}
 });
+
+test('seed posts visible per band match the agreed counts',async()=>{
+ const f=await fixture({seed:true});try{
+  const count=async b=>(await f.call(`/posts?band=${b}`)).value.length;
+  // Kids: only reviewed intensity-1 posts. Elders see no feed in Simple mode; these are the posts when it is off.
+  assert.deepEqual({kids:await count('kids'),youth:await count('youth'),adult:await count('adult'),elder:await count('elder')},{kids:1,youth:17,adult:13,elder:8});
+  const seed=JSON.parse((await import('node:fs')).readFileSync(new URL('./seed.json',import.meta.url),'utf8'));
+  assert.ok(seed.filter(p=>p.bands?.length>1).length<=2,'at most two shared seed posts');
+  assert.ok(seed.every(p=>p.bands?.length>=1),'every seed post has a band');
+ }finally{await f.close();}
+});
