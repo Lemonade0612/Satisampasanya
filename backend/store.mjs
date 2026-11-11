@@ -54,7 +54,7 @@ export function userView(row) {
 export function authorView(row) {
   const handle=JSON.parse(row.profile||'{}').handle || `@sati_${row.id.slice(0,8)}`;
   const hue=[...handle].reduce((value,char)=>(value*31+char.charCodeAt(0))%360,0);
-  return { id: row.id, name: row.name, handle, initials: row.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase(), color: `hsl(${hue} 62% 42%)`, points: 0 };
+  return { id: row.id, name: row.name, handle, initials: row.name.split(/\s+/).map(w => w[0]).slice(0, 2).join('').toUpperCase(), color: `hsl(${hue} 62% 26%)`, points: 0 };
 }
 export function postView(db, row, userId, depth=0, {staff=false}={}) {
   const post = JSON.parse(row.data);
