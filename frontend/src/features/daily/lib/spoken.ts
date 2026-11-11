@@ -9,6 +9,7 @@ import { BAND_SESSIONS } from '../data/bandSessions';
 import { PERSONAS, type Case } from '../data/detectiveCases';
 import { BAIT_POSTS, BAIT_UI, type BaitPost } from '../../kids/baitPosts';
 import { DT } from '../i18n';
+import { ET, VERDICT, ELDER_TIPS } from '../../elder/text';
 import { BANDS, filterByBand, forBand, type Band } from '../../../lib/band';
 import type { Lang, Scenario, Step } from '../types';
 
@@ -49,5 +50,7 @@ export function spokenCatalog(): SpokenItem[] {
   }
   add(['kids'], [BAIT_UI.lo.intro]);
   for (const post of BAIT_POSTS) add(['kids'], [...baitPostParts(post, 'lo'), ...baitRevealParts(post, true, 'lo'), ...baitRevealParts(post, false, 'lo')]);
+  // Simple mode (elder home and check result).
+  add(['elder'], [ET.lo.hello, ET.lo.tip_label, ...ELDER_TIPS.map(t => t.lo), ...Object.values(VERDICT).flatMap(v => v.lo)]);
   return [...out].map(([text, bands]) => ({ text, bands: [...bands] }));
 }

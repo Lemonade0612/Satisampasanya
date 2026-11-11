@@ -7,6 +7,7 @@ import { Image as ImageIcon, Camera, Pencil, LogOut, ChevronRight } from "lucide
 import { bandLabel } from "../components/shared/BandSheet";
 import { TIERS } from "../features/daily/lib/age";
 import { useBand } from "../lib/band";
+import { SimpleModeRow } from "../components/shared/SimpleModeRow";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, CurrentUser, Post, ProfileTab, LeafState } from "../types";
@@ -213,6 +214,7 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
       </div>
       <div className="p-4 border-t border-border grid gap-3">
         <BandSetting lang={lang} onChange={onChangeBand} />
+        <SimpleModeRow lang={lang} />
         <button onClick={onLogout} className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 text-sm font-semibold hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors">
           <LogOut size={16} /> {lang === 'lo' ? 'ອອກຈາກລະບົບ' : 'Sign out'}
         </button>

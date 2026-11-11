@@ -26,6 +26,8 @@ import { GuestChip } from "./components/shared/GuestChip";
 import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand, useLargeText } from "./lib/band";
 import { SignupPrompt, type SignupReason } from "./components/shared/QuickSignup";
 import { GuestProfile } from "./screens/GuestProfile";
+import { ElderApp } from "./features/elder/ElderApp";
+import { useSimpleMode } from "./lib/simpleMode";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
 
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
@@ -47,6 +49,7 @@ export default function App() {
   // The age band filters what every screen shows. Kids get a read-only, verified-only feed.
   const band = useBand();
   const largeText = useLargeText();
+  const simple = useSimpleMode();
   const interact = canInteract(band);
   const posts = useMemo(() => postsForBand(allPosts, band), [allPosts, band]);
   useEffect(() => { document.documentElement.classList.toggle('sati-large-text', largeText); }, [largeText]);
@@ -205,6 +208,11 @@ export default function App() {
       </div>
     );
   }
+
+  // Simple mode (Elders by default, or switched on in Profile): two big-button screens, no feed or tab bar.
+  if (simple) return (
+    <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} /></div>
+  );
 
   return (
     <div className="app-shell w-full max-w-md mx-auto bg-background flex flex-col relative overflow-hidden">
