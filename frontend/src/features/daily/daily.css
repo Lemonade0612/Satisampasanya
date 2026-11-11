@@ -6,6 +6,8 @@
 .daily-btn { min-height: 52px; transition: transform .12s ease, box-shadow .12s ease; }
 .daily-btn:active { transform: scale(.96) translateY(2px); }
 .daily-grad { background: linear-gradient(135deg, #5B21D1, #84ADEF); }
+.daily-solid { background: #4B1FB8; box-shadow: 0 3px 0 #2E0F7A; }
+.daily-solid:hover { background: #4219A6; }
 .daily-flag { transition: background .2s, color .2s; border-radius: 6px; padding: 2px 3px; }
 @keyframes daily-pop { 0% { transform: scale(.6); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
 @keyframes daily-shake { 0%,100% { transform: translateX(0) } 25% { transform: translateX(-8px) } 75% { transform: translateX(8px) } }

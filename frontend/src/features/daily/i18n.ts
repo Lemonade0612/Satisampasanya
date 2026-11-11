@@ -10,7 +10,7 @@ export const DT = {
     streak: 'day streak', trust: 'Trust', score: 'Score', week: 'This week',
     daily_session: "Today's 2-minute session", start: 'Start', play: 'Play', continue: 'Continue',
     weekly_level: 'Weekly level', boss: 'Boss level', locked: 'Finish the level to unlock',
-    games: 'More games', today_for_you: 'Today for you', all_games: 'All games', minutes: '~2 min', done_today: 'Done today ✓', my_progress: 'My progress', back: 'Back',
+    games: 'More games', today_for_you: 'Today for you', all_games: 'All games', minutes: '~2 min', done_today: 'Done ✓', my_progress: 'My progress', back: 'Back',
     g_story: 'Story chats', g_story_d: '5 scam stories, you choose what happens',
     g_flags: 'Red-flag hunt', g_flags_d: 'Tap the suspicious parts',
     g_realorscam: 'Real or scam?', g_realorscam_d: 'Messages pop up. Decide fast',
@@ -61,7 +61,7 @@ export const DT = {
     streak: 'ມື້ຕິດຕໍ່ກັນ', trust: 'ຄວາມໄວ້ໃຈ', score: 'ຄະແນນ', week: 'ອາທິດນີ້',
     daily_session: 'ບົດຮຽນ 2 ນາທີມື້ນີ້', start: 'ເລີ່ມ', play: 'ຫຼິ້ນ', continue: 'ສືບຕໍ່',
     weekly_level: 'ດ່ານປະຈຳອາທິດ', boss: 'ດ່ານບອສ', locked: 'ຜ່ານດ່ານກ່ອນເພື່ອປົດລັອກ',
-    games: 'ເກມອື່ນໆ', today_for_you: 'ມື້ນີ້ສຳລັບທ່ານ', all_games: 'ເກມທັງໝົດ', minutes: '~2 ນາທີ', done_today: 'ຫຼິ້ນແລ້ວມື້ນີ້ ✓', my_progress: 'ຄວາມຄືບໜ້າຂອງຂ້ອຍ', back: 'ກັບ', // REVIEW-LO today_for_you, all_games, minutes, done_today
+    games: 'ເກມອື່ນໆ', today_for_you: 'ມື້ນີ້ສຳລັບທ່ານ', all_games: 'ເກມທັງໝົດ', minutes: '~2 ນາທີ', done_today: 'ແລ້ວ ✓', my_progress: 'ຄວາມຄືບໜ້າຂອງຂ້ອຍ', back: 'ກັບ', // REVIEW-LO today_for_you, all_games, minutes, done_today
     g_story: 'ເລື່ອງແຊັດ', g_story_d: '5 ເລື່ອງຫຼອກລວງ ທ່ານເລືອກເອງ',
     g_flags: 'ລ່າສັນຍານອັນຕະລາຍ', g_flags_d: 'ແຕະສ່ວນທີ່ໜ້າສົງໄສ',
     g_realorscam: 'ແທ້ ຫຼື ຫຼອກ?', g_realorscam_d: 'ຂໍ້ຄວາມເດັ້ງຂຶ້ນ ຕັດສິນໄວໆ',

@@ -31,10 +31,12 @@ const PICKS: Record<Band, GameId[]> = {
   kids: ['realorscam', 'links', 'dash'],
   youth: ['story', 'detective', 'call'],
   adult: ['call', 'realorscam', 'story'],
-  elder: ['call', 'realorscam'],
+  elder: [], // Elders use Simple mode; with it off they still have every game under "All games".
 };
 export function picksForToday(band: Band, day = laoDayNumber()) {
-  const list = PICKS[band], shift = (day + Object.keys(PICKS).indexOf(band)) % list.length;
+  const list = PICKS[band];
+  if (!list.length) return [];
+  const shift = (day + Object.keys(PICKS).indexOf(band)) % list.length;
   return [...list.slice(shift), ...list.slice(0, shift)];
 }
 
@@ -101,34 +103,36 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
       </section>
 
       <section className="px-4 mt-6">
-        <h2 className="font-bold mb-2 font-lao">{t.today_for_you}</h2>
+        {picksForToday(band).length > 0 && <h2 className="font-bold mb-2 font-lao">{t.today_for_you}</h2>}
         <div className="grid gap-3">
           {picksForToday(band).map((id, i) => {
             const { icon: Icon, tint } = GAMES.find(g => g.id === id)!;
             const played = playedToday(id, p), big = band === 'elder';
+            // Adults/elders: calm solid colours with strong contrast; only the top pick is a filled button.
+            const calm = band === 'adult' || band === 'elder', lead = i === 0 && !played;
             return (
-              <div key={id} className={`daily-in rounded-3xl border-2 bg-card ${big ? 'p-5' : 'p-4'} ${played ? 'border-green-400' : 'border-border'}`} style={{ animationDelay: `${i * 0.05}s` }}>
+              <div key={id} className={`daily-in rounded-3xl bg-card shadow-sm ${calm ? 'border' : 'border-2'} ${big ? 'p-5' : 'p-4'} ${played ? 'border-green-400' : calm && lead ? 'border-[#4B1FB8]/40' : 'border-border'}`} style={{ animationDelay: `${i * 0.05}s` }}>
                 <div className="flex items-center gap-3">
-                  <span className={`${big ? 'w-16 h-16' : 'w-14 h-14'} rounded-2xl bg-gradient-to-br ${tint} text-white flex items-center justify-center shrink-0`}><Icon size={big ? 32 : 28} /></span>
+                  <span className={`${big ? 'w-16 h-16' : 'w-14 h-14'} rounded-2xl ${calm ? 'bg-[#EEE9FB] text-[#4B1FB8]' : `bg-gradient-to-br ${tint} text-white`} flex items-center justify-center shrink-0`}><Icon size={big ? 32 : 28} /></span>
                   <span className="min-w-0 flex-1">
                     <span className={`block font-bold font-lao ${big ? 'text-xl' : 'text-lg'}`}>{t[`g_${id}`]}</span>
-                    <span className={`block text-muted-foreground font-lao ${big ? 'text-base' : 'text-sm'}`}>{t[`g_${id}_d`]}</span>
+                    <span className={`block font-lao ${calm ? 'text-slate-600' : 'text-muted-foreground'} ${big ? 'text-base' : 'text-sm'}`}>{t[`g_${id}_d`]}</span>
                     <span className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                       <Clock size={12} />{t.minutes}
-                      {played && <span className="ml-2 inline-flex items-center gap-1 font-bold text-green-600 font-lao"><CheckCircle2 size={13} />{t.done_today}</span>}
+                      {played && <span className="ml-2 inline-flex items-center gap-1 font-bold text-green-700 font-lao"><CheckCircle2 size={13} />{t.done_today}</span>}
                     </span>
                   </span>
                 </div>
                 <button onClick={() => onLaunch({ game: id, scope: 'all' })}
-                  className={`daily-btn mt-3 w-full rounded-2xl font-bold font-lao ${big ? 'min-h-14 text-lg' : 'min-h-12'} ${played ? 'bg-muted text-foreground' : 'daily-grad text-white shadow-[0_4px_0_#3B0FA0]'}`}>
+                  className={`daily-btn mt-3 w-full rounded-2xl font-bold font-lao ${big ? 'min-h-14 text-lg' : 'min-h-12'} ${played ? 'bg-muted text-foreground' : calm ? (lead ? 'daily-solid text-white' : 'bg-[#EEE9FB] text-[#3B1696] hover:bg-[#E2DAF8]') : 'daily-grad text-white shadow-[0_4px_0_#3B0FA0]'}`}>
                   {played ? t.play_again : t.play}
                 </button>
               </div>
             );
           })}
         </div>
-        {/* Everything else stays one tap away, collapsed. Elders get only the picks, to keep the screen calm. */}
-        {band !== 'elder' && <details className="mt-3 rounded-2xl border border-border bg-card group">
+        {/* Everything else stays one tap away, collapsed. */}
+        <details className="mt-3 rounded-2xl border border-border bg-card group">
           <summary className="flex items-center justify-between px-4 min-h-12 font-semibold font-lao cursor-pointer list-none">
             {t.all_games} ({GAMES.length})<ChevronDown size={18} className="transition-transform group-open:rotate-180" />
           </summary>
@@ -137,13 +141,13 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
               <div key={id} className="flex items-center gap-3 rounded-2xl border border-border bg-background p-3">
                 <button onClick={() => onLaunch({ game: id, scope: 'all' })} className="flex-1 flex items-center gap-3 text-left min-h-12">
                   <span className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${tint} text-white flex items-center justify-center shrink-0`}><Icon size={24} /></span>
-                  <span className="min-w-0"><span className="block font-bold font-lao">{t[`g_${id}`]}</span><span className="block text-xs text-muted-foreground font-lao">{t[`g_${id}_d`]}{p.best[id] ? <> · <Trophy size={11} className="inline -mt-0.5 text-amber-500" /> {p.best[id]}</> : null}</span></span>
+                  <span className="min-w-0"><span className="block font-bold font-lao">{t[`g_${id}`]}</span><span className="block text-xs text-muted-foreground font-lao">{t[`g_${id}_d`]}{p.best[id] ? <> · <Trophy size={11} className="inline -mt-0.5 text-amber-500" /> {p.best[id]}</> : null}</span>{playedToday(id, p) && <span className="inline-flex items-center gap-1 text-xs font-bold text-green-700 font-lao"><CheckCircle2 size={13} />{t.done_today}</span>}</span>
                 </button>
                 <LikeButton id={id} lang={lang} compact />
               </div>
             ))}
           </div>
-        </details>}
+        </details>
       </section>
 
       <div className="px-4 mt-6">
