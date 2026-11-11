@@ -326,7 +326,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const source = link(data.link); if (data.isNews && !source) fail('News posts need a source URL.');
         const since = Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00');
         if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 5) fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
-        const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
+        const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,bands:isBand(user.age_band)?[user.age_band]:undefined,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
         const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
         await check(post,{onProgress});
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];

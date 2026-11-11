@@ -37,8 +37,10 @@ const reviewedSafe = post => post.state === 'confirmed' || (post.state === 'clea
 export function postVisibleToBand(post, band) {
   if (!isBand(band)) return true;
   if (postIntensity(post) > MAX_INTENSITY[band]) return false;
-  // Strict: a post tagged with bands shows only to those bands (guests included). Untagged posts (people's own) show to all.
-  if (Array.isArray(post.bands) && post.bands.length && !post.bands.includes(band)) return false;
+  // Strict: a post tagged with bands shows only to those bands (guests included). New user posts carry the author's band.
+  // Untagged posts (older user posts, authors without a band) show to every band except Elders.
+  const tagged = Array.isArray(post.bands) && post.bands.length;
+  if (tagged ? !post.bands.includes(band) : band === 'elder') return false;
   if (band === 'kids' && !reviewedSafe(post)) return false;
   return true;
 }

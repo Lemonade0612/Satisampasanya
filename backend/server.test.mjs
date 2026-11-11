@@ -710,8 +710,8 @@ test('age band: only the band is stored, kids cannot post, comment or repost, an
 
 test('the feed is filtered by band on the server: intensity limits, and Kids see only reviewed posts',async()=>{
  const f=await fixture();try{
+  // An author without a band writes untagged posts, so the intensity rules decide who sees them.
   const admin=await f.admin('admin@example.com');
-  await f.call('/profile','PATCH',{ageBand:'adult'},admin.token);
   const make=async(tags,state)=>{const p=(await f.call('/posts','POST',{content:`About ${tags.join(' ')}`,tags},admin.token)).value;if(state)await f.call(`/admin/posts/${p.id}/review`,'PATCH',{state,note:'Checked'},admin.token);return p.id;};
   const safetyUnreviewed=await make(['DigitalSafety']);
   const safetyReviewed=await make(['DigitalSafety'],'clean');
@@ -724,7 +724,7 @@ test('the feed is filtered by band on the server: intensity limits, and Kids see
   const elder=(await f.call('/auth/register','POST',{name:'Grandma',email:'gran@example.com',password:'correct-password',ageBand:'elder'})).value;
   assert.deepEqual(await ids(kid.token),[safetyReviewed]);
   assert.deepEqual(await ids(kid.token,'adult'),[safetyReviewed],'a stored band cannot be overridden by the request');
-  assert.deepEqual(await ids(elder.token),sorted([safetyUnreviewed,safetyReviewed,fraud,custom]));
+  assert.deepEqual(await ids(elder.token),[],'untagged user posts never reach Elders');
   assert.deepEqual(await ids(undefined,'kids'),[safetyReviewed],'guests are filtered by the band they choose');
   assert.deepEqual(await ids(undefined,'youth'),sorted([safetyUnreviewed,safetyReviewed,fraud,trafficking,custom]));
   assert.equal((await ids(admin.token)).length,5,'authors always see their own posts');
@@ -774,5 +774,21 @@ test('Simple mode is saved on the profile and survives a new session',async()=>{
   assert.equal(again.user.simpleMode,true);
   assert.equal((await f.call('/profile','PATCH',{simpleMode:false},again.token)).value.simpleMode,false);
   assert.equal((await f.call('/auth/me','GET',undefined,again.token)).value.simpleMode,false);
+ }finally{await f.close();}
+});
+
+test('user posts never reach Elders unless an Elder wrote them, and stay in the author band',async()=>{
+ const f=await fixture();try{
+  const youth=await f.register('young@example.com'),elder=await f.register('old@example.com'),plain=await f.register('plain@example.com');
+  await f.call('/profile','PATCH',{ageBand:'youth'},youth.token);await f.call('/profile','PATCH',{ageBand:'elder'},elder.token);
+  const y=(await f.call('/posts','POST',draft,youth.token)).value;
+  const e=(await f.call('/posts','POST',draft,elder.token)).value;
+  const n=(await f.call('/posts','POST',draft,plain.token)).value;
+  assert.deepEqual(y.bands,['youth']);assert.deepEqual(e.bands,['elder']);assert.equal(n.bands,undefined);
+  const seen=async b=>(await f.call(`/posts?band=${b}`)).value.map(p=>p.id);
+  const elderFeed=await seen('elder');
+  assert.ok(!elderFeed.includes(y.id));assert.ok(!elderFeed.includes(n.id));assert.ok(elderFeed.includes(e.id));
+  const youthFeed=await seen('youth');
+  assert.ok(youthFeed.includes(y.id));assert.ok(youthFeed.includes(n.id));assert.ok(!youthFeed.includes(e.id));
  }finally{await f.close();}
 });
