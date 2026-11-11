@@ -29,6 +29,14 @@ const text = (value, max, required = false) => {
   if ((required && !result) || result.length > max) fail(`Text must contain ${required ? '1' : '0'}–${max} characters.`);
   return result;
 };
+// A repost without its own band follows the original's band, so a repost never leaks a post into another band's feed.
+const bandView = (db, row) => {
+  const post = JSON.parse(row.data);
+  if (!post.repostOf || post.bands?.length) return post;
+  const original = db.prepare('SELECT data FROM posts WHERE id=?').get(post.repostOf);
+  const source = original ? JSON.parse(original.data) : null;
+  return source ? { ...post, bands: source.bands, intensity: post.intensity ?? source.intensity, tags: [...(post.tags || []), ...(source.tags || [])] } : post;
+};
 const QUICK_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789', QUICK_CODE = /^sati-[a-z0-9]{6}$/;
 const quickEmail = code => `${code}@quick.sati`;
 const password = value => { if (typeof value !== 'string' || value.length < 8 || value.length > 128) fail('Password must contain 8–128 characters.'); return value; };
@@ -162,7 +170,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const interval = setInterval(() => res.write(': keepalive\n\n'), 25000);
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
-      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(JSON.parse(p.data),band))).map(p => postView(db,p,user?.id)));
+      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => postView(db,p,user?.id)));
       const personMatch=/^\/api\/people\/([^/]+)$/.exec(path);
       if(req.method==='GET'&&personMatch){
         const person=db.prepare('SELECT id,name,profile FROM users WHERE id=?').get(personMatch[1]);if(!person)fail('Person not found.',404);

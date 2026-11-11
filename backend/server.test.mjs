@@ -751,3 +751,15 @@ test('quick sign-up: nickname + band, optional PIN, kids need a PIN, code + PIN 
     assert.equal((await f.call('/profile','PATCH',{ageBand:'youth',password:'4821'},kid.token)).value.ageBand,'youth');
   }finally{await f.close();}
 });
+
+test('band feeds: one band per post, and a repost follows the original post band',async()=>{
+  const f=await fixture();
+  try{
+    const now=Date.now(),put=(id,data)=>f.db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)').run(id,JSON.stringify({content:id,tags:['OnlineScam'],state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,...data}),now);
+    put('y',{bands:['youth'],country:'TH',example:true,exampleStatus:'red'});put('e',{bands:['elder']});put('r',{repostOf:'e'});
+    const ids=async band=>(await f.call(`/posts?band=${band}`)).value.map(p=>p.id).sort();
+    assert.deepEqual(await ids('youth'),['y']);
+    assert.deepEqual(await ids('elder'),['e','r']);
+    assert.equal((await f.call('/posts?band=youth')).value[0].country,'TH');
+  }finally{await f.close();}
+});

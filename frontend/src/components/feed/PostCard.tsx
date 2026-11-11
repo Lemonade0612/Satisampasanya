@@ -3,12 +3,14 @@ import {CommunityScore} from './CommunityScore';
 import { PostScreening } from "./PostScreening";
 import { request } from "../../lib/api";
 import { T } from "../../lib/translations";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, Shield, Share2 } from "lucide-react";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { TagChip } from "@/components/ui/TagChip";
 import { postText } from "../../lib/band";
 import type { Post, Lang, LeafState } from "../../types";
+
+let autoTranslations = 8;
 
 // readOnly (the Kids feed): no comments, reposts, shares or stranger profiles; Kids get gentle text when a post has it.
 export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRepostClick, onImageExpand, onTopicClick, following, onFollow, readOnly = false }: {
@@ -27,7 +29,25 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   const reposted = false;
   const warned = !!post.warned;
   const [showFull, setShowFull] = useState(false);
-  const content = (readOnly ? postText(post, lang, "kids") : null) || translatedContent || (post.contentLanguage === "lo" ? post.contentLo || post.content : post.content);
+  // The app language decides: a stored translation shows straight away; otherwise the card asks for one once.
+  const loPost = post.contentLanguage === "lo";
+  const stored = lang === "lo" ? (loPost ? post.contentLo || post.content : post.contentLo) : (loPost ? post.translationText : post.content);
+  const content = (readOnly ? postText(post, lang, "kids") : null) || stored || translatedContent || (loPost ? post.contentLo || post.content : post.content);
+  const needsTranslation = !stored && !post.repostOf;
+  useEffect(() => { setTranslatedContent(null); }, [lang]);
+  const [card, setCard] = useState<HTMLElement | null>(null);
+  useEffect(() => {
+    if (!needsTranslation || translatedContent || readOnly || !card || autoTranslations <= 0) return;
+    let alive = true;
+    // Only cards actually on screen, and only a few per session: translation shares the sign-in rate limit.
+    const seen = new IntersectionObserver(entries => {
+      if (!entries.some(e => e.isIntersecting) || autoTranslations <= 0) return;
+      seen.disconnect(); autoTranslations--;
+      request<Post>(`/posts/${post.id}/translate`, 'POST', {}).then(result => { if (alive) setTranslatedContent((loPost ? result.translationText : result.contentLo) || null); }).catch(() => { /* the manual button below stays as a fallback */ });
+    });
+    seen.observe(card);
+    return () => { alive = false; seen.disconnect(); };
+  }, [needsTranslation, lang, post.id, card]);
   const isLong = content.length > 200;
   const displayContent = showFull || !isLong ? content : content.slice(0, 200) + "...";
 
@@ -76,7 +96,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
 
 
   return (
-    <article className="bg-background border-b border-border">
+    <article ref={setCard} className="bg-background border-b border-border">
       {post.repostOf&&<p className="px-4 pt-3 text-xs text-muted-foreground flex gap-2 items-center"><Repeat2 size={14}/>{post.author.name} · {lang==='lo'?'ແຊຣ໌ໂພສ':'reposted'}</p>}
       {!post.check && !post.seed && !post.isDemo && getStateBanner()}
       <div className="px-4 pt-3 pb-2">
@@ -93,13 +113,15 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
               <LeafMark state={getLeafState()} size={14} />
               {post.isNews && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/10 text-primary">{t.news_label}</span>}
               <span className="text-xs text-muted-foreground">{post.author.handle}</span>
+              {post.country && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-foreground">{countryLabel(post.country, lang)}</span>}
               <span className="text-xs text-muted-foreground">·</span>
               <span className="text-xs text-muted-foreground">{post.timestamp==='Just now'?(lang==='lo'?'ດຽວນີ້':'Just now'):lang==='lo'?post.timestamp.replace('h',' ຊມ.').replace('d',' ມື້'):post.timestamp}</span>
             </div>
+            {post.example && <ExampleBadge status={post.exampleStatus} lang={lang} />}
             {(!post.repostOf||post.repostText)&&<p className="text-base text-foreground leading-[1.7] mt-1 whitespace-pre-wrap break-words font-lao">{displayContent}</p>}
             {post.originalPost&&<div className="mt-3 rounded-2xl border border-border p-3 font-lao"><button className="font-semibold min-h-11" onClick={()=>post.originalPost?.author.id&&setPeopleTarget({kind:"person",id:post.originalPost.author.id})}>{post.originalPost.author.name}</button><span className="ml-2 text-xs text-muted-foreground">{post.originalPost.author.handle}</span><p className="mt-2 text-sm whitespace-pre-wrap">{post.originalPost.contentLanguage==='lo'?(post.originalPost.contentLo||post.originalPost.content):post.originalPost.content}</p></div>}
-            {((lang === 'lo' && !post.contentLo) || (lang === 'en' && post.contentLanguage === 'lo')) && <p className="text-xs text-muted-foreground mt-1">{lang === 'lo' ? 'ບໍ່ມີຄຳແປ — ສະແດງຕົ້ນສະບັບ' : 'Translation unavailable — showing original'}</p>}
-            {((lang==='lo'&&!post.contentLo)||(lang==='en'&&post.contentLanguage==='lo')) && <button disabled={translating} className="touch-target text-sm text-primary" onClick={async()=>{setTranslating(true);setTranslationError('');try{const result=await request<Post>(`/posts/${post.id}/translate`,'POST',{});setTranslatedContent(post.contentLanguage==='lo'?result.translationText||null:result.contentLo||null);}catch(e){setTranslationError((e as Error).message);}finally{setTranslating(false);}}}>{translating?(lang==='lo'?'ກຳລັງແປ…':'Translating…'):(lang==='lo'?'ແປເປັນລາວ':'Translate to English')}</button>}
+            {needsTranslation && !translatedContent && <p className="text-xs text-muted-foreground mt-1">{lang === 'lo' ? 'ບໍ່ມີຄຳແປ — ສະແດງຕົ້ນສະບັບ' : 'Translation unavailable — showing original'}</p>}
+            {needsTranslation && !translatedContent && <button disabled={translating} className="touch-target text-sm text-primary" onClick={async()=>{setTranslating(true);setTranslationError('');try{const result=await request<Post>(`/posts/${post.id}/translate`,'POST',{});setTranslatedContent(post.contentLanguage==='lo'?result.translationText||null:result.contentLo||null);}catch(e){setTranslationError((e as Error).message);}finally{setTranslating(false);}}}>{translating?(lang==='lo'?'ກຳລັງແປ…':'Translating…'):(lang==='lo'?'ແປເປັນລາວ':'Translate to English')}</button>}
             {translationError && <p role="alert" className="text-xs text-red-600">{translationError}</p>}
             {isLong && (
               <button onClick={() => setShowFull(v => !v)} className="text-xs text-primary font-semibold mt-1">
@@ -171,4 +193,20 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       {peopleTarget&&<PeoplePanel target={peopleTarget} lang={lang} onClose={()=>setPeopleTarget(null)} onOpenPost={onOpenComments}/>}
     </article>
   );
+}
+
+// ASEAN country chip on youth posts. Flags are emoji, so they need no image files.
+const COUNTRIES: Record<string, { flag: string; en: string; lo: string }> = {
+  LA: { flag: "🇱🇦", en: "Laos", lo: "ລາວ" }, TH: { flag: "🇹🇭", en: "Thailand", lo: "ໄທ" }, VN: { flag: "🇻🇳", en: "Vietnam", lo: "ຫວຽດນາມ" },
+  PH: { flag: "🇵🇭", en: "Philippines", lo: "ຟີລິບປິນ" }, KH: { flag: "🇰🇭", en: "Cambodia", lo: "ກຳປູເຈຍ" }, MM: { flag: "🇲🇲", en: "Myanmar", lo: "ມຽນມາ" },
+};
+export const countryLabel = (code: string, lang: Lang) => { const c = COUNTRIES[code]; return c ? `${c.flag} ${c[lang]}` : code; };
+
+// "Example" label on seed teaching posts, coloured like the risk legend (green / yellow / red).
+function ExampleBadge({ status, lang }: { status?: "green" | "yellow" | "red"; lang: Lang }) {
+  const lo = lang === "lo";
+  const look = status === "red" ? { color: "#c0292b", background: "#fdeaea", text: lo ? "ຕົວຢ່າງ · ການຫຼອກລວງ" : "Example · Scam" }
+    : status === "yellow" ? { color: "#8a4b00", background: "#fff1da", text: lo ? "ຕົວຢ່າງ · ໜ້າສົງໄສ" : "Example · Suspicious" }
+    : { color: "#157f3b", background: "#e8f7ee", text: lo ? "ຕົວຢ່າງ · ປອດໄພ" : "Example · Safe" }; // REVIEW-LO
+  return <p className="mt-1"><span style={{ color: look.color, background: look.background }} className="inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold font-lao"><span aria-hidden="true">● </span>{look.text}</span></p>;
 }

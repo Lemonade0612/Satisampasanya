@@ -68,6 +68,12 @@ export interface Post {
   image?: string;
   // Age targeting: no `bands` = everyone; `essential` = safety basics shown to every band.
   bands?: Band[];
+  // Seed teaching posts: shown with an "Example" label and the intended verdict colour.
+  example?: boolean;
+  exampleStatus?: 'green' | 'yellow' | 'red';
+  // ASEAN youth feed: where the post comes from (LA, TH, VN, PH, KH, MM) and what kind of scam it shows.
+  country?: string;
+  scamType?: string;
   essential?: boolean;
   // Gentle text for Kids; falls back to content/contentLo.
   contentKids?: string;

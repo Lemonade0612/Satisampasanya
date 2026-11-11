@@ -8,6 +8,7 @@ import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
 import { BaitFeed } from "../features/kids/BaitFeed";
+import { useState } from "react";
 import type { Band, Lang, Post, ThemeMode } from "../types";
 
 export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onOpenAlerts, alertCount, onRepostClick, themeMode, onThemeChange, onLangToggle, onChangeBand, onImageExpand, onTopicClick, followedTopics, customTopic, following, currentUserId, onFollow }: {
@@ -24,6 +25,9 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   const largeText = useLargeText();
   const readOnly = !canInteract(band);
   posts = postsForBand(posts, band);
+  // Youth only: Laos-only or the whole ASEAN youth community. Posts without a country count as Laos.
+  const [region, setRegion] = useState<"LA" | "ASEAN">("ASEAN");
+  if (band === "youth" && region === "LA") posts = posts.filter(p => !p.country || p.country === "LA");
   const tabs = lang === "lo" ? ["ສຳລັບທ່ານ", "ຕິດຕາມ", "ຫຼ້າສຸດ", "ຍອດນິຍົມ"] : ["For you", "Following", "Latest", "Popular"];
   const score = (p: Post) => p.communityRanking?.rank || 0;
   const filteredPosts = (customTopic ? posts.filter(p => p.tags.includes(customTopic)) : activeTab === 1 ? posts.filter(p => !!p.author.id && following.includes(p.author.id)) : [...posts]);
@@ -60,6 +64,12 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           ))}
         </div>
       </div>
+      {band === "youth" && <div role="radiogroup" aria-label={lang === "lo" ? "ພື້ນທີ່" : "Region"} className="flex gap-2 px-4 py-2 border-b border-border font-lao">
+        {(["LA", "ASEAN"] as const).map(r => <button key={r} role="radio" aria-checked={region === r} onClick={() => setRegion(r)}
+          className={`min-h-9 px-3 rounded-full text-sm font-semibold ${region === r ? "bg-primary text-white" : "bg-muted text-muted-foreground"}`}>
+          {r === "LA" ? (lang === "lo" ? "🇱🇦 ລາວ" : "🇱🇦 Laos") : (lang === "lo" ? "ອາຊຽນທັງໝົດ" : "All ASEAN")}{/* REVIEW-LO */}
+        </button>)}
+      </div>}
       {customTopic && <button className="touch-target text-primary text-sm border-b border-border" onClick={()=>onTabChange(0)}>#{customTopic} · {lang==='lo'?'ສະແດງທັງໝົດ':'Show all posts'}</button>}
       <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide">
         {readOnly && <p role="note" className="mx-3 mt-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 p-3 text-sm flex gap-2 font-lao"><ShieldCheck size={18} className="text-emerald-600 shrink-0 mt-0.5" />{lang === "lo" ? "ໂໝດເດັກ: ສະແດງແຕ່ໂພສທີ່ກວດແລ້ວ. ເຫັນຫຍັງແປກ? ຢຸດ ແລ້ວບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ." : "Kids mode: only checked posts. See something strange? Stop and tell a trusted adult."}</p>}
