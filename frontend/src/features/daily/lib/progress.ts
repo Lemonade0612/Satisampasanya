@@ -1,7 +1,7 @@
 import { LIKES_KEY, PROGRESS_KEY, laoDay, load, save, scoped, today } from './storage';
 import type { GameId } from '../types';
 
-type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number };
+type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number; doneDay?: string; doneGames?: string[] };
 export const getProgress = () => load<Progress>(scoped(PROGRESS_KEY), { streak: 0, lastDay: null, best: {}, completed: [] });
 
 // The streak shown today: still alive if the last session was today or yesterday, otherwise broken.
@@ -18,6 +18,9 @@ export function finishSession(game: GameId | string, score: number, scenarioIds:
     p.lastDay = d;
   }
   p.played = (p.played || 0) + 1;
+  // Which games were finished today, for the "Done today" mark on the home cards.
+  if (p.doneDay !== d) { p.doneDay = d; p.doneGames = []; }
+  p.doneGames = Array.from(new Set([...(p.doneGames || []), String(game)]));
   p.best[game] = Math.max(p.best[game] || 0, score);
   p.completed = Array.from(new Set([...p.completed, ...scenarioIds]));
   save(scoped(PROGRESS_KEY), p);
@@ -34,3 +37,5 @@ export function toggleLike(id: string) {
   all[id] = !all[id]; save(scoped(LIKES_KEY), all);
   return { liked: all[id] };
 }
+
+export const playedToday = (game: string, p: Progress = getProgress()) => p.doneDay === today() && !!p.doneGames?.includes(game);
