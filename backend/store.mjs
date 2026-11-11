@@ -26,6 +26,23 @@ export function openStore(filename, seed = false) {
       db.exec('COMMIT');
     } catch (error) { db.exec('ROLLBACK'); throw error; }
   }
+  // Existing databases: new seed posts are added and seed bands kept in step with seed.json (one band per post,
+  // at most two). Counters and review state on existing rows are left alone; user posts are never touched.
+  if (seed) {
+    const posts = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));
+    const find = db.prepare('SELECT * FROM posts WHERE id=?'), add = db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)'), set = db.prepare('UPDATE posts SET data=? WHERE id=?');
+    db.exec('BEGIN');
+    try {
+      for (const post of posts) {
+        const row = find.get(post.id);
+        if (!row) { add.run(post.id, JSON.stringify({ ...post, isDemo: true }), Date.now()); continue; }
+        if (row.user_id) continue;
+        const data = JSON.parse(row.data);
+        if (JSON.stringify(data.bands) !== JSON.stringify(post.bands) || !!data.essential !== !!post.essential) set.run(JSON.stringify({ ...data, bands: post.bands, essential: post.essential }), post.id);
+      }
+      db.exec('COMMIT');
+    } catch (error) { db.exec('ROLLBACK'); throw error; }
+  }
   if (seed) seedScenarioDrafts(db, JSON.parse(readFileSync(new URL('./scenario-drafts.json', import.meta.url), 'utf8')));
   return db;
 }

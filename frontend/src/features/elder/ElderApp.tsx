@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { ArrowLeft, ClipboardPaste, Phone, ShieldCheck, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ClipboardPaste, GraduationCap, Phone, ShieldCheck, Volume2, VolumeX } from 'lucide-react';
 import { SatiLogo } from '../../components/shared/Brand';
 import { useBand } from '../../lib/band';
 import { checkElderMessage, type ElderVerdict } from '../../lib/elderCheck';
@@ -7,13 +7,14 @@ import { familyPhoneAsked, getFamilyPhone, saveFamilyPhone, setSimpleMode, telLi
 import { laoDayNumber } from '../daily/lib/storage';
 import { useSpeak } from '../daily/lib/useSpeak';
 import { ET, VERDICT, tipForToday } from './text';
-import type { Lang } from '../../types';
+import type { Lang, Post } from '../../types';
 
 // Simple mode: replaces the whole app shell with two screens, home and check result (plus the paste step).
 // Rules: body text >= 20px, touch targets >= 60px, contrast >= 4.5:1, icon + text always, max 3 actions per screen.
-type Screen = { name: 'home' } | { name: 'paste' } | { name: 'result'; text: string; verdict: ElderVerdict };
+type Screen = { name: 'home' } | { name: 'paste' } | { name: 'practice' } | { name: 'result'; text: string; verdict: ElderVerdict };
 
-export function ElderApp({ lang }: { lang: Lang }) {
+// `examples`: the elder seed posts, used as practice messages one at a time.
+export function ElderApp({ lang, examples = [] }: { lang: Lang; examples?: Post[] }) {
   const [screen, setScreen] = useState<Screen>({ name: 'home' });
   const [askPhone, setAskPhone] = useState(false);
   const callFamily = () => {
@@ -25,7 +26,8 @@ export function ElderApp({ lang }: { lang: Lang }) {
   return (
     <div className="h-full overflow-y-auto bg-background text-foreground font-lao text-[20px]">
       {screen.name === 'home' && <Home lang={lang} onCheck={() => setScreen({ name: 'paste' })} onCall={callFamily} />}
-      {screen.name === 'paste' && <Paste lang={lang} onBack={() => setScreen({ name: 'home' })} onCheck={text => setScreen({ name: 'result', text, verdict: checkElderMessage(text) })} />}
+      {screen.name === 'paste' && <Paste lang={lang} onBack={() => setScreen({ name: 'home' })} onCheck={text => setScreen({ name: 'result', text, verdict: checkElderMessage(text) })} onPractice={examples.length ? () => setScreen({ name: 'practice' }) : undefined} />}
+      {screen.name === 'practice' && <Practice lang={lang} posts={examples} onBack={() => setScreen({ name: 'paste' })} />}
       {screen.name === 'result' && <Result lang={lang} text={screen.text} verdict={screen.verdict} onBack={() => setScreen({ name: 'home' })} onCall={callFamily} />}
       {askPhone && <PhoneSheet lang={lang} onClose={() => setAskPhone(false)} />}
     </div>
@@ -91,7 +93,7 @@ function TopBar({ lang, title, onBack }: { lang: Lang; title: string; onBack: ()
   );
 }
 
-function Paste({ lang, onBack, onCheck }: { lang: Lang; onBack: () => void; onCheck: (text: string) => void }) {
+function Paste({ lang, onBack, onCheck, onPractice }: { lang: Lang; onBack: () => void; onCheck: (text: string) => void; onPractice?: () => void }) {
   const t = ET[lang];
   const [text, setText] = useState('');
   const canPaste = typeof navigator !== 'undefined' && !!navigator.clipboard?.readText;
@@ -104,11 +106,13 @@ function Paste({ lang, onBack, onCheck }: { lang: Lang; onBack: () => void; onCh
         <textarea value={text} onChange={e => setText(e.target.value)} rows={6} placeholder={t.paste_hint}
           className="w-full rounded-[20px] border-2 border-[#C7D2FE] bg-[#F7F8FF] p-4 text-[20px] leading-relaxed outline-none focus:border-[#5B21D1]" />
       </label>
-      {canPaste && <button onClick={paste} className="min-h-[60px] rounded-[20px] bg-[#EEF2FF] text-[#3B0FA0] text-[22px] font-bold flex items-center justify-center gap-3"><ClipboardPaste size={28} />{t.paste}</button>}
-      <button onClick={() => text.trim() && onCheck(text.trim())} disabled={!text.trim()}
+      {/* Max 3 actions: back + (paste, practice) while empty, back + check once there is text. */}
+      {!text.trim() && canPaste && <button onClick={paste} className="min-h-[60px] rounded-[20px] bg-[#EEF2FF] text-[#3B0FA0] text-[22px] font-bold flex items-center justify-center gap-3"><ClipboardPaste size={28} />{t.paste}</button>}
+      {!text.trim() && onPractice && <button onClick={onPractice} className="min-h-[60px] rounded-[20px] border-2 border-[#C7D2FE] text-[#3B0FA0] text-[22px] font-bold flex items-center justify-center gap-3"><GraduationCap size={28} />{t.practice}</button>}
+      {!!text.trim() && <button onClick={() => text.trim() && onCheck(text.trim())} disabled={!text.trim()}
         className="min-h-[84px] rounded-[26px] bg-[#5B21D1] text-white text-[26px] font-bold flex items-center justify-center gap-3 disabled:bg-[#C4B5FD] disabled:text-[#3B0FA0]">
         <ShieldCheck size={32} />{t.run}
-      </button>
+      </button>}
     </div>
   );
 }
@@ -165,6 +169,36 @@ function PhoneSheet({ lang, onClose }: { lang: Lang; onClose: () => void }) {
         <button onClick={save} disabled={!phone.trim()} className="min-h-[72px] rounded-[26px] bg-[#5B21D1] text-white text-[24px] font-bold flex items-center justify-center gap-3 disabled:bg-[#C4B5FD] disabled:text-[#3B0FA0]"><Phone size={28} />{t.save}</button>
         <button onClick={skip} className="min-h-[60px] text-[20px] font-semibold text-[#3B0FA0] underline">{t.skip}</button>
       </div>
+    </div>
+  );
+}
+
+// Practice: one example message at a time. Read it (or listen), then check it to see the verdict in words.
+const RISK: Record<'red' | 'yellow' | 'green', ElderVerdict> = { red: 'scam', yellow: 'caution', green: 'safe' };
+function Practice({ lang, posts, onBack }: { lang: Lang; posts: Post[]; onBack: () => void }) {
+  const t = ET[lang];
+  const [i, setI] = useState(0);
+  const [shown, setShown] = useState(false);
+  const post = posts[i % posts.length];
+  const text = lang === 'lo' ? post.contentLo || post.content : post.translationText || post.content;
+  const verdict = RISK[post.exampleStatus ?? 'yellow'];
+  const [title, line] = VERDICT[verdict][lang];
+  return (
+    <div className="min-h-full flex flex-col gap-5 px-5 pt-6 pb-6">
+      <TopBar lang={lang} title={t.practice} onBack={onBack} />
+      <section className="rounded-[26px] bg-[#F7F8FF] border border-[#E0E7FF] p-5 grid gap-4">
+        <p className="text-base font-bold text-[#3B0FA0]">{t.example} {i % posts.length + 1}/{posts.length}</p>
+        <p className="text-[22px] leading-relaxed break-words">{text}</p>
+        <ListenButtonOnColor key={`${post.id}-${shown}`} parts={shown ? [title, line] : [text]} lang={lang} />
+        {shown && <div role="status" className="rounded-[20px] p-4 text-white" style={{ background: VERDICT[verdict].bg }}>
+          <p className="text-[28px] font-bold leading-tight">{title}</p>
+          <p className="text-[20px] font-semibold mt-1">{line}</p>
+        </div>}
+      </section>
+      <button onClick={() => { if (shown) { setI(i + 1); setShown(false); } else setShown(true); }}
+        className="mt-auto min-h-[84px] rounded-[26px] bg-[#5B21D1] text-white text-[26px] font-bold flex items-center justify-center gap-3 shadow-[0_6px_0_#3B0FA0]">
+        {shown ? <><ArrowRight size={32} />{t.next}</> : <><ShieldCheck size={32} />{t.reveal}</>}
+      </button>
     </div>
   );
 }

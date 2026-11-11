@@ -2,8 +2,6 @@
   {
     "id": "p1",
     "bands": [
-      "kids",
-      "youth",
       "adult",
       "elder"
     ],
@@ -62,9 +60,7 @@
     "id": "p3",
     "bands": [
       "kids",
-      "youth",
-      "adult",
-      "elder"
+      "youth"
     ],
     "essential": true,
     "contentKids": "Some phone calls and messages are tricks. Warning signs: a prize you never entered, someone pretending to be from the government, or anyone asking for secret codes. What to do: don't answer, don't click, and tell a trusted adult right away.",
@@ -1065,5 +1061,96 @@
     "content": "ມີຜູ້ຊາຍບອກວ່າມາຈາກຫ້ອງການບຳນານ ຕ້ອງການເລກປຶ້ມບັນຊີທະນາຄານ ເພື່ອ 'ປັບປຸງ' ເງິນບຳນານ. ແທ້ບໍ?",
     "contentLo": "ມີຜູ້ຊາຍບອກວ່າມາຈາກຫ້ອງການບຳນານ ຕ້ອງການເລກປຶ້ມບັນຊີທະນາຄານ ເພື່ອ 'ປັບປຸງ' ເງິນບຳນານ. ແທ້ບໍ?",
     "translationText": "A man said he is from the pension office and needs my bank book number to 'update' my pension. Is this real?"
+  },
+  {
+    "id": "ex-adult-27",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "investment",
+    "tags": [
+      "OnlineScam",
+      "CryptoScam"
+    ],
+    "author": {
+      "name": "ສົມພອນ ແກ້ວມະນີ",
+      "handle": "@somphone_k",
+      "initials": "ສພ",
+      "color": "#B45309",
+      "points": 0
+    },
+    "timestamp": "6h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຄົນເພີ່ມຂ້ອຍເຂົ້າກຸ່ມ WhatsApp \"ລົງທຶນຄຳ VIP\". ທຸກຄົນໂພສວ່າໄດ້ກຳໄລ 30% ທຸກອາທິດ. ໃຫ້ໂອນ 2,000,000 ກີບ ເພື່ອເລີ່ມ. ຢ່າຫຼົງເຊື່ອເດີ້.",
+    "contentLo": "ມີຄົນເພີ່ມຂ້ອຍເຂົ້າກຸ່ມ WhatsApp \"ລົງທຶນຄຳ VIP\". ທຸກຄົນໂພສວ່າໄດ້ກຳໄລ 30% ທຸກອາທິດ. ໃຫ້ໂອນ 2,000,000 ກີບ ເພື່ອເລີ່ມ. ຢ່າຫຼົງເຊື່ອເດີ້.",
+    "translationText": "Someone added me to a WhatsApp group \"VIP gold investment\". Everyone posts 30% profit every week. They want 2,000,000 kip to start. Don't fall for it."
+  },
+  {
+    "id": "ex-adult-28",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "shopping",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ນາງ ດາລາ",
+      "handle": "@dala_shop",
+      "initials": "ດລ",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "timestamp": "11h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ຮ້ານໃນ Facebook ຂາຍໂທລະສັບລາຄາເຄິ່ງໜຶ່ງ ແຕ່ໃຫ້ໂອນເງິນເຕັມກ່ອນ ບໍ່ຮັບເກັບເງິນປາຍທາງ. ໜ້າເພຈເປີດໄດ້ 2 ອາທິດ. ມີໃຜເຄີຍຊື້ບໍ?",
+    "contentLo": "ຮ້ານໃນ Facebook ຂາຍໂທລະສັບລາຄາເຄິ່ງໜຶ່ງ ແຕ່ໃຫ້ໂອນເງິນເຕັມກ່ອນ ບໍ່ຮັບເກັບເງິນປາຍທາງ. ໜ້າເພຈເປີດໄດ້ 2 ອາທິດ. ມີໃຜເຄີຍຊື້ບໍ?",
+    "translationText": "A Facebook shop sells phones at half price but wants full payment first, no cash on delivery. The page is 2 weeks old. Has anyone bought from them?"
+  },
+  {
+    "id": "ex-elder-29",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "phone-helper",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ພໍ່ ບຸນມີ",
+      "handle": "@pho_bounmy",
+      "initials": "ພບ",
+      "color": "#7C3AED",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຄົນແປກໜ້າຢູ່ຕະຫຼາດ ບອກວ່າຈະຊ່ວຍຕັ້ງແອັບໃຫ້ ແລ້ວຂໍໂທລະສັບ ແລະ ລະຫັດ. ຢ່າໃຫ້ເດັດຂາດ.",
+    "contentLo": "ມີຄົນແປກໜ້າຢູ່ຕະຫຼາດ ບອກວ່າຈະຊ່ວຍຕັ້ງແອັບໃຫ້ ແລ້ວຂໍໂທລະສັບ ແລະ ລະຫັດ. ຢ່າໃຫ້ເດັດຂາດ.",
+    "translationText": "A stranger at the market offered to \"set up an app\" and asked for my phone and code. Never hand it over."
   }
 ]

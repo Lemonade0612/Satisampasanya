@@ -10,6 +10,7 @@ export const ET = {
     full_app: 'ເປີດແອັບເຕັມ', back: 'ກັບ',
     paste_title: 'ວາງຂໍ້ຄວາມທີ່ໄດ້ຮັບ', paste_hint: 'ກົດຄ້າງ ແລ້ວເລືອກ "ວາງ"', paste: 'ວາງ', run: 'ກວດເລີຍ',
     result_title: 'ຜົນການກວດ', your_message: 'ຂໍ້ຄວາມຂອງທ່ານ',
+    practice: 'ລອງຂໍ້ຄວາມຕົວຢ່າງ', example: 'ຂໍ້ຄວາມຕົວຢ່າງ', reveal: 'ກວດຂໍ້ຄວາມນີ້', next: 'ຂໍ້ຄວາມຕໍ່ໄປ',
     phone_title: 'ເບີລູກຫຼານ', phone_hint: 'ໃສ່ເບີໂທ ເທື່ອດຽວ. ຄັ້ງໜ້າ ກົດແລ້ວໂທເລີຍ.', save: 'ບັນທຶກ ແລະ ໂທ', skip: 'ບໍ່ແມ່ນຕອນນີ້',
   },
   en: {
@@ -19,6 +20,7 @@ export const ET = {
     full_app: 'Open full app', back: 'Back',
     paste_title: 'Paste the message you got', paste_hint: 'Press and hold, then choose "Paste"', paste: 'Paste', run: 'Check now',
     result_title: 'Result', your_message: 'Your message',
+    practice: 'Try an example', example: 'Example message', reveal: 'Check this message', next: 'Next message',
     phone_title: 'Family number', phone_hint: 'Enter the number once. Next time one tap calls.', save: 'Save and call', skip: 'Not now',
   },
 } as const;

@@ -213,7 +213,7 @@ export default function App() {
 
   // Simple mode (Elders by default, or switched on in Profile): two big-button screens, no feed or tab bar.
   if (simple) return (
-    <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} /></div>
+    <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} examples={allPosts.filter(p => p.example && p.bands?.includes("elder"))} /></div>
   );
 
   return (
@@ -264,9 +264,9 @@ export default function App() {
         )}
         {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} />}
         {view === "daily" && !showAlerts && <DailyScreen lang={lang} start={dailyStart} onStarted={() => setDailyStart(null)} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
-        {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
+        {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} onCompose={interact ? () => setShowCompose(true) : undefined} onToggleLang={toggleLang} />}
         {view === "profile" && !showAlerts && user && (
-          <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} />
+          <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} onCompose={interact ? () => setShowCompose(true) : undefined} onToggleLang={toggleLang} />
         )}
         {showAlerts && (
           <div className="absolute inset-0 z-40">

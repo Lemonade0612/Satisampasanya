@@ -37,7 +37,8 @@ const reviewedSafe = post => post.state === 'confirmed' || (post.state === 'clea
 export function postVisibleToBand(post, band) {
   if (!isBand(band)) return true;
   if (postIntensity(post) > MAX_INTENSITY[band]) return false;
-  if (Array.isArray(post.bands) && post.bands.length && !post.bands.includes(band) && !post.essential) return false;
+  // Strict: a post tagged with bands shows only to those bands (guests included). Untagged posts (people's own) show to all.
+  if (Array.isArray(post.bands) && post.bands.length && !post.bands.includes(band)) return false;
   if (band === 'kids' && !reviewedSafe(post)) return false;
   return true;
 }
