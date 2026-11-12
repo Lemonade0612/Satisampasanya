@@ -3,7 +3,9 @@ import {createApp} from '../backend/server.mjs';
 import {snapshotsEnabled,latestSnapshot,downloadSnapshot,uploadSnapshot} from '../backend/serverless.mjs';
 
 const DATABASE='/tmp/sati/sati.sqlite';
-const origins=()=>(process.env.ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean);
+// Sati's own public sites are always allowed; ALLOWED_ORIGINS adds more (e.g. preview URLs).
+const SITES=['https://sati-coral.vercel.app','https://sati-admin-xi.vercel.app'];
+const origins=()=>[...SITES,...(process.env.ALLOWED_ORIGINS||'').split(',').map(s=>s.trim()).filter(Boolean)];
 let app=null,loadedId=null,ready=null;
 
 async function sync(){

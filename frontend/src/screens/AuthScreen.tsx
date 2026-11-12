@@ -69,17 +69,19 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
           <button type="button" onClick={() => setSignup(true)} className={primaryBtn} style={primaryShadow}>{lo ? 'ເລີ່ມເລີຍ' : 'Get started'}<ArrowRight size={20} aria-hidden /></button>
           <div className="grid grid-cols-2 gap-3 mt-3">
             <button type="button" onClick={onGuest} className="text-left rounded-2xl border border-[#E6E6F0] dark:border-border bg-background p-3 min-h-11 active:scale-[0.98] transition-transform font-lao">
-              <span aria-hidden className="w-9 h-9 rounded-xl bg-[#EDE7FB] text-[#5B21D1] flex items-center justify-center mb-2"><Gamepad2 size={20} /></span>
-              <span className="block font-semibold text-sm text-foreground">{lo ? 'ລອງຫຼິ້ນເກມ' : 'Try the games'}</span>
+              <span className="flex items-center gap-2 mb-2">
+                <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#EDE7FB] text-[#5B21D1] flex items-center justify-center"><Gamepad2 size={20} /></span>
+                <span className="font-semibold text-sm text-foreground leading-tight">{lo ? 'ລອງຫຼິ້ນເກມ' : 'Try the games'}</span>
+              </span>
               <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຝຶກຈັບການຫຼອກລວງ ໂດຍບໍ່ຕ້ອງມີບັນຊີ' : 'Practise spotting scams, no account needed'}</span>
             </button>
             <button type="button" role="switch" aria-checked={easy} onClick={() => toggleEasy(!easy)}
               className={`text-left rounded-2xl border bg-background p-3 min-h-11 active:scale-[0.98] transition-all font-lao ${easy ? 'border-[#2563EB] ring-1 ring-[#2563EB]' : 'border-[#E6E6F0] dark:border-border'}`}>
-              <span className="flex items-start justify-between mb-2">
-                <span aria-hidden className="w-9 h-9 rounded-xl bg-[#DCEBFE] text-[#2563EB] flex items-center justify-center"><ALargeSmall size={20} /></span>
-                <span aria-hidden className={`w-10 h-6 rounded-full p-0.5 transition-colors ${easy ? 'bg-[#2563EB]' : 'bg-[#D9DAE5]'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${easy ? 'translate-x-4' : ''}`} /></span>
+              <span className="flex items-center gap-2 mb-2">
+                <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#DCEBFE] text-[#2563EB] flex items-center justify-center"><ALargeSmall size={20} /></span>
+                <span className="flex-1 min-w-0 font-semibold text-sm text-foreground leading-tight">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
+                <span aria-hidden className={`w-10 h-6 shrink-0 rounded-full p-0.5 transition-colors ${easy ? 'bg-[#2563EB]' : 'bg-[#D9DAE5]'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${easy ? 'translate-x-4' : ''}`} /></span>
               </span>
-              <span className="block font-semibold text-sm text-foreground">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
               <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຕົວອັກສອນໃຫຍ່ ແລະ ໜ້າຈໍງ່າຍ ສຳລັບຜູ້ສູງອາຍຸ' : 'Bigger text and simpler screens for elders'}</span>
             </button>
           </div>
