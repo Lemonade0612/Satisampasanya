@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/api/:path*", "destination": "https://sati-backend.onrender.com/api/:path*" }
-  ]
-}
