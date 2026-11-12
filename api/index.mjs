@@ -1,5 +1,6 @@
 // Vercel entry point: every /api/* request runs the existing node:http handler from backend/server.mjs.
 import {createApp} from '../backend/server.mjs';
+import {manageUser} from '../backend/access.mjs';
 import {snapshotsEnabled,latestSnapshot,downloadSnapshot,uploadSnapshot} from '../backend/serverless.mjs';
 
 const DATABASE='/tmp/sati/sati.sqlite';
@@ -18,6 +19,13 @@ async function sync(){
  loadedId=id;
  if(!id)loadedId=await uploadSnapshot(app.db,DATABASE);
 }
+// ADMIN_EMAIL + ADMIN_PASSWORD (Vercel env, never in the repo) guarantee one admin login exists,
+// even on a fresh demo database. An existing account with that email is left unchanged.
+async function ensureAdmin(){
+ const email=process.env.ADMIN_EMAIL?.trim().toLowerCase(),password=process.env.ADMIN_PASSWORD;
+ if(!email||!password||app.db.prepare('SELECT id FROM users WHERE lower(email)=?').get(email))return;
+ await manageUser(app.db,{id:'vercel-env-bootstrap'},{name:'Sati Administrator',email,password,role:'admin',status:'active'},null,[]);
+}
 const changes=()=>app.db.prepare('SELECT total_changes() n').get().n;
 
 export default async function handler(req,res){
@@ -27,7 +35,7 @@ export default async function handler(req,res){
   req.url=u.pathname+u.search;}
  // Long-lived SSE cannot run on serverless: 204 tells EventSource to stop, and the app polls instead.
  if(req.url.split('?')[0]==='/api/events'){res.statusCode=204;res.setHeader('Cache-Control','no-store');return res.end();}
- try{ready=(ready||Promise.resolve()).then(sync,sync);await ready;}
+ try{const step=async()=>{await sync();await ensureAdmin();};ready=(ready||Promise.resolve()).then(step,step);await ready;}
  catch(error){console.error('storage sync failed:',error.message);res.statusCode=503;res.setHeader('Content-Type','application/json');return res.end(JSON.stringify({error:'Storage is unavailable. Please try again.'}));}
  const current=app,before=changes();
  const finished=new Promise(resolve=>{res.on('finish',resolve);res.on('close',resolve);});
