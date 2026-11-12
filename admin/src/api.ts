@@ -12,6 +12,7 @@ async function request<T>(path:string,method='GET',data?:unknown):Promise<T>{
 }
 export const api={
  async authenticate(_mode:'login',data:{email:string;password:string}){const result=await request<{token:string;user:{name:string}}>('/admin/auth/login','POST',data);sessionStorage.setItem(TOKEN_KEY,result.token);return result.user;},
+ async forgot(email:string){return request<{message:string}>('/auth/forgot','POST',{email});},
  async logout(){try{await request('/auth/logout','POST');}finally{clearSession();}}
 };
 

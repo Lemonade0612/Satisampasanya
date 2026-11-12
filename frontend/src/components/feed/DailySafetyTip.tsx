@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { CheckCircle2, XCircle, X } from 'lucide-react';
 import type { Lang } from '../../types';
 import { laoDayNumber, load, save, today } from '../../features/daily/lib/storage';
 import { filterByBand, useBand, type BandTagged } from '../../lib/band';
@@ -34,23 +34,30 @@ export function DailySafetyTip({ lang }: { lang: Lang }) {
   const lo = lang === 'lo' ? 1 : 0;
   const pool = filterByBand(CARDS, useBand());
   const c = pool[dayIndex(pool.length)];
-  const [guess, setGuess] = useState<boolean | null>(() => { const a = load<{ day: string; guess: boolean } | null>(ANSWER, null); return a?.day === dayKey() ? a.guess : null; });
+  // Answered on an earlier visit today: stay hidden until tomorrow's card.
+  const [answeredBefore] = useState(() => load<{ day: string } | null>(ANSWER, null)?.day === dayKey());
+  const [guess, setGuess] = useState<boolean | null>(null);
+  const [hidden, setHidden] = useState(false);
   const answer = (g: boolean) => { setGuess(g); save(ANSWER, { day: dayKey(), guess: g }); };
+  // Show the answer long enough to read, then take the card away.
+  useEffect(() => { if (guess === null) return; const id = setTimeout(() => setHidden(true), 6000); return () => clearTimeout(id); }, [guess]);
   const right = guess === c.fact;
+  if (answeredBefore || hidden) return null;
   return (
-    <aside className="m-3 rounded-2xl bg-primary/5 border border-border p-3 grid gap-2">
+    <aside className="rounded-2xl bg-tint-purple-bg p-4 grid gap-2">
       <div className="flex items-center gap-2">
-        <img src="/brand-mark.svg" alt="" className="w-5 h-5" />
-        <p className="flex-1 text-xs font-semibold text-primary">{lo ? 'ແທ້ ຫຼື ປອມ? ປະຈຳວັນ' : "Today's fact or fake?"}</p>
-        {guess !== null && <span className="text-[11px] text-muted-foreground">{lo ? 'ອັນໃໝ່ມື້ອື່ນ' : 'New one tomorrow'}</span>}
+        <img src="/brand-mark.svg" alt="" className="w-5 h-5 shrink-0" />
+        <p className="flex-1 min-w-0 truncate whitespace-nowrap text-base font-bold text-primary">{lo ? 'ແທ້ ຫຼື ປອມ? ປະຈຳວັນ' : "Today's fact or fake?"}</p>
+        {guess !== null && <span className="shrink-0 whitespace-nowrap text-xs font-bold text-muted-foreground">{lo ? 'ອັນໃໝ່ມື້ອື່ນ' : 'New one tomorrow'}</span>}
+        {guess !== null && <button type="button" onClick={() => setHidden(true)} aria-label={lo ? 'ປິດ' : 'Close'} className="shrink-0 w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-muted-foreground"><X size={18} aria-hidden /></button>}
       </div>
-      <p className="text-sm font-lao leading-relaxed font-medium">{c.q[lo]}</p>
+      <p className="text-[15px] font-lao leading-relaxed font-medium">{c.q[lo]}</p>
       {guess === null
-        ? <div className="grid grid-cols-2 gap-2">
-            <button onClick={() => answer(true)} className="rounded-xl border border-border bg-card min-h-10 text-sm font-semibold hover:border-primary">{lo ? 'ແທ້' : 'Fact'}</button>
-            <button onClick={() => answer(false)} className="rounded-xl border border-border bg-card min-h-10 text-sm font-semibold hover:border-primary">{lo ? 'ປອມ' : 'Fake'}</button>
+        ? <div className="flex gap-2">
+            <button onClick={() => answer(true)} className="rounded-full border border-border bg-card h-11 flex-1 max-w-none text-sm font-bold hover:border-primary">{lo ? 'ແທ້' : 'Fact'}</button>
+            <button onClick={() => answer(false)} className="rounded-full border border-border bg-card h-11 flex-1 max-w-none text-sm font-bold hover:border-primary">{lo ? 'ປອມ' : 'Fake'}</button>
           </div>
-        : <p className={`rounded-xl p-2 text-sm font-lao flex gap-2 ${right ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100' : 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'}`}>
+        : <p className={`rounded-xl p-2 text-base font-lao flex gap-2 ${right ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100' : 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'}`}>
             {right ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <XCircle size={16} className="shrink-0 mt-0.5" />}
             <span>{c.why[lo]}</span>
           </p>}

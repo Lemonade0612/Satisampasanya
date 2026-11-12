@@ -292,7 +292,7 @@ export const PERSONAS: Persona[] = [
         actions: [
           A('Send the 20 million kip to the boss\'s account', 'ສົ່ງ 20 ລ້ານກີບ ໃຫ້ບັນຊີຂອງນາຍ', false, 'Payments often lead to new "debts". It funds the people holding him.', 'ການຈ່າຍມັກນຳໄປສູ່ "ໜີ້" ໃໝ່. ມັນເປັນເງິນໃຫ້ຄົນທີ່ກັກເຂົາ.'),
           A('Post his photo and location on Facebook for help', 'ໂພສຮູບ ແລະ ບ່ອນຢູ່ຂອງເຂົາໃນເຟສບຸກ ຂໍຄວາມຊ່ວຍເຫຼືອ', false, 'Going public can lead to punishment or a transfer to another site.', 'ການເປີດເຜີຍ ອາດເຮັດໃຫ້ເຂົາຖືກລົງໂທດ ຫຼື ຖືກຍ້າຍໄປບ່ອນອື່ນ.'),
-          A('Save the messages and quietly call 1300 (police) or 1362 (Lao Women\'s Union)', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທຫາ 1300 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private, without paying or sending anyone else.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ບໍ່ຈ່າຍ ແລະ ບໍ່ສົ່ງຄົນອື່ນໄປ.'),
+          A('Save the messages and quietly call 1191 (police) or 1362 (Lao Women\'s Union)', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທຫາ 1191 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private, without paying or sending anyone else.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ບໍ່ຈ່າຍ ແລະ ບໍ່ສົ່ງຄົນອື່ນໄປ.'),
         ],
         lesson: { en: 'Someone forced to scam is a victim too. Get trained help quietly; never pay the bosses or send recruits.', lo: 'ຄົນທີ່ຖືກບັງຄັບໃຫ້ຫຼອກ ກໍ່ເປັນຜູ້ເຄາະຮ້າຍ. ຂໍຄວາມຊ່ວຍເຫຼືອຢ່າງງຽບໆ; ຢ່າຈ່າຍນາຍ ຫຼື ສົ່ງຄົນໄປ.' },
       },
@@ -484,7 +484,7 @@ export const PERSONAS: Persona[] = [
         actions: [
           A('Go and take Lae\'s place so she can leave', 'ໄປແທນແລ ເພື່ອໃຫ້ນາງອອກໄດ້', false, 'Then two friends are trapped instead of one.', 'ແລ້ວກໍ່ມີໝູ່ຖືກກັກສອງຄົນ ແທນທີ່ຈະເປັນຄົນດຽວ.'),
           A('Tell Lae it sounds fine since she has a contract', 'ບອກແລວ່າບໍ່ເປັນຫຍັງ ເພາະມີສັນຍາ', false, 'A contract does not make confinement legal.', 'ສັນຍາບໍ່ໄດ້ເຮັດໃຫ້ການກັກຂັງຖືກກົດໝາຍ.'),
-          A('Save the messages and quietly contact 1362 or 1300, and her family', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວຕິດຕໍ່ 1362 ຫຼື 1300 ແລະ ຄອບຄົວນາງຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private so Lae is not punished.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ເພື່ອບໍ່ໃຫ້ແລຖືກລົງໂທດ.'),
+          A('Save the messages and quietly contact 1362 or 1191, and her family', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວຕິດຕໍ່ 1362 ຫຼື 1191 ແລະ ຄອບຄົວນາງຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private so Lae is not punished.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ເພື່ອບໍ່ໃຫ້ແລຖືກລົງໂທດ.'),
         ],
         lesson: { en: 'Pay and a contract do not mean freedom. Check: does she keep her documents, her phone, and the right to leave?', lo: 'ເງິນ ແລະ ສັນຍາ ບໍ່ໄດ້ໝາຍເຖິງອິດສະຫຼະ. ກວດ: ນາງເກັບເອກະສານ, ໂທລະສັບ ແລະ ສິດທີ່ຈະອອກໄດ້ບໍ?' },
       },

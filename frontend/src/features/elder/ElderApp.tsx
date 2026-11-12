@@ -2,12 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronRight, ClipboardPaste, Gift, Heart, MessageSquareWarning, Pause, Phone, PhoneCall, Plane, Play, RotateCcw, ShieldCheck, Smartphone, TrendingUp, type LucideIcon } from 'lucide-react';
 import { laoDayNumber } from '../daily/lib/storage';
 import { hasLaoAudio, preloadSpeech, speakParts, stopAll } from '../daily/lib/useSpeak';
-import { ScamCall } from '../daily/games/ScamCall';
-import { RealOrScam } from '../daily/games/RealOrScam';
 import { getFamilyPhone, setSimpleMode, telLink } from '../../lib/simpleMode';
 import type { ElderVerdict } from '../../lib/elderCheck';
 import { BottomBar, Header, MainButton, Page, Steps, useElderSpeak, type Tab } from './ui';
-import { ET, VERDICT, VIDEOS, durationLabel, gameForDay, tipForDay, videosForDay, type ElderVideo } from './text';
+import { ET, VERDICT, VIDEOS, durationLabel, tipForDay, videosForDay, type ElderVideo } from './text';
 import { screenForElder } from './screen';
 import type { Lang } from '../../types';
 
@@ -16,7 +14,7 @@ import type { Lang } from '../../types';
 type Route =
   | { tab: 'home' } | { tab: 'home'; video: string }
   | { tab: 'check' } | { tab: 'check'; checking: true } | { tab: 'check'; verdict: ElderVerdict }
-  | { tab: 'learn' } | { tab: 'learn'; game: 'call' | 'quick' };
+  | { tab: 'learn' };
 
 const ICONS: Record<string, LucideIcon> = {
   'grandchild-call': PhoneCall, 'bank-otp': MessageSquareWarning, 'prize-fee': Gift, investment: TrendingUp,
@@ -41,11 +39,6 @@ export function ElderApp(_: { lang?: Lang }) {
     setRoute({ tab: 'check', verdict: r.verdict });
   };
 
-  // Games bring their own full-screen layout and exit button (elder pace: no timers).
-  if ('game' in route) {
-    const back = () => setRoute({ tab: 'learn' });
-    return <div className="h-full overflow-y-auto bg-background">{route.game === 'call' ? <ScamCall lang="lo" onExit={back} onFinish={back} /> : <RealOrScam lang="lo" onExit={back} onFinish={back} />}</div>;
-  }
   if ('checking' in route) return <Checking />;
 
   return (
@@ -57,7 +50,7 @@ export function ElderApp(_: { lang?: Lang }) {
       {route.tab === 'check' && ('verdict' in route
         ? <Result verdict={route.verdict} onBack={() => go('check')} onAgain={() => { setText(''); go('check'); }} />
         : <Check text={text} setText={setText} onRun={run} />)}
-      {route.tab === 'learn' && <Learn day={day} onGame={g => setRoute({ tab: 'learn', game: g })} />}
+      {route.tab === 'learn' && <Learn day={day} />}
       <BottomBar tab={route.tab} onTab={go} />
     </div>
   );
@@ -165,17 +158,20 @@ function VideoQuestion({ video, answer, setAnswer, onBack, onReplay, onNext }: {
         : <MainButton icon={<RotateCcw />} label={ET.watch_again} onClick={onReplay} />}>
       <h2 className="text-[1.5rem] font-bold leading-snug">{ET.what_do}</h2>
       <p className="text-[1.3125rem] leading-normal">{video.question}</p>
-      {!answered && (
-        <div className="grid grid-cols-2 gap-3">
-          {video.answers.map((a, i) => (
-            <button key={i} type="button" onClick={() => setAnswer(i)}
-              className={`min-h-[4.75rem] rounded-[1.25rem] px-3 py-2 text-[1.25rem] font-bold leading-snug ${i === video.correctIndex ? 'bg-[#5B21D1] text-white' : 'bg-white text-[#13112B] border border-[#E4E2EE]'}`}>{a}</button>
-          ))}
-        </div>
-      )}
-      {answered && (
-        <section role="status" className={`rounded-[1.375rem] p-5 text-white ${right ? 'bg-[#15803D]' : 'bg-[#B45309]'}`}>
-          <p className="text-[1.75rem] font-bold leading-snug">{right ? ET.great : ET.not_quite}</p>
+      {/* Both answers look the same until tapped; only then the right one turns green. */}
+      <div className="grid grid-cols-2 gap-3">
+        {video.answers.map((a, i) => {
+          const won = answered && right && i === answer;
+          return (
+            <button key={i} type="button" onClick={() => setAnswer(i)} disabled={answered} aria-pressed={answer === i}
+              className={`min-h-[4.75rem] rounded-[1.25rem] px-3 py-2 text-[1.25rem] font-bold leading-snug border-2 ${won ? 'bg-[#15803D] border-[#15803D] text-white' : 'bg-white border-[#E4E2EE] text-[#13112B]'}`}>{a}</button>
+          );
+        })}
+      </div>
+      {answered && right && <p role="status" className="text-[1.75rem] font-bold text-[#15803D] text-center">{ET.great}</p>}
+      {answered && !right && (
+        <section role="status" className="rounded-[1.375rem] bg-white border border-[#E4E2EE] p-5">
+          <p className="text-[1.5rem] font-bold leading-snug">{ET.not_quite}</p>
           <p className="text-[1.25rem] leading-normal mt-2">{video.explainLo}</p>
         </section>
       )}
@@ -236,27 +232,17 @@ function Result({ verdict, onBack, onAgain }: { verdict: ElderVerdict; onBack: (
 }
 
 // ---------- 5. Learn ----------
-function Learn({ day, onGame }: { day: number; onGame: (g: 'call' | 'quick') => void }) {
+// Only the tip card: the games keep small text and timers for other bands, so they stay out of Simple mode.
+function Learn({ day }: { day: number }) {
   const tip = tipForDay(day);
-  const game = gameForDay(day);
-  const gameTitle = game === 'call' ? ET.game_call : ET.game_quick;
   return (
-    <Page header={<Header title={ET.learn_title} listen={[ET.tip_label, tip.headlineLo, ...tip.steps, ET.slogan, ET.games, gameTitle]} />}>
+    <Page header={<Header title={ET.learn_title} listen={[ET.tip_label, tip.headlineLo, ...tip.steps, ET.slogan]} />}>
       <section className="rounded-[1.375rem] bg-white border border-[#E4E2EE] p-5 grid gap-3">
         <p className="text-[1.125rem] font-bold text-[#5B21D1]">{ET.tip_label}</p>
         <p className="text-[1.4375rem] font-bold leading-snug">{tip.headlineLo}</p>
         <Steps steps={tip.steps} />
         <p className="text-[1.25rem] font-bold text-[#3B0FA0]">{ET.slogan}</p>
       </section>
-      <h2 className="text-[1.5rem] font-bold">{ET.games}</h2>
-      <button type="button" onClick={() => onGame(game)} className="w-full min-h-[5.5rem] rounded-[1.375rem] bg-[#EEF2FF] p-3 flex items-center gap-4 text-left">
-        <span className="shrink-0 w-16 h-16 rounded-[1.125rem] bg-[#3B0FA0] text-white flex items-center justify-center" aria-hidden>{game === 'call' ? <PhoneCall size={30} /> : <MessageSquareWarning size={30} />}</span>
-        <span className="flex-1 min-w-0">
-          <span className="block text-[1.3125rem] font-bold leading-snug">{gameTitle}</span>
-          <span className="block text-[1.125rem] text-[#3B0FA0]">{ET.game_sub}</span>
-        </span>
-        <ChevronRight size={32} className="shrink-0 text-[#3B0FA0]" aria-hidden />
-      </button>
       <button type="button" onClick={() => { stopAll(); setSimpleMode(false); }} className="self-center min-h-[4.5rem] px-4 text-[1.125rem] font-bold text-[#3B0FA0] underline mt-2">{ET.full_app}</button>
     </Page>
   );

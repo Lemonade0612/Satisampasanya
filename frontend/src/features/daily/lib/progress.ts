@@ -1,7 +1,7 @@
 import { LIKES_KEY, PROGRESS_KEY, laoDay, load, save, scoped, today } from './storage';
 import type { GameId } from '../types';
 
-type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number; doneDay?: string; doneGames?: string[] };
+type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number; doneDay?: string; doneGames?: string[]; xp?: number; missionDay?: string };
 export const getProgress = () => load<Progress>(scoped(PROGRESS_KEY), { streak: 0, lastDay: null, best: {}, completed: [] });
 
 // The streak shown today: still alive if the last session was today or yesterday, otherwise broken.
@@ -10,7 +10,7 @@ export function currentStreak(p: Progress = getProgress()) {
 }
 
 // Streak counts days with at least one finished session; missing a day resets it.
-export function finishSession(game: GameId | string, score: number, scenarioIds: string[] = []) {
+export function finishSession(game: GameId | string, score: number, scenarioIds: string[] = [], opts: { xp?: number; mission?: boolean } = {}) {
   const p = getProgress();
   const d = today();
   if (p.lastDay !== d) {
@@ -23,6 +23,10 @@ export function finishSession(game: GameId | string, score: number, scenarioIds:
   p.doneGames = Array.from(new Set([...(p.doneGames || []), String(game)]));
   p.best[game] = Math.max(p.best[game] || 0, score);
   p.completed = Array.from(new Set([...p.completed, ...scenarioIds]));
+  // XP: every finished game earns some; today's mission earns more, once a day.
+  const mission = !!opts.mission && p.missionDay !== d;
+  if (mission) p.missionDay = d;
+  p.xp = (p.xp || 0) + (mission ? MISSION_XP : opts.xp ?? GAME_XP);
   save(scoped(PROGRESS_KEY), p);
   return p;
 }
@@ -39,3 +43,10 @@ export function toggleLike(id: string) {
 }
 
 export const playedToday = (game: string, p: Progress = getProgress()) => p.doneDay === today() && !!p.doneGames?.includes(game);
+
+export const GAME_XP = 20, MISSION_XP = 30, XP_PER_LEVEL = 200;
+export const missionDone = (p: Progress = getProgress()) => p.missionDay === today();
+export function levelInfo(p: Progress = getProgress()) {
+  const xp = p.xp || 0;
+  return { level: Math.floor(xp / XP_PER_LEVEL) + 1, xp: xp % XP_PER_LEVEL, need: XP_PER_LEVEL };
+}

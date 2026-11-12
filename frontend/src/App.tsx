@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { MessageCircle } from "lucide-react";
 import { api, hasSession, clearSession, ApiError } from "./lib/api";
 import { usePhoneViewport } from "./hooks/usePhoneViewport";
 import { useLivePosts } from "./hooks/useLivePosts";
@@ -10,6 +9,8 @@ import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
 import { AssistantScreen } from "./screens/AssistantScreen";
 import { AlertsScreen } from "./screens/AlertsScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
+import { TEXT_SCALE, useTextSize } from "./lib/textSize";
 import { DailyScreen } from "./features/daily";
 import type { Launch } from "./features/daily/screens/DailyHome";
 import { CommentsModal } from "./components/modals/CommentsModal";
@@ -17,6 +18,7 @@ import { ComposeModal } from "./components/modals/ComposeModal";
 import { RepostModal } from "./components/modals/RepostModal";
 import { ImageExpandModal } from "./components/modals/ImageExpandModal";
 import { BottomNav } from "./components/feed/BottomNav";
+import { AskSatiButton } from "./components/shared/AskSatiButton";
 import { AlertBanner } from "./components/feed/AlertBanner";
 import { startPush, stopPush, setAppBadge, updatePushLang } from "./lib/push";
 import { getProgress } from "./features/daily/lib/progress";
@@ -24,7 +26,7 @@ import { setDailyAccount, today } from "./features/daily/lib/storage";
 import { BandSheet } from "./components/shared/BandSheet";
 import { LangToggle } from "./components/shared/Controls";
 import { GuestChip } from "./components/shared/GuestChip";
-import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand, useLargeText } from "./lib/band";
+import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand } from "./lib/band";
 import { SignupPrompt, type SignupReason } from "./components/shared/QuickSignup";
 import { GuestProfile } from "./screens/GuestProfile";
 import { ElderApp } from "./features/elder/ElderApp";
@@ -34,6 +36,8 @@ import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notific
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
 const readPref = (key: string) => { try { return localStorage.getItem(key); } catch { return null; } };
 const writePref = (key: string, value: string) => { try { localStorage.setItem(key, value); } catch { /* keep in memory only */ } };
+const ELDER_GUEST = 'sati-elder-guest';
+const dropPref = (key: string) => { try { localStorage.removeItem(key); } catch { /* nothing stored */ } };
 
 // Remembers which account last signed in here, so its own progress keeps counting while offline.
 const LAST_ACCOUNT = 'sati-last-account';
@@ -49,26 +53,35 @@ export default function App() {
   const {posts: allPosts, error: connectionError, loading, refresh} = useLivePosts(user?.id);
   // The age band filters what every screen shows. Kids get a read-only, verified-only feed.
   const band = useBand();
-  const largeText = useLargeText();
+  const textSize = useTextSize();
   const simple = useSimpleMode();
   const [dailyStart, setDailyStart] = useState<Launch | null>(null);
   const interact = canInteract(band);
   const posts = useMemo(() => postsForBand(allPosts, band), [allPosts, band]);
-  useEffect(() => { document.documentElement.classList.toggle('sati-large-text', largeText); }, [largeText]);
+  // Mirrors the server rule: 5 original posts per day, reset at midnight in Laos (UTC+7).
+  const postsLeftToday = useMemo(() => {
+    if (!user?.id) return 5;
+    const laoMidnight = Date.parse(new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10) + 'T00:00:00+07:00');
+    return Math.max(0, 5 - allPosts.filter(p => p.author.id === user.id && !p.repostOf && (p.createdAt ?? 0) > laoMidnight).length);
+  }, [allPosts, user?.id]);
+  // Text size (Settings) scales every rem-based size: 1×, 1.15× or 1.3× of the root font size.
+  useEffect(() => { document.documentElement.style.fontSize = textSize === 'normal' ? '' : `calc(var(--font-size, 16px) * ${TEXT_SCALE[textSize]})`; }, [textSize]);
   const [sessionLoading, setSessionLoading] = useState(hasSession());
   const [actionError, setActionError] = useState('');
   // Guest mode: browse the feed, search, games and Daily without an account. Writing anything opens the
   // quick sign-up prompt. 'offline' (server unreachable) is Sati Daily only, with bundled scenarios.
-  const [guest, setGuest] = useState<null | 'guest' | 'offline'>(null);
+  // 'ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ' on the welcome screen starts a guest session that this phone remembers.
+  const [guest, setGuest] = useState<null | 'guest' | 'offline'>(() => (readPref(ELDER_GUEST) === '1' ? 'guest' : null));
   const [bandSheet, setBandSheet] = useState(false);
   const bandChosen = useHasBand();
   const [signupReason, setSignupReason] = useState<SignupReason | null>(null);
   const browsing = !user && guest === 'guest';
+  useEffect(() => { if (guest === null) dropPref(ELDER_GUEST); }, [guest]);
   // Every user change goes through here: progress is keyed by account, and the account's band wins.
   const applyUser = useCallback((value: CurrentUser | null) => {
     setDailyAccount(value?.id ?? null);
     setSimpleModeAccount(value?.id ?? null, value?.simpleMode);
-    if (value?.id) writePref(LAST_ACCOUNT, value.id);
+    if (value?.id) { writePref(LAST_ACCOUNT, value.id); dropPref(ELDER_GUEST); }
     if (value?.ageBand) setBand(value.ageBand);
     setUser(value);
   }, []);
@@ -111,6 +124,10 @@ export default function App() {
   useEffect(()=>{let alive=true;if(!user){setAlerts([]);return;}api.alerts().then(value=>{if(alive)setAlerts(value);}).catch(()=>{});return()=>{alive=false;};},[user?.id,allPosts]);
   const markAlerts=async(id?:string)=>{try{await api.readAlerts(id);await loadAlerts();}catch(e){setActionError((e as Error).message);}};
   const [showAlerts, setShowAlerts] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
+  // Ask Sati is full screen (no bottom nav); its back button returns to where it was opened.
+  const [assistantFrom, setAssistantFrom] = useState<ActiveView>("feed");
+  const openAssistant = () => { setAssistantFrom(view === "assistant" ? "feed" : view); setView("assistant"); };
   const [banner,setBanner]=useState<Notification|null>(null);
   const dismissBanner=useCallback(()=>setBanner(null),[]);
   useEffect(()=>{seenAlerts.current=null;setBanner(null);},[user?.id]);
@@ -242,8 +259,6 @@ export default function App() {
             onOpenAlerts={handleOpenAlerts}
             alertCount={alertCount}
             onRepostClick={setRepostPost}
-            themeMode={themeMode}
-            onThemeChange={setThemeMode}
             onLangToggle={toggleLang}
             onChangeBand={() => setBandSheet(true)}
             onPlayGame={game => { setDailyStart({ game, scope: 'all' }); setView('daily'); }}
@@ -258,21 +273,28 @@ export default function App() {
             lang={lang} 
             posts={posts} 
             onOpenPost={setCommentPostId} 
+            onCheckLink={() => user ? openAssistant() : setSignupReason('assistant')}
             onTopicClick={(topic) => {
               setCustomTopic(topic); setFeedTab(0);
               setView("feed");
             }}
           />
         )}
-        {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} />}
+        {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} onBack={() => setView(assistantFrom)} />}
         {view === "daily" && !showAlerts && <DailyScreen lang={lang} start={dailyStart} onStarted={() => setDailyStart(null)} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
         {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
         {view === "profile" && !showAlerts && user && (
-          <ProfileScreen lang={lang} user={user} posts={allPosts} onLogout={handleLogout} onUpdate={handleProfile} onChangeBand={() => setBandSheet(true)} onCompose={interact ? () => setShowCompose(true) : undefined} onToggleLang={toggleLang} />
+          <ProfileScreen lang={lang} user={user} posts={allPosts} onUpdate={handleProfile} onCompose={interact ? () => setShowCompose(true) : undefined} onOpenSettings={() => setShowSettings(true)} />
         )}
         {showAlerts && (
-          <div className="absolute inset-0 z-40">
-            <AlertsScreen lang={lang} alerts={alerts} onMarkRead={markAlerts} onMarkAllRead={() => markAlerts()} onClose={() => setShowAlerts(false)} onOpenPost={id=>{setShowAlerts(false);setCommentPostId(id);}} />
+          <div className="absolute inset-0 z-30">
+            <AlertsScreen lang={lang} alerts={alerts} onMarkRead={markAlerts} onMarkAllRead={() => markAlerts()} onClose={() => setShowAlerts(false)} onOpenPost={id=>{setShowAlerts(false);setCommentPostId(id);}} onOpenSettings={() => setShowSettings(true)} />
+          </div>
+        )}
+        {showSettings && (
+          <div className="absolute inset-0 z-[35]">
+            <SettingsScreen lang={lang} onLangChange={setLang} themeMode={themeMode} onThemeChange={setThemeMode} onChangeBand={() => setBandSheet(true)}
+              onLogout={user ? () => { setShowSettings(false); void handleLogout(); } : undefined} onBack={() => setShowSettings(false)} />
           </div>
         )}
       </div>
@@ -291,6 +313,8 @@ export default function App() {
       {showCompose && interact && (
         <ComposeModal
           lang={lang}
+          userName={user?.name}
+          remaining={postsLeftToday}
           onClose={() => setShowCompose(false)}
           onPost={handleAddPost}
         />
@@ -309,12 +333,7 @@ export default function App() {
           onClose={() => setExpandedImage(null)}
         />
       )}
-      {(view === "feed" || view === "explore") && !showAlerts && (
-        <button onClick={() => user ? setView("assistant") : setSignupReason('assistant')} aria-label={lang === 'lo' ? 'ຖາມຜູ້ຊ່ວຍ' : 'Ask the assistant'}
-          className="absolute right-4 bottom-24 z-30 h-12 pl-3 pr-4 rounded-full bg-card border border-border shadow-lg flex items-center gap-2 text-sm font-semibold text-primary active:scale-95 transition-transform font-lao">
-          <MessageCircle size={20} />{lang === 'lo' ? 'ຖາມ Sati' : 'Ask Sati'}
-        </button>
-      )}
+      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
       {/* Existing accounts without a band choose once after sign-in; afterwards it opens from the header or Settings. */}
       {(user ? !user.ageBand : !bandChosen) || bandSheet ? <BandSheet lang={lang} onClose={(user ? user.ageBand : bandChosen) ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} /> : null}
       {signupReason && !user && <SignupPrompt lang={lang} reason={signupReason} onClose={() => setSignupReason(null)} onDone={u => { setSignupReason(null); setActionError(''); applyUser(u); }} onEmail={() => { setSignupReason(null); setGuest(null); }} />}
@@ -324,7 +343,7 @@ export default function App() {
           {lang === 'lo' ? 'ໂພສແລ້ວ!' : 'Posted!'}
         </div>
       )}
-      <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); }} lang={lang} onCompose={interact ? () => user ? setShowCompose(true) : setSignupReason('post') : undefined} dailyDot={dailyPending && view !== "daily"} />
+      {view !== "assistant" && <BottomNav active={view} onChange={(v) => { if (v !== "daily" && location.hash.startsWith("#/daily")) history.replaceState(null, "", location.pathname); setView(v); setShowAlerts(false); setShowSettings(false); }} lang={lang} onCompose={interact ? () => user ? setShowCompose(true) : setSignupReason('post') : undefined} dailyDot={dailyPending && view !== "daily"} />}
     </div>
   );
 }

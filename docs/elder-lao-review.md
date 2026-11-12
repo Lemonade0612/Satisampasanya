@@ -2,7 +2,7 @@
 
 Every Lao string elder mode shows or reads aloud. Tick each line once a native speaker approves it; change the source file (frontend/src/features/elder/text.ts or data/*.json), then run `npm run audio` to re-record.
 
-Watch for Thai spelling or Thai words. Lines to look at first: ເກັ່ງຫຼາຍ!, ລະຫັດເປີດໂທລະສັບ, ການຄ້າມະນຸດ, ຢ່າເພິ່ງເຊື່ອ.
+Watch for Thai spelling or Thai words. Lines to look at first: ເກັ່ງຫຼາຍ!, ລະຫັດເປີດໂທລະສັບ, ການຄ້າມະນຸດ, ຢ່າເພິ່ງເຊື່ອ, ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ.
 
 ## Screens and buttons
 
@@ -40,11 +40,8 @@ Watch for Thai spelling or Thai words. Lines to look at first: ເກັ່ງ�
 - [ ] ກວດອີກ
 - [ ] ຮຽນມື້ນີ້
 - [ ] ຄຳແນະນຳມື້ນີ້
-- [ ] ເກມ
 - [ ] ເປີດແອັບເຕັມ
-- [ ] ເກມ ສາຍໂທຫຼອກລວງ
-- [ ] ເກມ ແທ້ ຫຼື ຫຼອກ
-- [ ] ຫຼິ້ນຊ້າໆ ບໍ່ມີຈັບເວລາ
+- [ ] ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ
 - [ ] ກວດກ່ອນ ເຊື່ອ
 
 ## Verdicts

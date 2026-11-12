@@ -180,7 +180,7 @@ export const BAND_SESSIONS: Scenario[] = [
         ]),
       flags([['20,000 baht/month', 'ເດືອນລະ 20,000 ບາດ', 'too_good'], [' as ambassador. ', 'ເປັນຕົວແທນ. '], ['We pay your trip', 'ເຮົາຈ່າຍຄ່າເດີນທາງ', 'too_good'], ['. ', '. '], ['Bring a friend', 'ພາໝູ່ມາ', 'unverified_identity'], ['. ', '. '], ['Keep it quiet', 'ຢ່າບອກໃຜ', 'off_platform'], ['.', '.']]),
     ],
-    explanation: l('Secrecy plus a free trip abroad is the classic recruitment lure. Tell family, check the agency, call 1362 or 1300 if unsure.', 'ຄວາມລັບ ບວກ ການເດີນທາງຟຣີ ແມ່ນເຫຍື່ອລໍ້ແບບເກົ່າ. ບອກຄອບຄົວ, ກວດບໍລິສັດ, ໂທ 1362 ຫຼື 1300 ຖ້າບໍ່ແນ່ໃຈ.'),
+    explanation: l('Secrecy plus a free trip abroad is the classic recruitment lure. Tell family, check the agency, call 1362 or 1191 if unsure.', 'ຄວາມລັບ ບວກ ການເດີນທາງຟຣີ ແມ່ນເຫຍື່ອລໍ້ແບບເກົ່າ. ບອກຄອບຄົວ, ກວດບໍລິສັດ, ໂທ 1362 ຫຼື 1191 ຖ້າບໍ່ແນ່ໃຈ.'),
   }),
   make({
     id: 'youth-pressure-01', bands: ['youth'], scamType: type('stranger'), channel: 'tiktok', contact: 'EasyCash Crew 💸',
@@ -209,11 +209,11 @@ export const BAND_SESSIONS: Scenario[] = [
         ['What do you do?', 'ທ່ານຈະເຮັດແນວໃດ?'], [
           pick('a', 'reply', false, ['Accept, the salary pays it back', 'ຕົກລົງ ເງິນເດືອນຈ່າຍຄືນໄດ້'], ['In real cases the "fee" grows with food, rent and fines. Without a passport, workers can’t leave.', 'ໃນກໍລະນີແທ້ "ຄ່າທຳນຽມ" ເພີ່ມຂຶ້ນດ້ວຍຄ່າອາຫານ, ຄ່າເຊົ່າ ແລະ ຄ່າປັບ. ບໍ່ມີໜັງສືຜ່ານແດນ ກໍອອກບໍ່ໄດ້.']),
           pick('b', 'verify', true, ['Check the agency licence at the labour office and get the contract in Lao', 'ກວດໃບອະນຸຍາດທີ່ຫ້ອງການແຮງງານ ແລະ ຂໍສັນຍາເປັນພາສາລາວ'], ['Right. Licensed agencies use official border posts and never hold your passport.', 'ຖືກ. ບໍລິສັດມີໃບອະນຸຍາດ ໃຊ້ດ່ານທາງການ ແລະ ບໍ່ເກັບໜັງສືຜ່ານແດນ.']),
-          pick('c', 'report', true, ['Refuse and report the agent to 1300', 'ປະຕິເສດ ແລະ ແຈ້ງນາຍໜ້າຫາ 1300'], ['Good. Agents like this recruit whole villages.', 'ດີ. ນາຍໜ້າແບບນີ້ຊັກຊວນທັງບ້ານ.']),
+          pick('c', 'report', true, ['Refuse and report the agent to 1191', 'ປະຕິເສດ ແລະ ແຈ້ງນາຍໜ້າຫາ 1191'], ['Good. Agents like this recruit whole villages.', 'ດີ. ນາຍໜ້າແບບນີ້ຊັກຊວນທັງບ້ານ.']),
         ]),
       flags([['Fee 6,000,000 kip', 'ຄ່າທຳນຽມ 6,000,000 ກີບ', 'upfront_fee'], [', deducted from salary. ', ' ຫັກຈາກເງິນເດືອນ. '], ['I keep your passports', 'ຂ້ອຍເກັບໜັງສືຜ່ານແດນ', 'personal_data'], ['. ', '. '], ['Cross at the small checkpoint', 'ຂ້າມດ່ານນ້ອຍ', 'off_platform'], [', ', ', '], ['faster', 'ໄວກວ່າ', 'urgency'], ['.', '.']]),
     ],
-    explanation: l('Debt you can’t see + a held passport + an unofficial crossing = the three signs of debt bondage. Help: 1300 (police), 1362 (Lao Women’s Union).', 'ໜີ້ທີ່ເບິ່ງບໍ່ເຫັນ + ໜັງສືຜ່ານແດນຖືກເກັບ + ຂ້າມແດນບໍ່ເປັນທາງການ = ສາມສັນຍານຂອງໜີ້ຜູກມັດ. ຊ່ວຍເຫຼືອ: 1300 (ຕຳຫຼວດ), 1362 (ສະຫະພັນແມ່ຍິງລາວ).'),
+    explanation: l('Debt you can’t see + a held passport + an unofficial crossing = the three signs of debt bondage. Help: 1191 (police), 1362 (Lao Women’s Union).', 'ໜີ້ທີ່ເບິ່ງບໍ່ເຫັນ + ໜັງສືຜ່ານແດນຖືກເກັບ + ຂ້າມແດນບໍ່ເປັນທາງການ = ສາມສັນຍານຂອງໜີ້ຜູກມັດ. ຊ່ວຍເຫຼືອ: 1191 (ຕຳຫຼວດ), 1362 (ສະຫະພັນແມ່ຍິງລາວ).'),
   }),
   make({
     id: 'adult-forced-crime-01', bands: ['adult'], scamType: type('overseas_recruitment'), channel: 'whatsapp', contact: 'Golden Bay Customer Service',
@@ -225,11 +225,11 @@ export const BAND_SESSIONS: Scenario[] = [
         ['What do you do?', 'ທ່ານຈະເຮັດແນວໃດ?'], [
           pick('a', 'reply', false, ['Go, it’s good money', 'ໄປ ເງິນດີ'], ['In reported cases, "customer service" means running scams on strangers for 14+ hours, under threat, until a "debt" is paid.', 'ໃນກໍລະນີທີ່ລາຍງານ "ບໍລິການລູກຄ້າ" ໝາຍເຖິງການຫຼອກລວງຄົນອື່ນ 14+ ຊົ່ວໂມງ ພາຍໃຕ້ການຂົ່ມຂູ່ ຈົນກວ່າຈະຈ່າຍ "ໜີ້".']),
           pick('b', 'verify', true, ['Ask for the company registration and a contract to read at home first', 'ຂໍທະບຽນບໍລິສັດ ແລະ ສັນຍາມາອ່ານທີ່ເຮືອນກ່ອນ'], ['They will refuse or rush you. That tells you everything.', 'ເຂົາຈະປະຕິເສດ ຫຼື ເລັ່ງທ່ານ. ນັ້ນບອກທຸກຢ່າງ.']),
-          pick('c', 'report', true, ['Refuse, keep the chat and call 1300', 'ປະຕິເສດ, ເກັບແຊັດໄວ້ ແລະ ໂທ 1300'], ['Right. Screenshots help police find the network.', 'ຖືກ. ພາບໜ້າຈໍຊ່ວຍຕຳຫຼວດຕາມເຄືອຂ່າຍ.']),
+          pick('c', 'report', true, ['Refuse, keep the chat and call 1191', 'ປະຕິເສດ, ເກັບແຊັດໄວ້ ແລະ ໂທ 1191'], ['Right. Screenshots help police find the network.', 'ຖືກ. ພາບໜ້າຈໍຊ່ວຍຕຳຫຼວດຕາມເຄືອຂ່າຍ.']),
         ]),
       flags([['12,000,000 kip/month, free dorm and meals', 'ເດືອນລະ 12,000,000 ກີບ ຫໍພັກ ແລະ ອາຫານຟຣີ', 'too_good'], ['. ', '. '], ['A car picks you up tomorrow', 'ລົດມາຮັບມື້ອື່ນ', 'urgency'], ['. ', '. '], ['Phones are kept by security', 'ຝ່າຍຮັກສາຄວາມປອດໄພເກັບໂທລະສັບ', 'personal_data'], ['. ', '. '], ['30,000,000 kip penalty', 'ປັບ 30,000,000 ກີບ', 'upfront_fee'], ['.', '.']]),
     ],
-    explanation: l('Taking your phone and fining you for leaving are control, not HR. If someone you know is inside, save their messages and quietly call 1300 or 1362.', 'ການເກັບໂທລະສັບ ແລະ ປັບເງິນເມື່ອອອກ ແມ່ນການຄວບຄຸມ. ຖ້າຄົນຮູ້ຈັກຢູ່ຂ້າງໃນ ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທ 1300 ຫຼື 1362 ຢ່າງງຽບໆ.'),
+    explanation: l('Taking your phone and fining you for leaving are control, not HR. If someone you know is inside, save their messages and quietly call 1191 or 1362.', 'ການເກັບໂທລະສັບ ແລະ ປັບເງິນເມື່ອອອກ ແມ່ນການຄວບຄຸມ. ຖ້າຄົນຮູ້ຈັກຢູ່ຂ້າງໃນ ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທ 1191 ຫຼື 1362 ຢ່າງງຽບໆ.'),
   }),
   make({
     id: 'adult-loan-01', bands: ['adult'], scamType: type('loan'), channel: 'sms', contact: 'QuickLoan LA',
@@ -271,7 +271,7 @@ export const BAND_SESSIONS: Scenario[] = [
       chat([them('This is the police. Your bank account is used for crime.', 'ນີ້ແມ່ນຕຳຫຼວດ. ບັນຊີທະນາຄານຂອງທ່ານຖືກໃຊ້ກໍ່ອາຊະຍາກຳ.'), them('Move your money to our safe account now. Do not tell your family.', 'ໂອນເງິນມາບັນຊີປອດໄພຂອງເຮົາດຽວນີ້. ຢ່າບອກຄອບຄົວ.')],
         ['What do you do?', 'ທ່ານຈະເຮັດແນວໃດ?'], [
           pick('a', 'reply', false, ['Move the money', 'ໂອນເງິນ'], ['The money is gone. Police never ask you to move money.', 'ເງິນໝົດ. ຕຳຫຼວດບໍ່ເຄີຍໃຫ້ທ່ານໂອນເງິນ.']),
-          pick('b', 'verify', true, ['Hang up. Call 1300 yourself', 'ວາງສາຍ. ໂທ 1300 ເອງ'], ['Right. Call the real number yourself.', 'ຖືກ. ໂທຫາເບີແທ້ດ້ວຍຕົວເອງ.']),
+          pick('b', 'verify', true, ['Hang up. Call 1191 yourself', 'ວາງສາຍ. ໂທ 1191 ເອງ'], ['Right. Call the real number yourself. Report the scam to 1533.', 'ຖືກ. ໂທຫາເບີແທ້ດ້ວຍຕົວເອງ. ລາຍງານການຫຼອກລວງທີ່ 1533.']),
           pick('c', 'report', true, ['Hang up and tell your family', 'ວາງສາຍ ແລະ ບອກຄອບຄົວ'], ['Good. Scammers hate family. Family helps.', 'ດີ. ຄົນຫຼອກຢ້ານຄອບຄົວ. ຄອບຄົວຊ່ວຍໄດ້.']),
         ]),
       flags([['This is the police', 'ນີ້ແມ່ນຕຳຫຼວດ', 'unverified_identity'], ['. ', '. '], ['Move your money', 'ໂອນເງິນ', 'upfront_fee'], [' to our safe account ', 'ມາບັນຊີປອດໄພ '], ['now', 'ດຽວນີ້', 'urgency'], ['. ', '. '], ['Do not tell your family', 'ຢ່າບອກຄອບຄົວ', 'off_platform'], ['.', '.']]),
@@ -363,15 +363,15 @@ export const BAND_SESSIONS: Scenario[] = [
       chat([them('Send money now or something bad will happen. Tell no one.', 'ສົ່ງເງິນດຽວນີ້ ບໍ່ດັ່ງນັ້ນຈະມີເລື່ອງບໍ່ດີ. ຢ່າບອກໃຜ.')],
         ['What is the safest first step?', 'ຂັ້ນຕອນທຳອິດທີ່ປອດໄພທີ່ສຸດແມ່ນຫຍັງ?'], [
           pick('a', 'reply', false, ['Do what it says, fast', 'ເຮັດຕາມໄວໆ'], ['Rushing is exactly what scammers want.', 'ການຟ້າວແມ່ນສິ່ງທີ່ຄົນຫຼອກຕ້ອງການ.']),
-          pick('b', 'report', true, ['Stop, keep the message, tell someone you trust', 'ຢຸດ, ເກັບຂໍ້ຄວາມໄວ້, ບອກຄົນທີ່ໄວ້ໃຈ'], ['Yes. Then call 1300 (police) or 1362 (Lao Women’s Union) if anyone is in danger.', 'ແມ່ນ. ແລ້ວໂທ 1300 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຖ້າມີຄົນຕົກຢູ່ໃນອັນຕະລາຍ.']),
+          pick('b', 'report', true, ['Stop, keep the message, tell someone you trust', 'ຢຸດ, ເກັບຂໍ້ຄວາມໄວ້, ບອກຄົນທີ່ໄວ້ໃຈ'], ['Yes. Then call 1191 (police) or 1362 (Lao Women’s Union) if anyone is in danger.', 'ແມ່ນ. ແລ້ວໂທ 1191 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຖ້າມີຄົນຕົກຢູ່ໃນອັນຕະລາຍ.']),
           pick('c', 'verify', true, ['Check it on Sati', 'ກວດໃນ Sati'], ['Good. Paste it into Ask Sati, or report it in the feed.', 'ດີ. ວາງໃສ່ ຖາມ Sati ຫຼື ລາຍງານໃນໜ້າຂ່າວ.']),
         ]),
       flags([['Send money now', 'ສົ່ງເງິນດຽວນີ້', 'urgency'], [' or something bad will happen. ', ' ບໍ່ດັ່ງນັ້ນຈະມີເລື່ອງບໍ່ດີ. '], ['Tell no one', 'ຢ່າບອກໃຜ', 'off_platform'], ['.', '.']]),
     ],
-    explanation: l('Stop. Save. Tell. Report. Help lines: 1300 police, 1362 Lao Women’s Union.', 'ຢຸດ. ເກັບ. ບອກ. ລາຍງານ. ສາຍດ່ວນ: 1300 ຕຳຫຼວດ, 1362 ສະຫະພັນແມ່ຍິງລາວ.'),
+    explanation: l('Stop. Save. Tell. Report. Help lines: 1191 police, 1533 online scams, 1362 Lao Women’s Union.', 'ຢຸດ. ເກັບ. ບອກ. ລາຍງານ. ສາຍດ່ວນ: 1191 ຕຳຫຼວດ, 1533 ລາຍງານການສໍ້ໂກງອອນລາຍ, 1362 ສະຫະພັນແມ່ຍິງລາວ.'),
     gentle: {
       intro: l('A message makes you feel scared. You can always get help.', 'ຂໍ້ຄວາມເຮັດໃຫ້ເຈົ້າຢ້ານ. ເຈົ້າຂໍຄວາມຊ່ວຍເຫຼືອໄດ້ສະເໝີ.'),
-      explanation: l('Stop and tell a trusted adult: a parent, teacher or family member. If you feel unsafe, an adult can call 1300.', 'ຢຸດ ແລ້ວບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ: ພໍ່ແມ່, ຄູ ຫຼື ຍາດພີ່ນ້ອງ. ຖ້າບໍ່ປອດໄພ ຜູ້ໃຫຍ່ໂທ 1300 ໄດ້.'),
+      explanation: l('Stop and tell a trusted adult: a parent, teacher or family member. If you feel unsafe, an adult can call 1191.', 'ຢຸດ ແລ້ວບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ: ພໍ່ແມ່, ຄູ ຫຼື ຍາດພີ່ນ້ອງ. ຖ້າບໍ່ປອດໄພ ຜູ້ໃຫຍ່ໂທ 1191 ໄດ້.'),
     },
   }),
 ];

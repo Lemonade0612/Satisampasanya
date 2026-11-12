@@ -125,7 +125,7 @@ export const TIPS: T2[] = [
   { en: 'Of about 6,364 people removed from the zone (Sep 2022 to Dec 2024), only 25 were formally identified as victims.', lo: 'ໃນປະມານ 6,364 ຄົນທີ່ຖືກນຳອອກຈາກເຂດ (ກ.ຍ. 2022 ຫາ ທ.ວ. 2024) ມີພຽງ 25 ຄົນທີ່ຖືກຢືນຢັນເປັນຜູ້ເຄາະຮ້າຍ.' },
   { en: 'UN experts reported people of more than 32 nationalities in the Golden Triangle zone (2025).', lo: 'ຜູ້ຊ່ຽວຊານ UN ລາຍງານວ່າມີຄົນຫຼາຍກວ່າ 32 ສັນຊາດ ໃນເຂດສາມຫຼ່ຽມຄຳ (2025).' },
   { en: 'A rescue count is not a confirmed-victim count, and fewer identified victims does not mean less trafficking.', lo: 'ຈຳນວນຄົນທີ່ຖືກຊ່ວຍ ບໍ່ແມ່ນຈຳນວນຜູ້ເຄາະຮ້າຍທີ່ຢືນຢັນ ແລະ ການຢືນຢັນໜ້ອຍລົງ ບໍ່ໄດ້ໝາຍວ່າການຄ້າມະນຸດຫຼຸດລົງ.' },
-  { en: 'Worried someone is trapped? Lao Women\'s Union 1362, police 1300. Never post their location publicly.', lo: 'ເປັນຫ່ວງວ່າມີຄົນຖືກກັກ? ສະຫະພັນແມ່ຍິງລາວ 1362, ຕຳຫຼວດ 1300. ຢ່າໂພສບ່ອນຢູ່ຂອງເຂົາສາທາລະນະ.' },
+  { en: 'Worried someone is trapped? Lao Women\'s Union 1362, police 1191. Never post their location publicly.', lo: 'ເປັນຫ່ວງວ່າມີຄົນຖືກກັກ? ສະຫະພັນແມ່ຍິງລາວ 1362, ຕຳຫຼວດ 1191. ຢ່າໂພສບ່ອນຢູ່ຂອງເຂົາສາທາລະນະ.' },
 ];
 
 // Kids get these instead of the stop facts and TIPS above, which include trafficking detail.

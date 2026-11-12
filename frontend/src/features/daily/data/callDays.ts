@@ -396,11 +396,11 @@ export const KHAMLA_CALLS: Call[] = [
       l('The boss says I owe five million kip. Send it to this account and I can come home.', 'ນາຍບອກວ່າ ຂ້ອຍຕິດໜີ້ຫ້າລ້ານກີບ. ປ້າໂອນເຂົ້າບັນຊີນີ້ແດ່ ຂ້ອຍຈະໄດ້ກັບບ້ານ.'),
       l("Or find two new workers to take my place. Please don't tell the police.", 'ຫຼື ຫາຄົນງານໃໝ່ສອງຄົນ ມາແທນຂ້ອຍ. ຢ່າບອກຕຳຫຼວດເດີ້ປ້າ.'),
     ],
-    moves: { trust: l('Send five million kip to the account', 'ໂອນຫ້າລ້ານກີບເຂົ້າບັນຊີ'), check: l("Call Phet's mum, save the details, and call 1300 or 1362", 'ໂທຫາແມ່ຂອງເພັດ ເກັບຂໍ້ມູນໄວ້ ແລ້ວໂທ 1300 ຫຼື 1362'), hangup: l('Hang up', 'ວາງສາຍ') },
+    moves: { trust: l('Send five million kip to the account', 'ໂອນຫ້າລ້ານກີບເຂົ້າບັນຊີ'), check: l("Call Phet's mum, save the details, and call 1191 or 1362", 'ໂທຫາແມ່ຂອງເພັດ ເກັບຂໍ້ມູນໄວ້ ແລ້ວໂທ 1191 ຫຼື 1362'), hangup: l('Hang up', 'ວາງສາຍ') },
     outcome: {
       trust: l('The money reaches the people running the operation. A week later there is a new "debt".', 'ເງິນໄປຮອດຄົນທີ່ຄຸມແກ໊ງ. ອາທິດຕໍ່ມາ ມີ "ໜີ້" ໃໝ່.'),
       check: l("Phet's mum hasn't heard from him either. Trained helpers take the case quietly, without any payment.", 'ແມ່ຂອງເພັດກໍ່ບໍ່ໄດ້ຂ່າວ. ເຈົ້າໜ້າທີ່ທີ່ມີການຝຶກ ຮັບເລື່ອງຢ່າງງຽບໆ ໂດຍບໍ່ຕ້ອງຈ່າຍ.'),
-      hangup: l('No money sent, but if Phet really is trapped, he still needs help. Khamla should tell the family and call 1300 or 1362.', 'ບໍ່ໄດ້ສົ່ງເງິນ ແຕ່ຖ້າເພັດຖືກກັກແທ້ ເຂົາຍັງຕ້ອງການຄວາມຊ່ວຍເຫຼືອ. ຄຳຫຼ້າຄວນບອກຄອບຄົວ ແລະ ໂທ 1300 ຫຼື 1362.'),
+      hangup: l('No money sent, but if Phet really is trapped, he still needs help. Khamla should tell the family and call 1191 or 1362.', 'ບໍ່ໄດ້ສົ່ງເງິນ ແຕ່ຖ້າເພັດຖືກກັກແທ້ ເຂົາຍັງຕ້ອງການຄວາມຊ່ວຍເຫຼືອ. ຄຳຫຼ້າຄວນບອກຄອບຄົວ ແລະ ໂທ 1191 ຫຼື 1362.'),
     },
     signs: ['docs', 'debt', 'pay', 'hush'], flags: ['personal_data', 'upfront_fee', 'off_platform'],
     remember: l('Whether it is a fake emergency or a real trap, never pay the "boss" or send new workers. Get trained help, quietly.', 'ບໍ່ວ່າເປັນເຫດດ່ວນປອມ ຫຼື ຖືກກັກແທ້ ຢ່າຈ່າຍ "ນາຍ" ຫຼື ສົ່ງຄົນງານໃໝ່ໄປ. ຂໍຄວາມຊ່ວຍເຫຼືອຢ່າງງຽບໆ.') },

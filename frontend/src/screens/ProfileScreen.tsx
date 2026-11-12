@@ -3,18 +3,16 @@ import { readPhoto } from "../lib/images";
 import { T } from "../lib/translations";
 import { useState } from "react";
 import { AVATAR_GRADIENTS, TOPIC_LABELS, TOPICS } from "../lib/constants";
-import { Image as ImageIcon, Camera, Pencil, LogOut, ChevronRight, ShieldCheck, Accessibility, Languages } from "lucide-react";
+import { Image as ImageIcon, Camera, Pencil, Settings, ShieldCheck } from "lucide-react";
 import { bandLabel } from "../components/shared/BandSheet";
-import { TIERS } from "../features/daily/lib/age";
 import { useBand } from "../lib/band";
-import { setSimpleMode, useSimpleMode } from "../lib/simpleMode";
 import { getProgress, currentStreak } from "../features/daily/lib/progress";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, CurrentUser, Post, ProfileTab, LeafState } from "../types";
 
-export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeBand, onCompose, onToggleLang }: {
-  lang: Lang; user: CurrentUser; posts: Post[]; onLogout: () => void; onUpdate: (data: Partial<CurrentUser>) => Promise<void>; onChangeBand: () => void; onCompose?: () => void; onToggleLang: () => void;
+export function ProfileScreen({ lang, user, posts, onUpdate, onCompose, onOpenSettings }: {
+  lang: Lang; user: CurrentUser; posts: Post[]; onUpdate: (data: Partial<CurrentUser>) => Promise<void>; onCompose?: () => void; onOpenSettings: () => void;
 }) {
   const t = T[lang];
   const [tab, setTab] = useState<ProfileTab>("posts");
@@ -24,8 +22,7 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
   const [displayName, setDisplayName] = useState(user.name);
   const [editName, setEditName] = useState(user.name);
   const avatarGradient = AVATAR_GRADIENTS[0];
-  const band = useBand(), Icon = TIERS[band].icon;
-  const simple = useSimpleMode();
+  const band = useBand();
   const [followed, setFollowed] = useState(user.followed || []);
   const [avatarFile, setAvatarFile] = useState<string | null>(user.avatar || null);
   const [bannerFile, setBannerFile] = useState<string | null>(user.banner || null);
@@ -61,7 +58,6 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
   const progress = getProgress();
   const caught = progress.completed.length, streak = currentStreak(progress);
   const lo = lang === 'lo';
-  const card = "rounded-2xl border border-border bg-card";
 
   return (
     <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide font-lao">
@@ -116,10 +112,16 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
                 <button onClick={saveEdit} disabled={saving} className="text-sm font-semibold bg-primary text-white px-5 py-2 rounded-full">{t.save}</button>
                 <button onClick={cancelEdit} className="text-sm font-semibold border border-border rounded-full px-5 py-2">{t.cancel}</button>
               </>
-            : <button onClick={() => { setEditing(true); setEditName(displayName); setEditBio(bio); }}
-                className="flex items-center gap-1.5 text-sm font-semibold border border-primary text-primary rounded-full px-5 py-2 hover:bg-secondary transition-colors">
-                <Pencil size={14} />{lo ? 'ແກ້ໄຂໂປຣໄຟລ໌' : 'Edit profile'}
-              </button>}
+            : <div className="grid grid-cols-2 gap-2 w-full">
+                <button onClick={() => { setEditing(true); setEditName(displayName); setEditBio(bio); }}
+                  className="min-h-11 flex items-center justify-center gap-1.5 text-sm font-semibold border border-primary text-primary rounded-xl px-3 hover:bg-secondary transition-colors">
+                  <Pencil size={15} aria-hidden />{lo ? 'ແກ້ໄຂໂປຣໄຟລ໌' : 'Edit profile'}
+                </button>
+                <button onClick={onOpenSettings}
+                  className="min-h-11 flex items-center justify-center gap-1.5 text-sm font-semibold border border-border text-foreground rounded-xl px-3 hover:bg-sidebar transition-colors">
+                  <Settings size={15} aria-hidden />{lo ? 'ການຕັ້ງຄ່າ' : 'Settings'}
+                </button>
+              </div>}
         </div>
       </div>
 
@@ -142,12 +144,13 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
         <p className="text-xs text-muted-foreground mt-1.5">{lo ? `${Math.min(streak, 7)}/7 ມື້ ອາທິດນີ້` : `${Math.min(streak, 7)}/7 days this week`}</p>
       </div>
 
-      {/* Tabs: segmented control */}
-      <div className="mx-4 mt-5 p-1 bg-sidebar rounded-full flex shrink-0">
+      {/* Tabs: underline, same as the feed */}
+      <div role="tablist" className="mx-4 mt-5 flex border-b border-border shrink-0">
         {(["posts","topics","points"] as ProfileTab[]).map(tabKey => (
-          <button key={tabKey} onClick={() => setTab(tabKey)} aria-pressed={tab === tabKey}
-            className={`flex-1 py-2 text-sm font-semibold rounded-full transition-colors ${tab === tabKey ? "bg-white text-primary shadow-sm" : "text-muted-foreground"}`}>
+          <button key={tabKey} role="tab" onClick={() => setTab(tabKey)} aria-selected={tab === tabKey}
+            className={`relative flex-1 min-h-12 text-[15px] font-bold ${tab === tabKey ? "text-primary-ink" : "text-text-muted"}`}>
             {tabKey === "posts" ? t.posts : tabKey === "topics" ? t.topics : t.points_tab}
+            {tab === tabKey && <span aria-hidden className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary rounded-full" />}
           </button>
         ))}
       </div>
@@ -222,28 +225,8 @@ export function ProfileScreen({ lang, user, posts, onLogout, onUpdate, onChangeB
         )}
       </div>
 
-      {/* Settings */}
-      <div className={`mx-4 mt-4 ${card} overflow-hidden divide-y divide-border`}>
-        <SettingRow icon={<Icon size={20} />} label={lo ? 'ກຸ່ມອາຍຸ' : 'Age group'} value={bandLabel(band, lang)} onClick={onChangeBand} />
-        <SettingRow icon={<Accessibility size={20} />} label={lo ? 'ໂໝດງ່າຍ' : 'Simple mode'} onClick={() => setSimpleMode(!simple)} switchOn={simple} />
-        <SettingRow icon={<Languages size={20} />} label={lo ? 'ພາສາ' : 'Language'} value={lo ? 'ລາວ' : 'English'} onClick={onToggleLang} />
-      </div>
-      <button onClick={onLogout} className="mx-auto my-6 text-sm font-semibold text-destructive hover:underline flex items-center gap-1.5 min-h-11 px-4">
-        <LogOut size={14} /> {lo ? 'ອອກຈາກລະບົບ' : 'Sign out'}
-      </button>
+      <div className="h-8 shrink-0" />
     </div>
   );
 }
 
-function SettingRow({ icon, label, value, onClick, switchOn }: { icon: React.ReactNode; label: string; value?: string; onClick?: () => void; switchOn?: boolean }) {
-  const isSwitch = switchOn !== undefined;
-  return <button onClick={onClick} role={isSwitch ? 'switch' : undefined} aria-checked={isSwitch ? switchOn : undefined}
-    className="w-full min-h-[60px] flex items-center gap-3 px-4 py-2 text-left hover:bg-sidebar transition-colors">
-    <span className="w-10 h-10 rounded-xl bg-secondary text-primary flex items-center justify-center shrink-0">{icon}</span>
-    <span className="flex-1 font-semibold">{label}</span>
-    {value && <span className="text-sm text-muted-foreground">{value}</span>}
-    {isSwitch
-      ? <span className={`w-12 h-7 rounded-full p-1 transition-colors ${switchOn ? 'bg-primary' : 'bg-muted'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${switchOn ? 'translate-x-5' : ''}`} /></span>
-      : <ChevronRight size={18} className="text-muted-foreground" />}
-  </button>;
-}

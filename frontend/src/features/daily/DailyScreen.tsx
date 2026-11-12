@@ -45,7 +45,7 @@ export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter, start
   const exit = () => { setPlay(null); setResult(null); };
   const done = (r: GameResult) => {
     if (!play) return;
-    setStreak(finishSession(play.game, r.score, r.failed ? r.scenarioIds.slice(0, -1) : r.scenarioIds).streak);
+    setStreak(finishSession(play.game, r.score, r.failed ? r.scenarioIds.slice(0, -1) : r.scenarioIds, { mission: play.scope === 'daily' && !r.failed }).streak);
     setResult(r);
   };
 

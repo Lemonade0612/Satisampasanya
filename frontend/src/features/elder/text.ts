@@ -14,8 +14,8 @@ export const ET = {
   check_title: 'ກວດຂໍ້ຄວາມ', paste_here: 'ວາງຂໍ້ຄວາມແປກໆ ໃສ່ບ່ອນນີ້', paste: 'ວາງຂໍ້ຄວາມ',
   paste_help: "ຄັດລອກຂໍ້ຄວາມ ຈາກ SMS ຫຼື Messenger ແລ້ວກົດ 'ວາງຂໍ້ຄວາມ'", run: 'ກວດເລີຍ', checking: 'ກຳລັງກວດ...',
   result_title: 'ຜົນການກວດ', do_this: 'ຄວນເຮັດແນວນີ້', call: 'ໂທຫາລູກຫຼານ', again: 'ກວດອີກ',
-  learn_title: 'ຮຽນມື້ນີ້', tip_label: 'ຄຳແນະນຳມື້ນີ້', games: 'ເກມ', full_app: 'ເປີດແອັບເຕັມ',
-  game_call: 'ເກມ ສາຍໂທຫຼອກລວງ', game_quick: 'ເກມ ແທ້ ຫຼື ຫຼອກ', game_sub: 'ຫຼິ້ນຊ້າໆ ບໍ່ມີຈັບເວລາ',
+  learn_title: 'ຮຽນມື້ນີ້', tip_label: 'ຄຳແນະນຳມື້ນີ້', full_app: 'ເປີດແອັບເຕັມ',
+  elder_entry: 'ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ',
   slogan: 'ກວດກ່ອນ ເຊື່ອ',
 } as const;
 
@@ -32,11 +32,10 @@ export type ElderTip = (typeof tips)[number];
 export const VIDEOS = videos as ElderVideo[];
 export const TIPS = tips as ElderTip[];
 
-// Deterministic daily rotation (Lao calendar day): 2 videos a day walk through all 7, one tip of 8, games alternate.
+// Deterministic daily rotation (Lao calendar day): 2 videos a day walk through all 7, one tip of 8.
 const mod = (n: number, m: number) => ((n % m) + m) % m;
 export const videosForDay = (day: number): [ElderVideo, ElderVideo] => [VIDEOS[mod(day * 2, VIDEOS.length)], VIDEOS[mod(day * 2 + 1, VIDEOS.length)]];
 export const tipForDay = (day: number) => TIPS[mod(day, TIPS.length)];
-export const gameForDay = (day: number): 'call' | 'quick' => (mod(day, 2) ? 'quick' : 'call');
 export const durationLabel = (sec: number) => (sec >= 60 ? `${Math.round(sec / 60)} ${ET.minutes}` : `${sec} ${ET.seconds}`);
 
 /** Every line elder mode can read aloud, for scripts/gen-audio.mjs. */

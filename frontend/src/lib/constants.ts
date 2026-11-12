@@ -37,6 +37,15 @@ export const TOPICS = [
   "RomanceScam", "DataPrivacy"
 ] as const;
 
+// Plain English display names for topic chips/tiles (TOPIC_LABELS.en stays the hashtag form).
+export const TOPIC_EN_NAMES: Record<string, string> = {
+  OnlineScam: "Online scam", RomanceScam: "Romance scam", JobScam: "Job scam", Trafficking: "Trafficking",
+  CryptoScam: "Crypto scam", PhishingAlert: "Phishing", DigitalSafety: "Digital safety", DataPrivacy: "Privacy",
+  SocialMedia: "Social media", BorderSafety: "Border safety",
+};
+// Order shown in the composer chips and Explore grid.
+export const TOPIC_ORDER = ["OnlineScam","RomanceScam","JobScam","Trafficking","CryptoScam","PhishingAlert","DigitalSafety","DataPrivacy","SocialMedia","BorderSafety"] as const;
+
 export const FEED_TABS_EN = ["For You", "Following", "#OnlineScam", "#Trafficking", "#DigitalSafety"];
 export const FEED_TABS_LO = ["ສຳລັບທ່ານ", "ຕິດຕາມ", "#ການຫຼອກລວງ", "#ການຄ້າມະນຸດ", "#ຄວາມປອດໄພດິຈິຕອລ"];
 
@@ -171,7 +180,7 @@ export const T = {
     stats_reports: "ລາຍງານແລ້ວ", stats_blocked: "ຫຼອກລວງຖືກບລັອກ", stats_trained: "ໄວໜຸ່ມທີ່ຜ່ານການຝຶກ",
     story_breaking: "ຂ່າວດ່ວນ", story_read_more: "ອ່ານຕໍ່",
     safety_checklist: "ລາຍການກວດສອບຄວາມປອດໄພດິຈິຕອລ",
-    safety_tip_otp: "ຢ່າແຊຣ໌ OTP, ລະຫັດຜ່ານ, ຫຼື PIN ເງິນຝາກ — ເຖິງແມ່ນກັບ \"ພະນັກງານທະນາຄານ\"",
+    safety_tip_otp: "ຢ່າແຊຣ໌ OTP, ລະຫັດຜ່ານ, ຫຼື PIN ເງິນຝາກ — ເຖິງແມ່ນກັບ ພະນັກງານທະນາຄານ",
     safety_tip_job: "ຢືນຢັນຂໍ້ສະເໜີວຽກຜ່ານເວັບໄຊທາງການ, ບໍ່ແມ່ນແຕ່ WhatsApp",
     safety_tip_apk: "ຢ່າຕິດຕັ້ງໄຟລ APK ຈາກແຫຼ່ງທີ່ບໍ່ຮູ້ຈັກ — ອາດມີ malware",
     safety_tip_url: "ກວດເບິ່ງ URL ໃຫ້ລະອຽດ — ຜູ້ຫຼອກລວງໃຊ້ໂດເມນທີ່ຄ້າຍຄືກັນ",
@@ -202,3 +211,10 @@ export const T = {
     review_deadline: "ກຳນົດເວລາກວດສອບ",
   },
 } as const;
+
+// Short Lao topic names used by the New Post chips and Explore (TOPIC_LABELS keeps the longer names).
+export const TOPIC_SHORT_LO: Record<string, string> = {
+  OnlineScam: "ຫຼອກລວງອອນລາຍ", RomanceScam: "ຫຼອກລວງຄວາມຮັກ", JobScam: "ຫຼອກລວງຊອກວຽກ", Trafficking: "ການຄ້າມະນຸດ",
+  CryptoScam: "ຫຼອກລວງຄຣິບໂຕ", PhishingAlert: "ລິ້ງປອມ", DigitalSafety: "ຄວາມປອດໄພດິຈິຕອລ", DataPrivacy: "ຄວາມເປັນສ່ວນຕົວ",
+  SocialMedia: "ສື່ສັງຄົມ", BorderSafety: "ຊາຍແດນ",
+};
