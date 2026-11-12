@@ -19,6 +19,10 @@ async function sync(){
 const changes=()=>app.db.prepare('SELECT total_changes() n').get().n;
 
 export default async function handler(req,res){
+ // vercel.json rewrites /api/* here. Restore the original path if the runtime reports the rewritten one.
+ {const u=new URL(req.url,'http://x'),p=u.searchParams.get('__path');u.searchParams.delete('__path');
+  if(p!==null&&/^\/api(\/index)?$/.test(u.pathname))u.pathname='/api/'+p;
+  req.url=u.pathname+u.search;}
  // Long-lived SSE cannot run on serverless: 204 tells EventSource to stop, and the app polls instead.
  if(req.url.split('?')[0]==='/api/events'){res.statusCode=204;res.setHeader('Cache-Control','no-store');return res.end();}
  try{ready=(ready||Promise.resolve()).then(sync,sync);await ready;}
