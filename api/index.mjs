@@ -22,7 +22,8 @@ async function sync(){
 // ADMIN_EMAIL + ADMIN_PASSWORD (Vercel env, never in the repo) guarantee one admin login exists,
 // even on a fresh demo database. An existing account with that email is left unchanged.
 async function ensureAdmin(){
- const email=process.env.ADMIN_EMAIL?.trim().toLowerCase(),password=process.env.ADMIN_PASSWORD;
+ // The admin form maps a bare username like "admin" to admin@sati.app.
+ const email=(process.env.ADMIN_EMAIL||'admin@sati.app').trim().toLowerCase(),password=process.env.ADMIN_PASSWORD;
  if(!email||!password||app.db.prepare('SELECT id FROM users WHERE lower(email)=?').get(email))return;
  await manageUser(app.db,{id:'vercel-env-bootstrap'},{name:'Sati Administrator',email,password,role:'admin',status:'active'},null,[]);
 }
