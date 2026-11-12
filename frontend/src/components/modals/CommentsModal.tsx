@@ -14,7 +14,9 @@ export function CommentsModal({postId,posts,lang,onClose,onAddComment,onOpenPost
     if(!postId)return;let alive=true,revision=0;
     const load=async()=>{const r=++revision;try{const rows=await api.comments(postId);if(alive&&r===revision){setComments(rows);setError('');}}catch(e){if(alive)setError((e as Error).message);}};
     void load();const stream=new EventSource(API_BASE+'/events');stream.addEventListener('change',load);
-    return()=>{alive=false;stream.close();};
+    // Poll as well: serverless hosting has no live stream.
+    const timer=setInterval(load,12000);
+    return()=>{alive=false;stream.close();clearInterval(timer);};
   },[postId]);
   if(!post)return null;
   const submit=async()=>{if(!reply.trim()||busy)return;setBusy(true);setError('');try{await onAddComment(post.id,reply.trim());setReply('');setComments(await api.comments(post.id));}catch(e){setError((e as Error).message);}finally{setBusy(false);}};

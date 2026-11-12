@@ -17,9 +17,10 @@ export function useLivePosts(userId?: string) {
     setLoading(true); void refresh();
     const events=new EventSource(API_BASE+'/events');
     events.addEventListener('change',refresh);
-    events.onerror=()=>setError('Live connection interrupted. Reconnecting…');
-    // Poll as a fallback when the app resumes or an SSE connection drops.
-    const timer=setInterval(refresh,15000);
+    // Serverless hosting closes the stream (204); stop retrying and rely on polling below.
+    events.onerror=()=>{if(events.readyState===EventSource.CLOSED)events.close();};
+    // Poll every 12 s: the fallback when the app resumes or the SSE stream is unavailable.
+    const timer=setInterval(refresh,12000);
     const visible=()=>{if(document.visibilityState==='visible')void refresh();};
     document.addEventListener('visibilitychange',visible);
     return()=>{revision.current++;events.close();clearInterval(timer);document.removeEventListener('visibilitychange',visible);};
