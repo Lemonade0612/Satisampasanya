@@ -1,9 +1,14 @@
 import { BookUser, CalendarCheck, Fingerprint, Gift, KeyRound, Lock, Siren, Timer, VenetianMask, Wallet, ShieldCheck, Shuffle, Receipt, Stamp, type LucideIcon } from 'lucide-react';
 import type { FlagCategory, L10n } from '../types';
+import type { BandTagged } from '../../../lib/band';
 import type { Avatar } from '../lib/dashPlayer';
 import type { Room } from '../components/Backdrop';
 import { PERSONAS } from './detectiveCases';
 import { BOUNMY_CALLS, DARA_CALLS, KHAMLA_CALLS, NOY_CALLS, TON_CALLS } from './callDays';
+import kidsCallFile from '../../../../../content/call/kids.json';
+import youthCallFile from '../../../../../content/call/youth.json';
+import adultCallFile from '../../../../../content/call/adult.json';
+import elderCallFile from '../../../../../content/call/elder.json';
 
 // Scam Call: pick whose day to play (Souk's noodle stall, or one of the Scam Detective characters in callDays.ts).
 // Each play draws a mix of real and scam calls from that day's pool, so the pattern never repeats. Lao strings are drafts (needsNativeReview).
@@ -232,29 +237,32 @@ export const SLOTS: Call[][] = [
 
 // A day is one character's pool of calls. Souk's pool pairs a real call and a scam at each time slot;
 // the other days have eight calls over six time slots (see callDays.ts).
-export type Day = { id: string; room: Room | 'stall'; hero: { name: L10n; age: number; avatar: Avatar }; who: L10n; intro: L10n; balance: number; calls: Call[] };
+export type Day = BandTagged & { id: string; room: Room | 'stall'; hero: { name: L10n; age: number; avatar: Avatar }; who: L10n; intro: L10n; balance: number; calls: Call[] };
 const persona = (id: string) => { const p = PERSONAS.find(x => x.id === id)!; return { name: p.name, age: p.age, avatar: p.avatar }; };
 
-export const DAYS: Day[] = [
-  { id: 'souk', room: 'stall', hero: HERO, balance: START_BALANCE, calls: SLOTS.flat(),
+const BUILT_IN_DAYS: Day[] = [
+  { id: 'souk', bands: ['adult', 'youth'], room: 'stall', hero: HERO, balance: START_BALANCE, calls: SLOTS.flat(),
     who: l('Runs a noodle stall', 'ເປີດຮ້ານເຝີ'),
     intro: l('Souk runs a noodle stall near Talat Sao. Her phone will ring {n} times.', 'ສຸກເປີດຮ້ານເຝີໃກ້ຕະຫຼາດເຊົ້າ. ມື້ນີ້ໂທລະສັບຈະດັງ {n} ເທື່ອ.') },
-  { id: 'ton', room: 'kid', hero: persona('kid'), balance: 2_000_000, calls: TON_CALLS,
+  { id: 'ton', bands: ['kids'], room: 'kid', hero: persona('kid'), balance: 2_000_000, calls: TON_CALLS,
     who: l('Home alone after school', 'ຢູ່ເຮືອນຄົນດຽວຫຼັງເລີກຮຽນ'),
     intro: l("Ton is home after school with Mum's old phone. It will ring {n} times.", 'ຕົ້ນຢູ່ເຮືອນຫຼັງເລີກຮຽນ ກັບໂທລະສັບເກົ່າຂອງແມ່. ມັນຈະດັງ {n} ເທື່ອ.') },
-  { id: 'noy', room: 'student', hero: persona('student'), balance: 1_500_000, calls: NOY_CALLS,
+  { id: 'noy', bands: ['youth'], room: 'student', hero: persona('student'), balance: 1_500_000, calls: NOY_CALLS,
     who: l('Hunting for a summer job', 'ຊອກວຽກພາກຮຽນ'),
     intro: l('Noy is looking for a summer job and waiting on her university application. {n} calls today.', 'ນ້ອຍກຳລັງຊອກວຽກ ແລະ ລໍຖ້າຜົນສະໝັກມະຫາວິທະຍາໄລ. ມື້ນີ້ {n} ສາຍ.') },
-  { id: 'khamla', room: 'parent', hero: persona('parent'), balance: 5_000_000, calls: KHAMLA_CALLS,
+  { id: 'khamla', bands: ['adult'], room: 'parent', hero: persona('parent'), balance: 5_000_000, calls: KHAMLA_CALLS,
     who: l('Busy day at the shop', 'ມື້ຫຍຸ້ງຢູ່ຮ້ານ'),
     intro: l('Khamla runs a corner shop and has a son at school. {n} calls between customers.', 'ຄຳຫຼ້າເປີດຮ້ານນ້ອຍ ແລະ ມີລູກຮຽນຢູ່. {n} ສາຍລະຫວ່າງລູກຄ້າ.') },
-  { id: 'bounmy', room: 'elder', hero: persona('elder'), balance: 3_000_000, calls: BOUNMY_CALLS,
+  { id: 'bounmy', bands: ['elder'], room: 'elder', hero: persona('elder'), balance: 3_000_000, calls: BOUNMY_CALLS,
     who: l('A quiet day at home', 'ມື້ງຽບໆຢູ່ເຮືອນ'),
     intro: l('Grandpa Bounmy lives alone, close to his family. His phone rings {n} times today.', 'ພໍ່ເຖົ້າບຸນມີຢູ່ຄົນດຽວ ໃກ້ຄອບຄົວ. ມື້ນີ້ໂທລະສັບດັງ {n} ເທື່ອ.') },
-  { id: 'dara', room: 'worker', hero: persona('worker'), balance: 4_000_000, calls: DARA_CALLS,
+  { id: 'dara', bands: ['youth', 'adult'], room: 'worker', hero: persona('worker'), balance: 4_000_000, calls: DARA_CALLS,
     who: l('Travelling, dreams of work abroad', 'ກຳລັງເດີນທາງ ຝັນຢາກເຮັດວຽກຕ່າງປະເທດ'),
     intro: l('Dara is taking the bus to town and hoping to find work abroad. {n} calls on the way.', 'ດາຣາຂີ່ລົດເມເຂົ້າເມືອງ ແລະ ຫວັງຊອກວຽກຕ່າງປະເທດ. {n} ສາຍລະຫວ່າງທາງ.') },
 ];
+// More days live in content/call/<band>.json, so new callers need no code change (format: content/README.md).
+const CONTENT_DAYS = [kidsCallFile, youthCallFile, adultCallFile, elderCallFile].flatMap(f => (f.days ?? []) as unknown as Day[]);
+export const DAYS: Day[] = [...BUILT_IN_DAYS, ...CONTENT_DAYS];
 export const ALL_CALLS = DAYS.flatMap(d => d.calls);
 
 const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x, y) => x[0] - y[0]).map(([, v]) => v);
@@ -277,7 +285,7 @@ export const CT = {
     in_contacts: 'Saved contact', not_contacts: 'Not in contacts', listen: 'Listening…', decide: 'What does {n} do?',
     was_real: 'This call was real', was_scam: 'This call was a scam', good: 'Good call', careful: 'Careful and correct', missed: 'Too suspicious', lost: 'Lost',
     signs: 'Signs in this call', timer_note: 'The caller won\'t wait. Decide before time runs out.', remember: 'Remember', next_call: 'Next call', finish: 'End the day', kip: 'kip',
-    day_done: 'Day complete', calls_ok: 'calls handled well', no_voice: 'This phone has no voice for this language, so the call is shown as text.',
+    day_done: 'Day complete', calls_ok: 'calls handled well', no_voice: 'Audio for this call is coming soon, so it is shown as text.',
   },
   lo: {
     intro_title: 'ມື້ໜຶ່ງຂອງ{n}', intro_q: 'ແທ້ ຫຼື ຫຼອກ? ທ່ານຕັດສິນ.', pick: 'ຫຼິ້ນເປັນມື້ຂອງໃຜ?', calls_n: 'ສາຍ', unsafe: 'ບໍ່ປອດໄພ',
@@ -286,6 +294,7 @@ export const CT = {
     in_contacts: 'ເບີທີ່ບັນທຶກ', not_contacts: 'ບໍ່ມີໃນລາຍຊື່', listen: 'ກຳລັງຟັງ…', decide: '{n}ຈະເຮັດແນວໃດ?',
     was_real: 'ສາຍນີ້ແມ່ນແທ້', was_scam: 'ສາຍນີ້ແມ່ນການຫຼອກ', good: 'ຕັດສິນໃຈດີ', careful: 'ລະວັງ ແລະ ຖືກຕ້ອງ', missed: 'ສົງໄສເກີນໄປ', lost: 'ເສຍ',
     signs: 'ສັນຍານໃນສາຍນີ້', timer_note: 'ຜູ້ໂທບໍ່ລໍຖ້າ. ຕັດສິນໃຈກ່ອນໝົດເວລາ.', remember: 'ຈື່ໄວ້', next_call: 'ສາຍຕໍ່ໄປ', finish: 'ຈົບມື້', kip: 'ກີບ',
-    day_done: 'ຈົບມື້', calls_ok: 'ສາຍທີ່ຮັບມືໄດ້ດີ', no_voice: 'ໂທລະສັບນີ້ບໍ່ມີສຽງພາສາລາວ ຈຶ່ງສະແດງເປັນຂໍ້ຄວາມ.',
+    day_done: 'ຈົບມື້', calls_ok: 'ສາຍທີ່ຮັບມືໄດ້ດີ', no_voice: 'ສຽງຂອງສາຍນີ້ກຳລັງມາ, ອ່ານເປັນຂໍ້ຄວາມໄປກ່ອນ.', // REVIEW-LO
+   
   },
 };

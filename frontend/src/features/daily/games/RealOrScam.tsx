@@ -5,7 +5,8 @@ import { TrustMeter, TopBar, haptic } from '../components/ui';
 import { Burst, Combo, Countdown } from '../components/juice';
 import { DT } from '../i18n';
 import { track } from '../lib/analytics';
-import { tier } from '../lib/age';
+import { getAge, tier } from '../lib/age';
+import { filterByBand } from '../../../lib/band';
 import { sfx, useMusic } from '../lib/sound';
 import type { Lang, QuickCard } from '../types';
 import type { GameResult } from './StoryGame';
@@ -18,7 +19,7 @@ export function RealOrScam({ lang, onExit, onFinish }: { lang: Lang; onExit: () 
   const t = DT[lang];
   const [cfg] = useState(tier);
   // Fresh order every play so scam and safe cards never follow a pattern.
-  const [cards] = useState(() => shuffle(all).slice(0, cfg.quick));
+  const [cards] = useState(() => shuffle(filterByBand(all, getAge())).slice(0, cfg.quick));
   const [i, setI] = useState(0);
   const [answer, setAnswer] = useState<boolean | null>(null);
   const [late, setLate] = useState(false);
@@ -33,7 +34,7 @@ export function RealOrScam({ lang, onExit, onFinish }: { lang: Lang; onExit: () 
     if (answer !== null) return;
     const ok = saysScam === card.isScam;
     setAnswer(saysScam ?? !card.isScam); setLate(saysScam === null); haptic(ok);
-    track({ type: 'choice_made', scenarioId: `quick-${card.id}`, scamType: card.scamType, step: card.id, correct: ok });
+    track({ type: 'choice_made', scenarioId: `quick-${card.id}`, scamType: card.scamType, step: card.id, correct: ok, scam: card.isScam });
     if (ok) { setScore(s => s + 100 + combo * 25); setCombo(n => n + 1); } else { setTrust(v => v - 1); setCombo(0); }
   };
   const next = () => {

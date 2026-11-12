@@ -17,14 +17,14 @@ export const AI_SCREENING_CONFIG = {
 // ═══════════════════════════════════════════════════════════════════════════════
 export const TOPIC_LABELS: Record<string, { en: string; lo: string }> = {
   OffTopic: { en: 'OffTopic', lo: 'ນອກຫົວຂໍ້' },
-  OnlineScam:    { en: "OnlineScam",    lo: "ການຫຼອກລວງອອນລາຍ" },
+  OnlineScam:    { en: "OnlineScam",    lo: "ຫຼອກລວງອອນລາຍ" },
   Trafficking:   { en: "Trafficking",   lo: "ການຄ້າມະນຸດ" },
   DigitalSafety: { en: "DigitalSafety", lo: "ຄວາມປອດໄພດິຈິຕອລ" },
-  JobScam:       { en: "JobScam",       lo: "ການຫຼອກລວງຊອກວຽກ" },
-  CryptoScam:    { en: "CryptoScam",    lo: "ການຫຼອກລວງ Crypto" },
+  JobScam:       { en: "JobScam",       lo: "ຫຼອກລວງຊອກວຽກ" },
+  CryptoScam:    { en: "CryptoScam",    lo: "ຫຼອກລວງຄຣິບໂຕ" },
   BorderSafety:  { en: "BorderSafety",  lo: "ຄວາມປອດໄພຊາຍແດນ" },
   SocialMedia:   { en: "SocialMedia",   lo: "ສື່ສັງຄົມ" },
-  PhishingAlert: { en: "PhishingAlert", lo: "ແຈ້ງເຕືອນ Phishing" },
-  RomanceScam:   { en: "RomanceScam",   lo: "ການຫຼອກລວງຄວາມຮັກ" },
+  PhishingAlert: { en: "PhishingAlert", lo: "ລິ້ງປອມ / ຟິດຊິງ" },
+  RomanceScam:   { en: "RomanceScam",   lo: "ຫຼອກລວງຄວາມຮັກ" },
   DataPrivacy:   { en: "DataPrivacy",   lo: "ຄວາມເປັນສ່ວນຕົວ" },
 };

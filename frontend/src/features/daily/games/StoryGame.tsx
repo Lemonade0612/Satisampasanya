@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, XCircle, Video, MessageCircle, Smartphone, Swords, Flag } from 'lucide-react';
+import { CheckCircle2, XCircle, Video, MessageCircle, Smartphone, Swords, Flag, AlertTriangle } from 'lucide-react';
 import { Guide, TrustMeter, TopBar, haptic, type Mood } from '../components/ui';
 import { DT, FLAG_LABEL } from '../i18n';
 import { track } from '../lib/analytics';
 import { useMusic } from '../lib/sound';
+import { ReadAloud } from '../components/ReadAloud';
+import { storyParts } from '../lib/spoken';
+import { SHOW_EXPERT_PANEL } from '../../../../../shared/flags.mjs';
+import { useBand } from '../../../lib/band';
 import type { ChatStep, Choice, FlagCategory, FlagStep, Lang, Scenario } from '../types';
 
 export type GameResult = { score: number; total: number; missed: FlagCategory[]; failed: boolean; scenarioIds: string[] };
@@ -21,6 +25,9 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
   const [missed, setMissed] = useState<FlagCategory[]>([]);
   const [mood, setMood] = useState<Mood>('idle');
   const [guide, setGuide] = useState<string>('');
+  const band = useBand();
+  // Intense real-case sessions open behind a short content note, once per scenario.
+  const [noted, setNoted] = useState<string[]>([]);
   const correctInScenario = useRef(0);
   const live = useRef({ scenarioId: '', step: '', done: true });
 
@@ -58,6 +65,8 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
   if (!scenario || !step) return null;
   const progress = (si + stepIdx / steps.length) / scenarios.length;
   const ChannelIcon = scenario.channel === 'video' ? Video : scenario.channel === 'sms' ? Smartphone : MessageCircle;
+  const gated = !!scenario.warning && !noted.includes(scenario.id);
+  const spoken = storyParts(scenario, step, stepIdx === 0, lang);
 
   return (
     <div className="flex flex-col h-full">
@@ -66,9 +75,15 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
         <TrustMeter trust={trust} />
       </TopBar>
       <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
-        {scenario.boss && <div className="daily-pop text-center text-xs font-bold uppercase tracking-wide text-white daily-grad rounded-full py-1.5 flex items-center justify-center gap-1.5"><Swords size={14} />{t.boss} · {t.boss_badge}</div>}
+        {scenario.boss && <div className="daily-pop text-center text-xs font-bold uppercase tracking-wide text-white daily-grad rounded-full py-1.5 flex items-center justify-center gap-1.5"><Swords size={14} />{t.boss}{SHOW_EXPERT_PANEL ? ` · ${t.boss_badge}` : ''}</div>}
         <div className="flex items-center gap-2 text-sm text-muted-foreground"><ChannelIcon size={16} /><span className="font-semibold text-foreground">{scenario.contact}</span><span>· {scenario.title[lang]}</span></div>
+        {gated ? <div role="alert" className="daily-pop rounded-3xl border-2 border-amber-300 bg-amber-50 dark:bg-amber-950/40 p-4 grid gap-3 font-lao">
+          <p className="font-extrabold flex items-center gap-2"><AlertTriangle size={20} className="text-amber-600" />{t.cw_title}</p>
+          <p className="text-sm leading-relaxed">{scenario.warning![lang]}</p>
+          <button onClick={() => setNoted(n => [...n, scenario.id])} className="daily-btn rounded-2xl bg-foreground text-background font-bold">{t.cw_go}</button>
+        </div> : <>
         <Guide mood={mood} text={guide} />
+        <ReadAloud key={`${scenario.id}-${step.id}`} parts={spoken} lang={lang} auto={band === 'elder'} />
         {step.kind === 'chat'
           ? <ChatView key={`${scenario.id}-${step.id}`} lang={lang} step={step} onChoose={c => {
               track({ type: 'choice_made', scenarioId: scenario.id, scamType: scenario.scamType, step: step.id, correct: c.correct });
@@ -87,6 +102,7 @@ export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {
               setScore(s); setTotal(tt); setMissed(m);
               return () => advance(s, tt, m, trust);
             }} />}
+        </>}
       </div>
     </div>
   );

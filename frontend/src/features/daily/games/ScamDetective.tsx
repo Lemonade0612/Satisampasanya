@@ -8,7 +8,9 @@ import { TopBar, haptic } from '../components/ui';
 import { DT, FLAG_LABEL } from '../i18n';
 import { track } from '../lib/analytics';
 import { getAge, tier, type AgeTier } from '../lib/age';
-import { speak as say0, stopSpeaking } from '../lib/speech';
+import { filterByBand } from '../../../lib/band';
+import { hasLaoAudio, speakParts, stopAll } from '../lib/useSpeak';
+import { detectiveDebriefParts, detectiveLookParts } from '../lib/spoken';
 import { duck, useMusic } from '../lib/sound';
 import type { FlagCategory, Lang } from '../types';
 import type { GameResult } from './StoryGame';
@@ -19,7 +21,7 @@ const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x,
 // Each character has a bigger pool of cases; a play draws this many so repeat plays feel fresh.
 const CASES_PER_PLAY = 4;
 // The persona closest to the player's own age is suggested first.
-const FOR_AGE: Record<AgeTier, string[]> = { kid: ['kid'], youth: ['student', 'worker'], adult: ['parent'], elder: ['elder'] };
+const FOR_AGE: Record<AgeTier, string[]> = { kids: ['kid'], youth: ['student', 'worker'], adult: ['parent'], elder: ['elder'] };
 
 // Scenario game: pick a character, then for each case inspect the message for clues,
 // decide scam or safe, choose what to do, and read the debrief.
@@ -44,17 +46,17 @@ export function ScamDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
 
   const c: Case | undefined = persona?.cases[ci];
   const clues = c ? c.parts.map((p, i) => (p.clue ? i : -1)).filter(i => i >= 0) : [];
-  const say = (text: string) => { if (voice) say0(text, lang, undefined, 0.9); };
+  const say = (parts: string[]) => { if (voice) speakParts(parts, lang, age); };
 
-  useEffect(() => stopSpeaking, []);
+  useEffect(() => stopAll, []);
   useMusic(persona ? 'mystery' : null);
   // Quieter music while the case is read aloud.
   useEffect(() => { duck(voice); }, [voice]);
-  useEffect(() => { if (c && stage === 'look') say(`${c.situation[lang]} ${c.parts.map(p => p.text[lang]).join('')}`); }, [c, stage, voice]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (c && stage === 'look') say(detectiveLookParts(c, lang)); }, [c, stage, voice]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!persona || !c) {
     const mine = FOR_AGE[age];
-    const list = [...PERSONAS].sort((a, b) => Number(mine.includes(b.id)) - Number(mine.includes(a.id)));
+    const list = filterByBand(PERSONAS, age).sort((a, b) => Number(mine.includes(b.id)) - Number(mine.includes(a.id)));
     return (
       <div className="flex flex-col h-full">
         <TopBar onBack={onExit} lang={lang}><span className="font-bold font-lao">{t.g_detective}</span></TopBar>
@@ -66,7 +68,7 @@ export function ScamDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
           <h3 className="font-bold">{t.det_pick}</h3>
           <div className="grid grid-cols-2 gap-3">
             {list.map((p, i) => (
-              <button key={p.id} onClick={() => { setPersona({ ...p, cases: shuffle(p.cases).slice(0, CASES_PER_PLAY) }); track({ type: 'session_start', mode: `detective:${p.id}` }); }}
+              <button key={p.id} onClick={() => { setPersona({ ...p, cases: shuffle(filterByBand(p.cases, age)).slice(0, CASES_PER_PLAY) }); track({ type: 'session_start', mode: `detective:${p.id}` }); }}
                 className={`daily-in daily-btn rounded-3xl border-2 bg-card overflow-hidden text-left grid hover:border-primary ${mine.includes(p.id) ? 'border-primary' : 'border-border'}`} style={{ animationDelay: `${i * 0.05}s` }}>
                 <span className="relative block h-24 overflow-hidden">
                   <Backdrop room={p.id as Room} />
@@ -76,7 +78,7 @@ export function ScamDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
                 <span className="p-3 grid gap-0.5">
                   <span className="font-bold">{p.name[lang]}, {p.age}</span>
                   <span className="text-xs text-muted-foreground leading-snug">{p.who[lang]}</span>
-                  <span className="text-[11px] text-primary font-semibold">{Math.min(CASES_PER_PLAY, p.cases.length)} {t.det_cases}</span>
+                  <span className="text-[11px] text-primary font-semibold">{Math.min(CASES_PER_PLAY, filterByBand(p.cases, age).length)} {t.det_cases}</span>
                 </span>
               </button>
             ))}
@@ -94,23 +96,23 @@ export function ScamDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
       setMiss({ i, n: Date.now() }); setScore(s => Math.max(0, s - 10)); haptic(false);
       return;
     }
-    setOpened([...opened, i]); setMiss(null); haptic(true); say(p.clue.note[lang]);
+    setOpened([...opened, i]); setMiss(null); haptic(true); say([p.clue.note[lang]]);
   };
   const decide = (saysScam: boolean) => {
     const ok = saysScam === c.isScam;
     setVerdict(saysScam); haptic(ok);
     if (ok) { setScore(s => s + 100 + opened.length * (hidden ? 25 : 10) + combo * 20); setRight(r => r + 1); setCombo(n => n + 1); }
     else { setCombo(0); if (c.isScam) setMissed(m => [...m, ...c.parts.flatMap(p => (p.clue?.flag ? [p.clue.flag] : []))]); }
-    track({ type: 'choice_made', scenarioId: `detective-${c.id}`, scamType: c.isScam ? 'scam' : 'safe', step: 'verdict', correct: ok });
+    track({ type: 'choice_made', scenarioId: `detective-${c.id}`, scamType: c.isScam ? 'scam' : 'safe', step: 'verdict', correct: ok, scam: c.isScam });
     setStage('act');
-    say(ok ? t.det_right : t.det_wrong);
+    say([ok ? t.det_right : t.det_wrong]);
   };
   const choose = (i: number) => {
     setAction(i); haptic(c.actions[i].best);
     if (c.actions[i].best) setScore(s => s + 50);
     track({ type: 'choice_made', scenarioId: `detective-${c.id}`, scamType: c.isScam ? 'scam' : 'safe', step: 'action', correct: c.actions[i].best });
     setStage('debrief');
-    say(`${c.actions[i].why[lang]} ${c.lesson[lang]}`);
+    say(detectiveDebriefParts(c, i, lang));
   };
   const next = () => {
     if (ci + 1 >= persona.cases.length) return onFinish({ score: right, total: persona.cases.length, missed, failed: false, scenarioIds: [] });
@@ -126,12 +128,13 @@ export function ScamDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
         <span className="font-bold font-lao truncate">{persona.name[lang]} · {t.det_case} {ci + 1}/{persona.cases.length}</span>
         <span className="flex items-center gap-2">
           <span className="font-bold tabular-nums flex items-center gap-1"><Search size={16} className="text-primary" />{score}</span>
-          <button onClick={() => { setVoice(v => !v); if (voice) stopSpeaking(); }} aria-pressed={voice} aria-label={t.det_voice}
+          <button onClick={() => { setVoice(v => !v); if (voice) stopAll(); }} aria-pressed={voice} aria-label={t.det_voice}
             className={`w-11 h-11 rounded-full flex items-center justify-center ${voice ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>{voice ? <Volume2 size={18} /> : <VolumeX size={18} />}</button>
         </span>
       </TopBar>
       <div className="flex-1 overflow-y-auto p-4 grid gap-4 content-start font-lao">
         <div className="flex gap-1">{persona.cases.map((_, i) => <span key={i} className={`h-1.5 flex-1 rounded-full ${i < ci ? 'bg-primary' : i === ci ? 'bg-primary/50' : 'bg-muted'}`} />)}</div>
+        {voice && lang === 'lo' && !hasLaoAudio(detectiveLookParts(c, lang)) && <p role="status" className="text-xs rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 px-3 py-2">{t.audio_coming}</p>}
 
         {/* The scene: where the persona is when the message arrives. */}
         <div key={c.id} className="daily-fade relative h-52 rounded-3xl overflow-hidden shadow-md">

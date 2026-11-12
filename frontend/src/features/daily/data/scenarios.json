@@ -3,6 +3,7 @@
   "scenarios": [
     {
       "id": "job-whatsapp-01",
+      "bands": ["youth", "adult"],
       "scamType": "fake_job",
       "status": "verified",
       "verifiedBy": "Sati Expert Panel",
@@ -62,6 +63,7 @@
     },
     {
       "id": "prize-dm-01",
+      "bands": ["kids", "youth", "elder"],
       "scamType": "prize",
       "status": "verified",
       "verifiedBy": "Sati Expert Panel",
@@ -107,6 +109,7 @@
     },
     {
       "id": "bank-sms-01",
+      "bands": ["adult", "elder"],
       "scamType": "bank_phishing",
       "status": "verified",
       "verifiedBy": "Sati Expert Panel",
@@ -160,6 +163,7 @@
     },
     {
       "id": "invest-tiktok-01",
+      "bands": ["youth", "adult"],
       "scamType": "investment",
       "status": "verified",
       "verifiedBy": "Sati Expert Panel",
@@ -201,6 +205,8 @@
     },
     {
       "id": "boss-recruiter-01",
+      "bands": ["youth", "adult"],
+      "warning": { "en": "Based on a real recruitment case that led to trafficking.", "lo": "ອີງໃສ່ກໍລະນີຊັກຊວນແທ້ ທີ່ນຳໄປສູ່ການຄ້າມະນຸດ." },
       "scamType": "overseas_recruitment",
       "status": "verified",
       "verifiedBy": "Sati Expert Panel",
@@ -209,7 +215,7 @@
       "boss": true,
       "channel": "video",
       "contact": "Mr. Kevin, SilverRiver Recruitment",
-      "title": { "en": "BOSS: The overseas recruiter", "lo": "ດ່ານບອສ: ນາຍໜ້າຕ່າງປະເທດ" },
+      "title": { "en": "The overseas recruiter", "lo": "ນາຍໜ້າຕ່າງປະເທດ" },
       "intro": { "en": "Based on a pattern verified from real reports. A recruiter video-calls you about an office job abroad.", "lo": "ອີງໃສ່ຮູບແບບທີ່ຢືນຢັນຈາກລາຍງານແທ້. ນາຍໜ້າໂທວິດີໂອກ່ຽວກັບວຽກຫ້ອງການຕ່າງປະເທດ." },
       "steps": [
         {
@@ -257,35 +263,6 @@
       ],
       "redFlags": ["too_good", "off_platform", "urgency", "personal_data", "unverified_identity"],
       "explanation": { "en": "Secrecy, a rush, and taking your passport are serious danger signs. Check agencies with the labour office and keep your documents.", "lo": "ຄວາມລັບ, ການເລັ່ງ, ແລະ ການເອົາໜັງສືຜ່ານແດນ ແມ່ນສັນຍານອັນຕະລາຍຮ້າຍແຮງ. ກວດບໍລິສັດກັບຫ້ອງການແຮງງານ ແລະ ເກັບເອກະສານໄວ້ເອງ." }
-    },
-    {
-      "id": "draft-scholarship-01",
-      "scamType": "fake_job",
-      "status": "draft",
-      "verifiedBy": null,
-      "verifiedAt": null,
-      "needsNativeReview": true,
-      "source": "ai_draft",
-      "channel": "messenger",
-      "contact": "Global Scholar Fund",
-      "title": { "en": "The 'free' scholarship", "lo": "ທຶນການສຶກສາ 'ຟຣີ'" },
-      "intro": { "en": "AI draft: a scholarship that asks for an application fee.", "lo": "ຮ່າງ AI: ທຶນການສຶກສາທີ່ຂໍຄ່າສະໝັກ." },
-      "steps": [
-        {
-          "id": "s1",
-          "kind": "chat",
-          "messages": [
-            { "from": "them", "text": { "en": "You're selected for a full scholarship abroad! Pay 300,000 kip application fee today.", "lo": "ທ່ານຖືກຄັດເລືອກຮັບທຶນເຕັມ! ຈ່າຍຄ່າສະໝັກ 300,000 ກີບມື້ນີ້." } }
-          ],
-          "prompt": { "en": "What do you do?", "lo": "ທ່ານຈະເຮັດແນວໃດ?" },
-          "choices": [
-            { "id": "a", "action": "reply", "correct": false, "text": { "en": "Pay the fee", "lo": "ຈ່າຍຄ່າສະໝັກ" }, "consequence": { "en": "There's no scholarship. Only the fee was real.", "lo": "ບໍ່ມີທຶນ. ມີແຕ່ຄ່າທຳນຽມທີ່ແທ້." } },
-            { "id": "b", "action": "verify", "correct": true, "text": { "en": "Check with your school", "lo": "ກວດກັບໂຮງຮຽນ" }, "consequence": { "en": "Real scholarships are listed by schools and ministries.", "lo": "ທຶນແທ້ມີປະກາດໂດຍໂຮງຮຽນ ແລະ ກະຊວງ." } }
-          ]
-        }
-      ],
-      "redFlags": ["upfront_fee", "urgency", "too_good"],
-      "explanation": { "en": "You can't be 'selected' for something you never applied for.", "lo": "ທ່ານບໍ່ສາມາດ 'ຖືກຄັດເລືອກ' ສຳລັບສິ່ງທີ່ບໍ່ເຄີຍສະໝັກ." }
     }
   ]
 }

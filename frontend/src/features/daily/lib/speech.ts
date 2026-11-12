@@ -1,12 +1,11 @@
 import type { Lang } from '../types';
 
-// Text-to-speech for players who find reading hard. Uses the device's own voices, so it works offline,
-// but Lao is only available where the device ships a Lao voice; hasVoice() lets the UI say so.
-const LOCALE: Record<Lang, string> = { en: 'en', lo: 'lo' };
-
+// Device text-to-speech, for ENGLISH ONLY. Lao is never spoken by the device: most phones have no Lao voice,
+// and a Thai voice reads Lao script wrongly. Lao read-aloud plays recordings instead (lib/useSpeak.ts).
 function voiceFor(lang: Lang) {
+  if (lang !== 'en') return null;
   try {
-    const all = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith(LOCALE[lang]));
+    const all = speechSynthesis.getVoices().filter(v => v.lang.toLowerCase().startsWith('en-us'));
     return all.find(v => v.default) ?? all.find(v => /samantha|google|natural/i.test(v.name)) ?? all[0] ?? null;
   } catch { return null; }
 }

@@ -5,13 +5,15 @@ import { Guide, TrustMeter, TopBar, haptic } from '../components/ui';
 import { DT } from '../i18n';
 import { track } from '../lib/analytics';
 import { useMusic } from '../lib/sound';
+import { filterByBand, getBand } from '../../../lib/band';
 import type { Lang, LinkRound } from '../types';
 import type { GameResult } from './StoryGame';
 
-const rounds = mini.links as LinkRound[];
+const all = mini.links as LinkRound[];
 
 export function LinkDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: () => void; onFinish: (r: GameResult) => void }) {
   const t = DT[lang];
+  const [rounds] = useState(() => filterByBand(all, getBand()));
   const [i, setI] = useState(0);
   const [pick, setPick] = useState<number | null>(null);
   const [score, setScore] = useState(0);

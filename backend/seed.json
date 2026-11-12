@@ -1,6 +1,10 @@
 [
   {
     "id": "p1",
+    "bands": [
+      "adult",
+      "elder"
+    ],
     "author": {
       "name": "Sarak Sivilay",
       "handle": "@sarak_s",
@@ -47,10 +51,20 @@
     "warnedMe": 19,
     "flagReason": "APK malware claims need source verification before amplification. Expert reviewing — usually within 48h.",
     "flagReasonLo": "ຄຳອ້າງກ່ຽວກັບ malware ຕ້ອງການການຢືນຢັນ. ຜູ້ຊ່ຽວຊານກຳລັງກວດສອບ — ພາຍໃນ 48 ຊ.ມ.",
-    "image": "/images/image_2_apk.png"
+    "image": "/images/image_2_apk.png",
+    "bands": [
+      "kids"
+    ]
   },
   {
     "id": "p3",
+    "bands": [
+      "kids",
+      "youth"
+    ],
+    "essential": true,
+    "contentKids": "Some phone calls and messages are tricks. Warning signs: a prize you never entered, someone pretending to be from the government, or anyone asking for secret codes. What to do: don't answer, don't click, and tell a trusted adult right away.",
+    "contentKidsLo": "ບາງສາຍໂທ ແລະ ຂໍ້ຄວາມແມ່ນກົນຫຼອກ. ສັນຍານເຕືອນ: ລາງວັນທີ່ບໍ່ເຄີຍເຂົ້າຮ່ວມ, ຄົນທີ່ປອມເປັນລັດຖະບານ ຫຼື ຄົນທີ່ຂໍລະຫັດລັບ. ສິ່ງທີ່ຕ້ອງເຮັດ: ບໍ່ຕອບ, ບໍ່ກົດ ແລະ ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈທັນທີ.",
     "author": {
       "name": "Sati Team",
       "handle": "@sati_team",
@@ -78,6 +92,9 @@
   },
   {
     "id": "p4",
+    "bands": [
+      "youth"
+    ],
     "author": {
       "name": "Bounmy Thao",
       "handle": "@bounmy_t",
@@ -122,10 +139,16 @@
     "warnedMe": 0,
     "correction": "Lao cybercrime police do file and act on reports. Report at cybercrime.gov.la or call 021-212-516. Filings compile evidence to identify and dismantle scam networks.",
     "correctionLo": "ຕຳຫຼວດອາຊະຍາກຳໄຊເບີລາວຮັບ ແລະ ດຳເນີນການ. ລາຍງານທີ່ cybercrime.gov.la ຫຼື 021-212-516.",
-    "image": "/images/Screenshot_2026-07-19_at_14.05.21.png"
+    "image": "/images/Screenshot_2026-07-19_at_14.05.21.png",
+    "bands": [
+      "kids"
+    ]
   },
   {
     "id": "p6",
+    "bands": [
+      "adult"
+    ],
     "author": {
       "name": "Phonesavanh K.",
       "handle": "@phsavanh",
@@ -148,6 +171,9 @@
   },
   {
     "id": "p7",
+    "bands": [
+      "youth"
+    ],
     "author": {
       "name": "Malee Souphanh",
       "handle": "@malee_sp",
@@ -173,6 +199,9 @@
   },
   {
     "id": "p8",
+    "bands": [
+      "adult"
+    ],
     "author": {
       "name": "Khamla Vongsa",
       "handle": "@khamla_v",
@@ -218,10 +247,16 @@
     "reposts": 52,
     "warnedMe": 41,
     "hasVideo": true,
-    "image": "/images/image-14.png"
+    "image": "/images/image-14.png",
+    "bands": [
+      "youth"
+    ]
   },
   {
     "id": "p10",
+    "bands": [
+      "youth"
+    ],
     "author": {
       "name": "Sati Team",
       "handle": "@sati_team",
@@ -246,5 +281,876 @@
     "featuredPoints": true,
     "isNews": true,
     "link": "https://www.rfa.org/lao/daily/southeastasia/924-indian-nationals-rescured-from-golden-triangle-sez-01302025003502.html"
+  },
+  {
+    "id": "ex-youth-1",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "Ploy S.",
+      "handle": "@ploy_bkk",
+      "initials": "PS",
+      "color": "#2563EB",
+      "points": 0
+    },
+    "timestamp": "2h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "TH",
+    "content": "Hiring now 🔥 Customer service in Bangkok, 30,000 THB/month, no Thai needed. Free flight + hotel. Send passport photo on Telegram today, only 5 seats!",
+    "contentLo": "ຮັບດ່ວນ 🔥 ພະນັກງານບໍລິການລູກຄ້າຢູ່ບາງກອກ ເງິນເດືອນ 30,000 ບາດ ບໍ່ຕ້ອງເວົ້າໄທໄດ້. ຟຣີປີ້ຍົນ ແລະ ໂຮງແຮມ. ສົ່ງຮູບໜັງສືຜ່ານແດນທາງ Telegram ມື້ນີ້ ເຫຼືອ 5 ບ່ອນ!"
+  },
+  {
+    "id": "ex-youth-2",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "call-centre",
+    "tags": [
+      "Trafficking"
+    ],
+    "author": {
+      "name": "Dara K.",
+      "handle": "@dara_pp",
+      "initials": "DK",
+      "color": "#059669",
+      "points": 0
+    },
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "KH",
+    "content": "Typing job in Sihanoukville 💻 $1,500/month, just chat with customers online. We pay your bus from the border. Age 18–28, no experience.",
+    "contentLo": "ວຽກພິມຂໍ້ມູນຢູ່ສີຫະນຸວິນ 💻 ເງິນເດືອນ $1,500 ແຄ່ລົມກັບລູກຄ້າອອນລາຍ. ອອກຄ່າລົດຈາກຊາຍແດນໃຫ້. ອາຍຸ 18–28 ບໍ່ຕ້ອງມີປະສົບການ."
+  },
+  {
+    "id": "ex-youth-3",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "call-centre",
+    "tags": [
+      "Trafficking"
+    ],
+    "author": {
+      "name": "ນ້ອຍ ພົມມະ",
+      "handle": "@noy_vte",
+      "initials": "ນພ",
+      "color": "#DC2626",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "country": "LA",
+    "content": "ລູກພີ່ລູກນ້ອງຂ້ອຍໄປເຮັດ 'ວຽກພິມຂໍ້ມູນ' ຢູ່ມຽນມາ. ເຂົາຍຶດໜັງສືຜ່ານແດນ ແລະ ບັງຄັບໃຫ້ຫຼອກລວງຄົນອອນລາຍ 14 ຊົ່ວໂມງຕໍ່ມື້. 5 ເດືອນຈຶ່ງໜີອອກມາໄດ້. ຖ້າວຽກຕ່າງປະເທດງ່າຍເກີນໄປ ໃຫ້ຖາມຄອບຄົວກ່ອນ.",
+    "contentLo": "ລູກພີ່ລູກນ້ອງຂ້ອຍໄປເຮັດ 'ວຽກພິມຂໍ້ມູນ' ຢູ່ມຽນມາ. ເຂົາຍຶດໜັງສືຜ່ານແດນ ແລະ ບັງຄັບໃຫ້ຫຼອກລວງຄົນອອນລາຍ 14 ຊົ່ວໂມງຕໍ່ມື້. 5 ເດືອນຈຶ່ງໜີອອກມາໄດ້. ຖ້າວຽກຕ່າງປະເທດງ່າຍເກີນໄປ ໃຫ້ຖາມຄອບຄົວກ່ອນ.",
+    "translationText": "My cousin went for a 'typing job' in Myanmar. They took his passport and he had to scam people online 14 hours a day. He got out after 5 months. If a job abroad sounds too easy, ask your family first."
+  },
+  {
+    "id": "ex-youth-4",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "Aung T.",
+      "handle": "@aung_ygn",
+      "initials": "AT",
+      "color": "#D97706",
+      "points": 0
+    },
+    "timestamp": "5h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "MM",
+    "content": "Got an offer for a casino hotel job near the Thai border. Good pay, but they won't tell me the company name until I arrive. Is that normal?",
+    "contentLo": "ໄດ້ຮັບຂໍ້ສະເໜີວຽກໂຮງແຮມຄາສິໂນໃກ້ຊາຍແດນໄທ. ເງິນດີ ແຕ່ບໍ່ບອກຊື່ບໍລິສັດຈົນກວ່າຈະໄປຮອດ. ແບບນີ້ປົກກະຕິບໍ?"
+  },
+  {
+    "id": "ex-youth-5",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "study-agent",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "Linh N.",
+      "handle": "@linh_hn",
+      "initials": "LN",
+      "color": "#7C3AED",
+      "points": 0
+    },
+    "timestamp": "6h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "VN",
+    "content": "An agent says she can get me a Korea study visa in 2 weeks for $3,000, 'guaranteed'. She only takes cash. Has anyone used her?",
+    "contentLo": "ນາຍໜ້າຄົນໜຶ່ງບອກວ່າເຮັດວີຊານັກຮຽນເກົາຫຼີໄດ້ໃນ 2 ອາທິດ ລາຄາ $3,000 'ຮັບປະກັນ'. ຮັບແຕ່ເງິນສົດ. ມີໃຜເຄີຍໃຊ້ບໍ?"
+  },
+  {
+    "id": "ex-youth-6",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "romance-crypto",
+    "tags": [
+      "RomanceScam"
+    ],
+    "author": {
+      "name": "Mika R.",
+      "handle": "@mika_mnl",
+      "initials": "MR",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "timestamp": "7h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "PH",
+    "content": "Met him on a dating app 3 weeks ago 💕 He showed me his crypto profits and set up an account for me. I put in ₱20,000 and it already shows ₱65,000! He says add more before Friday.",
+    "contentLo": "ຮູ້ຈັກກັນໃນແອັບຫາຄູ່ 3 ອາທິດກ່ອນ 💕 ລາວໂຊກຳໄລຄຣິບໂຕ ແລະ ເປີດບັນຊີໃຫ້ຂ້ອຍ. ໃສ່ເງິນ ₱20,000 ຕອນນີ້ຂຶ້ນເປັນ ₱65,000 ແລ້ວ! ລາວບອກໃຫ້ເຕີມອີກກ່ອນວັນສຸກ."
+  },
+  {
+    "id": "ex-youth-7",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "loan-app",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ບີ ສີສຸວັນ",
+      "handle": "@bee_lpb",
+      "initials": "ບສ",
+      "color": "#DB2777",
+      "points": 0
+    },
+    "timestamp": "8h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "country": "LA",
+    "content": "ກູ້ໄດ້ເຖິງ 5,000,000 ກີບ ໃນ 5 ນາທີ 📲 ບໍ່ຕ້ອງມີຜູ້ຄ້ຳ. ພຽງແຕ່ອະນຸຍາດໃຫ້ແອັບອ່ານລາຍຊື່ຕິດຕໍ່ ແລະ ຮູບພາບ.",
+    "contentLo": "ກູ້ໄດ້ເຖິງ 5,000,000 ກີບ ໃນ 5 ນາທີ 📲 ບໍ່ຕ້ອງມີຜູ້ຄ້ຳ. ພຽງແຕ່ອະນຸຍາດໃຫ້ແອັບອ່ານລາຍຊື່ຕິດຕໍ່ ແລະ ຮູບພາບ.",
+    "translationText": "Borrow up to 5,000,000 kip in 5 minutes 📲 No guarantor. Just allow the app to read your contacts and photos."
+  },
+  {
+    "id": "ex-youth-8",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "easy-money",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "Nong Fah",
+      "handle": "@fah.money",
+      "initials": "NF",
+      "color": "#5B21D1",
+      "points": 0
+    },
+    "timestamp": "9h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "TH",
+    "content": "Make 1,000 baht a day liking TikTok videos 😍 First task pays right away. Join my team, small 300 baht deposit to unlock VIP tasks.",
+    "contentLo": "ຫາເງິນ 1,000 ບາດຕໍ່ມື້ ພຽງກົດໄລຄ໌ວິດີໂອ TikTok 😍 ວຽກທຳອິດຈ່າຍທັນທີ. ເຂົ້າທີມຂ້ອຍ ຝາກ 300 ບາດ ເພື່ອປົດລັອກວຽກ VIP."
+  },
+  {
+    "id": "ex-youth-9",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "phishing",
+    "tags": [
+      "PhishingAlert"
+    ],
+    "author": {
+      "name": "ແກ້ວ",
+      "handle": "@kaew_22",
+      "initials": "ແ",
+      "color": "#2563EB",
+      "points": 0
+    },
+    "timestamp": "1h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "country": "LA",
+    "content": "ມີຄົນສົ່ງຂໍ້ຄວາມມາວ່າ: 'ທ່ານໄດ້ຮັບ iPhone 16 ຈາກເພຈເຮົາ! ເຂົ້າສູ່ລະບົບທີ່ນີ້ເພື່ອຮັບ.' ລິ້ງແມ່ນ facebook-prize-claim.com. ແທ້ ຫຼື ປອມ?",
+    "contentLo": "ມີຄົນສົ່ງຂໍ້ຄວາມມາວ່າ: 'ທ່ານໄດ້ຮັບ iPhone 16 ຈາກເພຈເຮົາ! ເຂົ້າສູ່ລະບົບທີ່ນີ້ເພື່ອຮັບ.' ລິ້ງແມ່ນ facebook-prize-claim.com. ແທ້ ຫຼື ປອມ?",
+    "translationText": "Someone DM'd me: 'You won an iPhone 16 from our page! Log in here to claim.' The link is facebook-prize-claim.com. Real or fake?"
+  },
+  {
+    "id": "ex-youth-10",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "phishing",
+    "tags": [
+      "PhishingAlert"
+    ],
+    "author": {
+      "name": "Minh P.",
+      "handle": "@minh_sg",
+      "initials": "MP",
+      "color": "#059669",
+      "points": 0
+    },
+    "timestamp": "2h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "VN",
+    "content": "PSA: my friend's Facebook was hacked after a 'vote for my cousin' link. Now the hacker messages everyone asking to borrow money. Turn on 2-step login today.",
+    "contentLo": "ແຈ້ງເຕືອນ: Facebook ຂອງໝູ່ຂ້ອຍຖືກແຮັກ ຫຼັງກົດລິ້ງ 'ໂຫວດໃຫ້ພີ່ນ້ອງຂ້ອຍແດ່'. ຕອນນີ້ແຮັກເກີທັກທຸກຄົນຂໍຢືມເງິນ. ເປີດການຢືນຢັນ 2 ຂັ້ນຕອນມື້ນີ້."
+  },
+  {
+    "id": "ex-youth-11",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "Sophea C.",
+      "handle": "@sophea_kh",
+      "initials": "SC",
+      "color": "#DC2626",
+      "points": 0
+    },
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "country": "KH",
+    "content": "Before you take a job abroad: 1) Search the company name + 'scam'. 2) Never give your passport to a recruiter. 3) Tell family where you're going and share your location.",
+    "contentLo": "ກ່ອນຮັບວຽກຕ່າງປະເທດ: 1) ຄົ້ນຫາຊື່ບໍລິສັດ + 'scam'. 2) ຢ່າມອບໜັງສືຜ່ານແດນໃຫ້ນາຍໜ້າ. 3) ບອກຄອບຄົວວ່າໄປໃສ ແລະ ແຊຣ໌ຕຳແໜ່ງທີ່ຢູ່."
+  },
+  {
+    "id": "ex-youth-12",
+    "bands": [
+      "youth"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "ຕຸ້ຍ",
+      "handle": "@tui_svk",
+      "initials": "ຕ",
+      "color": "#D97706",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "country": "LA",
+    "content": "ໝູ່ຈາກສະຫວັນນະເຂດບອກວ່າເຖົ້າແກ່ຢູ່ບາງກອກຕ້ອງການພະນັກງານເສີບອີກ 3 ຄົນ ເງິນ 15,000 ບາດ. ໝູ່ແທ້ ແຕ່ບໍ່ເຄີຍເຫັນເຖົ້າແກ່. ຈະກວດແນວໃດ?",
+    "contentLo": "ໝູ່ຈາກສະຫວັນນະເຂດບອກວ່າເຖົ້າແກ່ຢູ່ບາງກອກຕ້ອງການພະນັກງານເສີບອີກ 3 ຄົນ ເງິນ 15,000 ບາດ. ໝູ່ແທ້ ແຕ່ບໍ່ເຄີຍເຫັນເຖົ້າແກ່. ຈະກວດແນວໃດ?",
+    "translationText": "A friend from Savannakhet says her boss in Bangkok needs 3 more waitresses, 15,000 baht. She's real, but I've never met the boss. How do I check?"
+  },
+  {
+    "id": "ex-adult-13",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "recruiter-parents",
+    "tags": [
+      "Trafficking"
+    ],
+    "author": {
+      "name": "ນາງ ວັນ",
+      "handle": "@van_agent",
+      "initials": "ນວ",
+      "color": "#7C3AED",
+      "points": 0
+    },
+    "timestamp": "5h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ເຖິງພໍ່ແມ່: ມີວຽກດີໃຫ້ລູກສາວຢູ່ໄທ ເຮັດວຽກຮ້ານອາຫານ 12,000 ບາດ. ອອກຄ່າລົດໃຫ້ ໄປໄດ້ອາທິດນີ້. ບໍ່ຕ້ອງມີເອກະສານ ຂ້ອຍຈັດການໃຫ້ໝົດ.",
+    "contentLo": "ເຖິງພໍ່ແມ່: ມີວຽກດີໃຫ້ລູກສາວຢູ່ໄທ ເຮັດວຽກຮ້ານອາຫານ 12,000 ບາດ. ອອກຄ່າລົດໃຫ້ ໄປໄດ້ອາທິດນີ້. ບໍ່ຕ້ອງມີເອກະສານ ຂ້ອຍຈັດການໃຫ້ໝົດ.",
+    "translationText": "Message to parents: good job for your daughter in Thailand, restaurant work, 12,000 baht. Transport is paid, she can leave this week. No documents needed, I handle everything."
+  },
+  {
+    "id": "ex-adult-14",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "recruiter-parents",
+    "tags": [
+      "Trafficking"
+    ],
+    "author": {
+      "name": "ແມ່ ບົວພັນ",
+      "handle": "@buaphan_mom",
+      "initials": "ແບ",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "timestamp": "6h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີແມ່ຍິງຄົນໜຶ່ງມາບ້ານເຮົາ ສະເໜີວຽກຢູ່ໄທໃຫ້ລູກສາວ ອອກຄ່າໃຊ້ຈ່າຍໃຫ້ໝົດ. ຂ້ອຍຂໍເບິ່ງໃບອະນຸຍາດບໍລິສັດ ລາວກໍໜີໄປ. ພໍ່ແມ່ທັງຫຼາຍ: ຂໍໃບອະນຸຍາດ ແລະ ສັນຍາເປັນລາຍລັກອັກສອນສະເໝີ.",
+    "contentLo": "ມີແມ່ຍິງຄົນໜຶ່ງມາບ້ານເຮົາ ສະເໜີວຽກຢູ່ໄທໃຫ້ລູກສາວ ອອກຄ່າໃຊ້ຈ່າຍໃຫ້ໝົດ. ຂ້ອຍຂໍເບິ່ງໃບອະນຸຍາດບໍລິສັດ ລາວກໍໜີໄປ. ພໍ່ແມ່ທັງຫຼາຍ: ຂໍໃບອະນຸຍາດ ແລະ ສັນຍາເປັນລາຍລັກອັກສອນສະເໝີ.",
+    "translationText": "A woman came to our village offering jobs in Thailand for our girls, all costs paid. I asked for the company licence and she left. Parents: always ask for the licence and a written contract."
+  },
+  {
+    "id": "ex-adult-15",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "marriage-broker",
+    "tags": [
+      "Trafficking"
+    ],
+    "author": {
+      "name": "Golden Match",
+      "handle": "@goldenmatch",
+      "initials": "GM",
+      "color": "#DB2777",
+      "points": 0
+    },
+    "timestamp": "7h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "content": "Foreign husband for your daughter 💍 Rich, kind, ready to marry. Family gets a 30,000,000 kip gift. We arrange the trip and papers, she leaves in 2 weeks.",
+    "contentLo": "ຫາຜົວຕ່າງປະເທດໃຫ້ລູກສາວທ່ານ 💍 ຮັ່ງມີ ໃຈດີ ພ້ອມແຕ່ງງານ. ຄອບຄົວໄດ້ຂອງຂວັນ 30,000,000 ກີບ. ພວກເຮົາຈັດການເດີນທາງ ແລະ ເອກະສານ ໄປໄດ້ໃນ 2 ອາທິດ."
+  },
+  {
+    "id": "ex-adult-16",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "labour-contract",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "ສົມສັກ",
+      "handle": "@somsak_w",
+      "initials": "ສ",
+      "color": "#5B21D1",
+      "points": 0
+    },
+    "timestamp": "8h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ບໍລິສັດນາຍໜ້າໃຫ້ສັນຍາເປັນພາສາເກົາຫຼີຢ່າງດຽວ ບອກໃຫ້ເຊັນມື້ນີ້ ບໍ່ດັ່ງນັ້ນຈະເສຍບ່ອນ. ຄ່າທຳນຽມ 25,000,000 ກີບ. ຄວນເຊັນບໍ?",
+    "contentLo": "ບໍລິສັດນາຍໜ້າໃຫ້ສັນຍາເປັນພາສາເກົາຫຼີຢ່າງດຽວ ບອກໃຫ້ເຊັນມື້ນີ້ ບໍ່ດັ່ງນັ້ນຈະເສຍບ່ອນ. ຄ່າທຳນຽມ 25,000,000 ກີບ. ຄວນເຊັນບໍ?",
+    "translationText": "My agency gave me a contract in Korean only and says sign today or lose the seat. Fee is 25,000,000 kip. Should I sign?"
+  },
+  {
+    "id": "ex-adult-17",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "loan-shark",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ເງິນດ່ວນ 24ຊມ",
+      "handle": "@fastcash24",
+      "initials": "ເ2",
+      "color": "#2563EB",
+      "points": 0
+    },
+    "timestamp": "9h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ເງິນດ່ວນສຳລັບຄອບຄົວ ✅ 10,000,000 ກີບມື້ນີ້ ພຽງແຕ່ປຶ້ມສຳມະໂນຄົວ ແລະ ບັດປະຈຳຕົວ. ຈ່າຍຄືນ 20% ຕໍ່ອາທິດ.",
+    "contentLo": "ເງິນດ່ວນສຳລັບຄອບຄົວ ✅ 10,000,000 ກີບມື້ນີ້ ພຽງແຕ່ປຶ້ມສຳມະໂນຄົວ ແລະ ບັດປະຈຳຕົວ. ຈ່າຍຄືນ 20% ຕໍ່ອາທິດ.",
+    "translationText": "Fast cash for your family ✅ 10,000,000 kip today, just your family book and ID. Pay back 20% per week."
+  },
+  {
+    "id": "ex-adult-18",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "bank-sms",
+    "tags": [
+      "PhishingAlert"
+    ],
+    "author": {
+      "name": "Bank Alert",
+      "handle": "@bank_alert01",
+      "initials": "BA",
+      "color": "#059669",
+      "points": 0
+    },
+    "timestamp": "1h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "content": "[BANK] Your account will be closed today. Verify now at bcel-verify-la.com to keep your money.",
+    "contentLo": "[ທະນາຄານ] ບັນຊີຂອງທ່ານຈະຖືກປິດມື້ນີ້. ຢືນຢັນດຽວນີ້ທີ່ bcel-verify-la.com ເພື່ອຮັກສາເງິນ."
+  },
+  {
+    "id": "ex-adult-19",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "bank-sms",
+    "tags": [
+      "PhishingAlert"
+    ],
+    "author": {
+      "name": "Khamphone S.",
+      "handle": "@khamphone_s",
+      "initials": "KS",
+      "color": "#DC2626",
+      "points": 0
+    },
+    "timestamp": "2h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "content": "Got an SMS saying my bank account is locked. I didn't click. I called the number on the back of my card and the bank said it was fake. Always call the number you already have.",
+    "contentLo": "ໄດ້ SMS ວ່າບັນຊີທະນາຄານຖືກລັອກ. ຂ້ອຍບໍ່ໄດ້ກົດ. ໂທຫາເບີຢູ່ຫຼັງບັດ ທະນາຄານບອກວ່າປອມ. ໃຫ້ໂທຫາເບີທີ່ທ່ານມີຢູ່ແລ້ວສະເໝີ."
+  },
+  {
+    "id": "ex-adult-20",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "labour-contract",
+    "tags": [
+      "JobScam"
+    ],
+    "author": {
+      "name": "Noy P.",
+      "handle": "@noy_p",
+      "initials": "NP",
+      "color": "#D97706",
+      "points": 0
+    },
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "en",
+    "reviewLo": true,
+    "content": "My husband's employer in Malaysia keeps his passport 'for safekeeping'. He gets paid, but he can't leave. Is that allowed?",
+    "contentLo": "ນາຍຈ້າງຂອງຜົວຢູ່ມາເລເຊຍຍຶດໜັງສືຜ່ານແດນໄວ້ 'ເພື່ອຮັກສາ'. ໄດ້ເງິນເດືອນ ແຕ່ອອກໄປໃສບໍ່ໄດ້. ແບບນີ້ເຮັດໄດ້ບໍ?"
+  },
+  {
+    "id": "ex-elder-21",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "fake-official",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ພໍ່ໃຫຍ່ ສີ",
+      "handle": "@grandpa_si",
+      "initials": "ພສ",
+      "color": "#7C3AED",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຄົນໂທມາບອກວ່າເປັນຕຳຫຼວດ. ບອກວ່າຊື່ຂ້ອຍຢູ່ໃນຄະດີເງິນ ຕ້ອງໂອນ 5,000,000 ກີບມື້ນີ້. ຕຳຫຼວດບໍ່ຂໍເງິນທາງໂທລະສັບ.",
+    "contentLo": "ມີຄົນໂທມາບອກວ່າເປັນຕຳຫຼວດ. ບອກວ່າຊື່ຂ້ອຍຢູ່ໃນຄະດີເງິນ ຕ້ອງໂອນ 5,000,000 ກີບມື້ນີ້. ຕຳຫຼວດບໍ່ຂໍເງິນທາງໂທລະສັບ.",
+    "translationText": "Someone called saying he is from the police. He said my name is in a money case and I must send 5,000,000 kip today. Police do not ask for money on the phone."
+  },
+  {
+    "id": "ex-elder-22",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "grandchild-call",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ແມ່ໃຫຍ່ ຄຳ",
+      "handle": "@yai_kham",
+      "initials": "ແຄ",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "timestamp": "5h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຊາຍໜຸ່ມໂທມາ: 'ແມ່ໃຫຍ່ ແມ່ນຂ້ອຍເອງ ຂ້ອຍເກີດອຸບັດຕິເຫດ ສົ່ງເງິນໃຫ້ແດ່ ຢ່າບອກແມ່.' ສຽງບໍ່ຊັດ. ຂ້ອຍວາງສາຍ ແລ້ວໂທຫາຫຼານ. ຫຼານສະບາຍດີ.",
+    "contentLo": "ມີຊາຍໜຸ່ມໂທມາ: 'ແມ່ໃຫຍ່ ແມ່ນຂ້ອຍເອງ ຂ້ອຍເກີດອຸບັດຕິເຫດ ສົ່ງເງິນໃຫ້ແດ່ ຢ່າບອກແມ່.' ສຽງບໍ່ຊັດ. ຂ້ອຍວາງສາຍ ແລ້ວໂທຫາຫຼານ. ຫຼານສະບາຍດີ.",
+    "translationText": "A young man called: 'Grandma, it's me, I had an accident, send money, don't tell Mum.' The voice was not clear. I hung up and called my grandson. He was fine."
+  },
+  {
+    "id": "ex-elder-23",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "prize",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ລາງວັນໃຫຍ່",
+      "handle": "@lucky_la",
+      "initials": "ລ",
+      "color": "#DB2777",
+      "points": 0
+    },
+    "timestamp": "6h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ຂໍສະແດງຄວາມຍິນດີ! ທ່ານຖືກລາງວັນ 50,000,000 ກີບ. ຈ່າຍຄ່າທຳນຽມ 500,000 ກີບ ເພື່ອຮັບລາງວັນ.",
+    "contentLo": "ຂໍສະແດງຄວາມຍິນດີ! ທ່ານຖືກລາງວັນ 50,000,000 ກີບ. ຈ່າຍຄ່າທຳນຽມ 500,000 ກີບ ເພື່ອຮັບລາງວັນ.",
+    "translationText": "Congratulations! You won 50,000,000 kip in the lottery. Pay 500,000 kip fee to receive your prize."
+  },
+  {
+    "id": "ex-elder-24",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "fake-medicine",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ຢາດີ ພື້ນເມືອງ",
+      "handle": "@herbal_best",
+      "initials": "ຢພ",
+      "color": "#5B21D1",
+      "points": 0
+    },
+    "timestamp": "7h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ຢາວິເສດ 🌿 ປິ່ນປົວເບົາຫວານ ແລະ ເຈັບຫົວເຂົ່າໃນ 7 ມື້. ບໍ່ຕ້ອງໄປຫາໝໍ. ສັ່ງດຽວນີ້ ມື້ນີ້ຫຼຸດລາຄາເຄິ່ງໜຶ່ງ.",
+    "contentLo": "ຢາວິເສດ 🌿 ປິ່ນປົວເບົາຫວານ ແລະ ເຈັບຫົວເຂົ່າໃນ 7 ມື້. ບໍ່ຕ້ອງໄປຫາໝໍ. ສັ່ງດຽວນີ້ ມື້ນີ້ຫຼຸດລາຄາເຄິ່ງໜຶ່ງ.",
+    "translationText": "Miracle medicine 🌿 Cures diabetes and knee pain in 7 days. No need for a doctor. Order now, only today half price."
+  },
+  {
+    "id": "ex-elder-25",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "green",
+    "scamType": "bank-call",
+    "tags": [
+      "PhishingAlert"
+    ],
+    "author": {
+      "name": "ລຸງ ບຸນມີ",
+      "handle": "@lung_bounmy",
+      "initials": "ລບ",
+      "color": "#2563EB",
+      "points": 0
+    },
+    "timestamp": "8h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
+    "contentLo": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
+    "translationText": "The bank will never ask for your PIN or OTP code. If someone asks, hang up. Then go to the bank or ask your children."
+  },
+  {
+    "id": "ex-elder-26",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "fake-official",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ປ້າ ແສງ",
+      "handle": "@pa_seng",
+      "initials": "ປແ",
+      "color": "#059669",
+      "points": 0
+    },
+    "timestamp": "9h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຜູ້ຊາຍບອກວ່າມາຈາກຫ້ອງການບຳນານ ຕ້ອງການເລກປຶ້ມບັນຊີທະນາຄານ ເພື່ອ 'ປັບປຸງ' ເງິນບຳນານ. ແທ້ບໍ?",
+    "contentLo": "ມີຜູ້ຊາຍບອກວ່າມາຈາກຫ້ອງການບຳນານ ຕ້ອງການເລກປຶ້ມບັນຊີທະນາຄານ ເພື່ອ 'ປັບປຸງ' ເງິນບຳນານ. ແທ້ບໍ?",
+    "translationText": "A man said he is from the pension office and needs my bank book number to 'update' my pension. Is this real?"
+  },
+  {
+    "id": "ex-adult-27",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "investment",
+    "tags": [
+      "OnlineScam",
+      "CryptoScam"
+    ],
+    "author": {
+      "name": "ສົມພອນ ແກ້ວມະນີ",
+      "handle": "@somphone_k",
+      "initials": "ສພ",
+      "color": "#B45309",
+      "points": 0
+    },
+    "timestamp": "6h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຄົນເພີ່ມຂ້ອຍເຂົ້າກຸ່ມ WhatsApp \"ລົງທຶນຄຳ VIP\". ທຸກຄົນໂພສວ່າໄດ້ກຳໄລ 30% ທຸກອາທິດ. ໃຫ້ໂອນ 2,000,000 ກີບ ເພື່ອເລີ່ມ. ຢ່າຫຼົງເຊື່ອເດີ້.",
+    "contentLo": "ມີຄົນເພີ່ມຂ້ອຍເຂົ້າກຸ່ມ WhatsApp \"ລົງທຶນຄຳ VIP\". ທຸກຄົນໂພສວ່າໄດ້ກຳໄລ 30% ທຸກອາທິດ. ໃຫ້ໂອນ 2,000,000 ກີບ ເພື່ອເລີ່ມ. ຢ່າຫຼົງເຊື່ອເດີ້.",
+    "translationText": "Someone added me to a WhatsApp group \"VIP gold investment\". Everyone posts 30% profit every week. They want 2,000,000 kip to start. Don't fall for it."
+  },
+  {
+    "id": "ex-adult-28",
+    "bands": [
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "yellow",
+    "scamType": "shopping",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ນາງ ດາລາ",
+      "handle": "@dala_shop",
+      "initials": "ດລ",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "timestamp": "11h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ຮ້ານໃນ Facebook ຂາຍໂທລະສັບລາຄາເຄິ່ງໜຶ່ງ ແຕ່ໃຫ້ໂອນເງິນເຕັມກ່ອນ ບໍ່ຮັບເກັບເງິນປາຍທາງ. ໜ້າເພຈເປີດໄດ້ 2 ອາທິດ. ມີໃຜເຄີຍຊື້ບໍ?",
+    "contentLo": "ຮ້ານໃນ Facebook ຂາຍໂທລະສັບລາຄາເຄິ່ງໜຶ່ງ ແຕ່ໃຫ້ໂອນເງິນເຕັມກ່ອນ ບໍ່ຮັບເກັບເງິນປາຍທາງ. ໜ້າເພຈເປີດໄດ້ 2 ອາທິດ. ມີໃຜເຄີຍຊື້ບໍ?",
+    "translationText": "A Facebook shop sells phones at half price but wants full payment first, no cash on delivery. The page is 2 weeks old. Has anyone bought from them?"
+  },
+  {
+    "id": "ex-elder-29",
+    "bands": [
+      "elder"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "phone-helper",
+    "tags": [
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ພໍ່ ບຸນມີ",
+      "handle": "@pho_bounmy",
+      "initials": "ພບ",
+      "color": "#7C3AED",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "content": "ມີຄົນແປກໜ້າຢູ່ຕະຫຼາດ ບອກວ່າຈະຊ່ວຍຕັ້ງແອັບໃຫ້ ແລ້ວຂໍໂທລະສັບ ແລະ ລະຫັດ. ຢ່າໃຫ້ເດັດຂາດ.",
+    "contentLo": "ມີຄົນແປກໜ້າຢູ່ຕະຫຼາດ ບອກວ່າຈະຊ່ວຍຕັ້ງແອັບໃຫ້ ແລ້ວຂໍໂທລະສັບ ແລະ ລະຫັດ. ຢ່າໃຫ້ເດັດຂາດ.",
+    "translationText": "A stranger at the market offered to \"set up an app\" and asked for my phone and code. Never hand it over."
   }
 ]

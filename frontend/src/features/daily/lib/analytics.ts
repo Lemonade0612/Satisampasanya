@@ -1,25 +1,24 @@
-import { load, save } from './storage';
+import { EVENTS_KEY, load, save, scoped } from './storage';
 
 // Anonymous, local-only. No user id, name or message content is ever stored.
 export type DailyEvent =
   | { type: 'session_start'; mode: string }
   | { type: 'scenario_start'; scenarioId: string; scamType: string }
   | { type: 'scenario_complete'; scenarioId: string; scamType: string; correct: number; total: number }
-  | { type: 'choice_made'; scenarioId: string; scamType: string; step: string; correct: boolean }
+  | { type: 'choice_made'; scenarioId: string; scamType: string; step: string; correct: boolean; scam?: boolean }
   | { type: 'flag_missed'; scenarioId: string; flag: string }
   | { type: 'drop_off_step'; scenarioId: string; step: string };
 
 type Logged = DailyEvent & { t: number };
-const KEY = 'sati-daily-events';
 const MAX = 5000;
 
 export function track(event: DailyEvent) {
-  const events = load<Logged[]>(KEY, []);
+  const events = load<Logged[]>(scoped(EVENTS_KEY), []);
   events.push({ ...event, t: Date.now() });
-  save(KEY, events.slice(-MAX));
+  save(scoped(EVENTS_KEY), events.slice(-MAX));
 }
-export const readEvents = () => load<Logged[]>(KEY, []);
-export const clearEvents = () => save(KEY, []);
+export const readEvents = () => load<Logged[]>(scoped(EVENTS_KEY), []);
+export const clearEvents = () => save(scoped(EVENTS_KEY), []);
 
 export function summarize(events: Logged[] = readEvents()) {
   const starts = events.filter(e => e.type === 'scenario_start').length;
@@ -34,7 +33,12 @@ export function summarize(events: Logged[] = readEvents()) {
     if (e.type === 'flag_missed') missed[e.flag] = (missed[e.flag] || 0) + 1;
   }
   const missedSorted = Object.entries(missed).sort((a, b) => b[1] - a[1]);
+  const answers = events.filter((e): e is Extract<Logged, { type: 'choice_made' }> => e.type === 'choice_made');
+  const right = answers.filter(e => e.correct).length;
   return {
+    // Older events have no `scam` field: anything not marked safe was a scam card.
+    scamsSpotted: answers.filter(e => e.correct && (e.scam ?? e.scamType !== 'safe')).length,
+    accuracy: answers.length ? right / answers.length : null,
     sessions: events.filter(e => e.type === 'session_start').length,
     total: events.length,
     starts, completes,

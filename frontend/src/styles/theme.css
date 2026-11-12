@@ -1,28 +1,46 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* Sati restyle tokens (Compose + Explore) */
+  --s-bg: #F6F5FD; --s-card: #FFFFFF; --s-border: #ECE9F7; --s-radius: 18px;
+  --s-primary: #5B21D6; --s-primary-hover: #4514B0; --s-tint: #EFEBFF; --s-tint-2: #F6F3FF; --s-bar: #9B7BF0;
+  --s-text: #18161F; --s-muted: #6B6778; --s-input: #DCDAE3; --s-disabled: #E8E7ED; --s-track: #F1EFF9;
+  --s-field: #FFFFFF; --s-pill: #FFFFFF;
   --font-size: 16px;
-  --font-body: 'Inter', 'BoonHome', system-ui, sans-serif;
-  --font-display: 'Space Grotesk', 'BoonHome', system-ui, sans-serif;
-  --font-lao: 'BoonHome', 'Noto Sans Lao', sans-serif;
+  /* Sati UI tokens (Home, Explore, New Post, nav). Screens use these only. */
+  --surface: #FAFAFB; --surface-2: #F4F4F6; --border-strong: #E8E8EC;
+  --text: #1E1B3A; --text-2: #34315A; --text-muted: #4D4A6E;
+  --primary-ink: #5B21D6; /* primary when used as text/icon on the page background */
+  --primary-gradient: linear-gradient(135deg, #5B21D6, #7C5CF5);
+  --danger: #B42318; --danger-bg: #FEF3F2; --danger-border: #FECDCA;
+  --warning-bg: #FFFAF0; --warning-border: #FCE7C3; --warning-icon: #F59E0B; --warning-text: #92400E;
+  --tint-purple-bg: #F1ECFF; --tint-purple-fg: #5B21D6; --tint-blue-bg: #EEF4FF; --tint-blue-fg: #2563EB;
+  --tint-orange-bg: #FFF4EC; --tint-orange-fg: #EA580C; --tint-green-bg: #ECFDF3; --tint-green-fg: #16A34A;
+  --success: #067647; --success-bg: #ECFDF3; --success-border: #ABEFC6;
+  --disabled-bg: #ECEAF8; --disabled-fg: #6B6890;
+  --shadow-soft: 0 4px 16px rgba(30, 27, 58, 0.10);
+  --font-body: "BoonHome", "Phetsarath", sans-serif;
+  --font-lao: "BoonHome", "Phetsarath", sans-serif;
+  --s-font: "BoonHome", "Phetsarath", sans-serif;
+  --font-display: "BoonHome", "Phetsarath", sans-serif;
   --background: #FFFFFF;
   --foreground: #13112B;
   --card: #FFFFFF;
   --card-foreground: #13112B;
   --popover: #FFFFFF;
   --popover-foreground: #13112B;
-  --primary: #5B21D1;
+  --primary: #5B21D6;
   --primary-foreground: #FFFFFF;
   --secondary: #EEF2FF;
   --secondary-foreground: #3B0FA0;
   --muted: #EEF2FF;
-  --muted-foreground: #6366A0;
+  --muted-foreground: #3D3A60;
   --accent: #16A34A;
   --accent-foreground: #FFFFFF;
   --brand-blue: #93C5FD;
   --destructive: #DC2626;
   --destructive-foreground: #FFFFFF;
-  --border: #ededf2;
+  --border: #EFEFF2;
   --input: transparent;
   --input-background: #EEF2FF;
   --switch-background: #A5B4FC;
@@ -46,26 +64,40 @@
 }
 
 .dark {
-  --background: #0D0C1A;
-  --foreground: #EAE6FF;
-  --card: #131126;
-  --card-foreground: #EAE6FF;
-  --popover: #131126;
-  --popover-foreground: #EAE6FF;
+  --surface: #21252E; --surface-2: #2A2F3A; --border-strong: #414756;
+  --text: #F2F2F4; --text-2: #D9D9DE; --text-muted: #B4BAC6;
+  --primary-ink: #A68FF5;
+  --primary-gradient: linear-gradient(135deg, #6A49DD, #7C5FE8);
+  --warning-bg: #2A2010; --warning-border: #5C4418; --warning-icon: #F59E0B; --warning-text: #FCD9A0;
+  --tint-purple-bg: #2E2850; --tint-purple-fg: #B7A3FF; --tint-blue-bg: #14274D; --tint-blue-fg: #7FB0FF;
+  --tint-orange-bg: #35200F; --tint-orange-fg: #FB9A5C; --tint-green-bg: #0F2A1C; --tint-green-fg: #4ADE80;
+  --danger: #FDA29B; --danger-bg: #2B1412; --danger-border: #7A2A24;
+  --success: #6CE9A6; --success-bg: #0F2A1C; --success-border: #1F5A3A;
+  --disabled-bg: #2C303B; --disabled-fg: #B4BAC6;
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --s-bg: #181B22; --s-card: #21252E; --s-border: #363B48; --s-field: #262A34; --s-pill: #363B48;
+  --s-primary: #7C5FE8; --s-primary-hover: #9479F0; --s-tint: #2E2850; --s-tint-2: #2A2F3A; --s-bar: #6B55C9;
+  --s-text: #F2F2F4; --s-muted: #B4BAC6; --s-input: #3A3F4C; --s-disabled: #2C303B; --s-track: #2A2F3A;
+  --background: #181B22;
+  --foreground: #F2F2F4;
+  --card: #21252E;
+  --card-foreground: #F2F2F4;
+  --popover: #21252E;
+  --popover-foreground: #F2F2F4;
   --primary: #7C5FE8;
   --primary-foreground: #FFFFFF;
-  --secondary: #1E1B35;
+  --secondary: #2A2F3A;
   --secondary-foreground: #C4B5FD;
-  --muted: #1E1B35;
-  --muted-foreground: #8B84C0;
+  --muted: #2A2F3A;
+  --muted-foreground: #B4BAC6;
   --accent: #22C55E;
   --accent-foreground: #FFFFFF;
   --brand-blue: #84ADEF;
   --destructive: #EF4444;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(124, 95, 232, 0.18);
+  --border: #323743;
   --input: transparent;
-  --input-background: #1E1B35;
+  --input-background: #2A2F3A;
   --switch-background: #4338CA;
   --ring: #7C5FE8;
   --font-weight-medium: 500;
@@ -75,17 +107,44 @@
   --chart-3: #84ADEF;
   --chart-4: #F59E0B;
   --chart-5: #EC4899;
-  --sidebar: #0D0C1A;
-  --sidebar-foreground: #EAE6FF;
+  --sidebar: #181B22;
+  --sidebar-foreground: #F2F2F4;
   --sidebar-primary: #7C5FE8;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #1E1B35;
+  --sidebar-accent: #2A2F3A;
   --sidebar-accent-foreground: #C4B5FD;
-  --sidebar-border: rgba(124, 95, 232, 0.18);
+  --sidebar-border: #323743;
   --sidebar-ring: #7C5FE8;
 }
 
 @theme inline {
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border-strong: var(--border-strong);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-muted: var(--text-muted);
+  --color-primary-ink: var(--primary-ink);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-warning-icon: var(--warning-icon);
+  --color-warning-text: var(--warning-text);
+  --color-tint-purple-bg: var(--tint-purple-bg);
+  --color-tint-purple-fg: var(--tint-purple-fg);
+  --color-tint-blue-bg: var(--tint-blue-bg);
+  --color-tint-blue-fg: var(--tint-blue-fg);
+  --color-tint-orange-bg: var(--tint-orange-bg);
+  --color-tint-orange-fg: var(--tint-orange-fg);
+  --color-tint-green-bg: var(--tint-green-bg);
+  --color-tint-green-fg: var(--tint-green-fg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-border: var(--danger-border);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-disabled-bg: var(--disabled-bg);
+  --color-disabled-fg: var(--disabled-fg);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -127,6 +186,7 @@
 }
 
 @layer utilities {
+  .bg-primary-gradient { background-image: var(--primary-gradient); }
   .scrollbar-hide {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -149,7 +209,10 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-body);
+    font-family: "BoonHome", "Phetsarath", sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.15px;
   }
 
   /**

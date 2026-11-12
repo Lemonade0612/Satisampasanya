@@ -1,0 +1,12 @@
+export type Band = 'kids' | 'youth' | 'adult' | 'elder';
+export type Intensity = 1 | 2 | 3;
+export declare const BANDS: Band[];
+export declare const MAX_INTENSITY: Record<Band, Intensity>;
+export declare const TOPIC_INTENSITY: Record<string, Intensity>;
+export declare function isBand(value: unknown): value is Band;
+export declare function bandForAge(age: number): Band | null;
+export declare function bandForBirthYear(year: number, now?: Date): Band | null;
+type PostLike = { tags?: string[]; intensity?: number; bands?: Band[]; essential?: boolean; state?: string; review?: unknown };
+export declare function postIntensity(post: PostLike): Intensity;
+export declare function postVisibleToBand(post: PostLike, band: Band | null | undefined): boolean;
+export declare function canPostAsBand(band: Band | null | undefined): boolean;

@@ -1,0 +1,35 @@
+# Render Blueprint: Sati backend on the free plan (no card, no disk).
+# Durability comes from MongoDB Atlas snapshots (backend/snapshot.mjs), not the container disk.
+services:
+  - type: web
+    name: sati-backend
+    runtime: docker
+    plan: free
+    region: singapore
+    dockerfilePath: ./deployment/backend.Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: TRUST_PROXY
+        value: "1"
+      - key: DATABASE_PATH
+        value: /app/data/sati.sqlite
+      - key: AI_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_MODEL
+        value: google/gemma-4-31b-it:free
+      - key: OPENROUTER_FALLBACK_MODELS
+        value: nvidia/nemotron-3.5-super-vl:free
+      - key: AI_DAILY_CAP
+        value: "300"
+      - key: ALLOWED_ORIGINS
+        value: https://sati-coral.vercel.app,https://sati-satii.vercel.app,https://sati-admin-xi.vercel.app,https://sati-admin-satii.vercel.app
+      - key: ADMIN_URL
+        value: https://sati-admin-xi.vercel.app
+      - key: MONGODB_URI
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false

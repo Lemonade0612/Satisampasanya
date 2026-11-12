@@ -1,4 +1,5 @@
 import type { FlagCategory, L10n } from '../types';
+import type { BandTagged } from '../../../lib/band';
 import type { Avatar } from '../lib/dashPlayer';
 
 // Scam Detective: pick a character, then solve cases tailored to their life.
@@ -8,11 +9,11 @@ import type { Avatar } from '../lib/dashPlayer';
 export type Clue = { flag?: FlagCategory; note: L10n }; // no flag = a safe sign
 export type Part = { text: L10n; clue?: Clue };
 export type Action = { text: L10n; best: boolean; why: L10n };
-export type Case = {
+export type Case = BandTagged & {
   id: string; channel: 'sms' | 'chat' | 'call' | 'email'; sender: L10n; situation: L10n;
   parts: Part[]; isScam: boolean; actions: Action[]; lesson: L10n;
 };
-export type Persona = { id: string; avatar: Avatar; name: L10n; age: number; who: L10n; cases: Case[] };
+export type Persona = BandTagged & { id: string; avatar: Avatar; name: L10n; age: number; who: L10n; cases: Case[] };
 
 const A = (en: string, lo: string, best = false, whyEn = '', whyLo = ''): Action => ({ text: { en, lo }, best, why: { en: whyEn, lo: whyLo } });
 const P = (en: string, lo: string, clue?: Clue): Part => ({ text: { en, lo }, clue });
@@ -20,7 +21,7 @@ const C = (flag: FlagCategory | undefined, en: string, lo: string): Clue => ({ f
 
 export const PERSONAS: Persona[] = [
   {
-    id: 'kid', avatar: { skin: 2, hair: 0, outfit: 0, extra: 0 }, name: { en: 'Ton', lo: 'ຕົ້ນ' }, age: 10, who: { en: 'Loves mobile games and videos', lo: 'ມັກເກມມືຖື ແລະ ວິດີໂອ' },
+    id: 'kid', bands: ['kids'], avatar: { skin: 2, hair: 0, outfit: 0, extra: 0 }, name: { en: 'Ton', lo: 'ຕົ້ນ' }, age: 10, who: { en: 'Loves mobile games and videos', lo: 'ມັກເກມມືຖື ແລະ ວິດີໂອ' },
     cases: [
       {
         id: 'ton-skins', channel: 'chat', sender: { en: 'GameMaster_Official', lo: 'GameMaster_Official' }, isScam: true,
@@ -117,7 +118,7 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: 'student', avatar: { skin: 0, hair: 1, outfit: 2, extra: 0 }, name: { en: 'Noy', lo: 'ນ້ອຍ' }, age: 17, who: { en: 'Student looking for a summer job', lo: 'ນັກຮຽນ ກຳລັງຊອກວຽກພາກຮຽນ' },
+    id: 'student', bands: ['youth'], avatar: { skin: 0, hair: 1, outfit: 2, extra: 0 }, name: { en: 'Noy', lo: 'ນ້ອຍ' }, age: 17, who: { en: 'Student looking for a summer job', lo: 'ນັກຮຽນ ກຳລັງຊອກວຽກພາກຮຽນ' },
     cases: [
       {
         id: 'noy-job', channel: 'chat', sender: { en: 'HR Recruiter', lo: 'ຝ່າຍບຸກຄົນ' }, isScam: true,
@@ -216,7 +217,7 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: 'parent', avatar: { skin: 2, hair: 2, outfit: 1, extra: 4 }, name: { en: 'Khamla', lo: 'ຄຳຫຼ້າ' }, age: 38, who: { en: 'Mum who runs a small shop', lo: 'ແມ່ ທີ່ເປີດຮ້ານນ້ອຍ' },
+    id: 'parent', bands: ['adult'], avatar: { skin: 2, hair: 2, outfit: 1, extra: 4 }, name: { en: 'Khamla', lo: 'ຄຳຫຼ້າ' }, age: 38, who: { en: 'Mum who runs a small shop', lo: 'ແມ່ ທີ່ເປີດຮ້ານນ້ອຍ' },
     cases: [
       {
         id: 'khamla-bank', channel: 'sms', sender: { en: '+856 20 9x xxx', lo: '+856 20 9x xxx' }, isScam: true,
@@ -291,7 +292,7 @@ export const PERSONAS: Persona[] = [
         actions: [
           A('Send the 20 million kip to the boss\'s account', 'ສົ່ງ 20 ລ້ານກີບ ໃຫ້ບັນຊີຂອງນາຍ', false, 'Payments often lead to new "debts". It funds the people holding him.', 'ການຈ່າຍມັກນຳໄປສູ່ "ໜີ້" ໃໝ່. ມັນເປັນເງິນໃຫ້ຄົນທີ່ກັກເຂົາ.'),
           A('Post his photo and location on Facebook for help', 'ໂພສຮູບ ແລະ ບ່ອນຢູ່ຂອງເຂົາໃນເຟສບຸກ ຂໍຄວາມຊ່ວຍເຫຼືອ', false, 'Going public can lead to punishment or a transfer to another site.', 'ການເປີດເຜີຍ ອາດເຮັດໃຫ້ເຂົາຖືກລົງໂທດ ຫຼື ຖືກຍ້າຍໄປບ່ອນອື່ນ.'),
-          A('Save the messages and quietly call 1300 (police) or 1362 (Lao Women\'s Union)', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທຫາ 1300 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private, without paying or sending anyone else.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ບໍ່ຈ່າຍ ແລະ ບໍ່ສົ່ງຄົນອື່ນໄປ.'),
+          A('Save the messages and quietly call 1191 (police) or 1362 (Lao Women\'s Union)', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວໂທຫາ 1191 (ຕຳຫຼວດ) ຫຼື 1362 (ສະຫະພັນແມ່ຍິງລາວ) ຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private, without paying or sending anyone else.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ບໍ່ຈ່າຍ ແລະ ບໍ່ສົ່ງຄົນອື່ນໄປ.'),
         ],
         lesson: { en: 'Someone forced to scam is a victim too. Get trained help quietly; never pay the bosses or send recruits.', lo: 'ຄົນທີ່ຖືກບັງຄັບໃຫ້ຫຼອກ ກໍ່ເປັນຜູ້ເຄາະຮ້າຍ. ຂໍຄວາມຊ່ວຍເຫຼືອຢ່າງງຽບໆ; ຢ່າຈ່າຍນາຍ ຫຼື ສົ່ງຄົນໄປ.' },
       },
@@ -313,7 +314,7 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: 'elder', avatar: { skin: 1, hair: 3, outfit: 3, extra: 3 }, name: { en: 'Grandpa Bounmy', lo: 'ພໍ່ເຖົ້າບຸນມີ' }, age: 68, who: { en: 'Retired, loves his grandchildren', lo: 'ບຳນານ ຮັກຫຼານຫຼາຍ' },
+    id: 'elder', bands: ['elder', 'adult'], avatar: { skin: 1, hair: 3, outfit: 3, extra: 3 }, name: { en: 'Grandpa Bounmy', lo: 'ພໍ່ເຖົ້າບຸນມີ' }, age: 68, who: { en: 'Retired, loves his grandchildren', lo: 'ບຳນານ ຮັກຫຼານຫຼາຍ' },
     cases: [
       {
         id: 'bounmy-grandson', channel: 'call', sender: { en: 'Unknown number', lo: 'ເບີບໍ່ຮູ້ຈັກ' }, isScam: true,
@@ -409,7 +410,7 @@ export const PERSONAS: Persona[] = [
     ],
   },
   {
-    id: 'worker', avatar: { skin: 3, hair: 0, outfit: 5, extra: 2 }, name: { en: 'Dara', lo: 'ດາຣາ' }, age: 24, who: { en: 'Wants to work abroad', lo: 'ຢາກໄປເຮັດວຽກຕ່າງປະເທດ' },
+    id: 'worker', bands: ['youth', 'adult'], avatar: { skin: 3, hair: 0, outfit: 5, extra: 2 }, name: { en: 'Dara', lo: 'ດາຣາ' }, age: 24, who: { en: 'Wants to work abroad', lo: 'ຢາກໄປເຮັດວຽກຕ່າງປະເທດ' },
     cases: [
       {
         id: 'dara-abroad', channel: 'chat', sender: { en: 'Agent Kim', lo: 'ນາຍໜ້າຄິມ' }, isScam: true,
@@ -483,7 +484,7 @@ export const PERSONAS: Persona[] = [
         actions: [
           A('Go and take Lae\'s place so she can leave', 'ໄປແທນແລ ເພື່ອໃຫ້ນາງອອກໄດ້', false, 'Then two friends are trapped instead of one.', 'ແລ້ວກໍ່ມີໝູ່ຖືກກັກສອງຄົນ ແທນທີ່ຈະເປັນຄົນດຽວ.'),
           A('Tell Lae it sounds fine since she has a contract', 'ບອກແລວ່າບໍ່ເປັນຫຍັງ ເພາະມີສັນຍາ', false, 'A contract does not make confinement legal.', 'ສັນຍາບໍ່ໄດ້ເຮັດໃຫ້ການກັກຂັງຖືກກົດໝາຍ.'),
-          A('Save the messages and quietly contact 1362 or 1300, and her family', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວຕິດຕໍ່ 1362 ຫຼື 1300 ແລະ ຄອບຄົວນາງຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private so Lae is not punished.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ເພື່ອບໍ່ໃຫ້ແລຖືກລົງໂທດ.'),
+          A('Save the messages and quietly contact 1362 or 1191, and her family', 'ເກັບຂໍ້ຄວາມໄວ້ ແລ້ວຕິດຕໍ່ 1362 ຫຼື 1191 ແລະ ຄອບຄົວນາງຢ່າງງຽບໆ', true, 'Yes. Trained help, kept private so Lae is not punished.', 'ແມ່ນ. ຄວາມຊ່ວຍເຫຼືອທີ່ມີການຝຶກ ເກັບເປັນຄວາມລັບ ເພື່ອບໍ່ໃຫ້ແລຖືກລົງໂທດ.'),
         ],
         lesson: { en: 'Pay and a contract do not mean freedom. Check: does she keep her documents, her phone, and the right to leave?', lo: 'ເງິນ ແລະ ສັນຍາ ບໍ່ໄດ້ໝາຍເຖິງອິດສະຫຼະ. ກວດ: ນາງເກັບເອກະສານ, ໂທລະສັບ ແລະ ສິດທີ່ຈະອອກໄດ້ບໍ?' },
       },

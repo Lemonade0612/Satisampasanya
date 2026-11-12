@@ -4,8 +4,13 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "prebuild": "node scripts/check-content.mjs",
     "build": "vite build",
-    "dev": "node scripts/dev.mjs",
+    "audio": "node scripts/gen-audio.mjs && node scripts/gen-call-voices.mjs",
+    "audio:check": "node scripts/gen-audio.mjs --check",
+    "check:content": "node scripts/check-content.mjs",
+    "scan:thaiisms": "node scripts/scan-thaiisms.mjs",
+    "dev": "node scripts/dev.mjs --open",
     "dev:devices": "node scripts/dev.mjs --host 0.0.0.0",
     "simulator:open": "node scripts/open-simulator.mjs",
     "ios:sync": "node scripts/sync-icon.mjs --if-needed && npm run build && cap sync ios",
@@ -29,9 +34,11 @@
     "seed:community": "node scripts/seed-community.mjs",
     "check:acceptance": "node scripts/evaluate-community.mjs",
     "seed:users": "node --env-file-if-exists=.env.local scripts/create-test-users.mjs",
-    "seed:reviews": "node scripts/seed-review-posts.mjs"
+    "seed:reviews": "node scripts/seed-review-posts.mjs",
+    "seed:scenarios": "node scripts/seed-scenarios.mjs"
   },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
     "@capacitor/core": "^8.5.3",
     "@capacitor/ios": "^8.5.3",
     "@capacitor/push-notifications": "^8.1.3",

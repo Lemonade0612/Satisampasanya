@@ -1,13 +1,18 @@
-import { api, request } from "../lib/api";
-import logoImage from "/images/Satisampasanya_Logo_app.png";
+import { api, request, ApiError } from "../lib/api";
 import { T } from "../lib/translations";
 import { useState } from "react";
 import { LangToggle, FormInput } from "../components/shared/Controls";
-import { SatiIllustration, SatiLogo } from "../components/shared/Brand";
-import { ArrowLeft, EyeOff, Eye, Check } from "lucide-react";
+import { AuthField, SignupSheet, primaryBtn, primaryShadow } from "../components/shared/SignupSheet";
+import { DEFAULT_BAND, getBand, hasBand, setBand } from "../lib/band";
+import { setTextSize } from "../lib/textSize";
+import { SatiLogo } from "../components/shared/Brand";
+import { ArrowLeft, ArrowRight, Check, ChevronRight, Gamepad2, ALargeSmall } from "lucide-react";
 import type { Lang, CurrentUser, AuthView } from "../types";
 
-export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLangToggle: () => void; onLogin: (u: CurrentUser) => void; }) {
+// Server down or unreachable (or a proxy error page): play offline instead of showing an error.
+const unreachable = (e: unknown) => e instanceof ApiError && (e.status === 0 || e.status >= 500);
+
+export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: { lang: Lang; onLangToggle: () => void; onLogin: (u: CurrentUser) => void; onGuest: () => void; onOffline: () => void; }) {
   const t = T[lang];
   const [busy, setBusy] = useState(false);
   const [authError, setAuthError] = useState("");
@@ -16,33 +21,24 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
   const feedback = <>{authError && <p role="alert" className="text-sm text-red-600 mb-3">{authError}</p>}{busy && <p role="status" className="text-sm text-muted-foreground mb-3">{lang === 'lo' ? 'ກຳລັງດຳເນີນການ…' : 'Please wait…'}</p>}</>;
   const [view, setView] = useState<AuthView>(new URLSearchParams(window.location.search).has("reset") ? "forgot" : "welcome");
   const [loginEmail, setLoginEmail] = useState(""); const [loginPw, setLoginPw] = useState(""); const [showLoginPw, setShowLoginPw] = useState(false); const [loginErrors, setLoginErrors] = useState<Record<string,string>>({});
-  const [regName, setRegName] = useState(""); const [regEmail, setRegEmail] = useState(""); const [regPw, setRegPw] = useState(""); const [regConfirm, setRegConfirm] = useState(""); const [showRegPw, setShowRegPw] = useState(false); const [showConfirmPw, setShowConfirmPw] = useState(false); const [regErrors, setRegErrors] = useState<Record<string,string>>({});
+  const [signup, setSignup] = useState(false);
+  const [easy, setEasy] = useState(() => getBand() === 'elder' && hasBand());
+  const toggleEasy = (on: boolean) => { setEasy(on); setTextSize(on ? 'large' : 'normal'); setBand(on ? 'elder' : DEFAULT_BAND); };
   const [forgotEmail, setForgotEmail] = useState(""); const [forgotError, setForgotError] = useState(""); const [resetSent, setResetSent] = useState(false);
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
   const handleLogin = async () => {
     if (busy) return;
     const errs: Record<string,string> = {};
-    if (!loginEmail) errs.email = t.err_required; else if (!isValidEmail(loginEmail.trim())) errs.email = t.err_email;
+    // Quick accounts sign in with their code (sati-xxxxxx) and 4-digit PIN.
+    const code = /^sati-[a-z0-9]{6}$/i.test(loginEmail.trim());
+    if (!loginEmail) errs.email = t.err_required; else if (!code && !isValidEmail(loginEmail.trim())) errs.email = t.err_email;
     if (!loginPw) errs.pw = t.err_required;
     setLoginErrors(errs);
     if (Object.keys(errs).length > 0) return;
     setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('login', {email: loginEmail.trim(), password: loginPw})); }
-    catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
-  };
-  const handleRegister = async () => {
-    if (busy) return;
-    const errs: Record<string,string> = {};
-    if (!regName.trim()) errs.name = t.err_required;
-    if (!regEmail) errs.email = t.err_required; else if (!isValidEmail(regEmail.trim())) errs.email = t.err_email;
-    if (!regPw) errs.pw = t.err_required; else if (regPw.length < 8) errs.pw = t.err_pw_short;
-    if (!regConfirm) errs.confirm = t.err_required; else if (regConfirm !== regPw) errs.confirm = t.err_pw_match;
-    setRegErrors(errs);
-    if (Object.keys(errs).length > 0) return;
-    setBusy(true); setAuthError('');
-    try { onLogin(await api.authenticate('register', {name: regName.trim(), email: regEmail.trim(), password: regPw})); }
-    catch (e) { setAuthError((e as Error).message); } finally { setBusy(false); }
+    try { onLogin(await api.authenticate('login', {email: code ? loginEmail.trim().toLowerCase() : loginEmail.trim(), password: loginPw})); }
+    catch (e) { if (unreachable(e)) onOffline(); else setAuthError((e as Error).message); } finally { setBusy(false); }
   };
   const handleForgot = async () => {
     if (busy) return;
@@ -53,72 +49,74 @@ export function AuthScreen({ lang, onLangToggle, onLogin }: { lang: Lang; onLang
     catch(e) { setAuthError((e as Error).message); } finally { setBusy(false); }
   };
 
+  const lo = lang === 'lo';
+  const sheet = signup && <SignupSheet lang={lang} initialBand={easy ? 'elder' : null} onClose={() => setSignup(false)} onLogin={onLogin} onOffline={onOffline} />;
+
   if (view === "welcome") return (
     <div className="h-full flex flex-col bg-background">
-      <div className="flex justify-end px-5 pt-3"><div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div></div>
-      <div className="flex-1 flex items-center justify-center px-8"><SatiIllustration /></div>
-      <div className="bg-background rounded-t-3xl px-7 pt-7 pb-8 shadow-[0_-8px_32px_rgba(91,33,209,0.08)] border-t border-border">
-        <div className="flex items-center gap-2 mb-3">
-          <img src={logoImage} alt="Sati Logo" className="w-8 h-8 rounded-lg object-contain" />
-          <span className="font-display font-bold text-base" style={{ letterSpacing:"-0.02em" }}>{t.app_short}</span>
+      <div className="flex items-center justify-between px-5 pt-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <SatiLogo size={32} />
+          <span className="font-display font-bold text-base text-foreground truncate font-lao" style={{ letterSpacing:"-0.02em" }}>ສະຕິຊໍາປະຊັນຍະ</span>
         </div>
-        <h1 className="font-display font-bold mb-3 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
-        <p className="text-sm text-muted-foreground leading-relaxed mb-7 font-lao">{t.welcome_sub}</p>
-        <div className="flex gap-3">
-          <button type="button" onClick={() => setView("login")} className="flex-1 bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_login}</button>
-          <button type="button" onClick={() => setView("register")} className="flex-1 border-2 border-primary text-primary font-semibold py-3.5 rounded-2xl text-sm active:scale-[0.98] transition-transform font-lao">{t.btn_register}</button>
+        <LangToggle lang={lang} onToggle={onLangToggle} />
+      </div>
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col">
+        <div className={`shrink min-h-[120px] flex items-center justify-center px-8 pt-2 ${easy ? "h-[180px]" : "h-[250px]"}`}><img src="/images/welcome-community.png" alt="" className="h-full w-auto max-w-full object-contain" /></div>
+        <div className="px-6 pt-3 pb-5">
+          <h1 className="font-display font-bold mb-2 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
+          <p className="text-sm text-muted-foreground leading-relaxed mb-6 font-lao">{t.welcome_sub}</p>
+          <button type="button" onClick={() => setSignup(true)} className={primaryBtn} style={primaryShadow}>{lo ? 'ເລີ່ມເລີຍ' : 'Get started'}<ArrowRight size={20} aria-hidden /></button>
+          <div className="grid grid-cols-2 gap-3 mt-3">
+            <button type="button" onClick={onGuest} className="text-left rounded-2xl border border-[#E6E6F0] dark:border-border bg-background p-3 min-h-11 active:scale-[0.98] transition-transform font-lao">
+              <span aria-hidden className="w-9 h-9 rounded-xl bg-[#EDE7FB] text-[#5B21D1] flex items-center justify-center mb-2"><Gamepad2 size={20} /></span>
+              <span className="block font-semibold text-sm text-foreground">{lo ? 'ລອງຫຼິ້ນເກມ' : 'Try the games'}</span>
+              <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຝຶກຈັບການຫຼອກລວງ ໂດຍບໍ່ຕ້ອງມີບັນຊີ' : 'Practise spotting scams, no account needed'}</span>
+            </button>
+            <button type="button" role="switch" aria-checked={easy} onClick={() => toggleEasy(!easy)}
+              className={`text-left rounded-2xl border bg-background p-3 min-h-11 active:scale-[0.98] transition-all font-lao ${easy ? 'border-[#2563EB] ring-1 ring-[#2563EB]' : 'border-[#E6E6F0] dark:border-border'}`}>
+              <span className="flex items-start justify-between mb-2">
+                <span aria-hidden className="w-9 h-9 rounded-xl bg-[#DCEBFE] text-[#2563EB] flex items-center justify-center"><ALargeSmall size={20} /></span>
+                <span aria-hidden className={`w-10 h-6 rounded-full p-0.5 transition-colors ${easy ? 'bg-[#2563EB]' : 'bg-[#D9DAE5]'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${easy ? 'translate-x-4' : ''}`} /></span>
+              </span>
+              <span className="block font-semibold text-sm text-foreground">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
+              <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຕົວອັກສອນໃຫຍ່ ແລະ ໜ້າຈໍງ່າຍ ສຳລັບຜູ້ສູງອາຍຸ' : 'Bigger text and simpler screens for elders'}</span>
+            </button>
+          </div>
         </div>
       </div>
+      <div className="shrink-0 border-t border-[#EEEEF4] dark:border-border px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] text-center">
+        <button type="button" onClick={() => setView("login")} className="min-h-11 inline-flex items-center gap-1 text-sm text-muted-foreground font-lao">
+          {lo ? 'ມີບັນຊີແລ້ວ?' : 'Already have an account?'} <span className="text-primary font-bold">{lo ? 'ເຂົ້າສູ່ລະບົບ' : 'Sign in'}</span><ChevronRight size={16} className="text-primary" aria-hidden />
+        </button>
+      </div>
+      {sheet}
     </div>
-  );
+  ); // REVIEW-LO
 
   if (view === "login") return (
     <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
-      <div className="px-5 pt-3 pb-6 bg-background">
-        <div className="flex items-center justify-between mb-5">
-          <button type="button" onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
-          <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
-        </div>
-        <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{t.login_title}</h2>
-        <p className="text-sm text-muted-foreground font-semibold font-lao">{t.login_sub}</p>
+      <div className="flex items-center justify-between px-3 pt-2">
+        <button type="button" aria-label={lo ? 'ກັບ' : 'Back'} onClick={() => setView("welcome")} className="min-h-11 min-w-11 flex items-center justify-center"><ArrowLeft size={22} strokeWidth={1.75} /></button>
+        <SatiLogo size={32} className="mr-2" />
       </div>
-      <form onSubmit={e => {e.preventDefault();void handleLogin();}} className="flex-1 px-5 pt-6 pb-4">{feedback}
-        <FormInput value={loginEmail} onChange={(v) => { setLoginEmail(v); setLoginErrors(e => ({...e,email:""})); }} placeholder={t.field_email} type="email" error={loginErrors.email} />
-        <FormInput value={loginPw} onChange={(v) => { setLoginPw(v); setLoginErrors(e => ({...e,pw:""})); }} placeholder={t.field_password} type={showLoginPw?"text":"password"} error={loginErrors.pw}
-          right={<button type="button" onClick={() => setShowLoginPw(v => !v)} className="text-muted-foreground/60 p-0.5 ml-1">{showLoginPw ? <EyeOff size={16} /> : <Eye size={16} />}</button>} />
-        <div className="flex justify-end mb-5"><button type="button" onClick={() => setView("forgot")} className="text-xs font-semibold text-primary font-lao">{t.forgot_link}</button></div>
-        <button type="submit" disabled={busy} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mb-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signin}</button>
-        <div className="mt-4 text-center">
-          <button type="button" onClick={() => setView("register")} className="text-sm text-muted-foreground font-lao">{t.create_account} <span className="text-primary font-semibold">{t.btn_register}</span></button>
-        </div>
+      <div className="px-6 pt-4 pb-6">
+        <h2 className="font-display font-bold text-[26px] leading-tight mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{lo ? 'ຍິນດີຕ້ອນຮັບກັບມາ' : 'Welcome back'}</h2>
+        <p className="text-sm text-muted-foreground font-lao">{lo ? 'ເຂົ້າສູ່ລະບົບເພື່ອເບິ່ງໂພສ ແລະ ແຈ້ງເຕືອນຂອງທ່ານ' : 'Sign in to see your posts and notifications'}</p>
+      </div>
+      <form onSubmit={e => {e.preventDefault();void handleLogin();}} className="flex-1 px-6 pb-4">{feedback}
+        <AuthField label={lo ? 'ອີເມວ' : 'Email'} type="email" autoComplete="username" value={loginEmail} onChange={(v) => { setLoginEmail(v); setLoginErrors(e => ({...e,email:""})); }} error={loginErrors.email} />
+        <AuthField label={lo ? 'ລະຫັດຜ່ານ' : 'Password'} autoComplete="current-password" value={loginPw} onChange={(v) => { setLoginPw(v); setLoginErrors(e => ({...e,pw:""})); }} error={loginErrors.pw}
+          reveal={{ shown: showLoginPw, toggle: () => setShowLoginPw(v => !v), lang }}
+          labelRight={<button type="button" onClick={() => setView("forgot")} className="min-h-11 -my-3 text-sm font-semibold text-primary font-lao">{t.forgot_link}</button>} />
+        <button type="submit" disabled={busy} className={`${primaryBtn} mt-2`} style={primaryShadow}>{lo ? 'ເຂົ້າສູ່ລະບົບ' : 'Sign in'}</button>
       </form>
-    </div>
-  );
-
-  if (view === "register") return (
-    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
-      <div className="px-5 pt-3 pb-6 bg-background">
-        <div className="flex items-center justify-between mb-5">
-          <button type="button" onClick={() => setView("welcome")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
-          <div className="flex items-center gap-3"><SatiLogo size={28} /><LangToggle lang={lang} onToggle={onLangToggle} /></div>
-        </div>
-        <h2 className="font-display font-bold text-2xl mb-1 font-lao" style={{ letterSpacing:"-0.02em" }}>{t.register_title}</h2>
-        <p className="text-sm text-muted-foreground font-semibold font-lao">{t.register_sub}</p>
+      <div className="px-6 pb-[calc(1rem+env(safe-area-inset-bottom))] text-center">
+        <button type="button" onClick={() => setSignup(true)} className="min-h-11 text-sm text-muted-foreground font-lao">{lo ? 'ຍັງບໍ່ມີບັນຊີ?' : "Don't have an account?"} <span className="text-primary font-bold">{lo ? 'ສ້າງບັນຊີ' : 'Create account'}</span></button>
       </div>
-      <div className="flex-1 px-5 pt-6 pb-4">{feedback}
-        <FormInput value={regName} onChange={(v) => { setRegName(v); setRegErrors(e=>({...e,name:""})); }} placeholder={t.field_name} error={regErrors.name} />
-        <FormInput value={regEmail} onChange={(v) => { setRegEmail(v); setRegErrors(e=>({...e,email:""})); }} placeholder={t.field_email} type="email" error={regErrors.email} />
-        <FormInput value={regPw} onChange={(v) => { setRegPw(v); setRegErrors(e=>({...e,pw:""})); }} placeholder={t.field_password} type={showRegPw?"text":"password"} error={regErrors.pw}
-          right={<button type="button" onClick={() => setShowRegPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showRegPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
-        <FormInput value={regConfirm} onChange={(v) => { setRegConfirm(v); setRegErrors(e=>({...e,confirm:""})); }} placeholder={t.field_confirm} type={showConfirmPw?"text":"password"} error={regErrors.confirm}
-          right={<button type="button" onClick={() => setShowConfirmPw(v=>!v)} className="text-muted-foreground/60 p-0.5 ml-1">{showConfirmPw?<EyeOff size={16}/>:<Eye size={16}/>}</button>} />
-        <button onClick={handleRegister} disabled={busy} className="w-full bg-primary text-white font-semibold py-3.5 rounded-2xl text-sm mt-2 mb-2 active:scale-[0.98] transition-transform font-lao" style={{ boxShadow:"0 4px 14px rgba(91,33,209,0.35)" }}>{t.btn_signup}</button>
-        <div className="mt-4 text-center">
-          <button type="button" onClick={() => setView("login")} className="text-sm text-muted-foreground font-lao">{t.have_account} <span className="text-primary font-semibold">{t.btn_signin}</span></button>
-        </div>
-      </div>
+      {sheet}
     </div>
-  );
+  ); // REVIEW-LO
 
   return (
     <div className="h-full flex flex-col bg-background">

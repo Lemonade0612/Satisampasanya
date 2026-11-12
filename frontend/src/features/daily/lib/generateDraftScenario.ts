@@ -14,7 +14,8 @@ export function generateDraftScenario(p: ScamPattern): Scenario {
   const id = `draft-${p.scamType}-${Date.now().toString(36)}`;
   const lo = (en: string) => ({ en, lo: `[ຮ່າງ] ${en}` });
   return {
-    id, scamType: p.scamType, status: 'draft', verifiedBy: null, verifiedAt: null,
+    // AI drafts never reach Kids until a reviewer writes a gentle version and adds 'kids'.
+    id, bands: ['youth', 'adult', 'elder'], scamType: p.scamType, status: 'draft', verifiedBy: null, verifiedAt: null,
     needsNativeReview: true, source: 'ai_draft', channel: 'messenger', contact: p.contact,
     title: lo(`AI draft: ${p.hook}`),
     intro: lo(`${p.contact} contacts you with an offer.`),
