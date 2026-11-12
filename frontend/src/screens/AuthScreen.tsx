@@ -61,8 +61,8 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
         </div>
         <LangToggle lang={lang} onToggle={onLangToggle} />
       </div>
-      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col">
-        <div className={`shrink min-h-[120px] flex items-center justify-center px-8 pt-2 ${easy ? "h-[180px]" : "h-[250px]"}`}><img src="/images/welcome-community.png" alt="" className="h-full w-auto max-w-full object-contain" /></div>
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col justify-center w-full max-w-md mx-auto">
+        <div className={`shrink-0 min-h-[120px] flex items-center justify-center px-8 pt-2 ${easy ? "h-[180px]" : "h-[250px]"}`}><img src="/images/welcome-community.png" alt="" className="h-full w-auto max-w-full object-contain" /></div>
         <div className="px-6 pt-3 pb-5">
           <h1 className="font-display font-bold mb-2 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
           <p className="text-sm text-muted-foreground leading-relaxed mb-6 font-lao">{t.welcome_sub}</p>
@@ -84,11 +84,11 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
             </button>
           </div>
         </div>
-      </div>
-      <div className="shrink-0 border-t border-[#EEEEF4] dark:border-border px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] text-center">
+        <div className="shrink-0 mx-6 border-t border-[#EEEEF4] dark:border-border pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] text-center">
         <button type="button" onClick={() => setView("login")} className="min-h-11 inline-flex items-center gap-1 text-sm text-muted-foreground font-lao">
           {lo ? 'ມີບັນຊີແລ້ວ?' : 'Already have an account?'} <span className="text-primary font-bold">{lo ? 'ເຂົ້າສູ່ລະບົບ' : 'Sign in'}</span><ChevronRight size={16} className="text-primary" aria-hidden />
         </button>
+        </div>
       </div>
       {sheet}
     </div>
