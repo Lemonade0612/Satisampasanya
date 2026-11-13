@@ -14,6 +14,16 @@
   font-display: swap;
 }
 
+/* Metric-matched fallback so the Inter swap doesn't shift the layout (CLS). */
+@font-face {
+  font-family: "Inter Fallback";
+  src: local("Arial");
+  size-adjust: 107.64%;
+  ascent-override: 90.49%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+}
+
 :root {
   --purple: #6018ee;
   --purple-dark: #4a0fc0;
@@ -32,7 +42,7 @@
   --red: #b42318;
   --sos: #d92d20; /* emergency red used on the Help page, as in the design */
   --hero-bg: linear-gradient(120deg, #e9e3ff 0%, #f7f5ff 45%, #dcebff 100%);
-  --font-lo: "Boon Home", "Noto Sans Lao", Inter, sans-serif;
+  --font-lo: "Boon Home", "Noto Sans Lao", Inter, "Inter Fallback", sans-serif;
 }
 
 *,
@@ -44,7 +54,7 @@ body {
   margin: 0;
   background: #fff;
   color: var(--ink);
-  font-family: Inter, "Noto Sans Lao", sans-serif;
+  font-family: Inter, "Inter Fallback", "Noto Sans Lao", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 /* When Lao is active, every element uses Boon Home first. */

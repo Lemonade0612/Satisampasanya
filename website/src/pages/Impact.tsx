@@ -35,7 +35,7 @@ export default function Impact() {
             <div className={`tilt ${styles.chart}`} role="img" aria-label={i.chartLabel}>
               <div className={styles.chartHead}>
                 <span>{i.chartTitle}</span>
-                <span className="dot" style={{ color: "var(--green)" }}>{i.live}</span>
+                <span style={{ color: "var(--green)" }}><span className="dot" aria-hidden="true">● </span>{i.live}</span>
               </div>
               <svg viewBox="0 0 300 90" className={styles.spark} aria-hidden="true">
                 <path d="M0 75 C40 70 60 50 100 55 S160 30 200 35 S260 10 300 8" fill="none" stroke="#6018EE" strokeWidth="3" />

@@ -66,7 +66,7 @@ export default function Policies() {
           </nav>
 
           <div className={styles.body}>
-            <article id="privacy" data-reveal className={`${styles.card} ${styles.outlined}`}>
+            <article id="privacy" className={`${styles.card} ${styles.outlined}`}>
               <h2>{p.privacy.title}</h2>
               <p className={`lo ${styles.lao}`}>{p.privacy.lao}</p>
               {p.privacy.blocks.map((b, idx) => (
