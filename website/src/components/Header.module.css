@@ -1,0 +1,142 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--hairline);
+}
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  min-height: 44px;
+}
+.brand:hover {
+  color: var(--ink);
+}
+.logo {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  display: block;
+}
+.logo img {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  left: -16px;
+  top: -16px;
+}
+.name {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+.nav {
+  display: flex;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 11px;
+  color: var(--nav);
+  text-decoration: none;
+}
+.link:hover {
+  color: var(--purple);
+}
+.active {
+  color: var(--purple);
+}
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.lang {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--nav);
+  cursor: pointer;
+}
+.lang:hover {
+  border-color: var(--purple);
+}
+.cta {
+  font-size: 15px;
+  font-weight: 600;
+  padding: 0 20px;
+}
+.burger {
+  display: none;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+@media (max-width: 1080px) {
+  .name {
+    font-size: 18px;
+  }
+  .link {
+    padding: 0 8px;
+  }
+}
+@media (max-width: 900px) {
+  .burger {
+    display: inline-flex;
+  }
+  .cta {
+    display: none;
+  }
+  .nav {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    flex-direction: column;
+    gap: 0;
+    padding: 8px 20px 16px;
+    background: #fff;
+    border-bottom: 1px solid var(--hairline);
+    box-shadow: 0 24px 40px -24px rgba(20, 18, 58, 0.25);
+  }
+  .nav.open {
+    display: flex;
+  }
+  .link {
+    padding: 0 4px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 17px;
+  }
+}

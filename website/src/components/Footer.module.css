@@ -1,0 +1,72 @@
+.footer {
+  background: var(--purple);
+  color: #fff;
+}
+.footer a {
+  color: #fff;
+}
+.footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+.inner {
+  padding-top: 64px;
+  padding-bottom: 32px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.grid a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+}
+.brand {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+.blurb {
+  color: #e3daff;
+  line-height: 1.6;
+  max-width: 360px;
+}
+.head {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 24px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+.legal a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .grid > div:first-child {
+    grid-column: 1 / -1;
+  }
+}

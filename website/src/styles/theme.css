@@ -1,0 +1,196 @@
+/* Self-hosted Lao font (copied from the app). Required for all Lao text. */
+@font-face {
+  font-family: "Boon Home";
+  src: url("/fonts/boonhome-400.woff") format("woff");
+  font-weight: 400 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Boon Home";
+  src: url("/fonts/boonhome-700.woff") format("woff");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --purple: #6018ee;
+  --purple-dark: #4a0fc0;
+  --sky: #7abbff;
+  --accent: #4e9bf0;
+  --accent-text: #2f7fd6; /* darker accent for text: #4E9BF0 is only 2.9:1 on white */
+  --ink: #14123a;
+  --body: #514e70;
+  --nav: #3d3a5c;
+  --muted: #6b6890;
+  --lavender: #f6f4ff;
+  --border: #dcd8f0;
+  --hairline: #ece9f7;
+  --green: #067647;
+  --yellow: #b54708;
+  --red: #b42318;
+  --hero-bg: linear-gradient(120deg, #e9e3ff 0%, #f7f5ff 45%, #dcebff 100%);
+  --font-lo: "Boon Home", "Noto Sans Lao", Inter, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: Inter, "Noto Sans Lao", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+/* When Lao is active, every element uses Boon Home first. */
+html[lang="lo"] body,
+html[lang="lo"] button,
+html[lang="lo"] input,
+html[lang="lo"] select,
+html[lang="lo"] textarea {
+  font-family: var(--font-lo);
+}
+.lo {
+  font-family: var(--font-lo);
+}
+a {
+  color: var(--purple);
+}
+a:hover {
+  color: var(--purple-dark);
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+:focus-visible {
+  outline: 3px solid var(--purple);
+  outline-offset: 2px;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding-left: 32px;
+  padding-right: 32px;
+}
+.eyebrow {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--purple);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(96, 24, 238, 0.7);
+}
+.btn-primary {
+  background: var(--purple);
+  color: #fff;
+}
+.btn-primary:hover {
+  color: #fff;
+}
+.btn-light {
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+}
+.btn-light:hover {
+  color: var(--ink);
+}
+
+/* 3D tilt on hover */
+.tilt {
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s;
+}
+.tilt:hover {
+  transform: perspective(900px) rotateX(5deg) rotateY(-6deg) translateY(-6px);
+  box-shadow: 0 30px 60px -24px rgba(96, 24, 238, 0.35);
+}
+
+/* Scroll reveal: fade up one after another (see useReveal).
+   The animation uses fill-mode "backwards" so it never fights the hover tilt
+   or other animations once it has finished. */
+@keyframes up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+[data-reveal]:not(.is-in) {
+  opacity: 0;
+}
+[data-reveal].is-in {
+  animation: up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal]:not(.is-in) {
+    opacity: 1;
+  }
+}
