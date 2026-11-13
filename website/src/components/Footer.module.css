@@ -16,8 +16,8 @@
 .cols a:not(.sos):not(.scam) { display: flex; align-items: center; min-height: 44px; }
 .h { margin: 0 0 8px; font-size: 13px; font-weight: 800; letter-spacing: .1em; color: #b9c8ff; text-transform: uppercase; }
 .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; font-size: 20px; font-weight: 800; }
-.logo { width: 48px; height: 48px; overflow: hidden; position: relative; flex: none; }
-.logo img { filter: brightness(0) invert(1); position: absolute; width: 80px; height: 80px; left: -16px; top: -16px; max-width: none; }
+.logo { width: 48px; height: 48px; position: relative; flex: none; }
+.logo img { filter: drop-shadow(0 0 1.5px #fff) drop-shadow(0 0 7px rgba(255,255,255,.85)); position: absolute; width: 80px; height: 80px; left: -16px; top: -16px; max-width: none; }
 .blurb { margin: 0 0 20px; color: #e3daff; line-height: 1.65; max-width: 340px; }
 .social { display: flex; gap: 10px; }
 .social a { width: 44px; height: 44px; border-radius: 12px; background: rgba(255,255,255,.14); display: flex; align-items: center; justify-content: center; }
