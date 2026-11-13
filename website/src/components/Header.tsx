@@ -2,16 +2,26 @@ import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { useI18n } from "../i18n";
 import { APP_LINKS } from "../data/links";
+import Icon from "./Icon";
 import styles from "./Header.module.css";
 
 export default function Header() {
-  const { t, toggle } = useI18n();
+  const { t, lang, setLang } = useI18n();
   const [open, setOpen] = useState(false);
   const { pathname, hash } = useLocation();
 
   useEffect(() => setOpen(false), [pathname, hash]);
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
-  const link = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.link} ${styles.active}` : styles.link);
+  const cls = ({ isActive }: { isActive: boolean }) => (isActive ? `${styles.link} ${styles.active}` : styles.link);
 
   return (
     <header className={styles.header}>
@@ -23,31 +33,24 @@ export default function Header() {
           <span className={styles.name}>{t.brand}</span>
         </Link>
 
+        {open && <div className={styles.scrim} onClick={() => setOpen(false)} aria-hidden="true" />}
         <nav id="main-nav" aria-label={t.nav.mainNav} className={`${styles.nav} ${open ? styles.open : ""}`}>
-          <NavLink to="/" end className={link}>{t.nav.home}</NavLink>
-          <NavLink to="/about" className={link}>{t.nav.about}</NavLink>
-          <Link to="/#features" className={styles.link}>{t.nav.app}</Link>
-          <NavLink to="/impact" className={link}>{t.nav.impact}</NavLink>
-          <NavLink to="/help" className={link}>{t.nav.help}</NavLink>
-          <NavLink to="/feedback" className={link}>{t.nav.feedback}</NavLink>
+          <NavLink to="/" end className={cls}>{t.nav.home}</NavLink>
+          <NavLink to="/about" className={cls}>{t.nav.about}</NavLink>
+          <Link to="/#app" className={styles.link}>{t.nav.app}</Link>
+          <NavLink to="/impact" className={cls}>{t.nav.impact}</NavLink>
+          <NavLink to="/help" className={cls}>{t.nav.help}</NavLink>
+          <NavLink to="/feedback" className={cls}>{t.nav.feedback}</NavLink>
         </nav>
 
         <div className={styles.actions}>
-          <button type="button" className={styles.lang} onClick={toggle} aria-label={t.nav.langToggleLabel}>
-            {t.nav.langToggle}
-          </button>
+          <div className={styles.lang} role="group" aria-label={t.nav.langSwitch}>
+            <button type="button" aria-pressed={lang === "en"} aria-label={t.nav.langEn} lang="en" onClick={() => setLang("en")}>EN</button>
+            <button type="button" aria-pressed={lang === "lo"} aria-label={t.nav.langLo} lang="lo" className="lo" onClick={() => setLang("lo")}>ລາວ</button>
+          </div>
           <a className={`btn btn-primary ${styles.cta}`} href={APP_LINKS.download}>{t.nav.getApp}</a>
-          <button
-            type="button"
-            className={styles.burger}
-            aria-label={open ? t.nav.menuClose : t.nav.menuOpen}
-            aria-expanded={open}
-            aria-controls="main-nav"
-            onClick={() => setOpen((o) => !o)}
-          >
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-              {open ? <path d="M5 5l14 14M19 5L5 19" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-            </svg>
+          <button type="button" className={styles.burger} aria-label={open ? t.nav.menuClose : t.nav.menuOpen} aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen((o) => !o)}>
+            <Icon name={open ? "close" : "menu"} />
           </button>
         </div>
       </div>

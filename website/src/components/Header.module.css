@@ -1,143 +1,38 @@
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--hairline);
-}
-.bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding-top: 14px;
-  padding-bottom: 14px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--ink);
-  min-height: 44px;
-}
-.brand:hover {
-  color: var(--ink);
-}
-.logo {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  overflow: hidden;
-  display: block;
-}
-.logo img {
-  position: absolute;
-  width: 76px;
-  height: 76px;
-  left: -16px;
-  top: -16px;
-}
-.name {
-  font-weight: 800;
-  font-size: 20px;
-  letter-spacing: -0.02em;
-}
-.nav {
-  display: flex;
-  gap: 8px;
-  font-size: 15px;
-  font-weight: 600;
-}
-.link {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 11px;
-  color: var(--nav);
-  text-decoration: none;
-}
-.link:hover {
-  color: var(--purple);
-}
-.active {
-  color: var(--purple);
-}
-.actions {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-.lang {
-  min-height: 44px;
-  padding: 0 14px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: #fff;
-  font-weight: 600;
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--nav);
-  cursor: pointer;
-  white-space: nowrap;
-}
-.lang:hover {
-  border-color: var(--purple);
-}
-.cta {
-  font-size: 15px;
-  font-weight: 600;
-  padding: 0 20px;
-}
-.burger {
-  display: none;
-  width: 44px;
-  height: 44px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  background: #fff;
-  color: var(--ink);
-  cursor: pointer;
+.header { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid var(--hairline); }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 10px; padding-bottom: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); min-width: 0; }
+.logo { width: 44px; height: 44px; overflow: hidden; display: block; position: relative; flex: none; }
+.logo img { position: absolute; width: 76px; height: 76px; left: -16px; top: -16px; max-width: none; }
+.name { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; }
+.actions { display: flex; align-items: center; gap: 8px; }
+
+.lang { display: inline-flex; align-items: center; height: 44px; padding: 3px; border-radius: 999px; border: 1px solid var(--border); background: #fff; }
+.lang button { height: 36px; min-width: 44px; padding: 0 8px; border: 0; border-radius: 999px; background: transparent; color: var(--body); font-weight: 700; font-size: 13px; cursor: pointer; transition: background .2s, color .2s; }
+.lang button[aria-pressed="true"] { background: var(--purple); color: #fff; }
+
+.cta { padding: 0 14px; font-size: 14px; white-space: nowrap; }
+.burger { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: #fff; color: var(--ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; }
+
+/* Phone: slide-in panel */
+.scrim { position: fixed; inset: 0; top: 0; background: rgba(20,18,58,.45); z-index: 40; }
+.nav { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 85vw); z-index: 45; background: #fff; padding: 84px 20px 24px; display: flex; flex-direction: column; gap: 4px; transform: translateX(100%); visibility: hidden; transition: transform .3s var(--ease), visibility 0s .3s; box-shadow: -20px 0 50px -20px rgba(20,18,58,.35); }
+.nav.open { transform: none; visibility: visible; transition: transform .3s var(--ease); }
+.link { display: flex; align-items: center; min-height: 48px; padding: 0 14px; border-radius: 12px; color: var(--nav); font-weight: 600; text-decoration: none; font-size: 17px; }
+.link:hover { background: var(--lavender); color: var(--nav); }
+.active { color: var(--purple); background: var(--lavender); }
+
+@media (max-width: 479px) { .name { display: none; } }
+@media (max-width: 899px) { .actions { position: relative; z-index: 46; } }
+
+@media (min-width: 900px) {
+  .burger, .scrim { display: none; }
+  .nav { position: static; width: auto; padding: 0; flex-direction: row; gap: 4px; transform: none; visibility: visible; box-shadow: none; background: transparent; }
+  .link { font-size: 15px; padding: 0 12px; }
+  .link:hover { background: transparent; color: var(--purple); }
+  .active { background: transparent; }
+  .actions { gap: 10px; }
+  .cta { padding: 0 20px; font-size: 16px; }
 }
 
-@media (max-width: 1080px) {
-  .name {
-    font-size: 18px;
-  }
-  .link {
-    padding: 0 8px;
-  }
-}
-@media (max-width: 900px) {
-  .burger {
-    display: inline-flex;
-  }
-  .actions .cta {
-    display: none;
-  }
-  .nav {
-    display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    flex-direction: column;
-    gap: 0;
-    padding: 8px 20px 16px;
-    background: #fff;
-    border-bottom: 1px solid var(--hairline);
-    box-shadow: 0 24px 40px -24px rgba(20, 18, 58, 0.25);
-  }
-  .nav.open {
-    display: flex;
-  }
-  .link {
-    padding: 0 4px;
-    border-bottom: 1px solid var(--hairline);
-    font-size: 17px;
-  }
-}
+/* backdrop-filter would trap the fixed mobile panel, so only use it on desktop */
+@media (min-width: 900px) { .header { background: rgba(255,255,255,.88); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); } }

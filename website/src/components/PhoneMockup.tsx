@@ -1,84 +1,61 @@
-import { useI18n } from "../i18n";
-import { STREAK_DAYS } from "../data/stats";
+import Icon from "./Icon";
 import styles from "./PhoneMockup.module.css";
 
-// Illustrative app feed. The Lao post below is sample content from the design.
-export default function PhoneMockup() {
-  const { t } = useI18n();
-  const p = t.home.phone;
+// Illustration of the real app's feed. Always Lao in both site languages (it copies the app).
+export default function PhoneMockup({ label }: { label: string }) {
   return (
-    <div className={styles.scene} role="img" aria-label={p.mock}>
-      <div className={styles.stage}>
-        <svg className={styles.hex} viewBox="0 0 100 100" aria-hidden="true">
-          <polygon
-            points="50,3 91,26.5 91,73.5 50,97 9,73.5 9,26.5"
-            fill="none"
-            stroke="#7ABBFF"
-            strokeWidth=".6"
-            strokeDasharray="2 2"
-          />
-        </svg>
-
-        <div className={styles.phone} aria-hidden="true">
-          <div className={styles.screen}>
-            <div className={styles.top}>
-              <span className={styles.logo}>Sati</span>
-              <span className={`lo ${styles.langTag}`}>ລາວ · EN</span>
+    <div className={`${styles.phone} lo`} role="img" aria-label={label}>
+      <div className={styles.screen}>
+        <div className={styles.notch}><span /></div>
+        <div className={styles.top}>
+          <span className={styles.mark}><img src="/images/logo.png" alt="" width={44} height={44} loading="lazy" /></span>
+          <span className={styles.sep} />
+          <span className={styles.pill}>ໄວໜຸ່ມ <Icon name="chevron" size={10} strokeWidth={1.9} /></span>
+          <span className={styles.grow} />
+          <span className={styles.bell}><Icon name="bell" size={18} strokeWidth={1.9} /><i>3</i></span>
+          <Icon name="globe" size={18} strokeWidth={1.9} />
+        </div>
+        <div className={styles.tabs}>
+          <span className={styles.tabOn}>ສຳລັບທ່ານ</span><span>ຕິດຕາມ</span><span>ຫຼ້າສຸດ</span><span>ຍອດນິຍົມ</span>
+        </div>
+        <div className={styles.feed}>
+          <div className={styles.post}>
+            <div className={styles.who}>
+              <span className={styles.av} style={{ background: "#E8590C" }}>ນ</span>
+              <div><b>ນ້ອຍ ພົມມະຈັນ</b><small>2 ຊົ່ວໂມງກ່ອນ · #ວຽກເຮັດງານທຳ</small></div>
             </div>
-            <div className={styles.chips}>
-              <span className={styles.chipOn}>{p.forYou}</span>
-              <span className={styles.chip}>#jobs</span>
-              <span className={styles.chip}>#money</span>
-            </div>
-
-            <div className={styles.post}>
-              <div className={styles.meta}>
-                <span>Noy · #money</span>
-                <span style={{ color: "var(--yellow)" }}>{p.yellow}</span>
+            <p className={styles.txt}>ມີຄົນສົ່ງຂໍ້ຄວາມມາບອກວ່າ ມີວຽກຢູ່ຕ່າງປະເທດ ເງິນເດືອນສູງ ບໍ່ຕ້ອງມີປະສົບການ ແທ້ບໍ?</p>
+            <div className={styles.warn}>
+              <div className={styles.warnHead}>
+                <span className={styles.warnIc}><Icon name="warning" size={14} strokeWidth={2.2} /></span>
+                <div><b>ອາດເປັນການຫຼອກລວງ</b><small>Sati ກວດສອບໂພສນີ້ແລ້ວ</small></div>
               </div>
-              <p>{p.post1}</p>
-              <div className={styles.track}>
-                <div className={styles.fill} />
-              </div>
+              <div className={styles.tags}><span>ວຽກປອມ</span><span>ເງິນເດືອນເກີນຈິງ</span></div>
+              <div className={styles.why}>ເບິ່ງວ່າເປັນຫຍັງ ›</div>
             </div>
-
-            <div className={styles.post}>
-              <div className={styles.meta}>
-                <span>Keo · #jobs</span>
-                <span style={{ color: "var(--red)" }}>{p.red}</span>
-              </div>
-              <p className="lo" style={{ lineHeight: 1.5 }}>
-                ວຽກຕ່າງປະເທດ ເງິນເດືອນສູງ ບໍ່ຕ້ອງມີປະສົບການ
-              </p>
+            <div className={styles.counts}><span>24 ຄົນມັກ</span><span>8 ຄຳເຫັນ · 5 ແບ່ງປັນ</span></div>
+            <div className={styles.acts}>
+              <span><Icon name="heart" size={14} strokeWidth={1.9} />ມັກ</span>
+              <span><Icon name="chat" size={14} strokeWidth={1.9} />ຄຳເຫັນ</span>
+              <span><Icon name="shield" size={14} strokeWidth={1.9} />ເຕືອນ</span>
+              <span><Icon name="share" size={14} strokeWidth={1.9} />ແບ່ງປັນ</span>
             </div>
-
-            <div className={styles.post}>
-              <div className={styles.meta}>
-                <span>Mina · #study</span>
-                <span style={{ color: "var(--green)" }}>{p.green}</span>
-              </div>
-              <p>{p.post3}</p>
+          </div>
+          <div className={styles.post}>
+            <div className={styles.who}>
+              <span className={styles.av} style={{ background: "#1971C2" }}>ມ</span>
+              <div><b>ມີນາ</b><small>5 ຊົ່ວໂມງກ່ອນ · #ການສຶກສາ</small></div>
             </div>
-
-            <div className={styles.tabs}>
-              {p.tabs.map((tab, i) => (
-                <span key={tab} style={i === 0 ? { color: "var(--purple)" } : undefined}>
-                  {tab}
-                </span>
-              ))}
-            </div>
+            <p className={styles.txt}>ກວດກ່ອນສະໝັກທຶນ: ເບິ່ງເວັບໄຊທາງການຂອງມະຫາວິທະຍາໄລສະເໝີ</p>
+            <p className={styles.ok}><Icon name="shieldCheck" size={15} strokeWidth={2.2} />Sati: ຄຳແນະນຳທີ່ປອດໄພ</p>
           </div>
         </div>
-
-        <div className={`${styles.badge} ${styles.badgeA}`}>
-          <div className={styles.badgeBox}>
-            {t.home.badgeVerified} <span style={{ color: "var(--green)" }}>{t.home.badgeVerifiedTime}</span>
-          </div>
-        </div>
-        <div className={`${styles.badge} ${styles.badgeB}`}>
-          <div className={`${styles.badgeBox} ${styles.badgePurple}`}>
-            {t.home.badgeStreak} {STREAK_DAYS} {t.home.badgeStreakUnit}
-          </div>
+        <div className={styles.nav}>
+          <span className={styles.navOn}><Icon name="home" size={19} strokeWidth={2.6} />ໜ້າຫຼັກ</span>
+          <span><Icon name="search" size={19} strokeWidth={1.9} />ຄົ້ນຫາ</span>
+          <span className={styles.navAdd}><i><Icon name="plus" size={20} strokeWidth={2.6} /></i>ໂພສ</span>
+          <span><Icon name="gamepad" size={19} strokeWidth={1.9} />ເກມ</span>
+          <span><Icon name="user" size={19} strokeWidth={1.9} />ຂ້ອຍ</span>
         </div>
       </div>
     </div>

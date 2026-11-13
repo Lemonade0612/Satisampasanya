@@ -8,7 +8,7 @@ const KEY = "sati-lang";
 interface Ctx {
   lang: Lang;
   t: Dict;
-  toggle: () => void;
+  setLang: (l: Lang) => void;
 }
 const I18nContext = createContext<Ctx | null>(null);
 
@@ -38,7 +38,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     () => ({
       lang,
       t: lang === "lo" ? lo : en,
-      toggle: () => setLang((l) => (l === "en" ? "lo" : "en")),
+      setLang,
     }),
     [lang],
   );
