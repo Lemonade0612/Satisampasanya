@@ -23,7 +23,7 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
   setBusy(true);setError('');
   const selectedKind=kind,question=text;
   try{
-   const result=await request<AssistantResult>('/assistant','POST',{text:question,kind:selectedKind,mode,band});
+   const result=await request<AssistantResult>('/assistant','POST',{text:question,kind:selectedKind,mode,band,lang});
    setMessages(messages=>[...messages,{question,result}]);setText('');
    setRemaining(remaining=>({...remaining,[selectedKind]:result.remaining}));
   }catch(error){setError((error as Error).message);}

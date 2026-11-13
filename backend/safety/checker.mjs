@@ -46,8 +46,9 @@ export async function checkContent(text,{reply=modelReply,onProgress=()=>{}}={})
   return guardVerdict(repaired,text);
  }
 }
-export async function askSafety(text,{reply=modelReply,band='youth'}={}){
- const language=inputLanguage(text);let helplines=[];
+export async function askSafety(text,{reply=modelReply,band='youth',lang}={}){
+ // The language chosen in the app wins, so Sati answers in it whatever the question was typed in.
+ const language=lang==='lo'||lang==='en'?lang:inputLanguage(text);let helplines=[];
  try{helplines=JSON.parse(readSafetyConfig().helplines);}catch{}
  if(!Array.isArray(helplines))helplines=[];
  helplines=helplines.filter(item=>typeof item?.name==='string'&&typeof item?.phone==='string');
