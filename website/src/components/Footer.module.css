@@ -7,7 +7,7 @@
 .ctaTitle { margin: 0 0 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 .ctaSub { margin: 0; color: #e3daff; font-size: 16px; }
 .stores { display: flex; gap: 12px; flex-wrap: wrap; }
-.stores a { display: flex; flex-direction: column; justify-content: center; min-height: 54px; padding: 0 20px; border-radius: 14px; background: #fff; color: var(--ink); }
+.stores a { display: flex; flex-direction: column; justify-content: center; width: 164px; height: 54px; padding: 0 18px; border-radius: 14px; background: #fff; color: var(--ink); }
 .stores small { font-size: 10px; color: var(--body); }
 .stores b { font-size: 16px; font-weight: 800; }
 

@@ -12,7 +12,7 @@
 .heroBtns { display: flex; gap: 12px; flex-wrap: wrap; }
 .heroBtns :global(.btn) { min-height: 52px; padding: 0 24px; }
 .stores { display: flex; gap: 10px; flex-wrap: wrap; }
-.stores a { display: flex; flex-direction: column; justify-content: center; min-height: 52px; padding: 0 18px; border-radius: 12px; background: var(--ink); color: #fff; text-decoration: none; }
+.stores a { display: flex; flex-direction: column; justify-content: center; width: 164px; height: 54px; padding: 0 18px; border-radius: 12px; background: var(--ink); color: #fff; text-decoration: none; }
 .stores a:hover { color: #fff; }
 .stores small { font-size: 10px; }
 .stores b { font-size: 16px; font-weight: 700; }

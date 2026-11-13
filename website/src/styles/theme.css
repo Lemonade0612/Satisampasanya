@@ -42,8 +42,8 @@
   --red: #b42318;
   --sos: #d92d20;
   --hero-bg: linear-gradient(120deg, #e9e3ff 0%, #f7f5ff 45%, #dcebff 100%);
-  --font-lo: "Boon Home", "Noto Sans Lao", sans-serif;
-  --font-en: Inter, "Inter Fallback", sans-serif;
+  --font-lo: "Boon Home", "Noto Sans Lao", Inter, sans-serif;
+  --font-en: "Boon Home", Inter, "Inter Fallback", sans-serif;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --gutter: 20px;
 }
@@ -62,11 +62,7 @@ body {
   overflow-x: hidden;
 }
 /* One language at a time: when Lao is active every element uses Boon Home. */
-html[lang="lo"] body,
-html[lang="lo"] button,
-html[lang="lo"] input,
-html[lang="lo"] select,
-html[lang="lo"] textarea { font-family: var(--font-lo); }
+body, button, input, select, textarea { font-family: var(--font-lo); }
 /* Always-Lao content (phone mockups, Lao document titles). */
 .lo { font-family: var(--font-lo) !important; }
 
