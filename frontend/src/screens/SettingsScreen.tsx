@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { ArrowLeft, Check, ChevronRight, FileText, Info, Languages, Accessibility, LogOut, Palette, ShieldCheck, Type, Users } from "lucide-react";
+import { ArrowLeft, Check, ChevronRight, FileText, Info, Languages, ALargeSmall, LogOut, Palette, ShieldCheck, Type, Users } from "lucide-react";
 import { SatiLogo } from "../components/shared/Brand";
 import { bandLabel } from "../components/shared/BandSheet";
 import { useBand } from "../lib/band";
-import { setSimpleMode, useSimpleMode } from "../lib/simpleMode";
+import { setEasyMode, useEasyMode } from "../lib/easyMode";
 import { setTextSize, useTextSize, TEXT_SCALE, type TextSize } from "../lib/textSize";
 import { PolicyBody, POLICY_TITLES, EFFECTIVE, type PolicyKind } from "../components/shared/PolicyText";
 import type { Lang, ThemeMode } from "../types";
@@ -49,7 +49,7 @@ export function SettingsScreen({ lang, onLangChange, themeMode, onThemeChange, o
   const lo = lang === "lo";
   const band = useBand();
   const size = useTextSize();
-  const simple = useSimpleMode();
+  const simple = useEasyMode();
   const [legal, setLegal] = useState<null | PolicyKind>(null);
   if (legal) return <LegalPage lang={lang} kind={legal} onBack={() => setLegal(null)} />;
 
@@ -84,9 +84,9 @@ export function SettingsScreen({ lang, onLangChange, themeMode, onThemeChange, o
             <Segmented<ThemeMode> label={lo ? "ຮູບແບບສີ" : "Theme"} value={themeMode} onChange={onThemeChange}
               options={[{ value: "light", label: lo ? "ແຈ້ງ" : "Light" }, { value: "dark", label: lo ? "ມືດ" : "Dark" }, { value: "system", label: lo ? "ອັດຕະໂນມັດ" : "Auto" }]} />
           </div>
-          <button type="button" role="switch" aria-checked={simple} onClick={() => setSimpleMode(!simple)} className="w-full min-h-[60px] flex items-center gap-3 px-4 py-2 text-left">
-            <Chip><Accessibility size={18} /></Chip>
-            <span className="flex-1 font-semibold">{lo ? "ໂໝດງ່າຍ" : "Simple mode"}</span>
+          <button type="button" role="switch" aria-checked={simple} onClick={() => setEasyMode(!simple)} className="w-full min-h-[60px] flex items-center gap-3 px-4 py-2 text-left">
+            <Chip><ALargeSmall size={18} /></Chip>
+            <span className="flex-1 font-semibold">{lo ? "ໂໝດໃຊ້ງ່າຍ" : "Easy mode"}</span>
             <span aria-hidden className={`w-12 h-7 rounded-full p-1 transition-colors ${simple ? "bg-primary" : "bg-[#D9DAE5] dark:bg-muted"}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${simple ? "translate-x-5" : ""}`} /></span>
           </button>
         </Section>

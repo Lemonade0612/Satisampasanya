@@ -265,7 +265,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const data=await body(req);
         if(!['text','post'].includes(data.kind)||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
         const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
-        return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto',band:askBand},assistantServices));
+        return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto',band:askBand,lang:data.lang==='lo'||data.lang==='en'?data.lang:undefined},assistantServices));
       }
       if (req.method === 'POST' && path === '/api/translate') {
         const data=await body(req),value=text(data.text,2000,true);
@@ -312,7 +312,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         }
         if (data.followed !== undefined) { if (!Array.isArray(data.followed) || data.followed.length>10 || data.followed.some(t=>!validTag(t))) fail('Invalid topics.'); profile.followed=cleanTags(data.followed); }
         if(data.following!==undefined){if(!Array.isArray(data.following)||data.following.length>200||data.following.some(id=>typeof id!=='string'||id===user.id||!db.prepare('SELECT id FROM users WHERE id=?').get(id)))fail('Choose valid community accounts to follow.');profile.following=[...new Set(data.following)];}
-        if (data.simpleMode !== undefined) { if (typeof data.simpleMode !== 'boolean') fail('Invalid setting.'); profile.simpleMode=data.simpleMode; }
+        if (data.easyMode !== undefined) { if (typeof data.easyMode !== 'boolean') fail('Invalid setting.'); profile.easyMode=data.easyMode; delete profile.simpleMode; }
         for (const k of ['avatar','banner']) if (data[k] !== undefined) profile[k]=image(data[k]) || null;
         db.prepare('UPDATE users SET name=?,profile=? WHERE id=?').run(name,JSON.stringify(profile),user.id); broadcast();
         return send(res,200,userView(db.prepare('SELECT * FROM users WHERE id=?').get(user.id)));

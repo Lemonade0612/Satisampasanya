@@ -103,8 +103,8 @@ export interface CurrentUser {
   following?: string[];
   avatar?: string | null;
   banner?: string | null;
-  /** Elder 'Simple mode' shell; unset = follow the band. */
-  simpleMode?: boolean;
+  /** Easy mode shell (formerly 'simpleMode'); unset = follow the band. */
+  easyMode?: boolean;
   name: string;
   email: string;
 }

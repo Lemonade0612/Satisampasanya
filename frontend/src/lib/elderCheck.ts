@@ -1,4 +1,4 @@
-// Message check for Simple mode. Runs on the phone, so it works offline and for guests.
+// Message check for Easy mode. Runs on the phone, so it works offline and for guests.
 // It looks for the patterns behind the scams elders meet most: asking for a code, asking for money,
 // pressure to act now, a prize, someone claiming authority, a relative in trouble, a link or an app.
 // It is a cautious screen, not a verdict from a person, and the result always says to ask family first.

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ChevronRight, ClipboardPaste, Gift, Heart, MessageSquareWarning, Pause, Phone, PhoneCall, Plane, Play, RotateCcw, ShieldCheck, Smartphone, TrendingUp, type LucideIcon } from 'lucide-react';
 import { laoDayNumber } from '../daily/lib/storage';
 import { hasLaoAudio, preloadSpeech, speakParts, stopAll } from '../daily/lib/useSpeak';
-import { getFamilyPhone, setSimpleMode, telLink } from '../../lib/simpleMode';
+import { getFamilyPhone, setEasyMode, telLink } from '../../lib/easyMode';
 import type { ElderVerdict } from '../../lib/elderCheck';
 import { BottomBar, Header, MainButton, Page, Steps, useElderSpeak, type Tab } from './ui';
 import { ET, VERDICT, VIDEOS, durationLabel, tipForDay, videosForDay, type ElderVideo } from './text';
@@ -232,7 +232,7 @@ function Result({ verdict, onBack, onAgain }: { verdict: ElderVerdict; onBack: (
 }
 
 // ---------- 5. Learn ----------
-// Only the tip card: the games keep small text and timers for other bands, so they stay out of Simple mode.
+// Only the tip card: the games keep small text and timers for other bands, so they stay out of Easy mode.
 function Learn({ day }: { day: number }) {
   const tip = tipForDay(day);
   return (
@@ -243,7 +243,7 @@ function Learn({ day }: { day: number }) {
         <Steps steps={tip.steps} />
         <p className="text-[1.25rem] font-bold text-[#3B0FA0]">{ET.slogan}</p>
       </section>
-      <button type="button" onClick={() => { stopAll(); setSimpleMode(false); }} className="self-center min-h-[4.5rem] px-4 text-[1.125rem] font-bold text-[#3B0FA0] underline mt-2">{ET.full_app}</button>
+      <button type="button" onClick={() => { stopAll(); setEasyMode(false); }} className="self-center min-h-[4.5rem] px-4 text-[1.125rem] font-bold text-[#3B0FA0] underline mt-2">{ET.full_app}</button>
     </Page>
   );
 }

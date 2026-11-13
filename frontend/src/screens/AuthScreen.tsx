@@ -79,7 +79,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
               className={`text-left rounded-2xl border bg-background p-3 min-h-11 active:scale-[0.98] transition-all font-lao ${easy ? 'border-[#2563EB] ring-1 ring-[#2563EB]' : 'border-[#E6E6F0] dark:border-border'}`}>
               <span className="flex items-center gap-2 mb-2">
                 <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#DCEBFE] text-[#2563EB] flex items-center justify-center"><ALargeSmall size={20} /></span>
-                <span className="flex-1 min-w-0 font-semibold text-sm text-foreground leading-tight">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
+                <span className="flex-1 min-w-0 font-semibold text-sm text-foreground leading-tight">{lo ? 'ໂໝດໃຊ້ງ່າຍ' : 'Easy mode'}</span>
                 <span aria-hidden className={`w-10 h-6 shrink-0 rounded-full p-0.5 transition-colors ${easy ? 'bg-[#2563EB]' : 'bg-[#D9DAE5]'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${easy ? 'translate-x-4' : ''}`} /></span>
               </span>
               <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຕົວອັກສອນໃຫຍ່ ແລະ ໜ້າຈໍງ່າຍ ສຳລັບຜູ້ສູງອາຍຸ' : 'Bigger text and simpler screens for elders'}</span>

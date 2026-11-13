@@ -764,16 +764,16 @@ test('band feeds: one band per post, and a repost follows the original post band
   }finally{await f.close();}
 });
 
-test('Simple mode is saved on the profile and survives a new session',async()=>{
+test('Easy mode is saved on the profile and survives a new session',async()=>{
  const f=await fixture();try{
   const user=await f.register();
-  assert.equal(user.user.simpleMode,undefined);
-  assert.equal((await f.call('/profile','PATCH',{simpleMode:'yes'},user.token)).status,400);
-  assert.equal((await f.call('/profile','PATCH',{simpleMode:true},user.token)).value.simpleMode,true);
+  assert.equal(user.user.easyMode,undefined);
+  assert.equal((await f.call('/profile','PATCH',{easyMode:'yes'},user.token)).status,400);
+  assert.equal((await f.call('/profile','PATCH',{easyMode:true},user.token)).value.easyMode,true);
   const again=(await f.call('/auth/login','POST',{email:'alice@example.com',password:'correct-password'})).value;
-  assert.equal(again.user.simpleMode,true);
-  assert.equal((await f.call('/profile','PATCH',{simpleMode:false},again.token)).value.simpleMode,false);
-  assert.equal((await f.call('/auth/me','GET',undefined,again.token)).value.simpleMode,false);
+  assert.equal(again.user.easyMode,true);
+  assert.equal((await f.call('/profile','PATCH',{easyMode:false},again.token)).value.easyMode,false);
+  assert.equal((await f.call('/auth/me','GET',undefined,again.token)).value.easyMode,false);
  }finally{await f.close();}
 });
 
@@ -796,7 +796,7 @@ test('user posts never reach Elders unless an Elder wrote them, and stay in the 
 test('seed posts visible per band match the agreed counts',async()=>{
  const f=await fixture({seed:true});try{
   const count=async b=>(await f.call(`/posts?band=${b}`)).value.length;
-  // Kids: only reviewed intensity-1 posts. Elders see no feed in Simple mode; these are the posts when it is off.
+  // Kids: only reviewed intensity-1 posts. Elders see no feed in Easy mode; these are the posts when it is off.
   assert.deepEqual({kids:await count('kids'),youth:await count('youth'),adult:await count('adult'),elder:await count('elder')},{kids:1,youth:17,adult:13,elder:8});
   const seed=JSON.parse((await import('node:fs')).readFileSync(new URL('./seed.json',import.meta.url),'utf8'));
   assert.ok(seed.filter(p=>p.bands?.length>1).length<=2,'at most two shared seed posts');

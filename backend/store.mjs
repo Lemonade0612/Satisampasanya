@@ -48,7 +48,9 @@ export function openStore(filename, seed = false) {
 }
 
 export function userView(row) {
-  const profile = JSON.parse(row.profile);
+  const { simpleMode, ...profile } = JSON.parse(row.profile);
+  // 'simpleMode' is the old name of easyMode; accounts saved before the rename keep their setting.
+  if (profile.easyMode === undefined && typeof simpleMode === 'boolean') profile.easyMode = simpleMode;
   return { ...profile, id: row.id, name: row.name, email: row.email, ageBand: row.age_band ?? null, handle: JSON.parse(row.profile||'{}').handle || `@sati_${row.id.slice(0, 8)}` };
 }
 export function authorView(row) {

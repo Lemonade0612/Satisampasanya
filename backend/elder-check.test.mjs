@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { checkElderMessage } from '../frontend/src/lib/elderCheck.ts';
 
-// Regression set for the on-phone message check in Simple mode (Lao and English).
+// Regression set for the on-phone message check in Easy mode (Lao and English).
 // scam = red, caution = amber, safe = green.
 const CASES = [
   // Scams

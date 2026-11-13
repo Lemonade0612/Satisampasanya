@@ -15,7 +15,7 @@ export const ET = {
   paste_help: "ຄັດລອກຂໍ້ຄວາມ ຈາກ SMS ຫຼື Messenger ແລ້ວກົດ 'ວາງຂໍ້ຄວາມ'", run: 'ກວດເລີຍ', checking: 'ກຳລັງກວດ...',
   result_title: 'ຜົນການກວດ', do_this: 'ຄວນເຮັດແນວນີ້', call: 'ໂທຫາລູກຫຼານ', again: 'ກວດອີກ',
   learn_title: 'ຮຽນມື້ນີ້', tip_label: 'ຄຳແນະນຳມື້ນີ້', full_app: 'ເປີດແອັບເຕັມ',
-  elder_entry: 'ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ',
+  elder_entry: 'ຜູ້ສູງອາຍຸ / ໂໝດໃຊ້ງ່າຍ',
   slogan: 'ກວດກ່ອນ ເຊື່ອ',
 } as const;
 

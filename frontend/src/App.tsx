@@ -30,7 +30,7 @@ import { canInteract, postsForBand, setBand, setBandSaver, useBand, useHasBand }
 import { SignupPrompt, type SignupReason } from "./components/shared/QuickSignup";
 import { GuestProfile } from "./screens/GuestProfile";
 import { ElderApp } from "./features/elder/ElderApp";
-import { setSimpleModeAccount, useSimpleMode } from "./lib/simpleMode";
+import { setEasyModeAccount, useEasyMode } from "./lib/easyMode";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
 
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
@@ -54,7 +54,7 @@ export default function App() {
   // The age band filters what every screen shows. Kids get a read-only, verified-only feed.
   const band = useBand();
   const textSize = useTextSize();
-  const simple = useSimpleMode();
+  const simple = useEasyMode();
   const [dailyStart, setDailyStart] = useState<Launch | null>(null);
   const interact = canInteract(band);
   const posts = useMemo(() => postsForBand(allPosts, band), [allPosts, band]);
@@ -70,7 +70,7 @@ export default function App() {
   const [actionError, setActionError] = useState('');
   // Guest mode: browse the feed, search, games and Daily without an account. Writing anything opens the
   // quick sign-up prompt. 'offline' (server unreachable) is Sati Daily only, with bundled scenarios.
-  // 'ຜູ້ສູງອາຍຸ / ໂໝດງ່າຍ' on the welcome screen starts a guest session that this phone remembers.
+  // 'ຜູ້ສູງອາຍຸ / ໂໝດໃຊ້ງ່າຍ' on the welcome screen starts a guest session that this phone remembers.
   const [guest, setGuest] = useState<null | 'guest' | 'offline'>(() => (readPref(ELDER_GUEST) === '1' ? 'guest' : null));
   const [bandSheet, setBandSheet] = useState(false);
   const bandChosen = useHasBand();
@@ -80,7 +80,7 @@ export default function App() {
   // Every user change goes through here: progress is keyed by account, and the account's band wins.
   const applyUser = useCallback((value: CurrentUser | null) => {
     setDailyAccount(value?.id ?? null);
-    setSimpleModeAccount(value?.id ?? null, value?.simpleMode);
+    setEasyModeAccount(value?.id ?? null, value?.easyMode);
     if (value?.id) { writePref(LAST_ACCOUNT, value.id); dropPref(ELDER_GUEST); }
     if (value?.ageBand) setBand(value.ageBand);
     setUser(value);
@@ -206,7 +206,7 @@ export default function App() {
 
   if (sessionLoading) return <div className="app-shell flex items-center justify-center" role="status">{lang === 'lo' ? 'ກຳລັງໂຫຼດ…' : 'Loading your account…'}</div>;
 
-  // Simple mode (Elders by default, or switched on in Profile): the elder shell, Home / Check / Learn, no feed.
+  // Easy mode (Elders by default, or switched on in Profile): the elder shell, Home / Check / Learn, no feed.
   // Also offline: its message check runs on the phone.
   if (simple && (user || guest)) return (
     <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden"><ElderApp lang={lang} /></div>
@@ -333,7 +333,7 @@ export default function App() {
           onClose={() => setExpandedImage(null)}
         />
       )}
-      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
+      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton lang={lang} onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
       {/* Existing accounts without a band choose once after sign-in; afterwards it opens from the header or Settings. */}
       {(user ? !user.ageBand : !bandChosen) || bandSheet ? <BandSheet lang={lang} onClose={(user ? user.ageBand : bandChosen) ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} /> : null}
       {signupReason && !user && <SignupPrompt lang={lang} reason={signupReason} onClose={() => setSignupReason(null)} onDone={u => { setSignupReason(null); setActionError(''); applyUser(u); }} onEmail={() => { setSignupReason(null); setGuest(null); }} />}
