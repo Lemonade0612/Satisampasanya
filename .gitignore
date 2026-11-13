@@ -21,3 +21,7 @@ translation/__pycache__/
 backend/data/demo-accounts.json
 
 .playwright-mcp/
+
+# website
+website/node_modules
+website/dist
