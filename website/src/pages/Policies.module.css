@@ -1,0 +1,116 @@
+.layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 56px;
+  align-items: start;
+  padding-top: 64px;
+  padding-bottom: 104px;
+}
+.side {
+  position: sticky;
+  top: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sideLink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  background: var(--lavender);
+  color: var(--nav);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s;
+}
+.sideLink:hover {
+  color: var(--purple);
+}
+.on,
+.on:hover {
+  background: var(--purple);
+  color: #fff;
+  font-weight: 700;
+}
+.q {
+  margin-top: 18px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--nav);
+}
+.card {
+  padding: 36px;
+  border-radius: 24px;
+  scroll-margin-top: 100px;
+}
+.outlined {
+  border: 1px solid var(--border);
+}
+.lavender {
+  background: var(--lavender);
+}
+.blue {
+  background: #eef5ff;
+}
+.card h2 {
+  font-size: 28px;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.card h3 {
+  font-size: 18px;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+.card h3 ~ p,
+.card h3 + p {
+  margin-bottom: 14px;
+}
+.card > div:last-of-type > p {
+  margin-bottom: 0;
+}
+.lao {
+  margin-bottom: 18px;
+  color: var(--purple);
+  font-weight: 600;
+}
+.dd {
+  padding: 20px;
+  border-radius: 16px;
+  background: #fff;
+}
+.dd strong {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-top: 36px;
+    padding-bottom: 64px;
+  }
+  .side {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .q {
+    width: 100%;
+    margin-top: 6px;
+  }
+  .card {
+    padding: 24px;
+  }
+}
