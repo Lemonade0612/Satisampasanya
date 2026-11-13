@@ -1,0 +1,75 @@
+.live { width: min(360px, 100%); background: #fff; border-radius: 24px; padding: 22px; box-shadow: 0 50px 90px -30px rgba(96,24,238,.4); }
+@media (min-width: 1024px) { .live { transform: rotateX(10deg) rotateY(-14deg); } }
+.liveHead { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--purple); margin-bottom: 14px; text-transform: uppercase; }
+.liveDot { color: var(--green); animation: pulse 1.6s ease-in-out infinite; }
+.spark { width: 100%; height: 100px; }
+.liveGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+.liveGrid > div { border-radius: 14px; padding: 14px; }
+.liveGrid p { margin: 0; font-size: 12px; font-weight: 700; color: var(--body); text-transform: uppercase; }
+.liveGrid b { display: block; margin-top: 4px; font-size: 26px; }
+
+.nums { margin-top: 24px; }
+.num { padding: 24px; border-radius: 22px; color: #fff; box-shadow: 0 30px 60px -30px rgba(96,24,238,.6); }
+.numV { font-size: 40px; font-weight: 800; letter-spacing: -0.03em; }
+.numT { margin: 6px 0 0; font-weight: 700; font-size: 16px; }
+.numS { margin: 2px 0 0; font-size: 14px; color: #eaf0ff; }
+
+.chart { margin-top: 22px; padding: 22px; border-radius: 24px; background: #fff; border: 1px solid var(--hairline); box-shadow: 0 30px 60px -45px rgba(96,24,238,.4); }
+.chartHead { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+.chartT { margin: 0; font-weight: 800; font-size: 20px; }
+.chartN { margin: 2px 0 0; font-size: 13px; color: var(--muted); }
+.tabs { display: flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--lavender); max-width: 100%; }
+.tabs button { min-height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; font-weight: 700; font-size: 14px; color: var(--body); cursor: pointer; transition: background .2s, color .2s; }
+.tabs .tabOn { background: var(--purple); color: #fff; }
+.bars { position: relative; height: 260px; }
+.grid { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; pointer-events: none; }
+.grid div { border-top: 1px dashed var(--hairline); }
+.cols { position: relative; display: flex; align-items: flex-end; gap: 8px; height: 100%; }
+.col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 10px; }
+.bv { padding: 4px 8px; border-radius: 999px; background: var(--lilac); color: var(--purple); font-size: 12px; font-weight: 800; transition: background .25s, color .25s; }
+.bvOn { background: var(--purple); color: #fff; }
+.bar { width: 64%; border-radius: 14px 14px 6px 6px; background: linear-gradient(180deg,#9f7bff,#c9e2ff); transform-origin: bottom; animation: grow .9s var(--ease) both; transition: filter .25s; }
+.barOn { background: linear-gradient(180deg,#6018ee,#4e9bf0); box-shadow: 0 18px 30px -12px rgba(96,24,238,.6); }
+.col:hover .bar { filter: saturate(1.4) brightness(1.05); }
+.col:hover .bv { background: var(--purple); color: #fff; }
+@keyframes grow { from { transform: scaleY(.06); } to { transform: scaleY(1); } }
+.months { display: flex; gap: 8px; padding: 12px 0 0; border-top: 2px solid var(--hairline); }
+.months span { flex: 1; text-align: center; font-size: 14px; font-weight: 600; color: var(--muted); }
+.months .moOn { font-weight: 800; color: var(--purple); }
+.legend { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 18px; font-size: 13px; color: var(--body); }
+.legend span { display: flex; align-items: center; gap: 8px; }
+.legend i, .keys i { width: 12px; height: 12px; border-radius: 4px; flex: none; }
+.results { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; padding: 10px 0; min-height: 300px; }
+.donut { width: 170px; height: 170px; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: spin .9s var(--ease) both; }
+@keyframes spin { from { transform: rotate(-90deg) scale(.7); } to { transform: none; } }
+.donut > div { width: 110px; height: 110px; border-radius: 50%; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.donut b { font-size: 30px; background: linear-gradient(90deg,#6018ee,#4e9bf0); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.donut span { font-size: 12px; color: var(--muted); }
+.keys { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: 15px; min-width: 200px; }
+.keys li { display: flex; gap: 10px; align-items: center; }
+.keys b { margin-left: auto; padding-left: 16px; font-size: 20px; }
+
+.prob { padding: 24px; border-radius: 20px; border: 1px solid; }
+.probV { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; }
+.prob p { margin: 4px 0 0; font-weight: 700; }
+.src { margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+
+.act { display: block; padding: 28px; border-radius: 24px; background: #fff; text-decoration: none; color: var(--ink); }
+.actN { font-size: 52px; font-weight: 800; letter-spacing: -0.03em; -webkit-background-clip: text; background-clip: text; color: transparent; width: fit-content; }
+.act h3 { margin: 14px 0 8px; font-size: 21px; }
+.act p { margin: 0 0 16px; color: var(--body); line-height: 1.6; }
+.act span { font-weight: 700; color: var(--purple); }
+.hots { margin-top: 28px; display: grid; gap: 14px; }
+.hots a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 64px; padding: 18px 22px; border-radius: 20px; color: #fff; text-decoration: none; }
+.hots a:hover { color: #fff; }
+.hots span { font-weight: 700; }
+.hots b { font-size: 24px; font-weight: 800; }
+@media (min-width: 768px) {
+  .chart { padding: 32px; }
+  .cols { gap: 14px; }
+  .months { gap: 14px; }
+  .bv { font-size: 13px; padding: 4px 10px; }
+  .hots { grid-template-columns: 1fr 1fr; gap: 18px; }
+  .numV { font-size: 50px; }
+}
+@media (prefers-reduced-motion: reduce) { .bar, .donut, .liveDot { animation: none; } }

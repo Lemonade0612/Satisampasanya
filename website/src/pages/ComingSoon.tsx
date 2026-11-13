@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useI18n } from "../i18n";
 
-// Temporary placeholder for pages that are still being rebuilt from the new designs.
+// 404 page.
 export default function ComingSoon() {
   const { t } = useI18n();
   return (

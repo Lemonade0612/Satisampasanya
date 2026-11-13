@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Netlify form definitions</title></head>
+<body>
+<!-- Static copies so Netlify can detect the forms at deploy time. The real forms are in React. -->
+<form name="feedback" method="POST" data-netlify="true" netlify-honeypot="bot-field" enctype="multipart/form-data" hidden>
+  <input name="bot-field"><input name="topic"><input name="name"><input name="ageBand"><input name="email">
+  <textarea name="message"></textarea><textarea name="messageText"></textarea>
+  <input type="file" name="file1"><input type="file" name="file2"><input type="file" name="file3"><input type="file" name="file4"><input type="file" name="file5">
+  <input name="consent">
+</form>
+<form name="booking" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="bot-field"><input name="date"><input name="time"><input name="name"><input name="email">
+</form>
+</body>
+</html>

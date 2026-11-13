@@ -1,61 +1,53 @@
 # Sati marketing website
 
-React + Vite + TypeScript + React Router, styled with CSS modules. It lives in
-`website/` and is completely separate from the mobile app in the repo root.
+React + Vite + TypeScript + React Router, plain CSS modules. Separate from the mobile app: **never import from `frontend/`** — copy data into `src/data/` with a source comment instead.
 
-Routes: `/`, `/about`, `/impact`, `/help`, `/feedback`, `/policies`
+Pages: `/` Home, `/about`, `/impact`, `/help`, `/feedback` (feedback form + booking), `/policies`.
 
-## Run locally
+## Run and build
 
 ```bash
 cd website
 npm install
 npm run dev        # http://localhost:5173
+npm run build      # type-check + production build into website/dist
+npm run preview    # serve the build locally
 ```
 
-## Build
+## Deploy on Netlify (free tier)
 
-```bash
-cd website
-npm run build      # type-checks, then writes website/dist
-npm run preview    # serve the production build locally
-```
+`netlify.toml` is already set up:
 
-## Deploy to Netlify (free tier)
+- Base directory: `website`
+- Build command: `npm run build`
+- Publish directory: `website/dist`
+- SPA redirect: `/* → /index.html (200)`
 
-1. Netlify → **Add new site → Import an existing project** → pick the
-   `Lemonade0612/Satisampasanya` repo and the `website` branch (or merge first).
-2. Build settings (also set in `website/netlify.toml`, so they should pre-fill):
-   - **Base directory:** `website`
-   - **Build command:** `npm run build`
-   - **Publish directory:** `website/dist`
-3. Deploy. `netlify.toml` already contains the SPA redirect `/* → /index.html 200`.
-4. **Forms:** the feedback and booking forms use Netlify Forms. They are declared in
-   `public/__forms.html` so Netlify detects them on deploy. After the first deploy,
-   open **Site → Forms** to see submissions and add email notifications.
-   Forms only work on Netlify — under plain `npm run dev` the submit shows the
-   error message (use `npx netlify dev` to test them locally).
+Steps: Netlify → *Add new site → Import from Git* → pick the repo and the `website` branch. No environment variables needed.
 
-## Where to fill in content
+**Forms.** The feedback form (with up to 5 file attachments) and the booking form post to Netlify Forms. `public/__forms.html` holds static copies of both forms so Netlify detects them at deploy time. After the first deploy, check *Forms* in the Netlify dashboard and add email notifications. Forms do not work in `npm run dev` (sending shows an error there); test on a deploy preview.
+
+**Booking.** `src/components/BookingWidget.tsx` is a placeholder calendar with example availability (`src/data/booking.ts`). TODO: replace it with a Calendly embed.
+
+## Where to edit things
 
 | What | File |
 | --- | --- |
-| All UI text (English / Lao) | `src/i18n/en.ts`, `src/i18n/lo.ts` (`TODO` = needs Lao) |
-| `[N]`, `[STAT]`, `[DATE]` placeholders | `src/data/stats.ts` |
-| Emergency numbers, Facebook links | `src/data/contacts.ts` |
-| Reports & guides on the Help page | `src/data/reports.ts` |
-| Booking availability (example data) | `src/data/booking.ts` |
-| App Store / Google Play links, contact email | `src/data/links.ts` |
+| All English text | `src/i18n/en.ts` |
+| All Lao text | `src/i18n/lo.ts` (typed as `Dict`: a missing key fails the build). Lines marked `TODO-LO-REVIEW` are AI drafts that need a native speaker. |
+| Placeholders to fill (`[N]`, roadmap `[Milestone]`, `[Year]`, Facebook `[link]`, photos, policy date) | `src/data/placeholders.ts` |
+| Contact email, store links, Facebook page, police / scam numbers in the footer | `src/data/links.ts` |
+| Hotlines | `src/data/hotlines.ts` (copied from `frontend/src/lib/hotlines.ts`) |
+| Official documents + trafficking stats | `src/data/officialDocs.ts` (copied from `frontend/src/lib/officialDocs.ts`) |
+| Booking availability | `src/data/booking.ts` |
+| Colours, fonts, shared motion | `src/styles/theme.css` |
 
-## Fonts
+When the app's hotline or document lists change, copy the files again by hand.
 
-Lao text uses **Boon Home**, self-hosted from `public/fonts/` (`@font-face` in
-`src/styles/theme.css`, `font-display: swap`). Noto Sans Lao is only the fallback
-while it loads. Latin text uses Inter.
+## Language and fonts
 
-## TODOs before launch
+The header has an EN | ລາວ switch. Exactly one language shows at a time; the choice is saved in `localStorage` and sets `<html lang>`. All text, Lao and English, uses the self-hosted **Boon Home** font (`public/fonts/`). The phone mockups and the Lao official document titles stay in Lao in both languages on purpose.
 
-- Replace the example booking widget with a real Calendly embed.
-- Fill the `[placeholders]` listed above; add real store links and Facebook pages.
-- Finish the Lao translations marked `TODO` in `src/i18n/lo.ts`.
-- Add governing law / full terms to the Terms of Use text.
+## Motion and accessibility
+
+Entrance animations only use `transform`, so content is never hidden. Everything respects `prefers-reduced-motion`. Touch targets are at least 44px and the layout is built mobile-first (360–430px phone, 768px tablet, 1280px+ desktop).

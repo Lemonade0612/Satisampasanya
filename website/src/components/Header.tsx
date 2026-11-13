@@ -45,8 +45,8 @@ export default function Header() {
 
         <div className={styles.actions}>
           <div className={styles.lang} role="group" aria-label={t.nav.langSwitch}>
-            <button type="button" aria-pressed={lang === "en"} aria-label={t.nav.langEn} lang="en" onClick={() => setLang("en")}>EN</button>
-            <button type="button" aria-pressed={lang === "lo"} aria-label={t.nav.langLo} lang="lo" className="lo" onClick={() => setLang("lo")}>ລາວ</button>
+            <button type="button" aria-pressed={lang === "en"} aria-label={`EN ${t.nav.langEn}`} lang="en" onClick={() => setLang("en")}>EN</button>
+            <button type="button" aria-pressed={lang === "lo"} aria-label={`ລາວ ${t.nav.langLo}`} lang="lo" className="lo" onClick={() => setLang("lo")}>ລາວ</button>
           </div>
           <a className={`btn btn-primary ${styles.cta}`} href={APP_LINKS.download}>{t.nav.getApp}</a>
           <button type="button" className={styles.burger} aria-label={open ? t.nav.menuClose : t.nav.menuOpen} aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen((o) => !o)}>
