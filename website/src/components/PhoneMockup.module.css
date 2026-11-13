@@ -26,12 +26,12 @@
   70%, 100% { width: 100%; }
 }
 @keyframes fB {
-  0%, 100% { transform: translate3d(-170px, 110px, -40px) rotateX(10deg) rotateY(-20deg); }
-  50% { transform: translate3d(-170px, 92px, -20px) rotateX(8deg) rotateY(-24deg); }
+  0%, 100% { transform: translate3d(-235px, 110px, -40px) rotateX(10deg) rotateY(-20deg); }
+  50% { transform: translate3d(-235px, 92px, -20px) rotateX(8deg) rotateY(-24deg); }
 }
 @keyframes fC {
-  0%, 100% { transform: translate3d(180px, -90px, -90px) rotateX(10deg) rotateY(-20deg); }
-  50% { transform: translate3d(180px, -110px, -60px) rotateX(13deg) rotateY(-16deg); }
+  0%, 100% { transform: translate3d(235px, -90px, -90px) rotateX(10deg) rotateY(-20deg); }
+  50% { transform: translate3d(235px, -110px, -60px) rotateX(13deg) rotateY(-16deg); }
 }
 
 .hex {
