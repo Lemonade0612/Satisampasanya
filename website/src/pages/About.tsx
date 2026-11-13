@@ -96,8 +96,8 @@ export default function About() {
                   alt={m.name}
                   loading="lazy"
                   decoding="async"
-                  width={800}
-                  height={1066}
+                  width={600}
+                  height={800}
                 />
                 <div className={styles.memberText}>
                   <p className={styles.memberName}>{m.name}</p>

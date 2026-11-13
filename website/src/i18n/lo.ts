@@ -1,107 +1,323 @@
-import { en, type Dict } from "./en";
+import type { Dict } from "./en";
 
-// Lao copy. Lines taken from the design are real Lao; everything marked
-// TODO is still English and needs a Lao translation.
+// Lao copy.
+// DRAFT: written by an AI assistant, not a native speaker. Lines that came
+// from the design are real Lao; everything else needs a native-speaker review
+// before launch (especially the Policies and Help text). Search "REVIEW".
 export const lo: Dict = {
-  brand: "Satisampasanya", // TODO: Lao brand spelling if wanted
-  logoAlt: "Sati logo",
+  brand: "Satisampasanya",
+  logoAlt: "ໂລໂກ້ Sati",
   nav: {
-    home: "ໜ້າຫຼັກ", // TODO: confirm
-    about: "About us", // TODO
-    app: "The app", // TODO
-    impact: "Impact", // TODO
-    help: "Get help", // TODO
-    feedback: "Feedback", // TODO
-    getApp: "Get the app", // TODO
+    home: "ໜ້າຫຼັກ",
+    about: "ກ່ຽວກັບພວກເຮົາ",
+    app: "ແອັບ",
+    impact: "ຜົນກະທົບ",
+    help: "ຂໍຄວາມຊ່ວຍເຫຼືອ",
+    feedback: "ຄຳຕິຊົມ",
+    getApp: "ດາວໂຫຼດແອັບ",
     langToggle: "ລາວ / EN",
-    langToggleLabel: "ປ່ຽນພາສາ ລາວ / English", // TODO: confirm
-    menuOpen: "Open menu", // TODO
-    menuClose: "Close menu", // TODO
-    mainNav: "Main navigation", // TODO
+    langToggleLabel: "ລາວ / EN: ປ່ຽນພາສາລະຫວ່າງລາວ ແລະ ອັງກິດ",
+    menuOpen: "ເປີດເມນູ",
+    menuClose: "ປິດເມນູ",
+    mainNav: "ເມນູຫຼັກ",
   },
   footer: {
-    blurb:
-      "A bilingual anti-scam and anti-trafficking platform, started by Lao youth in Vientiane.", // TODO
+    blurb: "ແພລດຟອມສອງພາສາຕ້ານການຫຼອກລວງ ແລະ ການຄ້າມະນຸດ ທີ່ເລີ່ມຕົ້ນໂດຍໄວໜຸ່ມລາວໃນນະຄອນຫຼວງວຽງຈັນ.",
     sati: "Sati",
-    app: "App", // TODO
-    connect: "Connect", // TODO
-    features: "Features", // TODO
-    emailUs: "Email us", // TODO
-    rights: "© 2026 Satisampasanya. All rights reserved.", // TODO
+    app: "ແອັບ",
+    connect: "ຕິດຕໍ່",
+    features: "ຄຸນສົມບັດ",
+    emailUs: "ສົ່ງອີເມລຫາພວກເຮົາ",
+    rights: "© 2026 Satisampasanya. ສະຫງວນລິຂະສິດ.",
     privacy: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
     guidelines: "ກົດລະບຽບຊຸມຊົນ",
     terms: "ເງື່ອນໄຂການນຳໃຊ້",
   },
   home: {
-    badge: "Started by Lao youth, for Lao youth", // TODO
-    h1a: "ມີສະຕິ ກ່ອນຄລິກ", // from design tagline
+    badge: "ເລີ່ມຕົ້ນໂດຍໄວໜຸ່ມລາວ ເພື່ອໄວໜຸ່ມລາວ",
+    h1a: "ມີສະຕິ ກ່ອນຄລິກ",
     h1b: "ປອດໄພ",
     h1c: "ໄປນຳກັນ",
     tagline: "ມີສະຕິ ກ່ອນຄລິກ — ປອດໄພໄປນຳກັນ",
-    lead: "Sati is a bilingual app that helps young people in Laos spot online scams and trafficking traps — through a checked community feed, daily games, an AI safety assistant and official help in one place.", // TODO
-    download: "Download Sati", // TODO
-    story: "Our story →", // TODO
+    lead: "Sati ແມ່ນແອັບສອງພາສາທີ່ຊ່ວຍໃຫ້ໄວໜຸ່ມໃນລາວຮູ້ເທົ່າທັນການຫຼອກລວງອອນລາຍ ແລະ ກັບດັກການຄ້າມະນຸດ ຜ່ານຟີດຊຸມຊົນທີ່ມີການກວດສອບ, ເກມປະຈຳວັນ, ຜູ້ຊ່ວຍ AI ດ້ານຄວາມປອດໄພ ແລະ ຂໍ້ມູນຊ່ວຍເຫຼືອຢ່າງເປັນທາງການໃນບ່ອນດຽວ.",
+    download: "ດາວໂຫຼດ Sati",
+    story: "ເລື່ອງລາວຂອງພວກເຮົາ →",
     appStoreSmall: "Download on the",
     appStore: "App Store",
     playSmall: "Get it on",
     play: "Google Play",
     phone: {
-      forYou: "For you", // TODO
-      post1: "“Send 200,000 kip to unlock your prize” — real?", // TODO
-      post3: "Scholarship page verified by expert.", // TODO
-      yellow: "YELLOW", // TODO
-      red: "RED", // TODO
-      green: "GREEN", // TODO
-      tabs: ["Feed", "Play", "Ask AI", "Help", "Me"], // TODO
-      mock: "Illustration of the Sati app feed", // TODO
+      forYou: "ສຳລັບເຈົ້າ",
+      post1: "“ສົ່ງ 200,000 ກີບ ເພື່ອຮັບລາງວັນ” — ຈິງບໍ?",
+      post3: "ໜ້າທຶນການສຶກສາ ຜູ້ຊ່ຽວຊານຢືນຢັນແລ້ວ.",
+      yellow: "ເຫຼືອງ",
+      red: "ແດງ",
+      green: "ຂຽວ",
+      tabs: ["ຟີດ", "ຫຼິ້ນ", "ຖາມ AI", "ຊ່ວຍເຫຼືອ", "ຂ້ອຍ"],
+      mock: "ພາບປະກອບໜ້າຟີດຂອງແອັບ Sati",
     },
-    badgeVerified: "Expert verified", // TODO
-    badgeVerifiedTime: "✓ 48h",
-    badgeStreak: "Sati Daily · streak", // TODO
-    badgeStreakUnit: "days", // TODO
-    featuresEyebrow: "Inside the app", // TODO
-    featuresTitle: "Everything from our mobile app, made for every age.", // TODO
+    badgeVerified: "ຜູ້ຊ່ຽວຊານຢືນຢັນ",
+    badgeVerifiedTime: "✓ 48 ຊົ່ວໂມງ",
+    badgeStreak: "Sati Daily · ຕໍ່ເນື່ອງ",
+    badgeStreakUnit: "ວັນ",
+    featuresEyebrow: "ພາຍໃນແອັບ",
+    featuresTitle: "ທຸກຢ່າງຈາກແອັບມືຖືຂອງພວກເຮົາ ສ້າງມາເພື່ອທຸກໄວ.",
     features: [
       {
-        kicker: "Community feed", // TODO
-        title: "Posts that get checked", // TODO
-        body: "Share suspicious offers. Sati AI moderates each post and experts verify within 48 hours: green, yellow or red.", // TODO
+        kicker: "ຟີດຊຸມຊົນ",
+        title: "ໂພສທີ່ຖືກກວດສອບ",
+        body: "ແບ່ງປັນຂໍ້ສະເໜີທີ່ໜ້າສົງໄສ. Sati AI ກວດແຕ່ລະໂພສ ແລະ ຜູ້ຊ່ຽວຊານຢືນຢັນພາຍໃນ 48 ຊົ່ວໂມງ: ຂຽວ, ເຫຼືອງ ຫຼື ແດງ.",
       },
       {
         kicker: "Sati Daily",
-        title: "Games with fresh scenarios", // TODO
-        body: "Short daily games for Kids, Youth, Adults and Elders — learn red flags by playing.", // TODO
+        title: "ເກມທີ່ມີສະຖານະການໃໝ່",
+        body: "ເກມສັ້ນໆປະຈຳວັນສຳລັບເດັກ, ໄວໜຸ່ມ, ຜູ້ໃຫຍ່ ແລະ ຜູ້ສູງອາຍຸ — ຮຽນຮູ້ສັນຍານອັນຕະລາຍຜ່ານການຫຼິ້ນ.",
       },
       {
-        kicker: "AI assistant", // TODO
-        title: "Ask before you act", // TODO
-        body: "Youth and adults can ask Sati AI whether an offer, link or message is safe — in Lao or English.", // TODO
+        kicker: "ຜູ້ຊ່ວຍ AI",
+        title: "ຖາມກ່ອນລົງມື",
+        body: "ໄວໜຸ່ມ ແລະ ຜູ້ໃຫຍ່ສາມາດຖາມ Sati AI ວ່າຂໍ້ສະເໜີ, ລິ້ງ ຫຼື ຂໍ້ຄວາມນັ້ນປອດໄພບໍ — ເປັນພາສາລາວ ຫຼື ອັງກິດ.",
       },
     ],
-    agesEyebrow: "Who is playing?", // TODO
-    agesTitle: "Youth at the heart. Family all around.", // TODO
+    agesEyebrow: "ໃຜກຳລັງຫຼິ້ນ?",
+    agesTitle: "ໄວໜຸ່ມຢູ່ໃຈກາງ. ຄອບຄົວຢູ່ອ້ອມຂ້າງ.",
     ages: [
-      { name: "Kids", band: "6–14 · Lao-first", body: "Interactive fake bait posts and 3 games." }, // TODO
-      { name: "Youth", band: "15–24 · core", body: "Jobs, money, romance and labour scams. AI chat + 5 games." }, // TODO
-      { name: "Adults", band: "25–59 · protectors", body: "Help parents protect the young people at home." }, // TODO
-      { name: "Elders", band: "60+ · simple mode", body: "Big text, few buttons: money, trust and internet basics." }, // TODO
+      { name: "ເດັກນ້ອຍ", band: "6–14 · ພາສາລາວກ່ອນ", body: "ໂພສຫຼອກລວງແບບໂຕ້ຕອບ ແລະ ເກມ 3 ເກມ." },
+      { name: "ໄວໜຸ່ມ", band: "15–24 · ກຸ່ມຫຼັກ", body: "ການຫຼອກລວງດ້ານວຽກ, ເງິນ, ຄວາມຮັກ ແລະ ແຮງງານ. ແຊັດ AI + ເກມ 5 ເກມ." },
+      { name: "ຜູ້ໃຫຍ່", band: "25–59 · ຜູ້ປົກປ້ອງ", body: "ຊ່ວຍພໍ່ແມ່ປົກປ້ອງໄວໜຸ່ມໃນຄອບຄົວ." },
+      { name: "ຜູ້ສູງອາຍຸ", band: "60+ · ໂໝດງ່າຍ", body: "ຕົວອັກສອນໃຫຍ່, ປຸ່ມໜ້ອຍ: ເລື່ອງເງິນ, ຄວາມໄວ້ວາງໃຈ ແລະ ພື້ນຖານອິນເຕີເນັດ." },
     ],
-    statLabels: ["Active users", "Posts checked", "Scams flagged", "Expert verification"], // TODO
+    statLabels: ["ຜູ້ໃຊ້ທີ່ເຄື່ອນໄຫວ", "ໂພສທີ່ຖືກກວດ", "ການຫຼອກລວງທີ່ຖືກແຈ້ງ", "ຜູ້ຊ່ຽວຊານຢືນຢັນ"],
     ctaTitle: "ເບິ່ງຕົວເລກ ແລະ ລົງມືເຮັດ",
     ctaLao: "ເບິ່ງຕົວເລກ ແລະ ລົງມືເຮັດ",
-    ctaImpact: "View our impact", // TODO
-    ctaFeedback: "Give feedback", // TODO
+    ctaImpact: "ເບິ່ງຜົນກະທົບຂອງພວກເຮົາ",
+    ctaFeedback: "ສົ່ງຄຳຕິຊົມ",
   },
-  // TODO: translate the sections below into Lao. Until then they fall back to
-  // the English text; the Lao lines that come from the design (headings under
-  // the titles, card sub-labels, policy subtitles) are already in Lao.
-  about: { ...en.about },
-  impact: { ...en.impact },
-  policies: { ...en.policies },
-  help: { ...en.help },
-  feedback: { ...en.feedback },
+  about: {
+    crumb: "ໜ້າຫຼັກ / ກ່ຽວກັບພວກເຮົາ",
+    h1a: "ແນວຄິດທີ່ເລີ່ມຈາກ",
+    h1b: "",
+    h1c: "ໄວໜຸ່ມລາວ",
+    h1d: ".",
+    lao: "ສະຕິສຳປະຊັນຍະ — ມີສະຕິ ແລະ ຮູ້ຕົວຢູ່ສະເໝີ",
+    lead: "Satisampasanya ໝາຍເຖິງການມີສະຕິ ແລະ ຮູ້ຕົວຢ່າງຊັດເຈນ. ພວກເຮົາເຫັນໝູ່ເພື່ອນ ແລະ ເພື່ອນຮ່ວມຫ້ອງຖືກດຶງດູດດ້ວຍຂໍ້ສະເໜີວຽກປອມ ແລະ ກັບດັກອອນລາຍ — ພວກເຮົາຈຶ່ງສ້າງບ່ອນທີ່ໄວໜຸ່ມສາມາດຢຸດຄິດ, ກວດສອບ ແລະ ເບິ່ງແຍງກັນແລະກັນ.",
+    logoAlt: "ໂລໂກ້ Satisampasanya",
+    storyEyebrow: "ເລື່ອງລາວຂອງພວກເຮົາ",
+    storyTitle: "ຈາກແນວຄິດໃນແຮັກກາທອນ ສູ່ແອັບຕົວຈິງ",
+    story: [
+      { k: "ຈຸດເລີ່ມຕົ້ນ", v: "ເກີດຂຶ້ນໃນງານແຮັກກາທອນ ໃນຊື່ \"Sati Champa Sanya\" — ແນວຄິດສ້າງຄວາມຮັບຮູ້ກ່ຽວກັບການບັງຄັບໃຫ້ກະທຳຜິດ ແລະ ການຄ້າມະນຸດທີ່ແນໃສ່ໄວໜຸ່ມລາວ." },
+      { k: "ການພັດທະນາ", v: "ພັດທະນາຜ່ານຫຼາຍເວີຊັນ ກາຍເປັນແພລດຟອມສອງພາສາ ລາວ/ອັງກິດ ທີ່ມີຟີດຊຸມຊົນທີ່ຖືກກວດສອບ ແລະ ການຢືນຢັນໂດຍຜູ້ຊ່ຽວຊານ." },
+      { k: "ເວທີສາກົນ", v: "ເປັນຕົວແທນສປປ ລາວ ໃນງານ ASEAN Data Science Explorers 2026." },
+      { k: "ປັດຈຸບັນ", v: "ແອັບມືຖືສຳລັບ iOS ແລະ Android ທີ່ມີກຸ່ມອາຍຸ, ເກມ Sati Daily ແລະ ຜູ້ຊ່ວຍ AI ດ້ານຄວາມປອດໄພ." },
+    ],
+    visionEyebrow: "ວິໄສທັດຂອງພວກເຮົາ",
+    vision: "ໄວໜຸ່ມລາວທຸກຄົນສາມາດຮັບຮູ້ການຫຼອກລວງ ຫຼື ກັບດັກການຄ້າມະນຸດ ກ່ອນທີ່ມັນຈະມາຮອດຕົວ.",
+    missionEyebrow: "ພາລະກິດຂອງພວກເຮົາ",
+    mission: [
+      { t: "ເຮັດໃຫ້ການຮັບຮູ້ເປັນເລື່ອງປະຈຳວັນ", b: "ເກມສັ້ນໆປະຈຳວັນ ແທນການບັນຍາຍຍາວໆ." },
+      { t: "ກວດສອບ ບໍ່ແມ່ນເດົາ", b: "ການກວດດ້ວຍ AI ບວກກັບການຢືນຢັນໂດຍຜູ້ຊ່ຽວຊານ ສຳລັບທຸກໂພສ." },
+      { t: "ພາສາລາວກ່ອນ ສຳລັບທຸກໄວ", b: "ພາສາລາວ ແລະ ອັງກິດ ຕັ້ງແຕ່ເດັກນ້ອຍຈົນເຖິງໂໝດງ່າຍສຳລັບຜູ້ສູງອາຍຸ." },
+    ],
+    coreEyebrow: "ແນວຄິດຫຼັກ",
+    coreTitle: "Sati ຢືນຢູ່ເພື່ອຫຍັງ",
+    core: [
+      { t: "ສະຕິ", lao: "ສະຕິ", b: "ຢຸດຄິດກ່ອນຄລິກ, ຕອບ ຫຼື ໂອນເງິນ." },
+      { t: "ການຮູ້ຕົວ", lao: "ສຳປະຊັນຍະ", b: "ຮູ້ເທົ່າທັນຮູບແບບທີ່ຄົນຫຼອກລວງ ແລະ ຄົນຄ້າມະນຸດນຳໃຊ້." },
+      { t: "ຊຸມຊົນ", lao: "ຊຸມຊົນ", b: "ໄວໜຸ່ມປົກປ້ອງໄວໜຸ່ມ ໂດຍມີຄອບຄົວຢູ່ເບື້ອງຫຼັງ." },
+    ],
+    teamEyebrow: "ທີມງານ",
+    teamTitle: "ສ້າງໂດຍນັກສຶກສາໃນນະຄອນຫຼວງວຽງຈັນ",
+    team: [
+      { name: "Phoumiphon Keomisy (Lemon)", role: "ຜູ້ຮ່ວມອອກແບບ · AI, ຄວາມເປັນສ່ວນຕົວ ແລະ ຜະລິດຕະພັນ", bio: "ນັກສຶກສາວິສະວະກຳຄອມພິວເຕີ ຊ່ຽວຊານດ້ານຄວາມປອດໄພທາງໄຊເບີ ທີ່ມະຫາວິທະຍາໄລແຫ່ງຊາດ." },
+      { name: "Kanlaya Xaiyaphet", role: "ຜູ້ຮ່ວມນຳສະເໜີ · ບັນຫາ ແລະ ນະໂຍບາຍ", bio: "ນຳພາດ້ານບັນຫາ ແລະ ນະໂຍບາຍຂອງ Sati ແລະ ວິທີທີ່ມັນເຂົ້າເຖິງໄວໜຸ່ມ ແລະ ຄອບຄົວ." },
+    ],
+  },
+  impact: {
+    crumb: "ໜ້າຫຼັກ / ຜົນກະທົບ",
+    h1a: "ເບິ່ງຕົວເລກ.",
+    h1b: "ລົງມືເຮັດ.",
+    lead: "ຕົວເລກຈິງຈາກແອັບ Sati ແລະ ແຫຼ່ງຂໍ້ມູນທາງການ — ພ້ອມສິ່ງງ່າຍໆທີ່ເຈົ້າເຮັດໄດ້ມື້ນີ້.",
+    chartTitle: "ໂພສທີ່ຖືກກວດ · ສົດ",
+    live: "ສົດ",
+    flagged: "ຖືກແຈ້ງເປັນສີແດງ",
+    verified: "ຢືນຢັນພາຍໃນ 48 ຊົ່ວໂມງ",
+    chartLabel: "ພາບປະກອບກຣາຟໂພສທີ່ຖືກກວດ",
+    numbersEyebrow: "Sati ໃນຕົວເລກ",
+    numbers: [
+      { label: "ຜູ້ໃຊ້ທີ່ລົງທະບຽນ", sub: "ໃນ 4 ກຸ່ມອາຍຸ" },
+      { label: "ໂພສທີ່ AI ກວດ", sub: "ນັບຕັ້ງແຕ່ເປີດໃຊ້" },
+      { label: "ເກມທີ່ຖືກຫຼິ້ນ", sub: "Sati Daily" },
+      { label: "ຜູ້ຊ່ຽວຊານທີ່ຢືນຢັນ", sub: "ສຳຮອງພາຍໃນ 48 ຊົ່ວໂມງ" },
+    ],
+    problemEyebrow: "ບັນຫາໃນລາວ",
+    actionEyebrow: "ລົງມືເຮັດ",
+    actionTitle: "ສາມສິ່ງທີ່ເຈົ້າເຮັດໄດ້ມື້ນີ້",
+    actions: [
+      { t: "ກວດກ່ອນເຊື່ອ", b: "ໂພສຂໍ້ສະເໜີທີ່ໜ້າສົງໄສໃນ Sati ແລະ ຮັບຜົນເປັນສີຂຽວ, ເຫຼືອງ ຫຼື ແດງ.", cta: "ເປີດແອັບ →" },
+      { t: "ແບ່ງປັນກັບຄອບຄົວ", b: "ເຊີນນ້ອງ, ພໍ່ແມ່ ຫຼື ພໍ່ເຖົ້າແມ່ເຖົ້າ — ມີໂໝດສຳລັບແຕ່ລະຄົນ.", cta: "ເຊີນຄົນອື່ນ →" },
+      { t: "ແຈ້ງເຫດ ແລະ ຂໍຄວາມຊ່ວຍເຫຼືອ", b: "ໂທຫາສາຍດ່ວນທາງການ ຖ້າເຈົ້າ ຫຼື ຄົນທີ່ເຈົ້າຮູ້ຈັກມີຄວາມສ່ຽງ.", cta: "ເບິ່ງສາຍດ່ວນ →" },
+    ],
+    hotline1: "ຄວາມຮຸນແຮງ ແລະ ການຄ້າມະນຸດ (ຕຳຫຼວດ)",
+    hotline2: "ສະຫະພັນແມ່ຍິງລາວ · 24/7",
+  },
+  policies: {
+    crumb: "ໜ້າຫຼັກ / ນະໂຍບາຍ",
+    h1a: "ນະໂຍບາຍ ແລະ",
+    h1b: "ແນວທາງ",
+    lead: "Sati ຮັກສາຄວາມປອດໄພຂອງເຈົ້າແນວໃດ, ພວກເຮົາເຮັດຫຍັງກັບຂໍ້ມູນຂອງເຈົ້າ ແລະ ກົດທີ່ທຸກຄົນຍອມຮັບ. ອັບເດດຄັ້ງຫຼ້າສຸດ:",
+    onThisPage: "ໝວດນະໂຍບາຍ",
+    nav: ["ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ", "ກົດລະບຽບຊຸມຊົນ", "ເງື່ອນໄຂການນຳໃຊ້", "ເດັກນ້ອຍ ແລະ ຄອບຄົວ"],
+    questions: "ມີຄຳຖາມບໍ?",
+    privacy: {
+      title: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
+      lao: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
+      blocks: [
+        { h: "ສິ່ງທີ່ພວກເຮົາເກັບ", p: "ຊື່ທີ່ສະແດງ, ກຸ່ມອາຍຸ, ພາສາທີ່ເລືອກ, ໂພສ ແລະ ຂໍ້ຄວາມທີ່ເຈົ້າແບ່ງປັນ ແລະ ຂໍ້ມູນການນຳໃຊ້ພື້ນຖານທີ່ຈຳເປັນເພື່ອໃຫ້ແອັບເຮັດວຽກ." },
+        { h: "ພວກເຮົາໃຊ້ມັນແນວໃດ", p: "ເພື່ອກວດໂພສຫາການຫຼອກລວງ ແລະ ເນື້ອຫາທີ່ເປັນອັນຕະລາຍ, ສະແດງເນື້ອຫາທີ່ເໝາະກັບກຸ່ມອາຍຸຂອງເຈົ້າ, ປັບປຸງເກມ ແລະ ຕອບຄຳຖາມຂອງເຈົ້າຜ່ານ Sati AI." },
+        { h: "ສິ່ງທີ່ພວກເຮົາຈະບໍ່ເຮັດ", p: "ພວກເຮົາບໍ່ຂາຍຂໍ້ມູນຂອງເຈົ້າ ແລະ ບໍ່ແບ່ງປັນໃຫ້ຜູ້ໂຄສະນາ. ໂພສທີ່ສະແດງສາທາລະນະໃຊ້ສະເພາະຊື່ທີ່ສະແດງຂອງເຈົ້າ." },
+        { h: "ທາງເລືອກຂອງເຈົ້າ", p: "ເຈົ້າສາມາດແກ້ໄຂ ຫຼື ລຶບໂພສຂອງເຈົ້າ ແລະ ຂໍໃຫ້ພວກເຮົາລຶບບັນຊີໄດ້ໂດຍສົ່ງອີເມລຫາ" },
+      ],
+    },
+    guidelines: {
+      title: "ກົດລະບຽບຊຸມຊົນ",
+      lao: "ກົດລະບຽບຊຸມຊົນ",
+      doH: "ຄວນເຮັດ",
+      doP: "ແບ່ງປັນຂໍ້ສະເໜີທີ່ໜ້າສົງໄສ, ຖາມຄຳຖາມ, ເຕືອນຄົນອື່ນ ແລະ ເປັນມິດ.",
+      dontH: "ບໍ່ຄວນເຮັດ",
+      dontP: "ຂົ່ມເຫັງ, ໃຊ້ຄຳຫຍາບ, ໂພສເລື່ອງນອກຫົວຂໍ້ ຫຼື ການອ້າງທາງການເມືອງ, ຫຼື ເປີດເຜີຍຂໍ້ມູນສ່ວນຕົວຂອງຜູ້ອື່ນ.",
+      foot: "ໂພສຖືກກວດໂດຍ Sati AI ແລະ ຜູ້ຊ່ຽວຊານທີ່ຢືນຢັນ. ໂພສທີ່ລະເມີດກົດນີ້ຈະຖືກເຊື່ອງ ແລະ ການລະເມີດຊ້ຳໆອາດເຮັດໃຫ້ບັນຊີຖືກລະງັບ.",
+    },
+    terms: {
+      title: "ເງື່ອນໄຂການນຳໃຊ້",
+      lao: "ເງື່ອນໄຂການນຳໃຊ້",
+      p1: "Sati ໃຊ້ໄດ້ຟຣີ. ຜົນຈາກ Sati AI ແລະ ຜູ້ຊ່ຽວຊານຂອງພວກເຮົາເປັນພຽງຄຳແນະນຳເພື່ອຊ່ວຍໃຫ້ເຈົ້າລະວັງ — ບໍ່ແມ່ນຄຳປຶກສາທາງກົດໝາຍ. ໃນກໍລະນີສຸກເສີນ ໃຫ້ຕິດຕໍ່ເຈົ້າໜ້າທີ່ໂດຍກົງສະເໝີ.",
+      p2: "ເຈົ້າຍັງເປັນເຈົ້າຂອງສິ່ງທີ່ເຈົ້າໂພສ ແລະ ອະນຸຍາດໃຫ້ Sati ສະແດງມັນໃນແອັບ. [ເພີ່ມກົດໝາຍທີ່ໃຊ້ບັງຄັບ ແລະ ເງື່ອນໄຂສະບັບເຕັມກ່ອນເປີດໃຊ້.]",
+    },
+    kids: {
+      title: "ເດັກນ້ອຍ ແລະ ຄອບຄົວ",
+      lao: "ເດັກນ້ອຍ ແລະ ຄອບຄົວ",
+      p: "ກຸ່ມເດັກນ້ອຍ (6–14) ບໍ່ມີແຊັດ AI — ເນັ້ນເກມຝຶກຫັດທີ່ປອດໄພ ແລະ ໂພສຫຼອກລວງຈຳລອງ ເປັນພາສາລາວກ່ອນ. ພວກເຮົາຂໍແນະນຳໃຫ້ພໍ່ແມ່ຕັ້ງຄ່າແອັບຮ່ວມກັບລູກ.",
+    },
+  },
+  help: {
+    crumb: "ໜ້າຫຼັກ / ຂໍຄວາມຊ່ວຍເຫຼືອ",
+    h1a: "ຄວາມຊ່ວຍເຫຼືອ ຢູ່ຫ່າງ",
+    h1b: "ພຽງໂທຄັ້ງດຽວ",
+    h1c: ".",
+    lao: "ເບີໂທສຸກເສີນ ແລະ ເອກະສານທາງການ",
+    lead: "ເບີສຸກເສີນ ແລະ ລາຍງານທາງການດຽວກັບທີ່ເຈົ້າເຫັນໃນແຖບສຳຫຼວດຂອງແອັບ Sati — ໂທຟຣີ, ອ່ານຟຣີ.",
+    callPolice: "ໂທຕຳຫຼວດ 1191",
+    readReports: "ອ່ານລາຍງານ →",
+    sosBadge: "● SOS · ແຕະເພື່ອໂທ",
+    mockLabel: "ພາບປະກອບແຖບສຳຫຼວດໃນແອັບ Sati",
+    mockTitle: "ສຳຫຼວດ",
+    mockLao: "ສຳຫຼວດ · ຊ່ວຍເຫຼືອ",
+    mockReports: "ລາຍງານ",
+    mockReportItem: "[ຊື່ລາຍງານ] · PDF",
+    emergencyEyebrow: "ເບີຕິດຕໍ່ສຸກເສີນ",
+    emergencyTitle: "ບັນທຶກເບີເຫຼົ່ານີ້ໄວ້",
+    contacts: {
+      police: { name: "ຕຳຫຼວດ", lao: "ຕຳຫຼວດ" },
+      ambulance: { name: "ລົດໂຮງໝໍ", lao: "ລົດໂຮງໝໍ" },
+      fire: { name: "ດັບເພີງ", lao: "ດັບເພີງ" },
+      trafficking: { name: "ຄວາມຮຸນແຮງ ແລະ ການຄ້າມະນຸດ (ຕຳຫຼວດ)", lao: "ຕ້ານການຄ້າມະນຸດ" },
+    },
+    women: { name: "ສະຫະພັນແມ່ຍິງລາວ — ແມ່ຍິງ ແລະ ເດັກ", lao: "ສູນໃຫ້ຄຳປຶກສາ ແລະ ປົກປ້ອງແມ່ຍິງ-ເດັກ · 24/7" },
+    labour: { name: "ແຮງງານ ແລະ ແຮງງານຍ້າຍຖິ່ນ", lao: "ສະຫະພັນກຳມະບານລາວ" },
+    tourist: { name: "ຕຳຫຼວດທ່ອງທ່ຽວ (ວຽງຈັນ)", lao: "ຕຳຫຼວດທ່ອງທ່ຽວ" },
+    call: "ໂທ",
+    whatsapp: "WhatsApp",
+    facebook: "Facebook [ລິ້ງ]",
+    verifiedNote: "ກວດສອບເບີໂທເດືອນພະຈິກ 2026 ຈາກຄຳແນະນຳການເດີນທາງຂອງລັດຖະບານອັງກິດ, ໄອແລນ ແລະ ການາດາ, UNFPA, UNICEF ແລະ UNDP ລາວ. ການໂທຫາເບີສັ້ນບໍ່ເສຍຄ່າ. ກວດຄືນອີກຄັ້ງກ່ອນເຜີຍແຜ່ສະເໝີ.",
+    steps: [
+      { t: "1 · ຢູ່ໃນບ່ອນທີ່ປອດໄພ", b: "ຢ່າໄປພົບໃຜຈາກຂໍ້ສະເໜີອອນລາຍພຽງຄົນດຽວ." },
+      { t: "2 · ເກັບຫຼັກຖານ", b: "ຖ່າຍພາບໜ້າຈໍຂໍ້ຄວາມ, ໂປຣໄຟລ໌ ແລະ ຄຳຂໍໃຫ້ຈ່າຍເງິນ." },
+      { t: "3 · ບອກຄົນທີ່ເຈົ້າໄວ້ໃຈ", b: "ພໍ່ແມ່, ຄູ ຫຼື ໝູ່ — ແລ້ວໂທຫາສາຍດ່ວນ." },
+    ],
+    docsEyebrow: "ເອກະສານທາງການ",
+    docsTitle: "ລາຍງານ ແລະ ຄູ່ມື",
+    filterLabel: "ກັ່ນຕອງເອກະສານ",
+    filters: { all: "ທັງໝົດ", trafficking: "ການຄ້າມະນຸດ", scams: "ການຫຼອກລວງອອນລາຍ", parents: "ສຳລັບພໍ່ແມ່" },
+    read: "ອ່ານ →",
+    empty: "ຍັງບໍ່ມີເອກະສານໃນໝວດນີ້.",
+  },
+  feedback: {
+    crumb: "ໜ້າຫຼັກ / ຄຳຕິຊົມ",
+    h1a: "ຊ່ວຍພວກເຮົາເຮັດໃຫ້",
+    h1b: "Sati ດີຂຶ້ນ.",
+    lao: "ຄຳຄິດເຫັນຂອງເຈົ້າ ມີຄວາມໝາຍສຳລັບພວກເຮົາ",
+    lead: "ພົບບັກ, ການຫຼອກລວງທີ່ພວກເຮົາພາດ ຫຼື ມີໄອເດຍເກມໃໝ່? ບອກພວກເຮົາ — ທຸກຂໍ້ຄວາມຖືກອ່ານໂດຍທີມງານ.",
+    starsTitle: "ມື້ນີ້ Sati ເປັນແນວໃດ?",
+    form: {
+      title: "ສົ່ງຄຳຕິຊົມ",
+      sub: "ພາສາລາວ ຫຼື ອັງກິດ — ເລືອກຕາມທີ່ສະດວກ.",
+      topicLabel: "ເລື່ອງກ່ຽວກັບຫຍັງ? *",
+      topics: ["ໄອເດຍ", "ບັກ", "ການຫຼອກລວງທີ່ພາດ", "ເກມ", "ອື່ນໆ"],
+      name: "ຊື່ (ບໍ່ບັງຄັບ)",
+      namePh: "ຊື່ຂອງເຈົ້າ",
+      age: "ກຸ່ມອາຍຸ",
+      ages: ["ໄວໜຸ່ມ 15–24", "ເດັກນ້ອຍ 6–14", "ຜູ້ໃຫຍ່ 25–59", "ຜູ້ສູງອາຍຸ 60+"],
+      email: "ອີເມລ (ບໍ່ບັງຄັບ, ຖ້າຢາກໃຫ້ຕອບກັບ)",
+      emailPh: "you@example.com",
+      msg: "ຂໍ້ຄວາມຂອງເຈົ້າ *",
+      msgPh: "ບອກພວກເຮົາວ່າເກີດຫຍັງຂຶ້ນ ຫຼື ເຈົ້າຢາກເຫັນຫຍັງ…",
+      consent: "ຂ້ອຍຍອມຮັບວ່າ Sati ສາມາດນຳຄຳຕິຊົມນີ້ໄປປັບປຸງແອັບ. ພວກເຮົາຈະບໍ່ແບ່ງປັນຂໍ້ມູນຂອງເຈົ້າ.",
+      submit: "ສົ່ງຄຳຕິຊົມ →",
+      sending: "ກຳລັງສົ່ງ…",
+      errTopic: "ກະລຸນາເລືອກຫົວຂໍ້.",
+      errMsg: "ກະລຸນາຂຽນຂໍ້ຄວາມ.",
+      errEmail: "ກະລຸນາໃສ່ອີເມລທີ່ຖືກຕ້ອງ ຫຼື ປ່ອຍວ່າງໄວ້.",
+      errSend: "ຂໍອະໄພ, ສົ່ງບໍ່ສຳເລັດ. ກະລຸນາລອງໃໝ່ ຫຼື ສົ່ງອີເມລຫາພວກເຮົາ.",
+      okTitle: "ຂອບໃຈ!",
+      okBody: "ຄຳຕິຊົມຂອງເຈົ້າຖືກສົ່ງແລ້ວ. ທຸກຂໍ້ຄວາມຖືກອ່ານໂດຍທີມງານ.",
+      again: "ສົ່ງອີກຄັ້ງ",
+    },
+    other: {
+      title: "ຊ່ອງທາງຕິດຕໍ່ອື່ນໆ",
+      emailL: "ອີເມລ",
+      inAppL: "ໃນແອັບ",
+      inApp: "ໂປຣໄຟລ໌ → ສົ່ງຄຳຕິຊົມ",
+      basedL: "ຕັ້ງຢູ່",
+      based: "ນະຄອນຫຼວງວຽງຈັນ, ສປປ ລາວ",
+    },
+    danger: {
+      title: "ຢູ່ໃນອັນຕະລາຍຕອນນີ້ບໍ?",
+      a: "ຢ່າລໍຖ້າຄຳຕອບ — ໂທຫາຕຳຫຼວດທີ່ ",
+      b: " ຫຼື ສາຍດ່ວນຕ້ານການຄ້າມະນຸດທີ່ ",
+    },
+    booking: {
+      eyebrow: "ຈອງການພົບປະ",
+      title: "ເຊີນ Sati ໄປໂຮງຮຽນ ຫຼື ຊຸມຊົນຂອງເຈົ້າ",
+      lead: "ຈອງການບັນຍາຍສ້າງຄວາມຮັບຮູ້ 45 ນາທີ ຫຼື ການໂທຄຳຕິຊົມກັບທີມງານ ຟຣີ. ເລືອກວັນ ແລ້ວເລືອກເວລາ.",
+      team: "ທີມ Satisampasanya",
+      event: "ບັນຍາຍສ້າງຄວາມຮັບຮູ້ / ໂທຮັບຄຳຕິຊົມ",
+      duration: "45 ນາທີ",
+      where: "Zoom ຫຼື ພົບກັນ, ວຽງຈັນ",
+      langs: "ລາວ / English",
+      selectDate: "ເລືອກວັນທີ",
+      month: "ພະຈິກ 2026",
+      tz: "ເຂດເວລາ: ເວລາອິນດູຈີນ (GMT+7)",
+      days: ["ຈ.", "ອ.", "ພ.", "ພຫ.", "ສຸ.", "ສ.", "ອາ."],
+      hint: "ເລືອກວັນທີ່ໄຮໄລທ໌ເພື່ອເບິ່ງເວລາ.",
+      slotsFor: "ເວລາທີ່ວ່າງ",
+      confirmTitle: "ຢືນຢັນການຈອງ",
+      name: "ຊື່ຂອງເຈົ້າ",
+      email: "ອີເມລ",
+      notes: "ມີຫຍັງທີ່ພວກເຮົາຄວນຮູ້ບໍ? (ບໍ່ບັງຄັບ)",
+      confirm: "ຢືນຢັນການຈອງ",
+      confirming: "ກຳລັງຈອງ…",
+      back: "← ປ່ຽນເວລາ",
+      errName: "ກະລຸນາໃສ່ຊື່ຂອງເຈົ້າ.",
+      errEmail: "ກະລຸນາໃສ່ອີເມລທີ່ຖືກຕ້ອງ.",
+      errSend: "ຂໍອະໄພ, ການຈອງບໍ່ສຳເລັດ. ກະລຸນາລອງໃໝ່ ຫຼື ສົ່ງອີເມລຫາພວກເຮົາ.",
+      okTitle: "ຈອງສຳເລັດແລ້ວ!",
+      okBody: "ພວກເຮົາຈະສົ່ງອີເມລເພື່ອຢືນຢັນລາຍລະອຽດ.",
+      another: "ຈອງເວລາອື່ນ",
+      note: "ວັນທີ ແລະ ເວລາທີ່ສະແດງເປັນຕົວຢ່າງ — ປະຕິທິນຈິງຈະຖືກເຊື່ອມຕໍ່ກ່ອນເປີດໃຊ້.",
+    },
+  },
   soon: {
-    title: "Coming next", // TODO
-    body: "This page is built after Home is approved.", // TODO
+    title: "ເຕີມຕໍ່ໄປ",
+    body: "ໜ້ານີ້ຈະຖືກສ້າງຫຼັງຈາກອະນຸມັດໜ້າຫຼັກ.",
   },
 };
