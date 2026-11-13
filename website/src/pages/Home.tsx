@@ -25,7 +25,7 @@ export default function Home() {
           <div className={`${s.heroText} rise`}>
             <span className={s.badge}><span className={s.dot} />{h.badge}</span>
             <h1 className={s.h1}>
-              {h.h1a}<br /><span className={s.purple}>{h.h1b}</span> <span className={s.blue}>{h.h1c}</span>
+              <span className={s.line1}>{h.h1a}</span><span className={s.purple}>{h.h1b}</span> <span className={s.blue}>{h.h1c}</span>
             </h1>
             <p className={s.lead}>{h.lead}</p>
             <div className={s.heroBtns}>

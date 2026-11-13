@@ -4,7 +4,8 @@
 .heroText { display: flex; flex-direction: column; gap: 22px; }
 .badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; background: #fff; font-size: 14px; font-weight: 600; color: var(--nav); }
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--purple); animation: pulse 1.6s ease-in-out infinite; flex: none; }
-.h1 { margin: 0; font-size: 40px; line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; }
+.h1 { margin: 0; font-size: min(7.6vw, 52px); line-height: 1.08; letter-spacing: -0.035em; font-weight: 800; }
+.line1 { display: block; white-space: nowrap; }
 .purple { color: var(--purple); }
 .blue { color: var(--blue-text); }
 .green { color: var(--green); }
@@ -153,7 +154,6 @@
   .flow { grid-template-columns: repeat(2,1fr); }
   .stats { grid-template-columns: repeat(4,1fr); gap: 20px; }
   .section { padding: 80px 0; }
-  .h1 { font-size: 52px; }
   .h2Big { font-size: 40px; margin-bottom: 44px; }
   .h2Hero { font-size: 44px; }
   .h2Safety { font-size: 36px; }
@@ -162,8 +162,8 @@
 
 /* ---------- Desktop ---------- */
 @media (min-width: 1024px) {
-  .heroGrid { grid-template-columns: 1.05fr 1fr; gap: 48px; padding-top: 80px; padding-bottom: 96px; }
-  .h1 { font-size: 64px; line-height: 1.04; }
+  .heroGrid { grid-template-columns: 1.3fr 1fr; gap: 48px; padding-top: 80px; padding-bottom: 96px; }
+  .h1 { font-size: min(4vw, 58px); line-height: 1.08; }
   .lead { font-size: 18px; }
   .scene { height: 700px; }
   .stage { transform: none; }
