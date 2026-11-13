@@ -28,7 +28,7 @@ export default function Policies() {
         <div className="container" style={{ paddingTop: 56, paddingBottom: 56 }}>
           <p className={sh.crumb}>{p.crumb}</p>
           <h1 className={sh.h1}>{p.h1a}<span className={sh.purple}>{p.h1b}</span></h1>
-          <p className={sh.lead}>{p.lead} {POLICY_LAST_UPDATED}</p>
+          <p className={sh.lead}>{p.lead} {POLICY_LAST_UPDATED === "[DATE]" ? p.datePlaceholder : POLICY_LAST_UPDATED}</p>
         </div>
       </section>
       <section className={sh.sec} style={{ paddingTop: 40 }}>

@@ -11,7 +11,7 @@ const TONE: Record<Hotline["tone"], string> = {
   rose: "#e11d48", blue: "#2563eb", violet: "#7c3aed", amber: "#d97706", emerald: "#059669", sky: "#0ea5e9", slate: "#475467",
 };
 const colorOf = (h: Hotline) => (h.number === "1191" ? "#d92d20" : TONE[h.tone]);
-const FB_FOR: Record<string, { label: string; url: string }> = { LaoCERT: FACEBOOK_LINKS.laocert, "1362": FACEBOOK_LINKS.womensUnion };
+const FB_FOR: Record<string, { label: { en: string; lo: string }; url: string }> = { LaoCERT: FACEBOOK_LINKS.laocert, "1362": FACEBOOK_LINKS.womensUnion };
 const KIND_STYLE: Record<DocKind, [string, string]> = { notice: ["#fff1f2", "#e11d48"], guide: ["#eff6ff", "#1d4ed8"], plan: ["#f5f3ff", "#6d28d9"] };
 const MAPS = [
   ["office1", "Lao+Women%27s+Union+Counselling+and+Protection+Centre+Vientiane"],
@@ -88,7 +88,7 @@ export default function Help() {
                             <p className={s.rowT}>{name}</p>
                             {it.org && <p className={s.rowS}>{it.org[lang]}</p>}
                             {it.extra && <p className={s.rowS}>{it.extra[lang]}</p>}
-                            {fb && <a className={s.fb} href={fb.url}><FacebookIcon size={16} />{fb.label}</a>}
+                            {fb && <a className={s.fb} href={fb.url}><FacebookIcon size={16} />{fb.label[lang]}</a>}
                           </div>
                           <a className={s.call} href={`tel:${it.tel}`} aria-label={`${h.call}: ${name}`}><Icon name="phone" size={20} strokeWidth={2.2} /></a>
                         </div>
@@ -117,7 +117,7 @@ export default function Help() {
               <div className={s.follow}>
                 <p className={s.followT}>{h.follow}</p>
                 <p className={s.followS}>{h.followSub}</p>
-                <a href={FACEBOOK_LINKS.sati.url}><FacebookIcon size={16} />{FACEBOOK_LINKS.sati.label}</a>
+                <a href={FACEBOOK_LINKS.sati.url}><FacebookIcon size={16} />{FACEBOOK_LINKS.sati.label[lang]}</a>
               </div>
             </div>
           </div>

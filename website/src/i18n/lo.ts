@@ -23,9 +23,9 @@ export const lo: Dict = {
   footer: {
     ctaTitle: "ກ້າວໜ້າການຫຼອກລວງຢູ່ສະເໝີ.", // TODO-LO-REVIEW
     ctaSub: "ມີສະຕິ ກ່ອນຄລິກ — ດາວໂຫຼດ Sati ຟຣີ",
-    appStoreSmall: "Download on the",
+    appStoreSmall: "ດາວໂຫຼດຈາກ", // TODO-LO-REVIEW
     appStore: "App Store",
-    playSmall: "Get it on",
+    playSmall: "ຮັບໄດ້ທີ່", // TODO-LO-REVIEW
     play: "Google Play",
     blurb: "ແພລດຟອມສອງພາສາຕ້ານການຫຼອກລວງ ແລະ ການຄ້າມະນຸດ ທີ່ເລີ່ມຕົ້ນໂດຍໄວໜຸ່ມລາວໃນນະຄອນຫຼວງວຽງຈັນ.", // TODO-LO-REVIEW
     colSati: "Sati",
@@ -150,6 +150,7 @@ export const lo: Dict = {
     compareLead: "ປະກາດວຽກຕ່າງປະເທດປອມ ທີ່ເຫັນໃນໂຊຊຽວມີເດຍທຸກມື້ນີ້ — ແລະ ທີ່ເຫັນໃນ Sati.", // TODO-LO-REVIEW
     today: "ໂຊຊຽວມີເດຍທຸກມື້ນີ້", // TODO-LO-REVIEW
     onSati: "ໃນ Sati",
+    agency: "ບໍລິສັດຈັດຫາງານທົ່ວໂລກ", // TODO-LO-REVIEW
     sponsored: "ໂຄສະນາ · 2 ຊມ.", // TODO-LO-REVIEW
     postText: "ຮັບສະໝັກດ່ວນ! ວຽກຕ່າງປະເທດ ເງິນເດືອນ 15,000,000 ກີບ/ເດືອນ ບໍ່ຕ້ອງມີປະສົບການ",
     banner: "$$$ ເຮັດວຽກຕ່າງປະເທດ", // TODO-LO-REVIEW
@@ -354,6 +355,7 @@ export const lo: Dict = {
     h1b: "ແນວທາງ", // TODO-LO-REVIEW
     lead: "Sati ປົກປ້ອງເຈົ້າແນວໃດ, ພວກເຮົາເຮັດຫຍັງກັບຂໍ້ມູນຂອງເຈົ້າ ແລະ ກົດທີ່ທຸກຄົນຍອມຮັບ. ອັບເດດຫຼ້າສຸດ:", // TODO-LO-REVIEW
     navLabel: "ຫົວຂໍ້ນະໂຍບາຍ", // TODO-LO-REVIEW
+    datePlaceholder: "[ວັນທີ]", // TODO-LO-REVIEW
     questions: "ມີຄຳຖາມບໍ?", // TODO-LO-REVIEW
     privacy: {
       title: "ນະໂຍບາຍຄວາມເປັນສ່ວນຕົວ",
@@ -381,6 +383,15 @@ export const lo: Dict = {
       title: "ເດັກນ້ອຍ ແລະ ຄອບຄົວ",
       p: "ກຸ່ມເດັກ (6–14) ບໍ່ມີ AI ແຊັດ — ເນັ້ນເກມຝຶກທີ່ປອດໄພ ແລະ ໂພສຫຼອກລວງຈຳລອງ, ພາສາລາວເປັນຫຼັກ. ພວກເຮົາແນະນຳໃຫ້ພໍ່ແມ່ຕັ້ງຄ່າແອັບຮ່ວມກັບລູກ.", // TODO-LO-REVIEW
     },
+  },
+  titles: {
+    home: "Sati — ໜ້າຫຼັກ", // TODO-LO-REVIEW
+    about: "Sati — ກ່ຽວກັບພວກເຮົາ", // TODO-LO-REVIEW
+    impact: "Sati — ຜົນກະທົບ", // TODO-LO-REVIEW
+    help: "Sati — ຂໍຄວາມຊ່ວຍເຫຼືອ", // TODO-LO-REVIEW
+    feedback: "Sati — ຄຳຕິຊົມ", // TODO-LO-REVIEW
+    policies: "Sati — ນະໂຍບາຍ", // TODO-LO-REVIEW
+    notFound: "Sati — ບໍ່ພົບໜ້ານີ້", // TODO-LO-REVIEW
   },
   comingSoon: {
     title: "ບໍ່ພົບໜ້ານີ້", // TODO-LO-REVIEW

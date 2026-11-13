@@ -11,7 +11,7 @@ const DOTS = [803, 738, 658, 568, 463];
 const STARS = [[65,30],[79,30],[67,17],[73,30],[83,9],[31,28],[73,18],[88,22],[31,6],[65,12],[26,5],[76,28]];
 
 export default function About() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const a = t.about;
   const deskRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -35,9 +35,9 @@ export default function About() {
           {m.photo ? <img src={m.photo} alt="" loading="lazy" /> : <><Icon name="search" size={22} />{a.addPhoto}</>}
         </div>
         <div className={s.cardBody}>
-          <div className={s.cardTop}><span className={s.date}>{m.date}</span>{badge(m.status)}</div>
-          <p className={s.cardT}>{m.title}</p>
-          <p className={s.cardS}>{m.line}</p>
+          <div className={s.cardTop}><span className={s.date}>{m.date[lang]}</span>{badge(m.status)}</div>
+          <p className={s.cardT}>{m.title[lang]}</p>
+          <p className={s.cardS}>{m.line[lang]}</p>
         </div>
       </article>
     );
@@ -183,11 +183,11 @@ export default function About() {
   );
 }
 
-function PostHead({ a }: { a: { sponsored: string } }) {
+function PostHead({ a }: { a: { sponsored: string; agency: string } }) {
   return (
     <div className={s.postHead}>
       <span className={s.avatar}>G</span>
-      <div><b>Global Jobs Agency</b><small>{a.sponsored}</small></div>
+      <div><b>{a.agency}</b><small>{a.sponsored}</small></div>
     </div>
   );
 }

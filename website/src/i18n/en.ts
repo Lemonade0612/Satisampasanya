@@ -147,6 +147,7 @@ export const en = {
     compareLead: "A fake overseas job ad, as it appears on social media today — and as it appears on Sati.",
     today: "Social media today",
     onSati: "On Sati",
+    agency: "Global Jobs Agency",
     sponsored: "Sponsored · 2h",
     postText: "Urgent! Overseas job, 15M kip/month, no experience. DM now — limited seats!",
     banner: "$$$ WORK ABROAD",
@@ -351,6 +352,7 @@ export const en = {
     h1b: "guidelines",
     lead: "How Sati keeps you safe, what we do with your data, and the rules everyone agrees to. Last updated:",
     navLabel: "Policy sections",
+    datePlaceholder: "[DATE]",
     questions: "Questions?",
     privacy: {
       title: "Privacy Policy",
@@ -378,6 +380,15 @@ export const en = {
       title: "Kids & families",
       p: "The Kids band (6–14) has no AI chat — it focuses on safe practice games and simulated bait posts, in Lao first. We encourage parents to set up the app together with their children.",
     },
+  },
+  titles: {
+    home: "Sati — Home",
+    about: "Sati — About us",
+    impact: "Sati — Impact",
+    help: "Sati — Get help",
+    feedback: "Sati — Feedback",
+    policies: "Sati — Policies",
+    notFound: "Sati — Page not found",
   },
   comingSoon: {
     title: "Page not found",

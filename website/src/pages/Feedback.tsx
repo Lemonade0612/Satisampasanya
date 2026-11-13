@@ -17,7 +17,7 @@ const kindOf = (f: File) => (f.type.startsWith("image/") ? "IMG" : f.type.starts
 type Errors = Partial<Record<"topic" | "msg" | "email" | "consent" | "files" | "send", string>>;
 
 export default function Feedback() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const f = t.feedback;
   const [topic, setTopic] = useState(0);
   const [name, setName] = useState("");
@@ -73,7 +73,7 @@ export default function Feedback() {
 
   const ways: { icon: IconName | "fb"; k: string; v: string; href?: string }[] = [
     { icon: "mail", k: f.wayEmail, v: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
-    { icon: "fb", k: f.wayFb, v: FACEBOOK_LINKS.sati.label, href: FACEBOOK_LINKS.sati.url },
+    { icon: "fb", k: f.wayFb, v: FACEBOOK_LINKS.sati.label[lang], href: FACEBOOK_LINKS.sati.url },
     { icon: "phoneMock", k: f.wayApp, v: f.wayAppVal },
     { icon: "pin", k: f.wayBased, v: f.wayBasedVal },
   ];
