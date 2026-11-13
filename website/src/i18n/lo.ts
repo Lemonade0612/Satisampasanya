@@ -385,13 +385,13 @@ export const lo: Dict = {
     },
   },
   titles: {
-    home: "Sati — ໜ້າຫຼັກ", // TODO-LO-REVIEW
-    about: "Sati — ກ່ຽວກັບພວກເຮົາ", // TODO-LO-REVIEW
-    impact: "Sati — ຜົນກະທົບ", // TODO-LO-REVIEW
-    help: "Sati — ຂໍຄວາມຊ່ວຍເຫຼືອ", // TODO-LO-REVIEW
-    feedback: "Sati — ຄຳຕິຊົມ", // TODO-LO-REVIEW
-    policies: "Sati — ນະໂຍບາຍ", // TODO-LO-REVIEW
-    notFound: "Sati — ບໍ່ພົບໜ້ານີ້", // TODO-LO-REVIEW
+    home: "Satisampasanya", // TODO-LO-REVIEW
+    about: "ກ່ຽວກັບພວກເຮົາ — Satisampasanya", // TODO-LO-REVIEW
+    impact: "ຜົນກະທົບ — Satisampasanya", // TODO-LO-REVIEW
+    help: "ຂໍຄວາມຊ່ວຍເຫຼືອ — Satisampasanya", // TODO-LO-REVIEW
+    feedback: "ຄຳຕິຊົມ — Satisampasanya", // TODO-LO-REVIEW
+    policies: "ນະໂຍບາຍ — Satisampasanya", // TODO-LO-REVIEW
+    notFound: "ບໍ່ພົບໜ້ານີ້ — Satisampasanya", // TODO-LO-REVIEW
   },
   comingSoon: {
     title: "ບໍ່ພົບໜ້ານີ້", // TODO-LO-REVIEW
