@@ -81,6 +81,7 @@
   font-family: inherit;
   color: var(--nav);
   cursor: pointer;
+  white-space: nowrap;
 }
 .lang:hover {
   border-color: var(--purple);
@@ -115,7 +116,7 @@
   .burger {
     display: inline-flex;
   }
-  .cta {
+  .actions .cta {
     display: none;
   }
   .nav {

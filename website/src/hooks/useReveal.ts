@@ -11,17 +11,23 @@ export function useReveal() {
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
     if (!("IntersectionObserver" in window)) {
-      els.forEach((el) => el.classList.add("is-in"));
+      els.forEach((el) => el.setAttribute("data-in", ""));
       return;
     }
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
           const el = entry.target as HTMLElement;
+          // Scrolled or jumped straight past it: show it, no animation needed.
+          if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+            el.setAttribute("data-in", "");
+            io.unobserve(el);
+            return;
+          }
+          if (!entry.isIntersecting) return;
           const siblings = Array.from(el.parentElement?.querySelectorAll(":scope > [data-reveal]") ?? []);
           el.style.setProperty("--i", String(Math.max(0, siblings.indexOf(el))));
-          el.classList.add("is-in");
+          el.setAttribute("data-in", "");
           io.unobserve(el);
         });
       },

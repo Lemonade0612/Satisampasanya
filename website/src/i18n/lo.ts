@@ -1,4 +1,4 @@
-import type { Dict } from "./en";
+import { en, type Dict } from "./en";
 
 // Lao copy. Lines taken from the design are real Lao; everything marked
 // TODO is still English and needs a Lao translation.
@@ -92,6 +92,14 @@ export const lo: Dict = {
     ctaImpact: "View our impact", // TODO
     ctaFeedback: "Give feedback", // TODO
   },
+  // TODO: translate the sections below into Lao. Until then they fall back to
+  // the English text; the Lao lines that come from the design (headings under
+  // the titles, card sub-labels, policy subtitles) are already in Lao.
+  about: { ...en.about },
+  impact: { ...en.impact },
+  policies: { ...en.policies },
+  help: { ...en.help },
+  feedback: { ...en.feedback },
   soon: {
     title: "Coming next", // TODO
     body: "This page is built after Home is approved.", // TODO

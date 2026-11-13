@@ -30,6 +30,7 @@
   --green: #067647;
   --yellow: #b54708;
   --red: #b42318;
+  --sos: #d92d20; /* emergency red used on the Help page, as in the design */
   --hero-bg: linear-gradient(120deg, #e9e3ff 0%, #f7f5ff 45%, #dcebff 100%);
   --font-lo: "Boon Home", "Noto Sans Lao", Inter, sans-serif;
 }
@@ -145,10 +146,10 @@ p {
     transform: none;
   }
 }
-[data-reveal]:not(.is-in) {
+[data-reveal]:not([data-in]) {
   opacity: 0;
 }
-[data-reveal].is-in {
+[data-reveal][data-in] {
   animation: up 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
   animation-delay: calc(var(--i, 0) * 90ms);
 }
@@ -190,7 +191,65 @@ p {
     transition: none !important;
     scroll-behavior: auto !important;
   }
-  [data-reveal]:not(.is-in) {
+  [data-reveal]:not([data-in]) {
     opacity: 1;
   }
+}
+
+/* ---------- shared page building blocks ---------- */
+.page-hero {
+  background: var(--hero-bg);
+}
+.crumb {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--body);
+  margin-bottom: 14px;
+}
+.h1-page {
+  font-size: 58px;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--body);
+}
+.lao-line {
+  font-family: var(--font-lo);
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--nav);
+}
+.section {
+  padding: 88px 0;
+}
+.section-lav {
+  background: var(--lavender);
+}
+.h2 {
+  font-size: 40px;
+  letter-spacing: -0.03em;
+}
+.grid-2,
+.grid-3,
+.grid-4 {
+  display: grid;
+  gap: 22px;
+}
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); gap: 18px; }
+
+@media (max-width: 900px) {
+  .h1-page { font-size: 40px; }
+  .h2 { font-size: 30px; }
+  .section { padding: 60px 0; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 520px) {
+  .grid-4 { grid-template-columns: 1fr; }
 }
