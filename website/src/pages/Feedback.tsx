@@ -3,7 +3,7 @@ import { useI18n } from "../i18n";
 import { en } from "../i18n/en";
 import { CONTACT_EMAIL } from "../data/links";
 import { FACEBOOK_LINKS } from "../data/placeholders";
-import { submitNetlify } from "../lib/netlifyForm";
+import { submitForm } from "../lib/submitForm";
 import RichEditor, { MAX_CHARS } from "../components/RichEditor";
 import BookingWidget from "../components/BookingWidget";
 import Icon, { FacebookIcon, type IconName } from "../components/Icon";
@@ -56,7 +56,7 @@ export default function Feedback() {
     }
     setStatus("sending");
     try {
-      await submitNetlify("feedback", {
+      await submitForm("feedback", {
         topic: en.feedback.topics[topic], name: name.trim(), ageBand: en.feedback.ages[age],
         email: email.trim(), message: html, messageText: text, consent: "yes",
       }, files);
@@ -113,7 +113,7 @@ export default function Feedback() {
             <form className={s.form} name="feedback" onSubmit={submit} noValidate>
               <h2 className={s.fh}>{f.formTitle}</h2>
               <p className={s.fs}>{f.formSub}</p>
-              <input type="text" name="bot-field" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
+              <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
 
               <fieldset className={s.topics}>
                 <legend>{f.topicQ}</legend>

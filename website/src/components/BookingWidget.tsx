@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { useI18n } from "../i18n";
 import { AVAILABILITY, BOOKING_MONTH, BOOKING_YEAR } from "../data/booking";
-import { submitNetlify } from "../lib/netlifyForm";
+import { submitForm } from "../lib/submitForm";
 import Icon from "./Icon";
 import styles from "./BookingWidget.module.css";
 
@@ -33,7 +33,7 @@ export default function BookingWidget() {
     if (er.name || er.email || !day || !time) return;
     setStatus("sending");
     try {
-      await submitNetlify("booking", { date: iso(day), time, name: name.trim(), email: email.trim() });
+      await submitForm("booking", { date: iso(day), time, name: name.trim(), email: email.trim() });
       setStatus("done");
     } catch {
       setStatus("idle");
@@ -111,7 +111,7 @@ export default function BookingWidget() {
               <form onSubmit={submit} noValidate>
                 <p className={styles.k}>{b.confirmTitle}</p>
                 <p className={styles.sd}>{b.monthShort} {day}, {BOOKING_YEAR} · {time}</p>
-                <input type="text" name="bot-field" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
+                <input type="text" name="_honey" tabIndex={-1} autoComplete="off" className="sr-only" aria-hidden="true" />
                 <label className={styles.f}>{b.name}
                   <input value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" aria-invalid={!!err.name} />
                   {err.name && <em role="alert">{err.name}</em>}

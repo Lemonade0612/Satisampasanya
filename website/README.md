@@ -14,18 +14,20 @@ npm run build      # type-check + production build into website/dist
 npm run preview    # serve the build locally
 ```
 
-## Deploy on Netlify (free tier)
+## Deploy on Vercel (separate project from the app)
 
-`netlify.toml` is already set up:
+The website is its **own Vercel project**, created from the `website/` folder, so the `sati` app project is never touched.
 
-- Base directory: `website`
-- Build command: `npm run build`
-- Publish directory: `website/dist`
-- SPA redirect: `/* → /index.html (200)`
+```bash
+cd website
+vercel deploy --prod      # first run creates the project; later runs reuse website/.vercel
+```
 
-Steps: Netlify → *Add new site → Import from Git* → pick the repo and the `website` branch. No environment variables needed.
+Or in the Vercel dashboard: *Add New → Project → import the repo*, branch `production`, **Root Directory `website`**. `vercel.json` sets the Vite build and the SPA rewrite. No environment variables are needed.
 
-**Forms.** The feedback form (with up to 5 file attachments) and the booking form post to Netlify Forms. `public/__forms.html` holds static copies of both forms so Netlify detects them at deploy time. After the first deploy, check *Forms* in the Netlify dashboard and add email notifications. Forms do not work in `npm run dev` (sending shows an error there); test on a deploy preview.
+(`netlify.toml` is kept as an alternative host, but Netlify is not in use.)
+
+**Forms.** The feedback form (with up to 5 attachments) and the booking form send their data to `satisampasanya@gmail.com` through [FormSubmit](https://formsubmit.co) (`src/lib/submitForm.ts`). The first submission after launch sends a one-time confirmation email to that inbox: click the link in it, then submissions arrive. Attachments are limited by FormSubmit (about 5 MB total on the free plan). To change the inbox, edit `CONTACT_EMAIL` in `src/data/links.ts`.
 
 **Booking.** `src/components/BookingWidget.tsx` is a placeholder calendar with example availability (`src/data/booking.ts`). TODO: replace it with a Calendly embed.
 
