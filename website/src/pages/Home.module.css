@@ -1,0 +1,231 @@
+.hero {
+  background: var(--hero-bg);
+  overflow: hidden;
+}
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding-top: 96px;
+  padding-bottom: 112px;
+}
+.heroText {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+.badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--nav);
+}
+.h1 {
+  font-size: 64px;
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  font-weight: 800;
+}
+.tagline {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--nav);
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--body);
+  max-width: 520px;
+}
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.store {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 52px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: var(--ink);
+  color: #fff;
+  text-decoration: none;
+}
+.store:hover {
+  color: #fff;
+}
+
+.section {
+  padding: 104px 0;
+}
+.lav {
+  background: var(--lavender);
+}
+.h2 {
+  font-size: 44px;
+  letter-spacing: -0.03em;
+  margin-bottom: 48px;
+}
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+.feature {
+  padding: 30px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
+.feature h3 {
+  font-size: 21px;
+  margin-bottom: 10px;
+}
+.icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kicker {
+  margin-top: 20px;
+  margin-bottom: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.body {
+  color: var(--body);
+  line-height: 1.6;
+}
+.age {
+  padding: 26px;
+  border-radius: 22px;
+  background: #fff;
+}
+.age h3 {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+.band {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.ageBody {
+  color: var(--body);
+  line-height: 1.55;
+  font-size: 15px;
+}
+.ageHot {
+  background: linear-gradient(150deg, #6018ee, #4e9bf0);
+  color: #fff;
+}
+.ageHot .band {
+  color: #e3daff;
+}
+.ageHot .ageBody {
+  color: #fff;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  text-align: center;
+  padding-top: 96px;
+  padding-bottom: 96px;
+}
+.statNum {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.ctaWrap {
+  padding-bottom: 104px;
+}
+.cta {
+  border-radius: 32px;
+  padding: 72px 48px;
+  text-align: center;
+  background: linear-gradient(120deg, #6018ee, #4e9bf0);
+  color: #fff;
+}
+.cta h2 {
+  font-size: 46px;
+  letter-spacing: -0.03em;
+  margin-bottom: 10px;
+}
+.cta p {
+  font-size: 20px;
+  color: #ede6ff;
+  margin-bottom: 30px;
+}
+.ctaRow {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+    padding-top: 56px;
+    padding-bottom: 64px;
+  }
+  .h1 {
+    font-size: 42px;
+  }
+  .section {
+    padding: 64px 0;
+  }
+  .h2 {
+    font-size: 32px;
+    margin-bottom: 32px;
+  }
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
+  .grid4 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stats {
+    grid-template-columns: 1fr 1fr;
+    padding-top: 56px;
+    padding-bottom: 56px;
+  }
+  .statNum {
+    font-size: 40px;
+  }
+  .cta {
+    padding: 48px 24px;
+  }
+  .cta h2 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 520px) {
+  .grid4 {
+    grid-template-columns: 1fr;
+  }
+}
