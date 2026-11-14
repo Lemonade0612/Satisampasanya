@@ -20,6 +20,7 @@ import { ImageExpandModal } from "./components/modals/ImageExpandModal";
 import { BottomNav } from "./components/feed/BottomNav";
 import { AskSatiButton } from "./components/shared/AskSatiButton";
 import { AlertBanner } from "./components/feed/AlertBanner";
+import { listenForDeepLinks, type DeepLink } from "./lib/deepLinks";
 import { startPush, stopPush, setAppBadge, updatePushLang } from "./lib/push";
 import { getProgress } from "./features/daily/lib/progress";
 import { setDailyAccount, today } from "./features/daily/lib/storage";
@@ -148,6 +149,21 @@ export default function App() {
     document.addEventListener('visibilitychange',onVisible);
     return()=>{alive=false;stop();document.removeEventListener('visibilitychange',onVisible);};
   },[user?.id]);
+  // sati:// and https links (see lib/deepLinks.ts). A link that arrives before sign-in or while the splash is up waits here.
+  const [pendingLink, setPendingLink] = useState<DeepLink | null>(null);
+  useEffect(() => {
+    let stop = () => {}; let alive = true;
+    listenForDeepLinks(setPendingLink).then(cleanup => { if (alive) stop = cleanup; else cleanup(); }).catch(() => {});
+    return () => { alive = false; stop(); };
+  }, []);
+  const shellReady = !showSplash && !sessionLoading && !simple && (!!user || browsing);
+  useEffect(() => {
+    if (!pendingLink || !shellReady) return;
+    setPendingLink(null); setShowAlerts(false); setShowSettings(false);
+    if (pendingLink.kind === 'post') { setView('feed'); setCommentPostId(pendingLink.id); }
+    else if (pendingLink.kind === 'play') setView('daily');
+    else setView('explore');
+  }, [pendingLink, shellReady]);
   const [dailyPending,setDailyPending]=useState(()=>getProgress().lastDay!==today());
   useEffect(()=>{setDailyPending(getProgress().lastDay!==today());},[view,user?.id]);
   const [repostPost, setRepostPost] = useState<Post | null>(null);

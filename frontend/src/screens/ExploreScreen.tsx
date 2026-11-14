@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { TOPIC_LABELS, TOPIC_EN_NAMES, TOPIC_ORDER, TOPIC_SHORT_LO } from "../lib/constants";
-import { Search, X, TrendingUp, Tag, ChevronRight, Link2, FileText, Phone, ExternalLink } from "lucide-react";
+import { Search, X, TrendingUp, Tag, ChevronRight, Link2, FileText, Phone, ExternalLink, Globe } from "lucide-react";
 import { HOTLINES, type Hotline } from "../lib/hotlines";
 import { DOC_KIND_LABEL, OFFICIAL_DOCS, TRAFFICKING_STATS_2024, type DocKind } from "../lib/officialDocs";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
+import { openWebsite } from "../lib/site";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, Post } from "../types";
 
@@ -129,6 +130,12 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             <span className="flex-1 min-w-0 font-bold">{lo ? "ເອກະສານທາງການ" : "Official documents"}</span>
             <ChevronRight size={20} aria-hidden className="text-text-muted shrink-0" />
           </button>
+
+          <footer className="pt-2 pb-2 text-center">
+            <button type="button" onClick={() => void openWebsite("explore")} className="min-h-11 inline-flex items-center gap-1.5 px-4 rounded-full text-sm font-bold text-primary">
+              <Globe size={16} aria-hidden />{lo ? "ເບິ່ງເວັບໄຊທ໌" : "Visit our website"}<ExternalLink size={14} aria-hidden />
+            </button>
+          </footer>
         </div>
       )}
     </div>

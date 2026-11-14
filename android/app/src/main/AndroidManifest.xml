@@ -22,6 +22,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Custom scheme: sati://play, sati://explore, sati://post/<id> -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="sati" />
+            </intent-filter>
+
+            <!-- App Links for the website. TODO: replace YOUR-DOMAIN.example with the real domain and
+                 publish website/public/.well-known/assetlinks.json (with your SHA-256 fingerprint) on it. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="YOUR-DOMAIN.example" android:pathPrefix="/post/" />
+                <data android:scheme="https" android:host="YOUR-DOMAIN.example" android:path="/play" />
+                <data android:scheme="https" android:host="YOUR-DOMAIN.example" android:path="/explore" />
+            </intent-filter>
+
         </activity>
 
         <provider
