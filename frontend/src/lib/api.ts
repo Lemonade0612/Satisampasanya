@@ -69,6 +69,13 @@ export const api = {
   posts: () => request<Post[]>(`/posts?band=${getBand()}`),
   // Paged home feed. `cursor` loads older posts, `since` (a post id) returns only newer ones.
   feed: (q: { tab: 'foryou' | 'following'; cursor?: string; since?: string; limit?: number }) => request<{ posts: Post[]; nextCursor: string | null; newestId: string | null }>(`/feed?${new URLSearchParams({ tab: q.tab, band: getBand(), limit: String(q.limit ?? 10), ...(q.cursor ? { cursor: q.cursor } : {}), ...(q.since ? { since: q.since } : {}) })}`, 'GET', undefined, 12000),
+  org: (slug: string) => request<import('../types').OrgProfileData>(`/orgs/${encodeURIComponent(slug)}`),
+  orgPosts: (slug: string, cursor?: string) => request<import('../types').FeedPage>(`/orgs/${encodeURIComponent(slug)}/posts?limit=10${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}&band=${getBand()}`),
+  userProfile: (handle: string) => request<{ user: import('../types').PublicUser; stats: { followers: number; posts: number; helpful: number }; following: boolean; posts: import('../types').FeedPage }>(`/users/${encodeURIComponent(handle.replace(/^@/, ''))}?band=${getBand()}`),
+  userPosts: (handle: string, cursor?: string) => request<import('../types').FeedPage>(`/users/${encodeURIComponent(handle.replace(/^@/, ''))}/posts?limit=10${cursor ? `&cursor=${encodeURIComponent(cursor)}` : ''}&band=${getBand()}`),
+  follow: (kind: 'org' | 'user', id: string, follow: boolean) => request<{ following: boolean; followers: number }>('/follow', 'POST', { kind, id, follow }),
+  gameProgress: (game: string, score: number, xp: number) => request<{ game: string; bestScore: number; xp: number; plays: number }>('/game-progress', 'POST', { game, score, xp }),
+  satiFeedback: (vote: 'up' | 'down', topic: string, lang: string, note?: string) => request<{ ok: boolean }>('/sati-feedback', 'POST', { vote, topic, lang, ...(note ? { note } : {}) }),
   // Curated Posts / ຂ່າວສານ: approved, unexpired posts only (the server filters).
   curated: () => request<import('../data/posts').CuratedPost[]>('/curated', 'GET', undefined, 10000),
   createPost: (post:PostDraft,onProgress?:(stage:CheckStage,done?:boolean)=>void) => onProgress?publishWithProgress(post,onProgress):request<Post>('/posts','POST',post),

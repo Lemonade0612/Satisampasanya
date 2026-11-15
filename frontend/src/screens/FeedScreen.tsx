@@ -12,6 +12,7 @@ import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
 import { CuratedFeed } from "../components/posts/CuratedFeed";
 import { ColorCodeButton, ColorCodeSheet } from "../components/feed/colorCode";
+import { isBlocked } from "../lib/blocked";
 import { PostSkeleton } from "../components/feed/PostSkeleton";
 import { usePullToRefresh } from "../components/feed/PullToRefresh";
 import { useFeedPages } from "../hooks/useFeedPages";
@@ -54,7 +55,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   const feed = useFeedPages(activeTab === 1 ? "following" : "foryou", band, paged, currentUserId);
   const live = useMemo(() => new Map(allLive.map(p => [p.id, p])), [allLive]);
   const pagedPosts = useMemo(() => postsForBand(feed.items.map(p => live.get(p.id) ?? p), band), [feed.items, live, band]);
-  const shownPosts = paged ? pagedPosts : filteredPosts;
+  const shownPosts = (paged ? pagedPosts : filteredPosts).filter(p => !isBlocked(p.author.id));
   const scroller = useRef<HTMLDivElement>(null);
   const ptr = usePullToRefresh(scroller, () => feed.refresh(), feed.refreshing && paged);
   const sentinel = useRef<HTMLDivElement>(null);

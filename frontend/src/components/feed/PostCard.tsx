@@ -3,6 +3,8 @@ import {CommunityScore} from './CommunityScore';
 import { PostScreening } from "./PostScreening";
 import { riskLevel, YellowBanner, RedOverlay, ReportButton } from "./RiskFlag";
 import { StatusPill } from "./colorCode";
+import { openProfile } from "../../lib/profileNav";
+import { BadgeCheck } from "lucide-react";
 import { PosterCarousel, VideoBlock, LinkCard, SourceLink, TipList, listItems, mediaOf, sourceOf, typeOf } from "./PostMedia";
 import { request } from "../../lib/api";
 import { T } from "../../lib/translations";
@@ -119,12 +121,14 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   const risk = postRisk(post);
   const verdict = post.check?.verdict;
   const risky = verdict ? verdict !== "approved" : risk === "red" || risk === "yellow";
-  const safe = verdict ? verdict === "approved" : risk === "green";
+  const safe = verdict ? verdict === "approved" : risk === "green" || (!!post.org?.verified && !risky);
   const chips = post.check?.labels?.length ? post.check.labels.slice(0, 3).map(l => checkLabel(l, lang)) : post.scamType ? [scamTypeLabel(post.scamType, lang)] : [];
   const lo = lang === "lo";
   const act = "disabled:opacity-40 min-h-[58px] flex flex-col items-center justify-center gap-1 text-[13px] leading-tight";
   const share = async () => { setShareError('');try{const checked=await request<Post>(`/posts/${post.id}/share`,'POST',{});const value={title:checked.author.name,text:content,...(checked.link?{url:checked.link}:{})};if(navigator.share){await navigator.share(value);await request(`/posts/${post.id}/share`,'POST',{completed:true});}else if(navigator.clipboard)await navigator.clipboard.writeText(content+(checked.link?'\n'+checked.link:''));}catch(error){if((error as Error).name!=='AbortError')setShareError((error as Error).message);} };
   const [menu, setMenu] = useState(false);
+  const profileTarget = post.org ? { kind: "org" as const, slug: post.org.slug } : post.author.id && post.author.handle && !readOnly ? { kind: "user" as const, handle: post.author.handle } : null;
+  const openAuthor = () => { if (profileTarget) openProfile(profileTarget); };
   const canMenu = !!onFollow && !!post.author.id;
 
   return (
@@ -133,10 +137,10 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       {post.repostOf&&<p className="mb-2 text-[13px] text-text-muted flex gap-2 items-center"><Repeat2 size={14} aria-hidden/>{post.author.name} · {lo?'ແບ່ງປັນຕໍ່':'reposted'}</p>}
       {!compact && !post.check && !post.seed && !post.isDemo && getStateBanner()}
       <div className="flex gap-3 items-center relative">
-        <div aria-hidden className="w-[42px] h-[42px] shrink-0 rounded-full flex items-center justify-center text-white text-sm font-bold" style={{ background: post.author.color }}>{post.author.initials}</div>
+        <button type="button" tabIndex={-1} aria-hidden={!profileTarget} onClick={openAuthor} className="w-[42px] h-[42px] shrink-0 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-bold" style={{ background: post.author.color }}>{post.org?.logoUrl ? <img src={post.org.logoUrl} alt="" className="w-full h-full object-cover" /> : post.author.initials}</button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <button type="button" onClick={()=>!readOnly&&post.author.id&&setPeopleTarget({kind:"person",id:post.author.id})} className="font-bold text-base text-text text-left">{post.author.name}</button>
+            <button type="button" onClick={openAuthor} className="font-bold text-base text-text text-left min-h-11 -my-2 break-words max-w-full">{post.org ? (lang === "lo" ? post.org.nameLo : post.org.nameEn) : post.author.name}</button>{post.org?.verified && <span role="img" aria-label={lo ? "ຢືນຢັນແລ້ວ" : "Verified"} className="text-[#2563EB]"><BadgeCheck size={16} aria-hidden /></span>}
             <LeafMark state={getLeafState()} size={14} />
             {post.isNews && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-primary">{t.news_label}</span>}
             {post.country && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-text">{countryLabel(post.country, lang)}</span>}

@@ -34,10 +34,15 @@ export interface CheckResult {
  verdict:'approved'|'caution'|'needs_expert';risk:'low'|'medium'|'high';labels:string[];on_topic:boolean;
  reasons:{text:string;evidence:string}[];suggested_edit:string;summary:string;language:Lang;checkedAt?:number;
 }
+export type OrgType = 'gov' | 'ngo' | 'intl' | 'media';
+export interface OrgProfileData { id: string; slug: string; nameLo: string; nameEn: string; type: OrgType; verified: boolean; logoUrl: string | null; bannerUrl: string | null; bioLo: string; bioEn: string; website: string | null; facebookUrl: string | null; followers: number; posts: number; following: boolean }
+export interface PublicUser { id: string; name: string; handle: string; initials: string; bio: string; avatar: string | null; banner: string | null; ageBand: Band | null }
+export interface FeedPage { posts: Post[]; nextCursor: string | null; newestId: string | null }
 export type PostType = 'text' | 'poster' | 'video' | 'link';
 export interface PostMediaItem { kind: 'image' | 'video'; url: string; thumb_url?: string; width?: number; height?: number; duration?: number; caption_lo?: string; caption_en?: string }
 export interface Post {
  /** From /api/feed: one of four layouts. Older posts without it are typed from image/link on the client. */
+ org?: { slug: string; nameLo: string; nameEn: string; type: OrgType; verified: boolean; logoUrl: string | null };
  type?: PostType; media?: PostMediaItem[]; sourceUrl?: string; pinned?: boolean;
  communityRanking?:{eligible:boolean;score:number;rank:number;parts:{review:number;safety:number;engagement:number}};
  review?:{state:string;note:string;reviewedAt:number;reviewerName:string};

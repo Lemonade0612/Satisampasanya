@@ -4,6 +4,7 @@ import { usePhoneViewport } from "./hooks/usePhoneViewport";
 import { useLivePosts } from "./hooks/useLivePosts";
 import { SplashScreen } from "./screens/SplashScreen";
 import { AuthScreen } from "./screens/AuthScreen";
+import { ProfileLayer } from './screens/ProfileLayer';
 import { FeedScreen } from "./screens/FeedScreen";
 import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
@@ -283,6 +284,8 @@ export default function App() {
             }}
           />
         )}
+        <ProfileLayer lang={lang} posts={posts} currentUserId={user?.id} canFollow={!!user} onNeedSignup={() => setSignupReason('follow')}
+          card={{ onOpenComments: setCommentPostId, onLike: handleLike, onRepost: handleRepostCount, onWarnedMe: handleWarnedMe, onRepostClick: setRepostPost, onImageExpand: url => setExpandedImage(url), onTopicClick: topic => { setCustomTopic(topic); setFeedTab(0); setView('feed'); location.hash = ''; }, canReport: !!user }} />
         {view === "explore" && !showAlerts && (
           <ExploreScreen 
             lang={lang} 
