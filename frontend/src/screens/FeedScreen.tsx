@@ -11,7 +11,8 @@ import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
 import { CuratedFeed } from "../components/posts/CuratedFeed";
-import { type RiskLevel } from "../components/feed/RiskFlag";
+import { ColorCodeButton, ColorCodeSheet } from "../components/feed/colorCode";
+import { PostSkeleton } from "../components/feed/PostSkeleton";
 import { BaitFeed } from "../features/kids/BaitFeed";
 import { Fragment } from "react";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
@@ -45,12 +46,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   if (activeTab === 3) filteredPosts.sort((a,b) => score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
   if (activeTab === 0 && !customTopic) filteredPosts.sort((a,b) => Number(b.communityRanking?.eligible || false) - Number(a.communityRanking?.eligible || false) || Number(following.includes(b.author.id || "") || b.tags.some(t=>followedTopics.includes(t))) - Number(following.includes(a.author.id || "") || a.tags.some(t=>followedTopics.includes(t))) || score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
 
-  // Traffic-light filter. Posts without a flag (older posts) only appear under All.
-  const [riskFilter, setRiskFilter] = useState<"all" | RiskLevel>("all");
-  const shownPosts = riskFilter === "all" ? filteredPosts : filteredPosts.filter(p => p.risk_level === riskFilter);
-  const chips: { id: "all" | RiskLevel; label: string }[] = lang === "lo"
-    ? [{ id: "all", label: "ທັງໝົດ" }, { id: "green", label: "ປອດໄພ" }, { id: "yellow", label: "ກວດກ່ອນ" }, { id: "red", label: "ຄຳເຕືອນ" }]
-    : [{ id: "all", label: "All" }, { id: "green", label: "Safe" }, { id: "yellow", label: "Check first" }, { id: "red", label: "Warnings" }]; // REVIEW-LO
+  const shownPosts = filteredPosts;
 
   return (
     <div className="h-full flex flex-col bg-background text-text">
@@ -77,9 +73,8 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           ))}
         </div>
       </div>
-      <div className="shrink-0 flex items-center gap-2 px-3 py-2 border-b border-border overflow-x-auto scrollbar-hide" role="group" aria-label={lang === "lo" ? "ກັ່ນຕອງໂພສ" : "Filter posts"}>
-        {chips.map(c => <button type="button" key={c.id} aria-pressed={riskFilter === c.id} onClick={() => setRiskFilter(c.id)} className={`min-h-11 shrink-0 rounded-full border px-4 text-sm font-bold ${riskFilter === c.id ? "border-primary bg-primary text-background" : "border-border text-text-muted"}`}>{c.label}</button>)}
-      </div>
+      <div className="shrink-0 flex justify-end px-2 border-b border-border"><ColorCodeButton lang={lang} /></div>
+      <ColorCodeSheet lang={lang} />
       {customTopic && <button className="shrink-0 min-h-11 px-4 text-left text-primary text-sm font-bold border-b border-border" onClick={()=>onTabChange(0)}>#{customTopic} · {lang==='lo'?'ສະແດງທັງໝົດ':'Show all posts'}</button>}
       <div className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-hide bg-background ${ASK_SATI_PAD}`}>
         <div className="flex flex-col gap-2 px-2 pt-2">
@@ -94,7 +89,8 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           <CuratedFeed lang={lang} />
         </section>}
         </div>
-        {activeTab===1 && !filteredPosts.length && <p className="p-6 bg-background text-center text-sm text-text-muted">{lang==="lo"?"ຕິດຕາມຜູ້ໃຊ້ຈາກໜ້າສຳລັບທ່ານ ເພື່ອເບິ່ງໂພສຢູ່ນີ້.":"Follow people from For you to see their posts here."}</p>}
+        {activeTab===1 && !filteredPosts.length && <div className="p-8 flex flex-col items-center gap-4 text-center"><p className="text-base text-text-muted">{lang==="lo"?"ຍັງບໍ່ໄດ້ຕິດຕາມໃຜ":"You are not following anyone yet"}</p><button type="button" onClick={()=>onTabChange(0)} className="min-h-[52px] px-6 rounded-2xl bg-primary text-primary-foreground font-bold shadow-[0_5px_0_#3B0E91] active:translate-y-[3px] active:shadow-[0_2px_0_#3B0E91]">{lang==="lo"?"ໄປທີ່ ສຳລັບເຈົ້າ":"Go to For you"}</button></div>}
+        {activeTab!==1 && !shownPosts.length && <div className="flex flex-col gap-2 px-2 pt-2" aria-live="polite">{(["text","poster","video","link"] as const).map(k=><PostSkeleton key={k} type={k}/>)}</div>}
         <div className="flex flex-col gap-2 px-2 pt-2">
         {shownPosts.map((post, i) => (
           <Fragment key={post.id}>

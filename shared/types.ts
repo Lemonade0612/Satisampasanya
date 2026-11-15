@@ -34,7 +34,11 @@ export interface CheckResult {
  verdict:'approved'|'caution'|'needs_expert';risk:'low'|'medium'|'high';labels:string[];on_topic:boolean;
  reasons:{text:string;evidence:string}[];suggested_edit:string;summary:string;language:Lang;checkedAt?:number;
 }
+export type PostType = 'text' | 'poster' | 'video' | 'link';
+export interface PostMediaItem { kind: 'image' | 'video'; url: string; thumb_url?: string; width?: number; height?: number; duration?: number; caption_lo?: string; caption_en?: string }
 export interface Post {
+ /** From /api/feed: one of four layouts. Older posts without it are typed from image/link on the client. */
+ type?: PostType; media?: PostMediaItem[]; sourceUrl?: string; pinned?: boolean;
  communityRanking?:{eligible:boolean;score:number;rank:number;parts:{review:number;safety:number;engagement:number}};
  review?:{state:string;note:string;reviewedAt:number;reviewerName:string};
  check?:CheckResult;seed?:boolean;frozen?:boolean;

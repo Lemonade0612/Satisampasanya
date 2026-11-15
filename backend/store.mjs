@@ -5,6 +5,13 @@ import { readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { seedScenarioDrafts } from './scenarios.mjs';
 
+// seed-dev.json holds posts that preview every feed layout. They load only when SEED_DEV_POSTS=1 (npm run dev sets it), never in production or tests.
+const loadSeed = () => {
+  const seed = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));
+  if (process.env.SEED_DEV_POSTS !== '1' || process.env.NODE_ENV === 'production' || process.env.VERCEL) return seed;
+  return [...JSON.parse(readFileSync(new URL('./seed-dev.json', import.meta.url), 'utf8')), ...seed];
+};
+
 export function openStore(filename, seed = false) {
   if (filename !== ':memory:') mkdirSync(dirname(filename), { recursive: true });
   const db = new DatabaseSync(filename);
@@ -18,7 +25,7 @@ export function openStore(filename, seed = false) {
   if(!db.prepare('PRAGMA table_info(users)').all().some(column=>column.name==='age_band'))db.exec("ALTER TABLE users ADD COLUMN age_band TEXT CHECK(age_band IS NULL OR age_band IN ('kids','youth','adult','elder'))");
   if(!db.prepare('PRAGMA table_info(user_access)').all().some(column=>column.name==='managed'))db.exec('ALTER TABLE user_access ADD COLUMN managed INTEGER NOT NULL DEFAULT 0');
   if (seed && !db.prepare('SELECT COUNT(*) n FROM posts').get().n) {
-    const posts = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));
+    const posts = loadSeed();
     const insert = db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)');
     db.exec('BEGIN');
     try {
@@ -29,7 +36,7 @@ export function openStore(filename, seed = false) {
   // Existing databases: new seed posts are added and seed bands kept in step with seed.json (one band per post,
   // at most two). Counters and review state on existing rows are left alone; user posts are never touched.
   if (seed) {
-    const posts = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));
+    const posts = loadSeed();
     const find = db.prepare('SELECT * FROM posts WHERE id=?'), add = db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)'), set = db.prepare('UPDATE posts SET data=? WHERE id=?');
     db.exec('BEGIN');
     try {

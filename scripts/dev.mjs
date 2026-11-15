@@ -19,7 +19,7 @@ if(process.env.NLLB_URL&&existsSync('translation/.venv/bin/python')&&!(await run
 }
 const backendURL=`http://127.0.0.1:${process.env.API_PORT||3001}/api/health`;
 if(await running(backendURL))console.log('Reusing the running Sati backend.');
-else launch(['backend/server.mjs'],{ALLOWED_ORIGINS:[process.env.ALLOWED_ORIGINS,...network].filter(Boolean).join(',')});
+else launch(['backend/server.mjs'],{SEED_DEV_POSTS:'1',ALLOWED_ORIGINS:[process.env.ALLOWED_ORIGINS,...network].filter(Boolean).join(',')});
 if(await running('http://127.0.0.1:5173/@vite/client')){
  console.log('Reusing the running user frontend at http://127.0.0.1:5173.');
  if(args.includes('--open')&&!admin&&process.platform==='darwin')spawn('open',['http://127.0.0.1:5173'],{stdio:'ignore'});

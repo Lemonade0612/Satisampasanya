@@ -193,7 +193,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const interval = setInterval(() => res.write(': keepalive\n\n'), 25000);
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
-      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => postView(db,p,user?.id)));
+      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => ({ ...postView(db,p,user?.id), ...feedFields(JSON.parse(p.data)) })));
       // Paged home feed: pinned posts first on page one, each page interleaved by post type (never more than 2 of one type in a row).
       if (req.method === 'GET' && path === '/api/feed') {
         const tab = url.searchParams.get('tab') || 'foryou';

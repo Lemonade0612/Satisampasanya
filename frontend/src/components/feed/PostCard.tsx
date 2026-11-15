@@ -1,11 +1,13 @@
 import {PeoplePanel,type PeopleTarget} from './PeoplePanel';
 import {CommunityScore} from './CommunityScore';
 import { PostScreening } from "./PostScreening";
-import { riskLevel, RiskBadge, YellowBanner, RedOverlay, ReportButton } from "./RiskFlag";
+import { riskLevel, YellowBanner, RedOverlay, ReportButton } from "./RiskFlag";
+import { StatusPill } from "./colorCode";
+import { PosterCarousel, VideoBlock, LinkCard, SourceLink, TipList, listItems, mediaOf, sourceOf, typeOf } from "./PostMedia";
 import { request } from "../../lib/api";
 import { T } from "../../lib/translations";
 import { useEffect, useState } from "react";
-import { Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, ShieldCheck, Share2, TriangleAlert, Shield, Ellipsis } from "lucide-react";
+import { Pin, Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, ShieldCheck, Share2, TriangleAlert, Shield, Ellipsis } from "lucide-react";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { postText } from "../../lib/band";
 import { postRisk, scamTypeLabel, checkLabel, tagLabel } from "../../lib/scamTypes";
@@ -63,8 +65,10 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
     setShowAlt(true);
   };
   const [why, setWhy] = useState(false);
-  const isLong = content.length > 200;
-  const displayContent = showFull || !isLong ? content : content.slice(0, 200) + "...";
+  const kind = typeOf(post), media = mediaOf(post), source = sourceOf(post);
+  const tips = kind === "poster" ? listItems(content) : { intro: "", items: [] as string[] };
+  const asList = tips.items.length >= 3;
+  const isLong = !asList && (content.length > 160 || content.split("\n").length > 4);
 
   const getLeafState = (): LeafState => {
     if (post.state === "confirmed") return post.featuredPoints ? "featured" : "verified";
@@ -143,29 +147,20 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
         {menu && canMenu && <div className="absolute right-0 top-11 z-10 rounded-xl border border-border bg-background shadow-[var(--shadow-soft)]"><button type="button" onClick={()=>{setMenu(false);onFollow!(post.author.id!);}} className="min-h-11 px-4 text-sm font-bold text-text whitespace-nowrap">{lo?(following?"ເຊົາຕິດຕາມ":"ຕິດຕາມ"):(following?"Unfollow":"Follow")}</button></div>}
       </div>
       {post.example && <ExampleBadge status={post.exampleStatus} lang={lang} />}
-      <RiskBadge post={post} lang={lang} />
+      <div className="mt-2 flex items-center gap-2 flex-wrap"><StatusPill post={post} lang={lang} />{post.pinned && <span className="inline-flex items-center gap-1 text-[13px] font-bold text-text-muted"><Pin size={13} aria-hidden />{lo ? "ປັກໝຸດ" : "Pinned"}</span>}</div>
       <RedOverlay post={post} lang={lang} />
-      {(!post.repostOf||post.repostText)&&<p className="text-[17px] text-text mt-3 whitespace-pre-wrap break-words">{displayContent}</p>}
+      {(!post.repostOf||post.repostText)&&(asList ? <TipList intro={tips.intro} items={tips.items} lang={lang} /> : <p className={`text-[17px] text-text mt-3 whitespace-pre-wrap break-words ${isLong && !showFull ? "line-clamp-4" : ""}`}>{content}</p>)}
       <YellowBanner post={post} lang={lang} />
-      {isLong && <button type="button" onClick={() => setShowFull(v => !v)} className="min-h-11 text-[14px] font-bold text-text-muted">{showFull ? t.show_less : t.show_more}</button>}
+      {isLong && <button type="button" onClick={() => setShowFull(v => !v)} className="min-h-11 text-[14px] font-bold text-text-muted">{showFull ? (lo ? "ສະແດງໜ້ອຍລົງ" : "Show less") : (lo ? "ອ່ານຕໍ່" : "Read more")}</button>}
       {needsAlt && <button type="button" disabled={translating} onClick={()=>void toggleAlt()} className="block min-h-11 text-[14px] font-bold text-text-muted disabled:opacity-60">{translating?(lo?'ກຳລັງແປ…':'Translating…'):showAlt?(lo?'ເບິ່ງຕົ້ນສະບັບ':'See original'):(lo?'ເບິ່ງຄຳແປ':'See translation')}</button>}
       {translationError && <p role="alert" className="text-[13px] text-danger">{translationError}</p>}
       {post.originalPost&&<div className="mt-3 rounded-2xl border border-border p-3"><button type="button" className="font-bold min-h-11" onClick={()=>post.originalPost?.author.id&&setPeopleTarget({kind:"person",id:post.originalPost.author.id})}>{post.originalPost.author.name}</button><span className="ml-2 text-[13px] text-text-muted">{post.originalPost.author.handle}</span><p className="mt-1 text-base whitespace-pre-wrap">{post.originalPost.contentLanguage==='lo'?(post.originalPost.contentLo||post.originalPost.content):post.originalPost.content}</p></div>}
       </div>
-      {post.image && (
-        <button type="button" aria-label={lo?'ເບິ່ງຮູບໃຫຍ່':'Expand image'} className="mt-3 block w-full relative" onClick={() => onImageExpand && onImageExpand(post.image!)}>
-          <img src={post.image} alt="" className="w-full h-auto object-cover max-h-[420px]" />
-          {post.hasVideo && <span className="absolute inset-0 flex items-center justify-center"><span className="w-14 h-14 rounded-full bg-black/50 flex items-center justify-center"><Play size={24} className="text-white ml-1" aria-hidden /></span></span>}
-        </button>
-      )}
+      {kind === "poster" && media.length > 0 && <PosterCarousel items={media.filter(m => m.kind === "image")} lang={lang} />}
+      {kind === "video" && media.find(m => m.kind === "video") && <VideoBlock item={media.find(m => m.kind === "video")!} title={content.split("\n")[0].slice(0, 120)} lang={lang} />}
+      {kind === "link" && source && <LinkCard url={source} thumb={media.find(m => m.kind === "image")?.url} title={content.split("\n")[0].slice(0, 140)} lang={lang} />}
       <div className="px-4">
-      {post.link && (
-        <a href={post.link} target="_blank" rel="noopener noreferrer" className="mt-3 flex items-center gap-2 min-h-11 rounded-xl border border-border bg-surface px-3 py-2">
-          <Link2 size={14} className="text-text-muted shrink-0" aria-hidden />
-          <span className="text-[13px] text-primary truncate flex-1">{post.link}</span>
-          <ExternalLink size={12} className="text-text-muted shrink-0" aria-hidden />
-        </a>
-      )}
+      {source && kind !== "link" && <SourceLink url={source} lang={lang} />}
       {risky && (
         <div className="mt-3 rounded-2xl border border-border bg-surface p-3.5 text-text">
           <div className="flex items-center gap-2.5">
