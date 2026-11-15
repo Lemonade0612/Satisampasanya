@@ -4,6 +4,7 @@ import { DailyHome, type Launch } from './screens/DailyHome';
 import { EndScreen } from './screens/EndScreen';
 import { ProgressScreen } from './screens/ProgressScreen';
 import { StoryGame, type GameResult } from './games/StoryGame';
+import { StoryChat } from './games/StoryChat';
 import { FlagHunt } from './games/FlagHunt';
 import { RealOrScam } from './games/RealOrScam';
 import { LinkDetective } from './games/LinkDetective';
@@ -60,7 +61,7 @@ export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter, start
     if (play.game === 'dash') return <ScamDash key={round} {...props} />;
     const list = play.scope === 'daily' ? [scenarioOfTheDay(band)] : play.scope === 'weekly' ? weeklyLevel(band) : playable(band);
     if (play.game === 'flags') return <FlagHunt key={round} {...props} scenarios={list.filter((s): s is Scenario => !!s)} />;
-    return <StoryGame key={round} {...props} scenarios={list.filter((s): s is Scenario => !!s)} mode="full" />;
+    return <StoryChat key={round} {...props} scenarios={list.filter((s): s is Scenario => !!s)} featured={play.scope === 'all'} />;
   }
   if (route === 'progress') return <ProgressScreen lang={lang} onBack={() => go('home')} />;
   return <DailyHome lang={lang} onLaunch={launch} onNav={go} header={homeHeader} footer={homeFooter} />;

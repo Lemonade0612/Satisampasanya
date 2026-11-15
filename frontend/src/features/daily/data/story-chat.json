@@ -1,0 +1,199 @@
+{
+ "_note": "Story chat: one escalating Messenger thread. Rounds play in order; messages arrive one by one. DRAFT content: Lao and the scenario need native and expert review before release (needsNativeReview).",
+ "needsNativeReview": true,
+ "id": "story-border-job",
+ "scamType": "overseas_recruitment",
+ "contact": "Mali Travel Jobs",
+ "request": {
+  "notFriends": true,
+  "noMutual": true,
+  "newAccount": true
+ },
+ "title": {
+  "en": "A job offer that keeps growing",
+  "lo": "ວຽກທີ່ຄ່ອຍໆໃຫຍ່ຂຶ້ນ"
+ },
+ "explanation": {
+  "en": "Free job, then a fee, then secrecy and a night pickup at the border: each step is a trafficking warning sign. The safe move is to stop, keep the chat, block and report to 1533.",
+  "lo": "ວຽກ, ຄ່າທຳນຽມ, ຄວາມລັບ ແລະ ລົດມາຮັບຕອນກາງຄືນທີ່ຊາຍແດນ: ແຕ່ລະຂັ້ນແມ່ນສັນຍານອັນຕະລາຍ. ວິທີປອດໄພ: ຢຸດ, ເກັບແຊັດໄວ້, ບລັອກ ແລະ ແຈ້ງ 1533."
+ },
+ "rounds": [
+  {
+   "id": "r1",
+   "messages": [
+    {
+     "en": "Hi! I'm Mali 😊 I saw your profile.",
+     "lo": "ສະບາຍດີ! ຂ້ອຍແມ່ນມາລີ 😊 ເຫັນໂປຣໄຟລຂອງເຈົ້າ."
+    },
+    {
+     "en": "We have hotel jobs in Thailand. 20,000 baht a month, room included.",
+     "lo": "ມີວຽກໂຮງແຮມຢູ່ປະເທດໄທ ເດືອນລະ 20,000 ບາດ ມີຫ້ອງພັກໃຫ້."
+    },
+    {
+     "en": "No papers or experience needed. We arrange everything!",
+     "lo": "ບໍ່ຕ້ອງມີເອກະສານ ຫຼື ປະສົບການ. ພວກເຮົາຈັດການໃຫ້ໝົດ!"
+    }
+   ],
+   "prompt": {
+    "en": "How do you reply?",
+    "lo": "ເຈົ້າຈະຕອບແນວໃດ?"
+   },
+   "choices": [
+    {
+     "id": "a",
+     "correct": false,
+     "text": {
+      "en": "Sounds great! Tell me more",
+      "lo": "ດີຫຼາຍ! ບອກເພີ່ມແດ່"
+     },
+     "consequence": {
+      "en": "Replying shows you are interested. Real jobs do not need 'no papers': that is how people end up crossing illegally.",
+      "lo": "ການຕອບເຮັດໃຫ້ເຂົາຮູ້ວ່າເຈົ້າສົນໃຈ. ວຽກແທ້ບໍ່ແມ່ນ 'ບໍ່ຕ້ອງມີເອກະສານ': ນັ້ນຄືທາງໄປຂ້າມແດນຜິດກົດໝາຍ."
+     }
+    },
+    {
+     "id": "b",
+     "correct": true,
+     "text": {
+      "en": "Ask for the company name and check it",
+      "lo": "ຖາມຊື່ບໍລິສັດ ແລ້ວກວດສອບ"
+     },
+     "consequence": {
+      "en": "Good. A real employer has a registered name, an address and an official contract you can check.",
+      "lo": "ດີ. ນາຍຈ້າງແທ້ມີຊື່ຈົດທະບຽນ, ທີ່ຢູ່ ແລະ ສັນຍາທາງການທີ່ກວດໄດ້."
+     }
+    },
+    {
+     "id": "c",
+     "correct": false,
+     "text": {
+      "en": "Send my ID photo so they can start",
+      "lo": "ສົ່ງຮູບບັດໃຫ້ເຂົາເລີ່ມເລີຍ"
+     },
+     "consequence": {
+      "en": "Never send ID to someone you have not verified. It can be used to pressure or trap you.",
+      "lo": "ຢ່າສົ່ງບັດໃຫ້ຄົນທີ່ຍັງບໍ່ໄດ້ກວດສອບ. ມັນອາດຖືກໃຊ້ບີບບັງຄັບເຈົ້າ."
+     }
+    }
+   ]
+  },
+  {
+   "id": "r2",
+   "messages": [
+    {
+     "en": "Great news, you are selected! 🎉",
+     "lo": "ຂ່າວດີ ເຈົ້າໄດ້ຮັບເລືອກ! 🎉"
+    },
+    {
+     "en": "To keep your place, send a 1,500,000 kip deposit today.",
+     "lo": "ເພື່ອຈອງບ່ອນ ໃຫ້ໂອນມັດຈຳ 1,500,000 ກີບ ມື້ນີ້."
+    },
+    {
+     "en": "Only 2 places left. After tonight it is gone.",
+     "lo": "ເຫຼືອພຽງ 2 ບ່ອນ. ຫຼັງຄືນນີ້ໝົດ."
+    }
+   ],
+   "prompt": {
+    "en": "What do you do?",
+    "lo": "ເຈົ້າຈະເຮັດແນວໃດ?"
+   },
+   "choices": [
+    {
+     "id": "a",
+     "correct": false,
+     "text": {
+      "en": "Send the deposit",
+      "lo": "ໂອນເງິນມັດຈຳ"
+     },
+     "consequence": {
+      "en": "Upfront fees are a scam sign. Once you pay, they ask for more, and the money is gone.",
+      "lo": "ຄ່າທຳນຽມລ່ວງໜ້າແມ່ນສັນຍານຫຼອກລວງ. ເມື່ອຈ່າຍແລ້ວ ເຂົາຈະຂໍເພີ່ມ ແລະ ເງິນຫາຍ."
+     }
+    },
+    {
+     "id": "b",
+     "correct": true,
+     "text": {
+      "en": "Refuse: real employers don't charge fees",
+      "lo": "ປະຕິເສດ: ນາຍຈ້າງແທ້ບໍ່ເກັບຄ່າທຳນຽມ"
+     },
+     "consequence": {
+      "en": "Right. Charging workers to get a job is a red flag, and 'only 2 places left' is just pressure.",
+      "lo": "ຖືກ. ເກັບເງິນຄົນສະໝັກແມ່ນສັນຍານອັນຕະລາຍ ແລະ 'ເຫຼືອ 2 ບ່ອນ' ແມ່ນການກົດດັນ."
+     }
+    },
+    {
+     "id": "c",
+     "correct": false,
+     "text": {
+      "en": "Ask for a discount",
+      "lo": "ຂໍຫຼຸດລາຄາ"
+     },
+     "consequence": {
+      "en": "Bargaining treats the fee as normal. The fee itself is the warning sign.",
+      "lo": "ການຕໍ່ລອງເຮັດໃຫ້ຄ່າທຳນຽມເບິ່ງຄືປົກກະຕິ. ຕົວຄ່າທຳນຽມເອງແມ່ນສັນຍານອັນຕະລາຍ."
+     }
+    }
+   ]
+  },
+  {
+   "id": "r3",
+   "messages": [
+    {
+     "en": "Don't tell your parents. They will stop you from this chance.",
+     "lo": "ຢ່າບອກພໍ່ແມ່. ເຂົາຈະຫ້າມເຈົ້າ."
+    },
+    {
+     "en": "A car will pick you up at the river crossing tonight at 9.",
+     "lo": "ຄືນນີ້ເວລາ 3 ທຸ່ມ ມີລົດມາຮັບທີ່ທ່າຂ້າມນ້ຳ."
+    },
+    {
+     "en": "Bring your passport and phone only.",
+     "lo": "ເອົາພຽງໜັງສືຜ່ານແດນ ແລະ ໂທລະສັບ."
+    }
+   ],
+   "prompt": {
+    "en": "Last step. What now?",
+    "lo": "ຂັ້ນສຸດທ້າຍ. ເຮັດແນວໃດ?"
+   },
+   "choices": [
+    {
+     "id": "a",
+     "correct": false,
+     "text": {
+      "en": "Go. I trust Mali",
+      "lo": "ໄປ. ຂ້ອຍເຊື່ອມາລີ"
+     },
+     "consequence": {
+      "en": "Secrecy, a night pickup at an unofficial crossing and holding your passport are signs of trafficking.",
+      "lo": "ຄວາມລັບ, ລົດມາຮັບກາງຄືນທີ່ຈຸດຂ້າມບໍ່ເປັນທາງການ ແລະ ການເກັບໜັງສືຜ່ານແດນ ແມ່ນສັນຍານການຄ້າມະນຸດ."
+     }
+    },
+    {
+     "id": "b",
+     "correct": false,
+     "text": {
+      "en": "Tell one friend, then go anyway",
+      "lo": "ບອກໝູ່ຄົນໜຶ່ງ ແລ້ວໄປຢູ່ດີ"
+     },
+     "consequence": {
+      "en": "Telling a friend is good, but going puts you in danger. Do not go.",
+      "lo": "ບອກໝູ່ດີ ແຕ່ການໄປເຮັດໃຫ້ເຈົ້າຕົກໃນອັນຕະລາຍ. ຢ່າໄປ."
+     }
+    },
+    {
+     "id": "c",
+     "correct": true,
+     "text": {
+      "en": "Block, keep the chat and report to 1533",
+      "lo": "ບລັອກ, ເກັບແຊັດ ແລະ ແຈ້ງ 1533"
+     },
+     "consequence": {
+      "en": "Exactly. Keep the evidence, tell a trusted adult, and report. 1533 handles online fraud; 1362 helps if someone is in danger.",
+      "lo": "ຖືກເລີຍ. ເກັບຫຼັກຖານ, ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ ແລະ ແຈ້ງ. 1533 ຮັບເລື່ອງສໍ້ໂກງອອນລາຍ; 1362 ຊ່ວຍຖ້າມີຄົນຢູ່ໃນອັນຕະລາຍ."
+     }
+    }
+   ]
+  }
+ ]
+}
