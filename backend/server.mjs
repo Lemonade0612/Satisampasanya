@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { openStore, userView, authorView, postView } from './store.mjs';
 import { cleanMedia, feedFields, pageFeed, POST_TYPES } from './feed.mjs';
+import { socialRoutes, withOrg, followedSets } from './orgs.mjs';
 import { passwordHash, passwordMatches, digest, session, currentUser } from './auth.mjs';
 
 const validTag = tag => typeof tag === 'string' && /^[\p{L}\p{M}\p{N}_]{1,40}$/u.test(tag);
@@ -193,16 +194,20 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const interval = setInterval(() => res.write(': keepalive\n\n'), 25000);
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
-      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => ({ ...postView(db,p,user?.id), ...feedFields(JSON.parse(p.data)) })));
+      if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => ({ ...withOrg(db, postView(db,p,user?.id)), ...feedFields(JSON.parse(p.data)) })));
       // Paged home feed: pinned posts first on page one, each page interleaved by post type (never more than 2 of one type in a row).
       if (req.method === 'GET' && path === '/api/feed') {
         const tab = url.searchParams.get('tab') || 'foryou';
         if (!['foryou', 'following'].includes(tab)) fail('Unknown feed tab.');
         let rows = db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC, id DESC").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band)));
-        if (tab === 'following') { const follows = new Set(user ? (JSON.parse(db.prepare('SELECT profile FROM users WHERE id=?').get(user.id).profile||'{}').following||[]) : []); rows = rows.filter(r => r.user_id && follows.has(r.user_id)); }
-        try { return send(res, 200, pageFeed(rows, { cursor: url.searchParams.get('cursor') || undefined, since: url.searchParams.get('since') || undefined, limit: url.searchParams.get('limit') || 10, view: p => ({ ...postView(db,p,user?.id), ...feedFields(JSON.parse(p.data)) }) })); }
+        if (tab === 'following') { const f = followedSets(db, user?.id); rows = rows.filter(r => (r.user_id && f.users.has(r.user_id)) || f.orgs.has(JSON.parse(r.data).orgId)); }
+        try { return send(res, 200, pageFeed(rows, { cursor: url.searchParams.get('cursor') || undefined, since: url.searchParams.get('since') || undefined, limit: url.searchParams.get('limit') || 10, view: p => ({ ...withOrg(db, postView(db,p,user?.id)), ...feedFields(JSON.parse(p.data)) }) })); }
         catch (error) { fail(error.message, error.status || 400); }
       }
+      if (await socialRoutes({ req, res, path, url, db, user, send, body,
+        rows: () => db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC, id DESC").all(),
+        visible: p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band)),
+        view: p => ({ ...withOrg(db, postView(db,p,user?.id)), ...feedFields(JSON.parse(p.data)) }) })) return;
       const personMatch=/^\/api\/people\/([^/]+)$/.exec(path);
       if(req.method==='GET'&&personMatch){
         const person=db.prepare('SELECT id,name,profile FROM users WHERE id=?').get(personMatch[1]);if(!person)fail('Person not found.',404);

@@ -1,0 +1,133 @@
+{
+ "organisations": [
+  {
+   "slug": "unicef-laos",
+   "nameLo": "ຢູນິເຊັບ ລາວ",
+   "nameEn": "UNICEF Laos",
+   "type": "intl",
+   "verified": true,
+   "logoUrl": "/orgs/unicef-laos.svg",
+   "bannerUrl": "/orgs/unicef-laos-banner.svg",
+   "bioLo": "ຢູນິເຊັບເຮັດວຽກເພື່ອເດັກນ້ອຍ ແລະ ໄວໜຸ່ມໃນລາວ ລວມທັງຄວາມປອດໄພອອນລາຍ ແລະ ການປົກປ້ອງຈາກການຂູດຮີດ.",
+   "bioEn": "UNICEF works for children and young people in Laos, including their safety online and protection from exploitation.",
+   "website": "https://www.unicef.org/laos"
+  },
+  {
+   "slug": "mtc-laos",
+   "nameLo": "ກະຊວງເຕັກໂນໂລຊີ ແລະ ການສື່ສານ",
+   "nameEn": "Ministry of Technology and Communications",
+   "type": "gov",
+   "verified": true,
+   "logoUrl": "/orgs/mtc-laos.svg",
+   "bannerUrl": "/orgs/mtc-laos-banner.svg",
+   "bioLo": "ເຈົ້າຂອງສູນຕ້ານການສໍ້ໂກງອອນລາຍ. ແຈ້ງການຫຼອກລວງອອນລາຍ: ໂທ 1533 ຕະຫຼອດ 24 ຊົ່ວໂມງ.",
+   "bioEn": "Home of the Anti-Online Fraud Centre. Report online scams and fraud: call 1533, 24 hours.",
+   "website": null
+  },
+  {
+   "slug": "lao-womens-union",
+   "nameLo": "ສະຫະພັນແມ່ຍິງລາວ",
+   "nameEn": "Lao Women's Union",
+   "type": "gov",
+   "verified": true,
+   "logoUrl": "/orgs/lao-womens-union.svg",
+   "bannerUrl": "/orgs/lao-womens-union-banner.svg",
+   "bioLo": "ໃຫ້ຄຳປຶກສາ ແລະ ປົກປ້ອງແມ່ຍິງ ແລະ ເດັກ. ສາຍດ່ວນ 1362 ຕະຫຼອດ 24/7 (WhatsApp 020 9613 1362).",
+   "bioEn": "Counselling and protection for women and children. Hotline 1362, 24/7 (WhatsApp 020 9613 1362).",
+   "website": null
+  }
+ ],
+ "posts": [
+  {
+   "tags": [
+    "OnlineScam"
+   ],
+   "timestamp": "1d",
+   "state": "clean",
+   "risk_level": "green",
+   "likes": 0,
+   "comments": 0,
+   "reposts": 0,
+   "warnedMe": 0,
+   "bands": [
+    "youth",
+    "adult",
+    "elder"
+   ],
+   "type": "text",
+   "id": "org-mtc-1533",
+   "org": "mtc-laos",
+   "pinned": true,
+   "author": {
+    "name": "Ministry of Technology and Communications",
+    "handle": "@mtc-laos",
+    "initials": "MT",
+    "color": "#5B21D1",
+    "points": 0
+   },
+   "content": "Scammed online or received a suspicious message? Call the Anti-Online Fraud Centre on 1533. Free, open 24 hours.",
+   "contentLo": "ຖືກຫຼອກອອນລາຍ ຫຼື ໄດ້ຮັບຂໍ້ຄວາມໜ້າສົງໄສ? ໂທຫາສູນຕ້ານການສໍ້ໂກງອອນລາຍ 1533. ຟຣີ ແລະ ເປີດ 24 ຊົ່ວໂມງ.",
+   "contentLanguage": "lo"
+  },
+  {
+   "tags": [
+    "Trafficking"
+   ],
+   "timestamp": "1d",
+   "state": "clean",
+   "risk_level": "green",
+   "likes": 0,
+   "comments": 0,
+   "reposts": 0,
+   "warnedMe": 0,
+   "bands": [
+    "youth",
+    "adult",
+    "elder"
+   ],
+   "type": "text",
+   "id": "org-lwu-1362",
+   "org": "lao-womens-union",
+   "author": {
+    "name": "Lao Women's Union",
+    "handle": "@lao-womens-union",
+    "initials": "LW",
+    "color": "#DB2777",
+    "points": 0
+   },
+   "content": "Worried about a job offer abroad, or someone in danger? The Lao Women's Union hotline 1362 gives free counselling and help, 24/7. WhatsApp 020 9613 1362.",
+   "contentLo": "ກັງວົນເລື່ອງວຽກຕ່າງປະເທດ ຫຼື ມີຄົນຢູ່ໃນອັນຕະລາຍ? ສາຍດ່ວນສະຫະພັນແມ່ຍິງລາວ 1362 ໃຫ້ຄຳປຶກສາຟຣີ 24/7. WhatsApp 020 9613 1362.",
+   "contentLanguage": "lo"
+  },
+  {
+   "tags": [
+    "DigitalSafety"
+   ],
+   "timestamp": "1d",
+   "state": "clean",
+   "risk_level": "green",
+   "likes": 0,
+   "comments": 0,
+   "reposts": 0,
+   "warnedMe": 0,
+   "bands": [
+    "youth",
+    "adult",
+    "elder"
+   ],
+   "type": "text",
+   "id": "org-unicef-online",
+   "org": "unicef-laos",
+   "author": {
+    "name": "UNICEF Laos",
+    "handle": "@unicef-laos",
+    "initials": "UN",
+    "color": "#00A3E0",
+    "points": 0
+   },
+   "content": "Check your privacy settings, limit accounts that make you feel bad, and tell someone you trust if something online worries you.",
+   "contentLo": "ກວດການຕັ້ງຄ່າຄວາມເປັນສ່ວນຕົວ, ຈຳກັດບັນຊີທີ່ເຮັດໃຫ້ຮູ້ສຶກບໍ່ດີ ແລະ ບອກຄົນທີ່ໄວ້ໃຈຖ້າມີຫຍັງອອນລາຍທີ່ເປັນຫ່ວງ.",
+   "contentLanguage": "lo"
+  }
+ ]
+}

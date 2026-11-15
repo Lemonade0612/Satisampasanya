@@ -4,6 +4,7 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { seedScenarioDrafts } from './scenarios.mjs';
+import { seedOrgs } from './orgs.mjs';
 
 // seed-dev.json holds posts that preview every feed layout. They load only when SEED_DEV_POSTS=1 (npm run dev sets it), never in production or tests.
 const loadSeed = () => {
@@ -50,6 +51,7 @@ export function openStore(filename, seed = false) {
       db.exec('COMMIT');
     } catch (error) { db.exec('ROLLBACK'); throw error; }
   }
+  if (seed) seedOrgs(db);
   if (seed) seedScenarioDrafts(db, JSON.parse(readFileSync(new URL('./scenario-drafts.json', import.meta.url), 'utf8')));
   return db;
 }
