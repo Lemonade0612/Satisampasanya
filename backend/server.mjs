@@ -17,6 +17,7 @@ import { randomUUID, randomBytes } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { openStore, userView, authorView, postView } from './store.mjs';
+import { cleanMedia, feedFields, pageFeed, POST_TYPES } from './feed.mjs';
 import { passwordHash, passwordMatches, digest, session, currentUser } from './auth.mjs';
 
 const validTag = tag => typeof tag === 'string' && /^[\p{L}\p{M}\p{N}_]{1,40}$/u.test(tag);
@@ -171,6 +172,15 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         res.on('close', () => { clearInterval(interval); clients.delete(res); }); return;
       }
       if (req.method === 'GET' && path === '/api/posts') return send(res, 200, db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC LIMIT 200").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band))).map(p => postView(db,p,user?.id)));
+      // Paged home feed: pinned posts first on page one, each page interleaved by post type (never more than 2 of one type in a row).
+      if (req.method === 'GET' && path === '/api/feed') {
+        const tab = url.searchParams.get('tab') || 'foryou';
+        if (!['foryou', 'following'].includes(tab)) fail('Unknown feed tab.');
+        let rows = db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC, id DESC").all().filter(p => visibleTo(db,p,user?.id)&&(p.user_id===user?.id||postVisibleToBand(bandView(db,p),band)));
+        if (tab === 'following') { const follows = new Set(user ? (JSON.parse(db.prepare('SELECT profile FROM users WHERE id=?').get(user.id).profile||'{}').following||[]) : []); rows = rows.filter(r => r.user_id && follows.has(r.user_id)); }
+        try { return send(res, 200, pageFeed(rows, { cursor: url.searchParams.get('cursor') || undefined, since: url.searchParams.get('since') || undefined, limit: url.searchParams.get('limit') || 10, view: p => ({ ...postView(db,p,user?.id), ...feedFields(JSON.parse(p.data)) }) })); }
+        catch (error) { fail(error.message, error.status || 400); }
+      }
       const personMatch=/^\/api\/people\/([^/]+)$/.exec(path);
       if(req.method==='GET'&&personMatch){
         const person=db.prepare('SELECT id,name,profile FROM users WHERE id=?').get(personMatch[1]);if(!person)fail('Person not found.',404);
@@ -326,7 +336,11 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const source = link(data.link); if (data.isNews && !source) fail('News posts need a source URL.');
         const since = Date.parse(new Date(Date.now()+7*3600000).toISOString().slice(0,10)+'T00:00:00+07:00');
         if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n >= 5) fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
-        const post = {id:randomUUID(),content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,bands:isBand(user.age_band)?[user.age_band]:undefined,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
+        let media;try{media=cleanMedia(data.media);}catch(error){fail(error.message);}
+        if(data.type!==undefined&&!POST_TYPES.includes(data.type))fail('Unknown post type.');
+        if(['poster','video'].includes(data.type)&&!media.length)fail('Posters and videos need at least one attachment.');
+        const sourceUrl=link(data.sourceUrl)||undefined;
+        const post = {id:randomUUID(),type:data.type,media:media.length?media:undefined,sourceUrl,content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,bands:isBand(user.age_band)?[user.age_band]:undefined,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
         const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
         await check(post,{onProgress});
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];

@@ -28,3 +28,4 @@ CREATE TABLE IF NOT EXISTS moderation_log (id TEXT PRIMARY KEY, kind TEXT NOT NU
 CREATE INDEX IF NOT EXISTS moderation_log_created ON moderation_log(created);
 -- Built-in (bundled) scenarios that reviewers have retired. The app hides these ids from its bundled set.
 CREATE TABLE IF NOT EXISTS scenario_retirements (id TEXT PRIMARY KEY, note TEXT NOT NULL, retired_by TEXT NOT NULL, retired_at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS posts_feed ON posts(created DESC, id);
