@@ -67,6 +67,8 @@ export const api = {
   async logout() { try { await request('/auth/logout','POST'); } finally { clearSession(); } },
   // The account's own band wins on the server; the local band covers accounts that have not chosen one yet.
   posts: () => request<Post[]>(`/posts?band=${getBand()}`),
+  // Paged home feed. `cursor` loads older posts, `since` (a post id) returns only newer ones.
+  feed: (q: { tab: 'foryou' | 'following'; cursor?: string; since?: string; limit?: number }) => request<{ posts: Post[]; nextCursor: string | null; newestId: string | null }>(`/feed?${new URLSearchParams({ tab: q.tab, band: getBand(), limit: String(q.limit ?? 10), ...(q.cursor ? { cursor: q.cursor } : {}), ...(q.since ? { since: q.since } : {}) })}`, 'GET', undefined, 12000),
   // Curated Posts / ຂ່າວສານ: approved, unexpired posts only (the server filters).
   curated: () => request<import('../data/posts').CuratedPost[]>('/curated', 'GET', undefined, 10000),
   createPost: (post:PostDraft,onProgress?:(stage:CheckStage,done?:boolean)=>void) => onProgress?publishWithProgress(post,onProgress):request<Post>('/posts','POST',post),

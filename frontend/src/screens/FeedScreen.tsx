@@ -4,15 +4,17 @@ import { HotlineCard } from "../components/shared/HotlineCard";
 import { hotlineSlots } from "../../../shared/emergency-hotlines.mjs";
 import { LangToggle } from "../components/shared/Controls";
 import { DailySafetyTip } from "../components/feed/DailySafetyTip";
-import { Bell, ShieldCheck, ChevronDown, Check } from "lucide-react";
+import { Bell, ShieldCheck, ChevronDown, Check, RefreshCw, ArrowUp, WifiOff } from "lucide-react";
 import { BANDS, canInteract, changeBand, leavingKidsNeedsPassword, postsForBand, useBand } from "../lib/band";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
 import { CuratedFeed } from "../components/posts/CuratedFeed";
 import { ColorCodeButton, ColorCodeSheet } from "../components/feed/colorCode";
 import { PostSkeleton } from "../components/feed/PostSkeleton";
+import { usePullToRefresh } from "../components/feed/PullToRefresh";
+import { useFeedPages } from "../hooks/useFeedPages";
 import { BaitFeed } from "../features/kids/BaitFeed";
 import { Fragment } from "react";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
@@ -31,6 +33,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   onRepostClick: (post: Post) => void; onLangToggle: () => void; onChangeBand: () => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void; onPlayGame?: (game: GameId) => void;
 }) {
   const t = T[lang];
+  const allLive = posts;
   // Kids: verified, kid-safe posts only and no interactions. Everyone else: the full feed.
   const band = useBand();
   const readOnly = !canInteract(band);
@@ -46,7 +49,24 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   if (activeTab === 3) filteredPosts.sort((a,b) => score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
   if (activeTab === 0 && !customTopic) filteredPosts.sort((a,b) => Number(b.communityRanking?.eligible || false) - Number(a.communityRanking?.eligible || false) || Number(following.includes(b.author.id || "") || b.tags.some(t=>followedTopics.includes(t))) - Number(following.includes(a.author.id || "") || a.tags.some(t=>followedTopics.includes(t))) || score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
 
-  const shownPosts = filteredPosts;
+  // For you and Following read the cursor-paged /api/feed. Each card shows its live copy so likes and comments stay fresh.
+  const paged = (activeTab === 0 || activeTab === 1) && !customTopic;
+  const feed = useFeedPages(activeTab === 1 ? "following" : "foryou", band, paged, currentUserId);
+  const live = useMemo(() => new Map(allLive.map(p => [p.id, p])), [allLive]);
+  const pagedPosts = useMemo(() => postsForBand(feed.items.map(p => live.get(p.id) ?? p), band), [feed.items, live, band]);
+  const shownPosts = paged ? pagedPosts : filteredPosts;
+  const scroller = useRef<HTMLDivElement>(null);
+  const ptr = usePullToRefresh(scroller, () => feed.refresh(), feed.refreshing && paged);
+  const sentinel = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = sentinel.current, root = scroller.current;
+    if (!paged || !el || !root || !feed.hasMore) return;
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) void feed.loadMore(); }, { root, rootMargin: "500px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [paged, feed.hasMore, feed.loadMore, feed.items.length]);
+  const showNew = () => { const n = feed.showPending(); if (n) requestAnimationFrame(() => scroller.current?.scrollTo({ top: 0, behavior: "smooth" })); };
+  const offline = paged && feed.status === "error" && !shownPosts.length;
 
   return (
     <div className="h-full flex flex-col bg-background text-text">
@@ -62,6 +82,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
               <span key={alertCount} aria-label={`${alertCount} unread`} className="badge-pop absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full bg-danger text-background text-xs font-bold flex items-center justify-center ring-2 ring-background">{alertCount > 9 ? "9+" : alertCount}</span>
             )}
           </button>
+          {paged && <button type="button" aria-label={lang === "lo" ? "ໂຫຼດໃໝ່" : "Reload feed"} onClick={() => void feed.refresh()} disabled={feed.refreshing} className="hidden min-[420px]:[@media(pointer:fine)]:flex min-h-11 min-w-11 items-center justify-center rounded-full text-text-2 disabled:opacity-60"><RefreshCw size={20} aria-hidden className={feed.refreshing ? "animate-spin motion-reduce:animate-none" : ""} /></button>}
           <LangToggle lang={lang} onToggle={onLangToggle} />
         </div>
         <div className="feed-tabs flex justify-between px-4">
@@ -76,8 +97,12 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
       <div className="shrink-0 flex justify-end px-2 border-b border-border"><ColorCodeButton lang={lang} /></div>
       <ColorCodeSheet lang={lang} />
       {customTopic && <button className="shrink-0 min-h-11 px-4 text-left text-primary text-sm font-bold border-b border-border" onClick={()=>onTabChange(0)}>#{customTopic} · {lang==='lo'?'ສະແດງທັງໝົດ':'Show all posts'}</button>}
-      <div className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-hide bg-background ${ASK_SATI_PAD}`}>
+      <div className="relative flex-1 min-h-0 flex flex-col">
+      {ptr.node}
+      {paged && feed.pending > 0 && <button type="button" onClick={showNew} className="absolute left-1/2 -translate-x-1/2 top-2 z-30 min-h-11 px-4 rounded-full bg-primary text-primary-foreground text-sm font-bold shadow-[var(--shadow-soft)] flex items-center gap-1.5"><ArrowUp size={16} aria-hidden />{lang === "lo" ? `ໂພສໃໝ່ ${feed.pending} ລາຍການ` : `${feed.pending} new post${feed.pending > 1 ? "s" : ""}`}</button>}
+      <div ref={scroller} {...ptr.bind} className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-hide bg-background ${ASK_SATI_PAD}`}>
         <div className="flex flex-col gap-2 px-2 pt-2">
+        {paged && feed.status === "error" && shownPosts.length > 0 && <p role="status" className="mx-2 mt-2 rounded-xl bg-warning-bg text-warning-text text-sm p-3 flex items-center gap-2"><WifiOff size={16} aria-hidden />{lang==="lo"?"ບໍ່ໄດ້ອັບເດດ. ສະແດງໂພສທີ່ບັນທຶກໄວ້.":"Offline. Showing saved posts."}<button type="button" onClick={feed.retry} className="ml-auto min-h-11 font-bold">{lang==="lo"?"ລອງໃໝ່":"Retry"}</button></p>}
         {readOnly && <p role="note" className="rounded-2xl bg-success-bg border border-success-border text-success p-3 text-sm flex gap-2"><ShieldCheck size={18} aria-hidden className="shrink-0 mt-0.5" />{lang === "lo" ? "ໂໝດເດັກ: ສະແດງແຕ່ໂພສທີ່ກວດແລ້ວ. ເຫັນຫຍັງແປກ? ຢຸດ ແລ້ວບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ." : "Kids mode: only checked posts. See something strange? Stop and tell a trusted adult."}</p>}
         {/* Kids always get the practice feed first, so their page is never empty even when no post is kid-safe yet. */}
         {band === "kids" && <BaitFeed lang={lang} />}
@@ -89,8 +114,10 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           <CuratedFeed lang={lang} />
         </section>}
         </div>
-        {activeTab===1 && !filteredPosts.length && <div className="p-8 flex flex-col items-center gap-4 text-center"><p className="text-base text-text-muted">{lang==="lo"?"ຍັງບໍ່ໄດ້ຕິດຕາມໃຜ":"You are not following anyone yet"}</p><button type="button" onClick={()=>onTabChange(0)} className="min-h-[52px] px-6 rounded-2xl bg-primary text-primary-foreground font-bold shadow-[0_5px_0_#3B0E91] active:translate-y-[3px] active:shadow-[0_2px_0_#3B0E91]">{lang==="lo"?"ໄປທີ່ ສຳລັບເຈົ້າ":"Go to For you"}</button></div>}
-        {activeTab!==1 && !shownPosts.length && <div className="flex flex-col gap-2 px-2 pt-2" aria-live="polite">{(["text","poster","video","link"] as const).map(k=><PostSkeleton key={k} type={k}/>)}</div>}
+        {offline && <div role="alert" className="p-8 flex flex-col items-center gap-4 text-center"><WifiOff size={32} aria-hidden className="text-text-muted" /><p className="text-base text-text">{lang==="lo"?"ເຊື່ອມຕໍ່ບໍ່ໄດ້. ກວດອິນເຕີເນັດແລ້ວລອງໃໝ່.":"Cannot connect. Check your internet and try again."}</p><button type="button" onClick={feed.retry} className="min-h-[52px] px-6 rounded-2xl bg-primary text-primary-foreground font-bold shadow-[0_5px_0_#3B0E91] active:translate-y-[3px] active:shadow-[0_2px_0_#3B0E91]">{lang==="lo"?"ລອງໃໝ່":"Try again"}</button></div>}
+        {activeTab===1 && !shownPosts.length && !offline && feed.status !== "loading" && <div className="p-8 flex flex-col items-center gap-4 text-center"><p className="text-base text-text-muted">{lang==="lo"?"ຍັງບໍ່ໄດ້ຕິດຕາມໃຜ":"You are not following anyone yet"}</p><button type="button" onClick={()=>onTabChange(0)} className="min-h-[52px] px-6 rounded-2xl bg-primary text-primary-foreground font-bold shadow-[0_5px_0_#3B0E91] active:translate-y-[3px] active:shadow-[0_2px_0_#3B0E91]">{lang==="lo"?"ໄປທີ່ ສຳລັບເຈົ້າ":"Go to For you"}</button></div>}
+        {activeTab===0 && paged && feed.status === "ok" && !shownPosts.length && <p className="p-8 text-center text-base text-text-muted">{lang==="lo"?"ຍັງບໍ່ມີໂພສ":"No posts yet"}</p>}
+        {!offline && !shownPosts.length && activeTab!==1 && (paged ? feed.status === "loading" : true) && <div className="flex flex-col gap-2 px-2 pt-2" aria-live="polite">{(["text","poster","video","link"] as const).map(k=><PostSkeleton key={k} type={k}/>)}</div>}
         <div className="flex flex-col gap-2 px-2 pt-2">
         {shownPosts.map((post, i) => (
           <Fragment key={post.id}>
@@ -115,9 +142,11 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           </Fragment>
         ))}
         </div>
-        <div className="py-8 text-center">
+        {paged && feed.hasMore && <div ref={sentinel} className="flex flex-col gap-2 px-2 pt-2" aria-live="polite">{feed.loadingMore && <PostSkeleton type="text" />}<div className="h-8" /></div>}
+        {(!paged || !feed.hasMore) && !!shownPosts.length && <div className="py-8 text-center">
           <p className="text-xs text-text-muted">{lang === "lo" ? t.caught_up_lo : t.caught_up_en}</p>
-        </div>
+        </div>}
+      </div>
       </div>
     </div>
   );
