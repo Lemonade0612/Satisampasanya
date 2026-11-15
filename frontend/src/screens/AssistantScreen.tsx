@@ -1,4 +1,5 @@
-import { ArrowLeft, ArrowDown } from "lucide-react";
+import { ArrowLeft, ArrowDown, ScanSearch, Briefcase, LifeBuoy } from "lucide-react";
+import logoImage from "/images/sati-mark.png";
 import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {request} from '../lib/api';
 import {streamAssistant} from '../lib/assistantStream';
@@ -24,7 +25,7 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
  const [error,setError]=useState('');
  const [remaining,setRemaining]=useState({text:20,post:10});
  const [messages,setMessages]=useState<ChatMessage[]>([]);
- const list=useRef<HTMLDivElement>(null),composer=useRef<HTMLDivElement>(null);
+ const list=useRef<HTMLDivElement>(null),composer=useRef<HTMLDivElement>(null),input=useRef<HTMLTextAreaElement>(null as unknown as HTMLTextAreaElement);
  const nearBottom=useRef(true),nextId=useRef(1);
  const [pill,setPill]=useState(false);
  const [keyboardH,setKeyboardH]=useState<number|null>(null);
@@ -52,6 +53,8 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
 
  const patch=(id:number,change:(m:ChatMessage)=>ChatMessage)=>setMessages(all=>all.map(m=>m.id===id?change(m):m));
 
+ // A tile or suggested question fills the composer and sets the mode; the person edits it and sends.
+ const prefill=(value:string,nextMode:AssistantMode)=>{setKind('text');setMode(nextMode);setText(value);requestAnimationFrame(()=>{const el=input.current;if(el){el.focus();el.setSelectionRange(value.length,value.length);}});};
  const send=async()=>{
   const question=text.trim();if(!question||sending.current)return;
   sending.current=true;setBusy(true);setError('');
@@ -81,20 +84,34 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
 
  return <section className="flex flex-col h-full max-h-[100dvh] bg-background" style={keyboardH?{height:keyboardH}:undefined}>
   <header className="shrink-0 px-3 pt-1 pb-2 border-b border-border">
-   <div className="flex items-center gap-1">
+   <div className="flex items-center gap-2">
     {onBack&&<button type="button" onClick={onBack} aria-label={lo?'ກັບຄືນ':'Back'} className="min-w-11 min-h-11 flex items-center justify-center"><ArrowLeft size={22}/></button>}
-    <h1 className="font-bold text-lg flex-1">{lo?'ຜູ້ຊ່ວຍຄວາມປອດໄພ':'Safety assistant'}</h1>
-    <span className="text-xs text-muted-foreground tabular-nums">{remaining.text}/20 · {remaining.post}/10</span>
+    <img src={logoImage} alt="" aria-hidden className="w-9 h-9 object-contain shrink-0 bg-transparent"/>
+    <div className="flex-1 min-w-0"><h1 className="font-extrabold text-[1.25rem] leading-tight">{lo?'ຖາມ Sati':'Ask Sati'}</h1>
+     <p className="text-[13px] leading-snug text-muted-foreground font-lao">{lo?'ກວດລິ້ງ ແລະ ຖາມເລື່ອງຄວາມປອດໄພ':'Check links, ask about safety'}</p></div>
+    <span className="text-xs text-muted-foreground tabular-nums shrink-0">{remaining.text}/20 · {remaining.post}/10</span>
    </div>
-   <p className="text-[13px] text-muted-foreground font-lao pl-1">{lo?'ກວດລິ້ງ, ເບີໂທ ແລະ ຂໍ້ຄວາມ. ເປັນຕົວຊ່ວຍ ບໍ່ແມ່ນການຢືນຢັນຂໍ້ເທັດຈິງ.':'Checks links, phone numbers and messages. A helper, not fact verification.'} <span className="text-primary font-semibold">{lo?'ຄຳຕອບປັບສຳລັບ':'Tuned for'}: {DT[lang][`age_${band}`]}</span></p>
   </header>
   <div className="relative flex-1 min-h-0">
    <div ref={list} onScroll={onScroll} data-testid="chat-list" className="h-full overflow-y-auto overscroll-contain px-3 pt-3 pb-4" aria-live="polite">
+    {!messages.length&&<div className="grid gap-3 mb-3">
+     <div className="grid gap-2" role="group" aria-label={lo?'ເລືອກສິ່ງທີ່ຕ້ອງການ':'What do you need?'}>
+      {([
+       {Icon:ScanSearch,lo:'ກວດຂໍ້ຄວາມ ຫຼື ລິ້ງ',en:'Check a message or link',fill:lo?'ກວດຂໍ້ຄວາມ ຫຼື ລິ້ງນີ້ໃຫ້ແດ່: ':'Please check this message or link: ',mode:'check' as AssistantMode},
+       {Icon:Briefcase,lo:'ກວດຂໍ້ສະເໜີວຽກ',en:'Check a job offer',fill:lo?'ກວດຂໍ້ສະເໜີວຽກນີ້ວ່າປອດໄພບໍ: ':'Is this job offer safe? ',mode:'check' as AssistantMode},
+       {Icon:LifeBuoy,lo:'ຖ້າຖືກຫຼອກແລ້ວ ເຮັດແນວໃດ',en:'What to do if scammed',fill:lo?'ຂ້ອຍຄິດວ່າຖືກຫຼອກແລ້ວ ຄວນເຮັດແນວໃດ?':'I think I was scammed. What should I do?',mode:'ask' as AssistantMode},
+      ]).map(t=><button key={t.en} type="button" onClick={()=>prefill(t.fill,t.mode)} className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 min-h-14 text-left font-lao active:bg-surface-2">
+       <span aria-hidden className="w-10 h-10 shrink-0 rounded-xl bg-[#EDE9FE] text-[#5B21D1] flex items-center justify-center"><t.Icon size={22}/></span><span className="flex-1 text-[17px] font-bold">{lo?t.lo:t.en}</span></button>)}
+     </div>
+     <div className="flex flex-wrap gap-2" role="group" aria-label={lo?'ຄຳຖາມແນະນຳ':'Suggested questions'}>
+      {(lo?['ວຽກຕ່າງປະເທດທີ່ໃຫ້ເງິນເດືອນສູງ ປອດໄພບໍ?','ເຂົາຂໍ OTP ຂອງຂ້ອຍ ຕ້ອງເຮັດແນວໃດ?','ວິທີກວດວ່າລິ້ງປອມ?','ເຂົາຂໍໜັງສືຜ່ານແດນ ປົກກະຕິບໍ?']:['Is a high-paying job abroad safe?','Someone asked for my OTP. What now?','How do I tell a fake link?','Is it normal to hand over my passport?']).map(q=><button key={q} type="button" onClick={()=>prefill(q,'ask')} className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-left text-[15px] font-bold text-text font-lao">{q}</button>)}
+     </div>
+    </div>}
     <DailySafetyTip lang={lang}/>
     <div className="mt-3">{messages.map(message=><AssistantMessage key={message.id} message={message} lang={lang}/>)}</div>
    </div>
    {pill&&<button type="button" onClick={()=>toBottom(true)} className="absolute left-1/2 -translate-x-1/2 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 min-h-11 font-bold shadow-lg font-lao"><ArrowDown size={18} aria-hidden/>{lo?'ຂໍ້ຄວາມໃໝ່':'New message'}</button>}
   </div>
-  <AssistantComposer innerRef={composer} lang={lang} text={text} onText={setText} kind={kind} onKind={setKind} busy={busy} error={error} remaining={remaining[kind]} onSend={()=>void send()} mode={mode} onMode={setMode}/>
+  <AssistantComposer innerRef={composer} inputRef={input} lang={lang} text={text} onText={setText} kind={kind} onKind={setKind} busy={busy} error={error} remaining={remaining[kind]} onSend={()=>void send()} mode={mode} onMode={setMode}/>
  </section>;
 }
