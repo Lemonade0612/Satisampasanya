@@ -141,5 +141,82 @@
    "explanation_en": "Fake. The real domain is help-donate.cc. The real UNICEF site is unicef.org, so a charity name in front proves nothing.",
    "redFlagPart": "help-donate.cc"
   }
+ ],
+ "_note_choice": "choiceRounds: multiple-choice rounds mixed in with the Real/Fake links. kind 'which_real' = pick the real link; 'which_part' = pick the fake part of the url shown. answer is the index in options. Lao is a draft for native review.",
+ "choiceRounds": [
+  {
+   "id": "c-bcel",
+   "kind": "which_real",
+   "prompt_lo": "ລິ້ງໃດແມ່ນເວັບທະນາຄານ BCEL ຂອງແທ້?",
+   "prompt_en": "Which link is the real BCEL bank site?",
+   "options": [
+    "https://bcel.com.la",
+    "https://bcel-verify.com",
+    "https://bcel.com.la.secure-login.net",
+    "https://bce1.com.la"
+   ],
+   "answer": 0,
+   "realPart": "bcel.com.la",
+   "explanation_lo": "ອັນທຳອິດ. ໂດເມນແມ່ນ bcel.com.la ແທ້. ອັນອື່ນເພີ່ມຄຳ ຫຼື ປ່ຽນຕົວອັກສອນ (bce1 ໃຊ້ເລກ 1 ແທນ l) ຫຼື ເອົາ bcel.com.la ໄປໄວ້ໜ້າໂດເມນອື່ນ.",
+   "explanation_en": "The first one. Its domain really is bcel.com.la. The others add words, swap a letter (bce1 uses the number 1 for l) or hide bcel.com.la in front of a different domain.",
+   "tip_lo": "ອ່ານໂດເມນຈາກຂວາໄປຊ້າຍ ກ່ອນເຄື່ອງໝາຍ “/” ອັນທຳອິດ.",
+   "tip_en": "Read the domain from the right, up to the first single “/”."
+  },
+  {
+   "id": "c-facebook",
+   "kind": "which_real",
+   "prompt_lo": "ລິ້ງໃດເປັນຂອງ Facebook ແທ້?",
+   "prompt_en": "Which link really belongs to Facebook?",
+   "options": [
+    "https://facebook.com.login-help.net",
+    "https://faceb00k.com",
+    "https://facebook-security.net",
+    "https://www.facebook.com"
+   ],
+   "answer": 3,
+   "realPart": "facebook.com",
+   "explanation_lo": "ອັນສຸດທ້າຍ. www.facebook.com ລົງທ້າຍດ້ວຍ facebook.com. ອັນອື່ນຖືກຕໍ່ທ້າຍດ້ວຍໂດເມນຂອງຄົນອື່ນ ຫຼື ໃຊ້ເລກ 0 ແທນຕົວ o.",
+   "explanation_en": "The last one. www.facebook.com ends in facebook.com. The others end in someone else's domain or use zeros instead of the letter o.",
+   "tip_lo": "ຊື່ແທ້ຢູ່ທ້າຍໂດເມນ, ບໍ່ແມ່ນຕົ້ນ.",
+   "tip_en": "The real name sits at the end of the domain, not the start."
+  },
+  {
+   "id": "c-part-bcel",
+   "kind": "which_part",
+   "url": "https://bcel.com.la.verify-login.net/otp",
+   "prompt_lo": "ສ່ວນໃດຂອງລິ້ງນີ້ທີ່ເປັນຕົວປອມ?",
+   "prompt_en": "Which part of this link is the fake?",
+   "options": [
+    "bcel",
+    "com.la",
+    "verify-login.net",
+    "otp"
+   ],
+   "answer": 2,
+   "realPart": "verify-login.net",
+   "explanation_lo": "ໂດເມນຈິງແມ່ນ verify-login.net ເພາະຢູ່ກ່ອນ “/” ອັນທຳອິດ. bcel.com.la ເປັນພຽງຊື່ຍ່ອຍທີ່ໃຊ້ຫຼອກຕາ.",
+   "explanation_en": "The real domain is verify-login.net because it comes just before the first “/”. bcel.com.la is only a subdomain used to fool you.",
+   "tip_lo": "ເບິ່ງສິ່ງທີ່ຢູ່ຕິດກັບ “/” ອັນທຳອິດ.",
+   "tip_en": "Look at what sits next to the first “/”."
+  },
+  {
+   "id": "c-part-fb",
+   "kind": "which_part",
+   "url": "https://login.facebook.com.account-check.xyz/home",
+   "prompt_lo": "ສ່ວນໃດຂອງລິ້ງນີ້ທີ່ເປັນຕົວປອມ?",
+   "prompt_en": "Which part of this link is the fake?",
+   "options": [
+    "login",
+    "facebook.com",
+    "account-check.xyz",
+    "home"
+   ],
+   "answer": 2,
+   "realPart": "account-check.xyz",
+   "explanation_lo": "ໂດເມນຈິງແມ່ນ account-check.xyz. ຄຳວ່າ login.facebook.com ແມ່ນພຽງຊື່ຍ່ອຍຂອງໂດເມນນັ້ນ.",
+   "explanation_en": "The real domain is account-check.xyz. login.facebook.com is only a subdomain of it.",
+   "tip_lo": "ຊື່ຍ່ອຍຕັ້ງໄດ້ຕາມໃຈ, ໂດເມນຕ້ອງຊື້.",
+   "tip_en": "Anyone can pick a subdomain; a domain has to be bought."
+  }
  ]
 }
