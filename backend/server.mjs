@@ -56,8 +56,8 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, origins = [], trustProxy = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
-  const db = openStore(database, seed), clients = new Set(), rate = new Map(), loginFailures = new Map();
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, seedOrganisations = false, origins = [], trustProxy = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
+  const db = openStore(database, seed, seedOrganisations), clients = new Set(), rate = new Map(), loginFailures = new Map();
   // Behind nginx every socket is the proxy, so the client address comes from X-Real-IP, which nginx
   // overwrites with $remote_addr. Without a trusted proxy the header is client-controlled and ignored.
   const clientIp = req => { const real = trustProxy && req.headers['x-real-ip']; return typeof real === 'string' && real.trim() ? real.trim() : req.socket.remoteAddress; };
@@ -453,7 +453,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   let restored=false,snapshots=null;
   if(snapshotsEnabled())restored=await restoreSnapshot(database);
   const seed=process.env.SEED_DEMO==='true'||(snapshotsEnabled()&&!restored);
-  const app=createApp({database,seed,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  const app=createApp({database,seed,seedOrganisations:true,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
   if(snapshotsEnabled())snapshots=startSnapshots(app.db,database,{restored});
   const port=Number(process.env.PORT||process.env.API_PORT||3001),host=process.env.API_HOST||(process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1');
   app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});

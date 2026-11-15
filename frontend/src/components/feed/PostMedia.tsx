@@ -133,7 +133,7 @@ export function VideoBlock({ item, title, lang }: { item: PostMediaItem; title: 
     v.muted = !v.muted; setMuted(v.muted);
   };
   return <div ref={wrap} className="mt-3 relative bg-black">
-    <video ref={ref} src={item.url} poster={item.thumb_url} muted playsInline loop preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)}
+    <video ref={ref} src={item.thumb_url ? item.url : `${item.url}#t=0.1`} poster={item.thumb_url} muted playsInline loop preload="metadata" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} onError={() => setFailed(true)}
       aria-label={title || (lo ? "ວິດີໂອ" : "Video")} className="w-full max-h-[460px] object-cover aspect-video" />
     <button type="button" onClick={tap} aria-label={!playing ? (lo ? "ຫຼິ້ນວິດີໂອ" : "Play video") : muted ? (lo ? "ເປີດສຽງ" : "Turn sound on") : (lo ? "ປິດສຽງ" : "Mute")} className="absolute inset-0 flex items-center justify-center">
       {!playing && <span className="w-16 h-16 rounded-full bg-black/55 flex items-center justify-center"><Play size={28} className="text-white ml-1" aria-hidden fill="white" /></span>}

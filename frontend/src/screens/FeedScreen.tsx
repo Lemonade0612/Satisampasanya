@@ -8,7 +8,6 @@ import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
 import { OrgPostCard } from "../components/feed/OrgPostCard";
-import { CuratedFeed } from "../components/posts/CuratedFeed";
 import { ColorCodeButton, ColorCodeSheet } from "../components/feed/colorCode";
 import { isBlocked } from "../lib/blocked";
 import { PostSkeleton } from "../components/feed/PostSkeleton";
@@ -160,11 +159,6 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           {youth && onPlayGame && i % 3 === 2 && <PlayCard game={games[Math.floor(i / 3) % games.length]} lang={lang} onPlay={onPlayGame} />}
           {i === 2 && <div className="flex flex-col gap-3">
         <DailySafetyTip lang={lang} />
-            {/* Curated Posts / ຂ່າວສານ: posters, hotlines and the CNA video. Not for Kids (child-exploitation topics). */}
-            {band !== "kids" && <section aria-label={lang === "lo" ? "ຂ່າວສານ" : "Posts"} className="-mx-2">
-              <h2 className="px-4 pt-1 font-bold text-lg">{lang === "lo" ? "ຂ່າວສານ" : "Posts"}</h2>
-              <CuratedFeed lang={lang} />
-            </section>}
           </div>}
           </div>
         ); })}

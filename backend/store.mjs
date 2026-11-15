@@ -13,7 +13,7 @@ const loadSeed = () => {
   return [...JSON.parse(readFileSync(new URL('./seed-dev.json', import.meta.url), 'utf8')), ...seed];
 };
 
-export function openStore(filename, seed = false) {
+export function openStore(filename, seed, seedOrganisations = false) {
   if (filename !== ':memory:') mkdirSync(dirname(filename), { recursive: true });
   const db = new DatabaseSync(filename);
   db.exec(readFileSync(new URL('./schema.sql', import.meta.url), 'utf8'));
@@ -51,7 +51,7 @@ export function openStore(filename, seed = false) {
       db.exec('COMMIT');
     } catch (error) { db.exec('ROLLBACK'); throw error; }
   }
-  if (seed) seedOrgs(db);
+  if (seed || seedOrganisations) seedOrgs(db); // organisations are core data: the real server always seeds them (idempotent)
   if (seed) seedScenarioDrafts(db, JSON.parse(readFileSync(new URL('./scenario-drafts.json', import.meta.url), 'utf8')));
   return db;
 }
