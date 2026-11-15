@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { SHOW_EXPERT_PANEL } from '../../../../../shared/flags.mjs';
-import { BarChart3, Swords, Flag, Shuffle, Link2, Zap, MessagesSquare, Play, Search, PhoneCall, BellRing, X, ChevronDown, ChevronRight, Check, Crown, Flame, Target, Heart, Lock, UserPlus, type LucideIcon } from 'lucide-react';
+import { BarChart3, Swords, Flag, Shuffle, Link2, Zap, MessagesSquare, Play, Search, PhoneCall, BellRing, X, ChevronDown, Clock, Info, Bell, ChevronRight, Check, Crown, Flame, Target, Heart, Lock, UserPlus, type LucideIcon } from 'lucide-react';
 import { BandSheet, bandLabel } from '../../../components/shared/BandSheet';
 import { TIERS } from '../lib/age';
 import { useBand, useHasBand, type Band } from '../../../lib/band';
 import { BaitFeed } from '../../kids/BaitFeed';
 import { DT } from '../i18n';
 import { currentStreak, getLike, getProgress, levelInfo, missionDone, toggleLike, GAME_XP, MISSION_XP } from '../lib/progress';
-import { laoDayNumber } from '../lib/storage';
+import { laoDay, laoDayNumber } from '../lib/storage';
+import { GAME_INFO } from '../data/gameInfo';
+import { clearReminder, reminderOn, setReminder } from '../lib/reminder';
 import { NUDGE_KEY, load, save, scoped, today as todayKey } from '../lib/storage';
 import { scenarioOfTheDay, weeklyLevel } from '../lib/scenarios';
 import type { GameId, Lang } from '../types';
@@ -59,12 +61,21 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
   const lvl = levelInfo(p);
   const mission = missionDone(p);
   const [nudge, setNudge] = useState(() => p.lastDay !== todayKey() && load<string>(scoped(NUDGE_KEY), '') !== todayKey());
+  const [remind, setRemind] = useState(reminderOn), [remindMsg, setRemindMsg] = useState('');
+  const toggleRemind = async () => { if (remind) { await clearReminder(); setRemind(false); setRemindMsg(''); return; } const r = await setReminder(lang); if (r === 'set') { setRemind(true); setRemindMsg(''); } else setRemindMsg(r === 'denied' ? (lo ? 'ເປີດການແຈ້ງເຕືອນໃນການຕັ້ງຄ່າກ່ອນ' : 'Allow notifications in Settings first') : (lo ? 'ອຸປະກອນນີ້ບໍ່ຮອງຮັບການແຈ້ງເຕືອນ' : 'Notifications are not supported here')); };
   const hideNudge = () => { save(scoped(NUDGE_KEY), todayKey()); setNudge(false); };
   const age: Band | null = chosen ? band : null;
   const [ageOpen, setAgeOpen] = useState(() => !chosen);
   const AgeIcon = TIERS[band].icon;
   const rec = picksForToday(band)[0] ?? 'call';
   const games = [GAMES.find(g => g.id === rec)!, ...GAMES.filter(g => g.id !== rec)];
+  // Mon-Sun path: a day is done when its mission was finished, today pulses, everything else is locked.
+  const todayDate = laoDay(), dow = (new Date(`${todayDate}T12:00:00Z`).getUTCDay() + 6) % 7;
+  const week = Array.from({ length: 7 }, (_, i) => ({ i, date: laoDay(i - dow), done: (p.missionDays || []).includes(laoDay(i - dow)) || (i === dow && mission) }));
+  const weekDone = week.filter(d => d.done).length;
+  const DAY_LABEL = lo ? ['ຈ', 'ອ', 'ພ', 'ພຫ', 'ສ', 'ສ', 'ອາ'] : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const [sheet, setSheet] = useState<null | { kind: 'all' } | { kind: 'learn'; id: GameId }>(null);
+  const featured = (() => { const picks = picksForToday(band); const ids = [...picks, ...GAMES.map(g => g.id).filter(id => !picks.includes(id))].slice(0, 3); return ids.map(id => GAMES.find(g => g.id === id)!); })();
   const pathRef = useRef<HTMLOListElement>(null);
   // Keep the current level in view when the path is longer than the screen.
   useEffect(() => { const el = pathRef.current, cur = el?.querySelector<HTMLElement>('[data-cur]'); if (el && cur) el.scrollLeft = cur.offsetLeft - el.clientWidth / 2 + cur.clientWidth / 2; }, [current, band]);
@@ -128,6 +139,8 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
         <span className="flex-1 min-w-0 text-sm">
           <span className="block font-bold">{lo ? 'ສິ່ງທ້າທາຍມື້ນີ້ພ້ອມແລ້ວ' : t.nudge_title}</span>
           <span className="block text-muted-foreground">{lo ? '2 ນາທີ ເພື່ອຝຶກສະຕິຈັບການຫຼອກລວງ' : t.nudge_body}</span>
+          <button type="button" aria-pressed={remind} onClick={() => void toggleRemind()} className="mt-1.5 min-h-11 inline-flex items-center gap-1.5 rounded-full bg-[#EDE9FE] px-3.5 text-[13px] font-bold text-[#3B0E91]"><Bell size={14} aria-hidden />{remind ? (lo ? 'ຕັ້ງເຕືອນແລ້ວ 19:00' : 'Reminder on · 19:00') : (lo ? 'ເຕືອນຂ້ອຍ' : 'Remind me')}</button>
+          {remindMsg && <span role="alert" className="block text-[12px] text-red-600">{remindMsg}</span>}
         </span>
         <button onClick={hideNudge} aria-label={lo ? 'ປິດ' : 'Close'} className="w-11 h-11 -mr-1 shrink-0 flex items-center justify-center"><span className="w-8 h-8 rounded-full bg-[#F3F4F8] dark:bg-muted text-muted-foreground flex items-center justify-center"><X size={16} /></span></button>
       </div>}
@@ -136,22 +149,15 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
 
       {/* D. Weekly path */}
       <section className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-3"><h2 className="font-bold">{lo ? 'ເສັ້ນທາງອາທິດນີ້' : "This week's path"}</h2><span className="text-sm font-semibold text-muted-foreground">{done} / {level.length}</span></div>
+        <div className="flex items-center justify-between mb-3"><h2 className="font-bold">{lo ? 'ເສັ້ນທາງອາທິດນີ້' : "This week's path"}</h2><span className="text-sm font-semibold text-muted-foreground">{weekDone} / 7</span></div>
         <div>
-          <ol ref={pathRef} className="flex items-center overflow-x-auto scrollbar-hide -mx-4 px-4 py-2 snap-x">
-            {level.map((s, i) => {
-              const isDone = p.completed.includes(s.id), isCur = i === current;
-              const line = i > 0 && <span aria-hidden className={`w-5 h-1.5 shrink-0 rounded-full ${i <= (current < 0 ? level.length : current) ? 'bg-primary' : 'bg-[#E6E6F0] dark:bg-muted'}`} />;
-              const node = s.boss
-                ? <span className={`w-[47px] h-[47px] m-1.5 rotate-45 rounded-[16px] bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center shadow-[0_6px_14px_rgba(244,63,94,.35)] ${isCur ? 'ring-4 ring-primary/30' : ''}`}><Crown size={23} className="-rotate-45 text-white" aria-label={t.boss} /></span>
-                : isDone ? <span className="w-[50px] h-[50px] rounded-full bg-primary text-white flex items-center justify-center shadow-[0_4px_10px_rgba(91,33,209,.3)]"><Check size={22} strokeWidth={3} aria-label={`${i + 1} ✓`} /></span>
-                : isCur ? <span className="relative w-[61px] h-[61px] flex items-center justify-center">
-                    <span aria-hidden className="absolute inset-0 rounded-full bg-primary/20 animate-pulse" />
-                    <span className="relative w-[50px] h-[50px] rounded-full bg-white border-4 border-primary text-primary text-xl font-extrabold flex items-center justify-center">{i + 1}</span>
-                  </span>
-                : <span className="w-[50px] h-[50px] rounded-full bg-white dark:bg-background border-2 border-[#E6E6F0] dark:border-border text-muted-foreground text-lg font-bold flex items-center justify-center">{i + 1}</span>;
-              return <li key={s.id} data-cur={isCur || undefined} title={s.title[lang]} className="flex items-center shrink-0 snap-center">{line}{node}</li>;
-            })}
+          <ol ref={pathRef} aria-label={lo ? 'ເສັ້ນທາງອາທິດນີ້' : "This week's path"} className="flex items-start justify-between gap-1 py-2">
+            {week.map(d => { const isCur = d.i === dow && !d.done, future = d.i > dow, boss = d.i === 6;
+              const state = d.done ? (lo ? 'ສຳເລັດ' : 'done') : isCur ? (lo ? 'ມື້ນີ້' : 'today') : (lo ? 'ລັອກ' : 'locked');
+              const node = d.done ? <span className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center shadow-[0_4px_10px_rgba(91,33,209,.3)]"><Check size={20} strokeWidth={3} aria-hidden /></span>
+                : isCur ? <span className="relative w-12 h-12 flex items-center justify-center"><span aria-hidden className="absolute inset-0 rounded-full bg-primary/25 animate-ping motion-reduce:animate-none" /><span className="relative w-10 h-10 rounded-full bg-white border-4 border-primary text-primary flex items-center justify-center">{boss ? <Crown size={18} aria-hidden /> : <Play size={14} fill="currentColor" aria-hidden />}</span></span>
+                : <span className="w-10 h-10 rounded-full bg-white dark:bg-background border-2 border-[#E6E6F0] dark:border-border text-[#A3A6BA] flex items-center justify-center">{boss ? <Crown size={17} aria-hidden /> : <Lock size={15} aria-hidden />}</span>;
+              return <li key={d.i} aria-current={isCur ? 'step' : undefined} className="flex-1 min-w-0 flex flex-col items-center gap-1"><span className="h-12 flex items-center">{node}</span><span className={`text-[12px] font-bold ${isCur ? 'text-primary' : 'text-muted-foreground'}`}>{DAY_LABEL[d.i]}</span><span className="sr-only">{state}</span>{future && <span className="sr-only">{lo ? 'ຍັງບໍ່ເຖິງ' : 'not yet'}</span>}</li>; })}
           </ol>
           <button onClick={() => onLaunch({ game: 'story', scope: 'weekly' })} className={`${btn3d} mt-4 text-white`} style={{ background: 'linear-gradient(90deg, #5B21D1, #6E8EF0)', boxShadow: '0 5px 0 #3B0E91' }}>
             <Play size={18} fill="currentColor" aria-hidden />{lo ? 'ເລີ່ມ' : 'Start'} · {lo ? 'ດ່ານທີ' : 'Level'} {current < 0 ? level.length : current + 1}
@@ -164,25 +170,20 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
       </section>
 
       {/* E. Games */}
-      <section className="px-4 mt-6">
-        <div className="flex items-center justify-between mb-3"><h2 className="font-bold">{lo ? 'ເລືອກເກມ' : 'Choose a game'}</h2><span className="text-sm font-semibold text-muted-foreground">{GAMES.length} {lo ? 'ເກມ' : 'games'}</span></div>
-        <div className="grid grid-cols-2 gap-3">
-          {games.map(({ id, icon: Icon, tint, glow }, i) => {
-            const first = i === 0, fav = favs[id];
-            return <div key={id} className={`relative rounded-[20px] bg-background ${first ? 'col-span-2 border-2 border-primary' : 'border border-[#ECECF4] dark:border-border'}`}>
-              <button onClick={() => onLaunch({ game: id, scope: 'all' })} className="w-full h-full text-left p-4 pr-12 min-h-11">
-                <span aria-hidden className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tint} text-white flex items-center justify-center`} style={{ boxShadow: `0 6px 14px ${glow}` }}><Icon size={22} /></span>
-                <span className="mt-3 flex items-center gap-1.5 flex-wrap"><span className="font-bold leading-snug">{t[`g_${id}`]}</span>{first && <span className="rounded-md bg-amber-100 text-amber-700 text-[11px] font-bold px-1.5 py-0.5">{lo ? 'ມາແຮງ' : 'Hot'}</span>}</span>
-                <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{t[`g_${id}_d`]}</span>
-                <span className="block text-[11px] font-semibold text-muted-foreground mt-2">{lo ? '2 ນາທີ' : '2 min'} · +{GAME_XP} XP</span>
-              </button>
-              <button onClick={() => { const r = toggleLike(id); setFavs(f => ({ ...f, [id]: r.liked })); }} aria-pressed={fav} aria-label={lo ? 'ເກມທີ່ມັກ' : 'Favourite'}
-                className="absolute top-1.5 right-1.5 w-11 h-11 flex items-center justify-center">
-                <span className={`w-9 h-9 rounded-full flex items-center justify-center ${fav ? 'bg-rose-50 text-[#E11D48]' : 'bg-[#F3F4F8] dark:bg-muted text-[#A3A6BA]'}`}><Heart size={18} fill={fav ? 'currentColor' : 'none'} /></span>
-              </button>
-            </div>;
-          })}
-        </div>
+      <section className="mt-6" aria-labelledby="featured">
+        <div className="flex items-center justify-between mb-3 px-4"><h2 id="featured" className="font-bold">{lo ? 'ເກມເດັ່ນມື້ນີ້' : 'Featured games'}</h2></div>
+        <ul className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide px-4 pb-2">
+          {featured.map(({ id, icon: Icon, tint, glow }, i) => <li key={id} className="snap-start shrink-0 w-[78%] max-w-[300px] rounded-[20px] bg-background border border-[#ECECF4] dark:border-border flex flex-col">
+            <button type="button" onClick={() => onLaunch({ game: id, scope: 'all' })} className="text-left p-4 flex-1 min-h-11 flex flex-col items-start justify-start">
+              <span aria-hidden className={`w-11 h-11 rounded-xl bg-gradient-to-br ${tint} text-white flex items-center justify-center`} style={{ boxShadow: `0 6px 14px ${glow}` }}><Icon size={22} /></span>
+              <span className="mt-3 flex items-center gap-1.5 flex-wrap"><span className="font-bold leading-snug">{t[`g_${id}`]}</span>{i === 0 && <span className="rounded-md bg-amber-100 text-amber-700 text-[11px] font-bold px-1.5 py-0.5">{lo ? 'ແນະນຳ' : 'Pick'}</span>}</span>
+              <span className="block text-sm text-muted-foreground leading-snug mt-0.5">{t[`g_${id}_d`]}</span>
+              <span className="mt-2 flex items-center gap-1 text-[12px] font-semibold text-muted-foreground"><Clock size={12} aria-hidden />{GAME_INFO[id].minutes} {lo ? 'ນາທີ' : 'min'} · +{GAME_XP} XP</span>
+            </button>
+            <button type="button" onClick={() => setSheet({ kind: 'learn', id })} className="min-h-11 border-t border-[#ECECF4] dark:border-border flex items-center justify-center gap-1.5 text-sm font-bold text-primary"><Info size={15} aria-hidden />{lo ? 'ຮຽນຮູ້ເພີ່ມ' : 'Learn more'}</button>
+          </li>)}
+        </ul>
+        <div className="px-4 mt-3"><button type="button" onClick={() => setSheet({ kind: 'all' })} className={`${btn3d} bg-white dark:bg-background border-2 border-[#E6E6F0] dark:border-border text-foreground`}>{lo ? `ເກມທັງໝົດ (${GAMES.length})` : `All games (${GAMES.length})`}<ChevronRight size={18} aria-hidden /></button></div>
       </section>
 
       {/* F. Badges */}
@@ -202,6 +203,20 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
         <button onClick={() => onNav('progress')} className="daily-btn w-full rounded-2xl bg-[#EEF0FA] dark:bg-muted text-primary flex items-center justify-center gap-2 font-semibold"><BarChart3 size={18} aria-hidden />{lo ? 'ຄວາມຄືບໜ້າຂອງຂ້ອຍ' : t.my_progress}</button>
       </div>
       {footer}
+      {sheet && <div className="fixed inset-0 z-[70] flex items-end justify-center bg-black/45" onClick={() => setSheet(null)}>
+        <div role="dialog" aria-modal="true" aria-label={sheet.kind === 'all' ? (lo ? 'ເກມທັງໝົດ' : 'All games') : t[`g_${sheet.id}`]} onClick={e => e.stopPropagation()} className="daily-slide-up w-full max-w-[480px] max-h-[85dvh] overflow-y-auto rounded-t-3xl bg-background px-4 pt-3 pb-[calc(20px+env(safe-area-inset-bottom))]">
+          <span aria-hidden className="mx-auto mb-2 block h-1 w-10 rounded-full bg-border" />
+          <div className="flex items-center justify-between"><h2 className="text-[1.25rem] font-extrabold">{sheet.kind === 'all' ? (lo ? `ເກມທັງໝົດ (${GAMES.length})` : `All games (${GAMES.length})`) : t[`g_${sheet.id}`]}</h2><button type="button" aria-label={lo ? 'ປິດ' : 'Close'} onClick={() => setSheet(null)} className="min-h-11 min-w-11 flex items-center justify-center"><X size={22} aria-hidden /></button></div>
+          {sheet.kind === 'all' ? <ul className="mt-2 grid gap-2">{GAMES.map(({ id, icon: Icon, tint }) => <li key={id} className="flex items-center gap-2 rounded-2xl border border-[#ECECF4] dark:border-border">
+            <button type="button" onClick={() => { setSheet(null); onLaunch({ game: id, scope: 'all' }); }} className="flex-1 min-w-0 flex items-center gap-3 p-3 min-h-14 text-left"><span aria-hidden className={`w-10 h-10 shrink-0 rounded-xl bg-gradient-to-br ${tint} text-white flex items-center justify-center`}><Icon size={20} /></span><span className="min-w-0"><span className="block font-bold truncate">{t[`g_${id}`]}</span><span className="block text-[12px] text-muted-foreground">{GAME_INFO[id].minutes} {lo ? 'ນາທີ' : 'min'} · +{GAME_XP} XP</span></span></button>
+            <button type="button" onClick={() => { const r = toggleLike(id); setFavs(f => ({ ...f, [id]: r.liked })); }} aria-pressed={favs[id]} aria-label={lo ? 'ເກມທີ່ມັກ' : 'Favourite'} className="w-11 h-11 mr-1 flex items-center justify-center"><Heart size={18} fill={favs[id] ? 'currentColor' : 'none'} className={favs[id] ? 'text-[#E11D48]' : 'text-[#A3A6BA]'} /></button>
+          </li>)}</ul>
+          : <div className="mt-2"><p className="text-sm text-muted-foreground">{t[`g_${sheet.id}_d`]}</p>
+              <h3 className="mt-4 font-bold">{lo ? 'ສິ່ງທີ່ຈະໄດ້ຮຽນ' : 'What you learn'}</h3>
+              <ul className="mt-2 grid gap-2 list-disc pl-5 text-[1.0625rem] leading-relaxed marker:text-primary">{GAME_INFO[sheet.id].learn.map((x, i) => <li key={i}>{x[lang]}</li>)}</ul>
+              <p className="mt-4 flex items-center gap-3 text-sm font-bold"><span className="rounded-full bg-muted px-3 py-1.5 flex items-center gap-1"><Clock size={14} aria-hidden />{GAME_INFO[sheet.id].minutes} {lo ? 'ນາທີ' : 'min'}</span><span className="rounded-full bg-[#EDE9FE] text-[#3B0E91] px-3 py-1.5">+{GAME_XP} XP</span></p>
+              <button type="button" onClick={() => { const id = sheet.id; setSheet(null); onLaunch({ game: id, scope: 'all' }); }} className={`${btn3d} mt-4 text-white`} style={{ background: '#5B21D1', boxShadow: '0 5px 0 #3B0E91' }}><Play size={18} fill="currentColor" aria-hidden />{lo ? 'ຫຼິ້ນ' : 'Play'}</button></div>}
+        </div></div>}
       {ageOpen && <BandSheet lang={lang} onClose={age ? () => setAgeOpen(false) : undefined} onSaved={() => setAgeOpen(false)} />}
     </div>
   );

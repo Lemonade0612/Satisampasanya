@@ -12,7 +12,8 @@ import { ScamDash } from './games/ScamDash';
 import { ScamDetective } from './games/ScamDetective';
 import { ScamCall } from './games/ScamCall';
 import { track } from './lib/analytics';
-import { finishSession } from './lib/progress';
+import { finishSession, GAME_XP, MISSION_XP } from './lib/progress';
+import { api, hasSession } from '../../lib/api';
 import { playable, scenarioOfTheDay, useLiveScenarios, weeklyLevel } from './lib/scenarios';
 import { useBand } from '../../lib/band';
 import type { Lang, Scenario } from './types';
@@ -49,6 +50,8 @@ export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter, start
     if (!play) return;
     setStreak(finishSession(play.game, r.score, r.failed ? r.scenarioIds.slice(0, -1) : r.scenarioIds, { mission: play.scope === 'daily' && !r.failed }).streak);
     setResult(r);
+    // Signed-in players also keep their best score and XP on the server (the local copy above works offline).
+    if (hasSession()) void api.gameProgress(play.game, Math.min(100000, Math.max(0, Math.round(r.score))), play.scope === 'daily' && !r.failed ? MISSION_XP : GAME_XP).catch(() => { /* offline: the local copy stays */ });
   };
 
   if (play && result) return <EndScreen lang={lang} game={play.game} result={result} streak={streak} onAgain={() => launch(play)} onHome={exit} onCheck={onCheckOnSati} />;

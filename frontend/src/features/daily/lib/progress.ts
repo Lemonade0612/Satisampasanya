@@ -1,7 +1,7 @@
 import { LIKES_KEY, PROGRESS_KEY, laoDay, load, save, scoped, today } from './storage';
 import type { GameId } from '../types';
 
-type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number; doneDay?: string; doneGames?: string[]; xp?: number; missionDay?: string };
+type Progress = { streak: number; lastDay: string | null; best: Record<string, number>; completed: string[]; played?: number; doneDay?: string; doneGames?: string[]; xp?: number; missionDay?: string; missionDays?: string[] };
 export const getProgress = () => load<Progress>(scoped(PROGRESS_KEY), { streak: 0, lastDay: null, best: {}, completed: [] });
 
 // The streak shown today: still alive if the last session was today or yesterday, otherwise broken.
@@ -25,7 +25,7 @@ export function finishSession(game: GameId | string, score: number, scenarioIds:
   p.completed = Array.from(new Set([...p.completed, ...scenarioIds]));
   // XP: every finished game earns some; today's mission earns more, once a day.
   const mission = !!opts.mission && p.missionDay !== d;
-  if (mission) p.missionDay = d;
+  if (mission) { p.missionDay = d; p.missionDays = [...new Set([...(p.missionDays || []), d])].slice(-60); }
   p.xp = (p.xp || 0) + (mission ? MISSION_XP : opts.xp ?? GAME_XP);
   save(scoped(PROGRESS_KEY), p);
   return p;
