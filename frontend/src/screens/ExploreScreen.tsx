@@ -5,10 +5,11 @@ import { HOTLINES, type Hotline } from "../lib/hotlines";
 import { DOC_KIND_LABEL, OFFICIAL_DOCS, TRAFFICKING_STATS_2024, type DocKind } from "../lib/officialDocs";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
 import { openWebsite } from "../lib/site";
+import { CuratedFeed } from "../components/posts/CuratedFeed";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, Post } from "../types";
 
-type ExploreTab = "explore" | "hotlines" | "docs";
+type ExploreTab = "explore" | "news" | "hotlines" | "docs";
 
 export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLink }: { lang: Lang; posts: Post[]; onOpenPost: (id: string) => void; onTopicClick?: (topic: string) => void; onCheckLink?: () => void }) {
   const [search, setSearch] = useState("");
@@ -49,7 +50,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             {search && <button type="button" aria-label={lo ? "ລຶບຄຳຄົ້ນຫາ" : "Clear search"} onClick={() => setSearch("")} className="w-11 h-11 -mr-3 flex items-center justify-center text-text-muted"><X size={18} aria-hidden /></button>}
           </label>
         </div>
-        {!q && <div role="tablist" className="grid grid-cols-3 px-4">
+        {!q && <div role="tablist" className="grid grid-cols-4 px-4">
           {TABS.map(([id, l]) => <button key={id} type="button" role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
             className={`relative justify-self-center min-h-12 px-1 text-[15px] font-bold ${tab === id ? "text-primary-ink" : "text-text-muted"}`}>
             {lo ? l.lo : l.en}{tab === id && <span aria-hidden className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary rounded-full" />}
@@ -77,7 +78,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </div>
           ))}
         </div>
-      ) : tab === "hotlines" ? <Hotlines lang={lang} /> : tab === "docs" ? <Docs lang={lang} /> : (
+      ) : tab === "news" ? <div className={ASK_SATI_PAD}><CuratedFeed lang={lang} /></div> : tab === "hotlines" ? <Hotlines lang={lang} /> : tab === "docs" ? <Docs lang={lang} /> : (
         <div className={`px-4 pt-4 ${ASK_SATI_PAD} space-y-6`}>
           {/* Help card */}
           <section className="rounded-3xl border border-rose-200 p-4" style={{ background: "linear-gradient(135deg, #FFF1F2, #FFEDD5)" }}>
@@ -133,7 +134,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
 
           <footer className="pt-2 pb-2 text-center">
             <button type="button" onClick={() => void openWebsite("explore")} className="min-h-11 inline-flex items-center gap-1.5 px-4 rounded-full text-sm font-bold text-primary">
-              <Globe size={16} aria-hidden />{lo ? "ເບິ່ງເວັບໄຊທ໌" : "Visit our website"}<ExternalLink size={14} aria-hidden />
+              <Globe size={16} aria-hidden />{lo ? "ເຂົ້າເບິ່ງເວັບໄຊຂອງພວກເຮົາ" : "Visit our website"}<ExternalLink size={14} aria-hidden />
             </button>
           </footer>
         </div>
@@ -142,7 +143,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
   );
 }
 
-const TABS: [ExploreTab, { lo: string; en: string }][] = [["explore", { lo: "ສຳຫຼວດ", en: "Explore" }], ["hotlines", { lo: "ສາຍດ່ວນ", en: "Hotlines" }], ["docs", { lo: "ເອກະສານ", en: "Documents" }]];
+const TABS: [ExploreTab, { lo: string; en: string }][] = [["explore", { lo: "ສຳຫຼວດ", en: "Explore" }], ["news", { lo: "ຂ່າວສານ", en: "Posts" }], ["hotlines", { lo: "ສາຍດ່ວນ", en: "Hotlines" }], ["docs", { lo: "ເອກະສານ", en: "Documents" }]];
 const TREND_GRADS = ["linear-gradient(140deg,#5B21D1,#2563EB)", "linear-gradient(140deg,#E11D48,#F97316)", "linear-gradient(140deg,#0EA5E9,#10B981)", "linear-gradient(140deg,#7C3AED,#EC4899)"];
 const TOPIC_TINTS = ["bg-violet-50 text-violet-700", "bg-blue-50 text-blue-700", "bg-rose-50 text-rose-700", "bg-emerald-50 text-emerald-700", "bg-amber-50 text-amber-800", "bg-sky-50 text-sky-700", "bg-fuchsia-50 text-fuchsia-700", "bg-teal-50 text-teal-700"];
 const TONES: Record<Hotline["tone"], string> = { rose: "bg-rose-50 text-rose-600", blue: "bg-blue-50 text-blue-700", violet: "bg-violet-50 text-violet-700", amber: "bg-amber-50 text-amber-700", emerald: "bg-emerald-50 text-emerald-700", sky: "bg-sky-50 text-sky-700", slate: "bg-slate-100 text-slate-700" };
@@ -200,7 +201,7 @@ function Docs({ lang }: { lang: Lang }) {
             <span className="block font-bold text-sm leading-snug mt-1 font-lao">{d.title}</span>
             <span className="block text-xs text-text-muted mt-0.5">{d.source}</span>
           </span>
-          <ExternalLink size={18} aria-label={lo ? "ເປີດໃນເບົາເຊີ" : "Opens in browser"} className="text-text-muted shrink-0 mt-1" />
+          <ExternalLink size={18} aria-label={lo ? "ເປີດໃນບຣາວເຊີ" : "Opens in browser"} className="text-text-muted shrink-0 mt-1" />
         </a>
       </li>)}
     </ul>

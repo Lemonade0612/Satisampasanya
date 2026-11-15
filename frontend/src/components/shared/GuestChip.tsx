@@ -15,7 +15,7 @@ export function GuestChip({ lang, offline, onAction }: { lang: Lang; offline: bo
   if (hidden) return null;
   const hide = () => { setHidden(true); try { sessionStorage.setItem(HIDE_KEY, '1'); } catch { /* storage blocked: hidden until reload */ } };
   const Icon = offline ? WifiOff : UserRound;
-  const label = offline ? (lo ? 'ອອບລາຍ' : 'Offline') : (lo ? 'ຫຼິ້ນແບບແຂກ' : 'Guest'); // REVIEW-LO ອອບລາຍ
+  const label = offline ? (lo ? 'ບໍ່ມີອິນເຕີເນັດ' : 'Offline') : (lo ? 'ຫຼິ້ນແບບແຂກ' : 'Guest'); // REVIEW-LO ອອບລາຍ
   const detail = offline
     ? (lo ? 'ເກມທີ່ມີໃນແອັບ, ບັນທຶກຄວາມຄືບໜ້າໃນໂທລະສັບນີ້.' : 'Built-in games, progress saved on this phone.')
     : (lo ? 'ບັນທຶກຄວາມຄືບໜ້າໃນໂທລະສັບນີ້.' : 'Progress saved on this phone.');

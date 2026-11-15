@@ -5,10 +5,14 @@
   "functions": {
     "api/index.mjs": {
       "maxDuration": 60,
-      "includeFiles": "backend/*.{json,sql}"
+      "includeFiles": "{backend/*.{json,sql},rules/*.json}"
     }
   },
   "rewrites": [
+    {
+      "source": "/about-ai",
+      "destination": "/index.html"
+    },
     {
       "source": "/api/:path*",
       "destination": "/api/index?__path=:path*"

@@ -21,3 +21,5 @@ translation/__pycache__/
 backend/data/demo-accounts.json
 
 .playwright-mcp/
+test-results/
+playwright-report/

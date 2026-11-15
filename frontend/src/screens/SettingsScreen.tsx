@@ -103,7 +103,7 @@ export function SettingsScreen({ lang, onLangChange, themeMode, onThemeChange, o
             <Chip><FileText size={18} /></Chip><span className="flex-1 font-semibold">{lo ? "ເງື່ອນໄຂການນຳໃຊ້" : "Terms of use"}</span><ChevronRight size={18} className="text-muted-foreground" aria-hidden />
           </button>
           <button type="button" onClick={() => void openWebsite("profile")} className="w-full min-h-[56px] flex items-center gap-3 px-4 py-2 text-left">
-            <Chip><Globe size={18} /></Chip><span className="flex-1 font-semibold">{lo ? "ເບິ່ງເວັບໄຊທ໌" : "Visit our website"}</span><ExternalLink size={18} className="text-muted-foreground" aria-hidden />
+            <Chip><Globe size={18} /></Chip><span className="flex-1 font-semibold">{lo ? "ເຂົ້າເບິ່ງເວັບໄຊຂອງພວກເຮົາ" : "Visit our website"}</span><ExternalLink size={18} className="text-muted-foreground" aria-hidden />
           </button>
           <div className="min-h-[56px] flex items-center gap-3 px-4 py-2">
             <Chip><Info size={18} /></Chip><span className="flex-1 font-semibold">{lo ? "ເວີຊັນ" : "Version"}</span><span className="text-sm text-muted-foreground">{VERSION}</span>

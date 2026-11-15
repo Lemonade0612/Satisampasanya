@@ -1,15 +1,17 @@
 import {postLocked,visibleTo} from './post-lock.mjs';
 import {notifyReviewers} from './review-queue.mjs';
-import {assistantUsage,assistantReply} from './assistant.mjs';
+import {assistantUsage,assistantReply,assistantStream} from './assistant.mjs';
 import {translationEnabled,translateText} from './translation.mjs';
 import {accessFor,manageUser} from './access.mjs';
-import { adminSnapshot, reviewPost, alertNews } from './admin.mjs';
+import { adminSnapshot, reviewPost, overridePostRisk, alertNews } from './admin.mjs';
 import {reservedName} from './names.mjs';
 import {isBand,postVisibleToBand,canPostAsBand} from '../shared/bands.mjs';
 import {createScenario,reviewScenario,staffScenarios,publicScenarios,moderationLog,logScreening,setBundledRetired,staffRetired} from './scenarios.mjs';
 import { apnsSender, dispatchPushes } from './push.mjs';
 import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mjs';
 import {checkPost} from './safety/post-check.mjs';
+import {publicCurated,staffCurated,reviewCurated} from './curated.mjs';
+import {applyRisk,addReport} from './riskScore.mjs';
 import {modelConfigured} from './safety/model.mjs';
 import {hostedTranslate} from './safety/translate.mjs';
 import { createServer } from 'node:http';
@@ -128,6 +130,16 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if (req.method === 'GET' && path === '/api/admin/dashboard') return send(res,200,adminSnapshot(db,user));
         // Viewers may read scenarios and the log; only reviewers and admins may submit or decide.
         const canReview=['reviewer','admin'].includes(access.role);
+        if (req.method === 'GET' && path === '/api/admin/curated') return send(res,200,staffCurated(db));
+        const curatedReview = /^\/api\/admin\/curated\/([^/]+)$/.exec(path);
+        if (req.method === 'PATCH' && curatedReview) {
+          if(!canReview)fail('Review permission is required.',403);
+          const data = await body(req);
+          if (!['approved','rejected','pending'].includes(data.status)) fail('Choose approve, reject or return to pending.');
+          const value=reviewCurated(db,decodeURIComponent(curatedReview[1]),data.status,text(data.note,1000),user);
+          if(!value)fail('Post not found.',404);
+          return send(res,200,value);
+        }
         if (req.method === 'GET' && path === '/api/admin/scenarios') return send(res,200,staffScenarios(db));
         if (req.method === 'GET' && path === '/api/admin/moderation') return send(res,200,moderationLog(db));
         if (req.method === 'GET' && path === '/api/admin/scenarios/retired') return send(res,200,staffRetired(db));
@@ -159,10 +171,20 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
           if (!post) fail('Post not found.',404);
           broadcast(); return send(res,200,post);
         }
+        const riskRoute = /^\/api\/admin\/posts\/([^/]+)\/risk$/.exec(path);
+        if (req.method === 'PATCH' && riskRoute) {
+          if(!['reviewer','admin'].includes(access.role))fail('Review permission is required.',403);
+          const data = await body(req);
+          const post = overridePostRisk(db,riskRoute[1],{level:data.level,note:text(data.note,1000,true),warningExample:data.warningExample===true},user);
+          if (!post) fail('Post not found.',404);
+          broadcast(); return send(res,200,post);
+        }
         fail('Route not found.',404);
       }
       if (req.method === 'GET' && path === '/api/features') return send(res,200,{automaticTranslation:translationEnabled()||modelConfigured(),translationProvider:translationEnabled()?'NLLB-200':modelConfigured()?'OpenAI':'none',screening:modelConfigured()?'ai':'unavailable',assistant:modelConfigured()});
       if (req.method === 'GET' && path === '/api/health') return send(res, 200, { ok:true });
+      // Public: approved, unexpired curated posts (Posts / ຂ່າວສານ). Pending and rejected posts never leave the server.
+      if (req.method === 'GET' && path === '/api/curated') return send(res,200,publicCurated(db));
       // Public: live scenarios for one age band only. Drafts, approved-but-unpublished and rejected rows never leave the server.
       if (req.method === 'GET' && path === '/api/scenarios') return send(res,200,publicScenarios(db,user?.age_band||requestedBand));
       if (req.method === 'GET' && path === '/api/events') {
@@ -264,7 +286,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         loginFailures.delete(db.prepare('SELECT email FROM users WHERE id=?').get(row.user_id)?.email);
         return send(res,200,{ok:true});
       }
-      const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate|share))?$/.exec(path);
+      const match = /^\/api\/posts\/([^/]+)(?:\/(comments|reactions|reposts|translate|share|report))?$/.exec(path);
       if (req.method === 'GET' && match?.[2] === 'comments') {
         const target=db.prepare('SELECT id,user_id,data FROM posts WHERE id=?').get(match[1]);if (!target||!visibleTo(db,target,user?.id)) fail('Post not found.',404);
         return send(res,200,db.prepare('SELECT comments.*,users.name,users.profile FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
@@ -276,6 +298,14 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if(!['text','post'].includes(data.kind)||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
         const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
         return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto',band:askBand},assistantServices));
+      }
+      if (req.method === 'POST' && path === '/api/assistant/stream') {
+        const data=await body(req);
+        if(!['text','post'].includes(data.kind||'text')||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
+        const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
+        const emit=value=>{if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify(value)+'\n');};
+        await assistantStream(db,user.id,{text:text(data.text,2000,true),kind:data.kind||'text',mode:data.mode||'auto',band:askBand,lang:data.lang==='lo'?'lo':'en'},emit,assistantServices.stream?{stream:assistantServices.stream,verify:assistantServices.verify}:assistantServices);
+        return res.end();
       }
       if (req.method === 'POST' && path === '/api/translate') {
         const data=await body(req),value=text(data.text,2000,true);
@@ -342,7 +372,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const sourceUrl=link(data.sourceUrl)||undefined;
         const post = {id:randomUUID(),type:data.type,media:media.length?media:undefined,sourceUrl,content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,bands:isBand(user.age_band)?[user.age_band]:undefined,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
         const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
-        await check(post,{onProgress});
+        await check(post,{onProgress});applyRisk(post);
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];
         if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=5)fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
         db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now());
@@ -354,6 +384,15 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       }
       if (req.method === 'POST' && match) {
         const row = db.prepare('SELECT * FROM posts WHERE id=?').get(match[1]); if (!row || !visibleTo(db,row,user.id)) fail('Post not found.',404);
+        if(match[2]==='report'){
+          if(row.user_id===user.id)fail('You cannot report your own post.',403);
+          const current=JSON.parse(row.data);if(!current.risk_level)applyRisk(current);
+          const data=await body(req);
+          try{addReport(current,user.id,data.reason);}catch(error){fail(error.message,error.status||400);}
+          db.prepare('UPDATE posts SET data=? WHERE id=?').run(JSON.stringify(current),row.id);
+          sweep();broadcast();
+          return send(res,200,postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(row.id),user.id));
+        }
         if(match[2]!=='translate'){
           const current=JSON.parse(row.data);
           if(!current.check&&!current.review){

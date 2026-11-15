@@ -19,6 +19,7 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 COPY backend ./backend
 COPY shared ./shared
+COPY rules ./rules
 COPY scripts/mongo-backup.mjs ./scripts/mongo-backup.mjs
 COPY scripts/promote-admin.mjs ./scripts/promote-admin.mjs
 ENV API_HOST=0.0.0.0 API_PORT=3001 DATABASE_PATH=/data/sati.sqlite

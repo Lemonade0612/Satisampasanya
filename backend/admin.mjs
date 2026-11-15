@@ -2,6 +2,7 @@ import {randomUUID} from 'node:crypto';
 import {accessFor,managedUsers} from './access.mjs';
 import { postView } from './store.mjs';
 import { logModeration } from './scenarios.mjs';
+import { overrideRisk } from './riskScore.mjs';
 
 export function adminSnapshot(db,user) {
   const posts = db.prepare("SELECT * FROM posts WHERE COALESCE(json_extract(data,'$.seedArchived'),0)=0 ORDER BY created DESC").all().map(row => postView(db,row,undefined,0,{staff:true}));
@@ -12,6 +13,17 @@ export function adminSnapshot(db,user) {
     comments: db.prepare('SELECT COUNT(*) n FROM comments').get().n,
     reactions: db.prepare('SELECT COUNT(*) n FROM reactions').get().n,
   }, updatedAt: Date.now() };
+}
+
+export function overridePostRisk(db,id,data,user) {
+  const row = db.prepare('SELECT * FROM posts WHERE id=?').get(id);
+  if (!row) return null;
+  const post = JSON.parse(row.data);
+  const before = post.risk_level;
+  overrideRisk(post,{level:data.level,note:data.note,warningExample:data.warningExample},user);
+  db.prepare('UPDATE posts SET data=? WHERE id=?').run(JSON.stringify(post),id);
+  logModeration(db,{kind:'post',targetId:id,action:'risk:'+before+'->'+data.level,actor:user,note:data.note||'',detail:{warningExample:post.warningExample}});
+  return postView(db,db.prepare('SELECT * FROM posts WHERE id=?').get(id),user.id,0,{staff:true});
 }
 
 export function reviewPost(db,id,state,note,user) {

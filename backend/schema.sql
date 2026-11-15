@@ -28,4 +28,7 @@ CREATE TABLE IF NOT EXISTS moderation_log (id TEXT PRIMARY KEY, kind TEXT NOT NU
 CREATE INDEX IF NOT EXISTS moderation_log_created ON moderation_log(created);
 -- Built-in (bundled) scenarios that reviewers have retired. The app hides these ids from its bundled set.
 CREATE TABLE IF NOT EXISTS scenario_retirements (id TEXT PRIMARY KEY, note TEXT NOT NULL, retired_by TEXT NOT NULL, retired_at INTEGER NOT NULL);
+
+-- Admin decisions on curated posts (shared/curated-posts.mjs). The bundled file is the baseline; a row here overrides its status.
+CREATE TABLE IF NOT EXISTS curated_reviews (id TEXT PRIMARY KEY, status TEXT NOT NULL CHECK(status IN ('approved','pending','rejected')), note TEXT NOT NULL DEFAULT '', reviewer_id TEXT, reviewer_name TEXT NOT NULL, reviewed_at INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS posts_feed ON posts(created DESC, id);

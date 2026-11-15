@@ -67,4 +67,4 @@ live checks. These examples are posted by Safety examples (`@safety_examples`).
 
 Opening the API root on port 3001 redirects to the admin workspace; `/api/*` stays
 protected as before. Set ADMIN_URL for a hosted admin address. Restart the backend after
-updating server code. The launch screen shows both Satisampasanya and ສະຕິຊໍາປະຊັນຍະ.
+updating server code. The launch screen shows both Satisampasanya and ສະຕິຊຳປະຊັນຍະ.

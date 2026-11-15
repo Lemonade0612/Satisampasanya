@@ -20,8 +20,8 @@ export function CommentsModal({postId,posts,lang,onClose,onAddComment,onOpenPost
   },[postId]);
   if(!post)return null;
   const submit=async()=>{if(!reply.trim()||busy)return;setBusy(true);setError('');try{await onAddComment(post.id,reply.trim());setReply('');setComments(await api.comments(post.id));}catch(e){setError((e as Error).message);}finally{setBusy(false);}};
-  return <section role="dialog" aria-modal="true" aria-label={lang==='lo'?'ຄຳຄິດເຫັນ':'Comments'} className="phone-modal fixed inset-0 z-50 flex flex-col bg-background">
-    <header className="flex items-center gap-3 px-4 py-2 border-b border-border shrink-0"><button onClick={onClose} aria-label={t.back} className="touch-target"><ArrowLeft size={22}/></button><h2 className="font-semibold">{lang==='lo'?'ຄຳຄິດເຫັນ':'Comments'}</h2></header>
+  return <section role="dialog" aria-modal="true" aria-label={lang==='lo'?'ຄຳເຫັນ':'Comments'} className="phone-modal fixed inset-0 z-50 flex flex-col bg-background">
+    <header className="flex items-center gap-3 px-4 py-2 border-b border-border shrink-0"><button onClick={onClose} aria-label={t.back} className="touch-target"><ArrowLeft size={22}/></button><h2 className="font-semibold">{lang==='lo'?'ຄຳເຫັນ':'Comments'}</h2></header>
     <div className="flex-1 min-h-0 overflow-y-auto p-4">
       <p className="font-semibold mb-2 break-words">{post.author.name}</p><p className="whitespace-pre-wrap break-words font-lao">{lang==='lo'&&post.contentLo?post.contentLo:post.content}</p>
       {post.image&&<img src={post.image} alt="" className="mt-3 max-h-60 w-full object-contain rounded-xl"/>}

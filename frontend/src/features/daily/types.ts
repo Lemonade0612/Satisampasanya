@@ -38,7 +38,7 @@ export type Scenario = BandTagged & {
   warning?: L10n;
 };
 
-export type QuickCard = BandTagged & { id: string; scamType: ScamType; isScam: boolean; sender: string; text: L10n; why: L10n };
+export type QuickCard = BandTagged & { id: string; scamType: ScamType; isScam: boolean; sender: string; text: L10n; why: L10n; redFlag?: L10n };
 export type LinkRound = BandTagged & { id: string; brand: string; options: string[]; safe: number; why: L10n };
 
 export type GameId = 'story' | 'flags' | 'realorscam' | 'links' | 'dash' | 'detective' | 'call';

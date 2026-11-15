@@ -1,12 +1,17 @@
 import logoImage from "/images/sati-mark.png";
 import { T } from "../lib/translations";
+import { HotlineCard } from "../components/shared/HotlineCard";
+import { hotlineSlots } from "../../../shared/emergency-hotlines.mjs";
+import { LangToggle } from "../components/shared/Controls";
 import { DailySafetyTip } from "../components/feed/DailySafetyTip";
-import { Bell, ShieldCheck, ChevronDown, Check, Globe } from "lucide-react";
+import { Bell, ShieldCheck, ChevronDown, Check } from "lucide-react";
 import { BANDS, canInteract, changeBand, leavingKidsNeedsPassword, postsForBand, useBand } from "../lib/band";
 import { useEffect, useRef, useState } from "react";
 import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
 import { PostCard } from "../components/feed/PostCard";
+import { CuratedFeed } from "../components/posts/CuratedFeed";
+import { type RiskLevel } from "../components/feed/RiskFlag";
 import { BaitFeed } from "../features/kids/BaitFeed";
 import { Fragment } from "react";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
@@ -31,12 +36,21 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   posts = postsForBand(posts, band);
   const youth = band === "youth";
   const games = picksForToday(band);
+  // A hotline card after every 10 to 20 posts, at random gaps chosen once per visit so cards do not jump around.
+  const [slots] = useState(() => hotlineSlots(500));
   const tabs = lang === "lo" ? ["ສຳລັບທ່ານ", "ຕິດຕາມ", "ຫຼ້າສຸດ", "ຍອດນິຍົມ"] : ["For you", "Following", "Latest", "Popular"];
   const score = (p: Post) => p.communityRanking?.rank || 0;
   const filteredPosts = (customTopic ? posts.filter(p => p.tags.includes(customTopic)) : activeTab === 1 ? posts.filter(p => !!p.author.id && following.includes(p.author.id)) : [...posts]);
   if (activeTab === 2) filteredPosts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
   if (activeTab === 3) filteredPosts.sort((a,b) => score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
   if (activeTab === 0 && !customTopic) filteredPosts.sort((a,b) => Number(b.communityRanking?.eligible || false) - Number(a.communityRanking?.eligible || false) || Number(following.includes(b.author.id || "") || b.tags.some(t=>followedTopics.includes(t))) - Number(following.includes(a.author.id || "") || a.tags.some(t=>followedTopics.includes(t))) || score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
+
+  // Traffic-light filter. Posts without a flag (older posts) only appear under All.
+  const [riskFilter, setRiskFilter] = useState<"all" | RiskLevel>("all");
+  const shownPosts = riskFilter === "all" ? filteredPosts : filteredPosts.filter(p => p.risk_level === riskFilter);
+  const chips: { id: "all" | RiskLevel; label: string }[] = lang === "lo"
+    ? [{ id: "all", label: "ທັງໝົດ" }, { id: "green", label: "ປອດໄພ" }, { id: "yellow", label: "ກວດກ່ອນ" }, { id: "red", label: "ຄຳເຕືອນ" }]
+    : [{ id: "all", label: "All" }, { id: "green", label: "Safe" }, { id: "yellow", label: "Check first" }, { id: "red", label: "Warnings" }]; // REVIEW-LO
 
   return (
     <div className="h-full flex flex-col bg-background text-text">
@@ -52,7 +66,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
               <span key={alertCount} aria-label={`${alertCount} unread`} className="badge-pop absolute top-1 right-1 min-w-4 h-4 px-1 rounded-full bg-danger text-background text-xs font-bold flex items-center justify-center ring-2 ring-background">{alertCount > 9 ? "9+" : alertCount}</span>
             )}
           </button>
-          <button type="button" aria-label={lang === "lo" ? "ປ່ຽນພາສາ" : "Change language"} onClick={onLangToggle} className="min-h-11 min-w-11 flex items-center justify-center rounded-full text-text-2"><Globe size={22} aria-hidden /></button>
+          <LangToggle lang={lang} onToggle={onLangToggle} />
         </div>
         <div className="feed-tabs flex justify-between px-4">
           {tabs.map((tab, i) => (
@@ -63,6 +77,9 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
           ))}
         </div>
       </div>
+      <div className="shrink-0 flex items-center gap-2 px-3 py-2 border-b border-border overflow-x-auto scrollbar-hide" role="group" aria-label={lang === "lo" ? "ກັ່ນຕອງໂພສ" : "Filter posts"}>
+        {chips.map(c => <button type="button" key={c.id} aria-pressed={riskFilter === c.id} onClick={() => setRiskFilter(c.id)} className={`min-h-11 shrink-0 rounded-full border px-4 text-sm font-bold ${riskFilter === c.id ? "border-primary bg-primary text-background" : "border-border text-text-muted"}`}>{c.label}</button>)}
+      </div>
       {customTopic && <button className="shrink-0 min-h-11 px-4 text-left text-primary text-sm font-bold border-b border-border" onClick={()=>onTabChange(0)}>#{customTopic} · {lang==='lo'?'ສະແດງທັງໝົດ':'Show all posts'}</button>}
       <div className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden scrollbar-hide bg-background ${ASK_SATI_PAD}`}>
         <div className="flex flex-col gap-2 px-2 pt-2">
@@ -71,10 +88,15 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
         {band === "kids" && <BaitFeed lang={lang} />}
         {youth && <TrendCard posts={posts} lang={lang} />}
         <DailySafetyTip lang={lang} />
+        {/* Curated Posts / ຂ່າວສານ: posters, hotlines and the CNA video. Not for Kids (child-exploitation topics). */}
+        {band !== "kids" && <section aria-label={lang === "lo" ? "ຂ່າວສານ" : "Posts"} className="-mx-2">
+          <h2 className="px-4 pt-1 font-bold text-lg">{lang === "lo" ? "ຂ່າວສານ" : "Posts"}</h2>
+          <CuratedFeed lang={lang} />
+        </section>}
         </div>
         {activeTab===1 && !filteredPosts.length && <p className="p-6 bg-background text-center text-sm text-text-muted">{lang==="lo"?"ຕິດຕາມຜູ້ໃຊ້ຈາກໜ້າສຳລັບທ່ານ ເພື່ອເບິ່ງໂພສຢູ່ນີ້.":"Follow people from For you to see their posts here."}</p>}
         <div className="flex flex-col gap-2 px-2 pt-2">
-        {filteredPosts.map((post, i) => (
+        {shownPosts.map((post, i) => (
           <Fragment key={post.id}>
           <PostCard
             post={post}
@@ -89,15 +111,16 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
             following={following.includes(post.author.id || "")}
             onFollow={!readOnly && post.author.id && post.author.id !== currentUserId ? onFollow : undefined}
             readOnly={readOnly}
+            canReport={!readOnly && !!currentUserId && post.author.id !== currentUserId}
             compact={youth}
           />
           {youth && onPlayGame && i % 3 === 2 && <PlayCard game={games[Math.floor(i / 3) % games.length]} lang={lang} onPlay={onPlayGame} />}
+          {slots.includes(i) && <HotlineCard lang={lang} n={slots.indexOf(i)} />}
           </Fragment>
         ))}
         </div>
         <div className="py-8 text-center">
-          <p className="text-xs text-text-muted">{t.caught_up_en}</p>
-          <p className="text-xs text-text-muted">{t.caught_up_lo}</p>
+          <p className="text-xs text-text-muted">{lang === "lo" ? t.caught_up_lo : t.caught_up_en}</p>
         </div>
       </div>
     </div>

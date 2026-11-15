@@ -23,6 +23,45 @@ export const SCAM_TYPES: Record<string, Record<Lang, string>> = {
   'bank-call': { lo: 'ໂທຂໍ OTP', en: 'Bank OTP calls' },
   'phone-helper': { lo: 'ຄົນແປກໜ້າ "ຊ່ວຍ" ໂທລະສັບ', en: 'Strangers "helping" with your phone' },
 };
+import { TOPIC_LABELS } from './constants';
+
+// Moderation labels returned by the post check (backend/safety/checker.mjs). // REVIEW-LO
+export const CHECK_LABELS: Record<string, Record<Lang, string>> = {
+  scam_risk: { en: 'Scam risk', lo: 'ສ່ຽງຖືກຫຼອກລວງ' },
+  trafficking_recruitment: { en: 'Trafficking recruitment', lo: 'ການຊັກຊວນຄ້າມະນຸດ' },
+  phishing: { en: 'Phishing', lo: 'ລິ້ງປອມ / ຟິດຊິງ' },
+  impersonation: { en: 'Impersonation', lo: 'ປອມຕົວເປັນຄົນອື່ນ' },
+  misinformation: { en: 'Misinformation', lo: 'ຂໍ້ມູນບໍ່ຖືກຕ້ອງ' },
+  fear_bait: { en: 'Fear bait', lo: 'ສ້າງຄວາມຢ້ານ' },
+  harassment: { en: 'Harassment', lo: 'ການລົບກວນ' },
+  victim_blaming: { en: 'Victim blaming', lo: 'ກ່າວໂທດຜູ້ເສຍຫາຍ' },
+  profanity_only: { en: 'Profanity', lo: 'ຄຳຫຍາບ' },
+  off_topic: { en: 'Off topic', lo: 'ນອກຫົວຂໍ້' },
+  political_sarcasm: { en: 'Political content', lo: 'ເນື້ອຫາການເມືອງ' },
+  satire: { en: 'Satire', lo: 'ເສຍດສີ' },
+  safe_tip: { en: 'Safety tip', lo: 'ຄຳແນະນຳດ້ານຄວາມປອດໄພ' },
+  news: { en: 'News', lo: 'ຂ່າວ' },
+};
+export const checkLabel = (key: string, lang: Lang) => CHECK_LABELS[key]?.[lang] ?? key;
+
+// Hashtag text shown on a post. The stored tag may be English or Lao; show it in the interface language.
+const TAG_EXTRA: Record<string, Record<Lang, string>> = {
+  OTP: { en: 'OTP', lo: 'OTP' },
+  ScamAwareness: { en: 'ScamAwareness', lo: 'ຮູ້ເທົ່າທັນການຫຼອກລວງ' },
+  Travel: { en: 'Travel', lo: 'ທ່ອງທ່ຽວ' },
+  Politics: { en: 'Politics', lo: 'ການເມືອງ' },
+  Fashion: { en: 'Fashion', lo: 'ແຟຊັນ' },
+  Satire: { en: 'Satire', lo: 'ເສຍດສີ' },
+  News: { en: 'News', lo: 'ຂ່າວ' },
+  FactCheck: { en: 'FactCheck', lo: 'ກວດຂ່າວ' },
+  Scams: { en: 'Scams', lo: 'ການຫຼອກລວງ' },
+  SelfDevelopment: { en: 'SelfDevelopment', lo: 'ການພັດທະນາຕົວເອງ' },
+  Safety: { en: 'Safety', lo: 'ຄວາມປອດໄພ' },
+};
+const TAG_INDEX = new Map<string, Record<Lang, string>>();
+for (const l of [...Object.values(TOPIC_LABELS), ...Object.values(TAG_EXTRA)]) { TAG_INDEX.set(l.en, l); TAG_INDEX.set(l.lo, l); }
+export const tagLabel = (tag: string, lang: Lang) => TAG_INDEX.get(tag)?.[lang] ?? tag;
+
 export const scamTypeLabel = (key: string, lang: Lang) => SCAM_TYPES[key]?.[lang] ?? key;
 
 // Risk shown on a post: a seed example's intended verdict, else what review decided.

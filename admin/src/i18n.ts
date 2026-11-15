@@ -44,7 +44,7 @@ const loW:typeof enW={
  allRoles:'ທຸກບົດບາດ',allStatuses:'ທຸກສະຖານະ',colUser:'ຜູ້ໃຊ້',colRole:'ບົດບາດ',colLastLogin:'ເຂົ້າລະບົບລ່າສຸດ',colCreated:'ສ້າງເມື່ອ',never:'ບໍ່ເຄີຍ',editUser:n=>`ແກ້ໄຂ ${n}`,searchUsers:'ຄົ້ນຫາຊື່, ອີເມວ ຫຼື ID',accounts:'ບັນຊີ',
 };
 const en={...enW,
- scenarios:'Scenarios',moderation:'Moderation log',
+ scenarios:'Scenarios',curated:'Curated posts',moderation:'Moderation log',
  scnHead:'Daily game scenarios',scnSub:'A draft must be approved, then made live. Players only ever receive live scenarios, filtered by their age band.',
  scnStatus:{all:'All',draft:'Draft',approved:'Approved',live:'Live',rejected:'Rejected'} as Record<string,string>,
  bandNames:{kids:'Kids 6–14',youth:'Youth 15–24',adult:'Adults 25–59',elder:'Elders 60+'} as Record<string,string>,
@@ -81,7 +81,7 @@ const en={...enW,
  safeTip:'Likely a safety tip — quick approve?',pastTarget:(w:string)=>`${w} past target`,left:(w:string)=>`${w} left`,review:'Review',viewerCannot:'Insight viewers cannot save reviews',
 };
 const lo:typeof en={...loW,
- scenarios:'ສະຖານະການເກມ',moderation:'ບັນທຶກການກວດກາ',
+ scenarios:'ສະຖານະການເກມ',curated:'ໂພສຄັດເລືອກ',moderation:'ບັນທຶກການກວດກາ',
  scnHead:'ສະຖານະການເກມປະຈຳວັນ',scnSub:'ຮ່າງຕ້ອງໄດ້ຮັບການອະນຸມັດກ່ອນ ແລ້ວຈຶ່ງເຜີຍແຜ່. ຜູ້ຫຼິ້ນໄດ້ຮັບສະເພາະອັນທີ່ເຜີຍແຜ່ແລ້ວ ຕາມກຸ່ມອາຍຸຂອງເຂົາ.',
  scnStatus:{all:'ທັງໝົດ',draft:'ຮ່າງ',approved:'ອະນຸມັດແລ້ວ',live:'ເຜີຍແຜ່ແລ້ວ',rejected:'ປະຕິເສດ'},
  bandNames:{kids:'ເດັກ 6–14',youth:'ໄວໜຸ່ມ 15–24',adult:'ຜູ້ໃຫຍ່ 25–59',elder:'ຜູ້ສູງອາຍຸ 60+'},

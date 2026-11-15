@@ -17,7 +17,7 @@ export const api={
 };
 
 import type { Post } from '../../shared/types';
-export interface AdminPost extends Post { review?: { state: string; note: string; reviewedAt: number; reviewerName: string } }
+export interface AdminPost extends Post { risk_override?: boolean; risk_log?: { at: number; from: string | null; to: string; byName: string; note: string; warningExample: boolean }[]; review?: { state: string; note: string; reviewedAt: number; reviewerName: string } }
 export interface ManagedUser {id:string;name:string;email:string;role:'member'|'viewer'|'reviewer'|'admin';status:'active'|'inactive';unit:string;createdAt:number|null;lastLogin:number|null}
 export interface AdminData {
   permissions:{role:string;canManageUsers:boolean;canReview:boolean};
@@ -36,7 +36,15 @@ export interface AdminScenario {
 }
 export interface RetiredScenario {id:string;note:string;retiredAt:number;retiredBy:{id:string;name:string}}
 export interface ModerationEntry {id:string;kind:'post'|'scenario';targetId:string;action:string;actor:{id:string;name:string}|null;actorName:string;note:string;detail:Record<string,unknown>;createdAt:number;title:L10n|null}
+export interface AdminCurated {
+  id:string;type:string;status:'approved'|'pending'|'rejected';needs_human_review:boolean;verified:boolean;pinned:boolean;expired:boolean;
+  title_lo:string;title_en:string;summary_lo:string;summary_en:string;image:string|null;source_name:string;date:string|null;review_note?:string;
+  moderation:{decision:'approve'|'review'|'reject';reasons:string[];flags:string[]};
+  review:{note:string;reviewerName:string;reviewedAt:number}|null;
+}
 export const adminApi = {
+  curated: () => request<AdminCurated[]>('/admin/curated'),
+  reviewCurated: (id:string,status:'approved'|'rejected'|'pending',note:string) => request<AdminCurated>(`/admin/curated/${encodeURIComponent(id)}`,'PATCH',{status,note}),
   scenarios: () => request<AdminScenario[]>('/admin/scenarios'),
   reviewScenario: (id:string,status:ScenarioStatus,note:string) => request<AdminScenario>(`/admin/scenarios/${encodeURIComponent(id)}/review`,'PATCH',{status,note}),
   moderation: () => request<ModerationEntry[]>('/admin/moderation'),
@@ -45,12 +53,14 @@ export const adminApi = {
   createUser:(data:unknown)=>request<ManagedUser>('/admin/users','POST',data),
   updateUser:(id:string,data:unknown)=>request<ManagedUser>(`/admin/users/${id}`,'PATCH',data),
   dashboard: () => request<AdminData>('/admin/dashboard'),
+  overrideRisk: (id:string,level:'green'|'yellow'|'red',note:string,warningExample:boolean) => request(`/admin/posts/${id}/risk`,'PATCH',{level,note,warningExample}),
   review: (id:string,state:'clean'|'confirmed'|'false'|'rejected',note:string) => request(`/admin/posts/${id}/review`,'PATCH',{state,note}),
 };
-export const needsReview = (post:AdminPost) => !post.review && (post.frozen || ['flagged','sla'].includes(post.state) || ['caution','needs_expert'].includes(post.check?.verdict || ''));
+export const riskHeld = (post:AdminPost) => !post.risk_override && (post.risk_level==='red' || (post.flag_count||0)>=3);
+export const needsReview = (post:AdminPost) => !post.review && (riskHeld(post) || post.frozen || ['flagged','sla'].includes(post.state) || ['caution','needs_expert'].includes(post.check?.verdict || ''));
 export const formatCount = (value:number) => new Intl.NumberFormat('en-US',{notation:value>=10000?'compact':'standard',maximumFractionDigits:1}).format(value);
 export const ageHours = (post:AdminPost) => (Date.now()-(post.createdAt||Date.now()))/3600000;
-export const severity = (post:AdminPost) => post.check?.verdict==='caution'?'yellow':'red';
+export const severity = (post:AdminPost) => post.risk_level==='red'?'red':post.risk_level==='yellow'&&!post.check&&!post.frozen?'yellow':post.check?.verdict==='caution'?'yellow':'red';
 // Red before yellow, then oldest first, so the riskiest SLA breaches surface at the top.
 export const byPriority = (a:AdminPost,b:AdminPost) => (severity(a)===severity(b)?0:severity(a)==='red'?-1:1) || (a.createdAt||0)-(b.createdAt||0);
 export const TOPIC_COLORS=['var(--topic-job)','var(--topic-invest)','var(--topic-traffic)','var(--topic-romance)','var(--topic-other)'];

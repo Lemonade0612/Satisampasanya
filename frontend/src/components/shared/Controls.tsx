@@ -1,4 +1,4 @@
-import { Globe, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { T } from "../../lib/translations";
 import type { Lang, ThemeMode } from "../../types";
 
@@ -35,8 +35,10 @@ export function SocialButtons({ onPress, label }: { onPress: () => void; label: 
   );
 }
 
-export function LangToggle({lang,onToggle}:{lang:Lang;onToggle:()=>void}){
- return <button onClick={onToggle} aria-label={lang==='lo'?'ປ່ຽນພາສາ':'Change language'} className="inline-flex items-center gap-2 min-h-11 rounded-full border border-primary/25 bg-background px-4 text-sm font-semibold text-primary shadow-sm"><Globe size={18}/><span className="font-lao">{lang==='lo'?'EN':'ລາວ'}</span></button>;
+/** Shows both languages and highlights the one in use, so the button always names the current language. */
+export function LangToggle({lang,onToggle,className=''}:{lang:Lang;onToggle:()=>void;className?:string}){
+ const seg=(l:Lang,label:string)=><span lang={l} className={`px-3 min-h-9 inline-flex items-center rounded-full ${lang===l?'bg-primary text-white':'text-primary'} ${l==='lo'?'font-lao':''}`}>{label}</span>;
+ return <button type="button" onClick={onToggle} aria-label={lang==='lo'?'ພາສາ: ລາວ. ປ່ຽນເປັນພາສາອັງກິດ':'Language: English. Switch to Lao'} title={lang==='lo'?'ປ່ຽນພາສາ':'Change language'} className={`inline-flex items-center rounded-full border border-primary/25 bg-background p-0.5 text-sm font-semibold shadow-sm ${className}`}>{seg('en','EN')}{seg('lo','ລາວ')}</button>;
 }
 
 export function ThemeToggle({ mode, onChange }: { mode: ThemeMode; onChange: (m: ThemeMode) => void }) {

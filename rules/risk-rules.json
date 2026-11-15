@@ -1,0 +1,351 @@
+{
+  "_doc": "Editable risk rules. Score 0-2 green, 3-5 yellow, 6+ red. A rule with hard_red=true makes a post red at once. category 'scam' rules are softened (not hard red, weight x0.4) when the post is clearly a warning/awareness post; category 'content' rules are never softened. Patterns are JS regex source, matched case-insensitively with the unicode flag. Lao strings need native review (REVIEW-LO).",
+  "thresholds": {
+    "yellow": 3,
+    "red": 6
+  },
+  "awareness_markers": [
+    "\\b(warning|beware|scam alert|be careful|stay safe|do not (click|send|share|pay)|never (send|pay|share))\\b",
+    "ຄຳເຕືອນ",
+    "ລະວັງ",
+    "ຢ່າ(ໂອນ|ກົດ|ສົ່ງ|ແຊຣ໌|ຈ່າຍ)"
+  ],
+  "trusted_sources": [
+    {
+      "id": "gov-la",
+      "name": "Government of Lao PDR",
+      "domains": [
+        "gov.la"
+      ]
+    },
+    {
+      "id": "lwu",
+      "name": "Lao Women's Union",
+      "domains": [
+        "laowu.org.la"
+      ]
+    },
+    {
+      "id": "unicef",
+      "name": "UNICEF",
+      "domains": [
+        "unicef.org"
+      ]
+    },
+    {
+      "id": "iom",
+      "name": "IOM",
+      "domains": [
+        "iom.int",
+        "laos.iom.int"
+      ]
+    },
+    {
+      "id": "village-focus",
+      "name": "Village Focus International",
+      "domains": [
+        "villagefocus.org"
+      ]
+    },
+    {
+      "id": "pfha",
+      "name": "PFHA",
+      "domains": [
+        "pfha.org"
+      ]
+    },
+    {
+      "id": "ilo",
+      "name": "ILO",
+      "domains": [
+        "ilo.org"
+      ]
+    },
+    {
+      "id": "laotian-times",
+      "name": "Laotian Times",
+      "domains": [
+        "laotiantimes.com"
+      ]
+    },
+    {
+      "id": "kpl",
+      "name": "KPL",
+      "domains": [
+        "kpl.gov.la"
+      ]
+    },
+    {
+      "id": "hotline-1362",
+      "name": "Hotline 1362",
+      "domains": []
+    }
+  ],
+  "rules": [
+    {
+      "id": "free_bundle",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "free\\s+(visa|flights?|airfare|tuition|accommodation|housing)[\\s\\S]{0,80}free\\s+(visa|flights?|airfare|tuition|accommodation|housing)",
+        "ຟຣີ[\\s\\S]{0,40}(ວີຊາ|ປີ້ຍົນ|ຄ່າຮຽນ|ທີ່ພັກ)[\\s\\S]{0,60}ຟຣີ"
+      ],
+      "reason": {
+        "en": "Offers a bundle of free visa, flights, tuition or housing",
+        "lo": "ສະເໜີຊຸດ ວີຊາ, ປີ້ຍົນ, ຄ່າຮຽນ ຫຼື ທີ່ພັກ ຟຣີ"
+      }
+    },
+    {
+      "id": "upfront_fee",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(pay|send|transfer|deposit)[\\s\\S]{0,30}(deposit|registration fee|processing fee|admin fee|upfront)",
+        "(registration|processing|agency|visa) fee[\\s\\S]{0,30}(first|before|in advance)",
+        "ຄ່າມັດຈຳ",
+        "ຈ່າຍ(ເງິນ)?ກ່ອນ"
+      ],
+      "reason": {
+        "en": "Asks you to pay a fee or deposit first",
+        "lo": "ໃຫ້ຈ່າຍຄ່າທຳນຽມ ຫຼື ເງິນມັດຈຳກ່ອນ"
+      }
+    },
+    {
+      "id": "passport_holding",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(hold|keep|retain|surrender|hand over)[\\s\\S]{0,20}(your )?passport",
+        "passport[\\s\\S]{0,20}(held|kept) by",
+        "ຖື(ໜັງສືຜ່ານແດນ|ພາດສະປອດ)",
+        "ເກັບ(ໜັງສືຜ່ານແດນ|ພາດສະປອດ)"
+      ],
+      "reason": {
+        "en": "Employer would hold your passport",
+        "lo": "ນາຍຈ້າງຈະຖືໜັງສືຜ່ານແດນຂອງທ່ານ"
+      }
+    },
+    {
+      "id": "minors_no_guardian",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(under|below)\\s*18[\\s\\S]{0,60}(no|without)[\\s\\S]{0,20}(parent|guardian|consent)",
+        "(no|without)\\s+(parent|guardian)[\\s\\S]{0,30}(consent|permission|needed|required)",
+        "ບໍ່ຕ້ອງ(ມີ)?(ຜູ້ປົກຄອງ|ພໍ່ແມ່)"
+      ],
+      "reason": {
+        "en": "Recruits minors without guardian consent",
+        "lo": "ຮັບສະໝັກເດັກນ້ອຍໂດຍບໍ່ມີການຍິນຍອມຂອງຜູ້ປົກຄອງ"
+      }
+    },
+    {
+      "id": "overseas_no_license",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(overseas|abroad|foreign)[\\s\\S]{0,40}(no|without)[\\s\\S]{0,15}(licen[cs]e|permit|contract|experience needed)",
+        "(no|without)[\\s\\S]{0,10}(licen[cs]e|contract)[\\s\\S]{0,40}(overseas|abroad)",
+        "ໄປ(ເຮັດວຽກ)?ຕ່າງປະເທດ[\\s\\S]{0,40}ບໍ່(ມີ)?(ໃບອະນຸຍາດ|ສັນຍາ)"
+      ],
+      "reason": {
+        "en": "Overseas job with no license or contract",
+        "lo": "ວຽກຕ່າງປະເທດທີ່ບໍ່ມີໃບອະນຸຍາດ ຫຼື ສັນຍາ"
+      }
+    },
+    {
+      "id": "casino_sez_cs",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(casino|online\\s+(customer service|chat|support)|call centre|call center)[\\s\\S]{0,80}(golden triangle|special economic zone|\\bSEZ\\b|border|bokeo|savan)",
+        "(golden triangle|special economic zone|\\bSEZ\\b|border|bokeo)[\\s\\S]{0,80}(casino|online\\s+(customer service|chat|support)|call cent(re|er))",
+        "ສາມຫຼ່ຽມຄຳ[\\s\\S]{0,60}(ບໍລິການລູກຄ້າ|ແຊັດ)"
+      ],
+      "reason": {
+        "en": "Casino or online 'customer service' job in a border or special economic zone",
+        "lo": "ວຽກຄາຊີໂນ ຫຼື 'ບໍລິການລູກຄ້າ' ອອນລາຍ ໃນເຂດຊາຍແດນ ຫຼື ເຂດເສດຖະກິດພິເສດ"
+      }
+    },
+    {
+      "id": "crypto_getrich",
+      "category": "scam",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "(crypto|bitcoin|usdt|forex)[\\s\\S]{0,60}(guaranteed|double your|get rich|daily profit|passive income|100%)",
+        "(guaranteed|double your|get rich|daily profit)[\\s\\S]{0,60}(crypto|bitcoin|usdt|forex)",
+        "ຄຣິບໂຕ[\\s\\S]{0,40}(ຮັບປະກັນກຳໄລ|ລວຍ)"
+      ],
+      "reason": {
+        "en": "Crypto get-rich or guaranteed-profit scheme",
+        "lo": "ແຜນຮັ່ງມີໄວດ້ວຍຄຣິບໂຕ ຫຼື ຮັບປະກັນກຳໄລ"
+      }
+    },
+    {
+      "id": "gambling",
+      "category": "content",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "\\b(gambling|casino bonus|slots?|betting|sportsbook|baccarat|togel)\\b",
+        "ການພະນັນ",
+        "ພະນັນ",
+        "ບາຄາຣ່າ"
+      ],
+      "reason": {
+        "en": "Gambling content",
+        "lo": "ເນື້ອຫາການພະນັນ"
+      }
+    },
+    {
+      "id": "profanity",
+      "category": "content",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "\\b(fuck(ing|er)?|shit|bitch|asshole|bastard|cunt)\\b",
+        "ເຫ້ຍ",
+        "ອີ(ສັດ|ຫ່າ|ເຫ້ຍ)",
+        "ໄອ້(ສັດ|ຫ່າ|ເຫ້ຍ|ໝາ)"
+      ],
+      "reason": {
+        "en": "Contains profanity",
+        "lo": "ມີຄຳຫຍາບຄາຍ"
+      }
+    },
+    {
+      "id": "political_satire",
+      "category": "content",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "\\b(political satire|satire[\\s\\S]{0,30}(government|party|minister|prime minister)|(government|party|minister)[\\s\\S]{0,30}satire)\\b",
+        "ເສຍດສີ(ລັດຖະບານ|ການເມືອງ|ພັກ)",
+        "ຕະຫຼົກການເມືອງ"
+      ],
+      "reason": {
+        "en": "Political satire is off-topic here",
+        "lo": "ການເສຍດສີການເມືອງບໍ່ກ່ຽວກັບຫົວຂໍ້ຂອງ Sati"
+      }
+    },
+    {
+      "id": "travel_shopping_ad",
+      "category": "content",
+      "weight": 6,
+      "hard_red": true,
+      "patterns": [
+        "\\b(hotel|resort|tour)\\s+(package|deal|promo(tion)?|discount)\\b",
+        "\\b(flash sale|buy now|order now|limited stock|shop now)\\b",
+        "ໂປຣໂມຊັ່ນ[\\s\\S]{0,30}(ໂຮງແຮມ|ທ່ອງທ່ຽວ)",
+        "ສັ່ງຊື້ດຽວນີ້"
+      ],
+      "reason": {
+        "en": "Travel or shopping advertisement",
+        "lo": "ໂຄສະນາທ່ອງທ່ຽວ ຫຼື ຂາຍເຄື່ອງ"
+      }
+    },
+    {
+      "id": "pay_above_market",
+      "category": "scam",
+      "weight": 4,
+      "hard_red": false,
+      "patterns": [
+        "\\$\\s?\\d{4,}\\s*(/|per|a)\\s*(month|mo)",
+        "(salary|earn|income)[\\s\\S]{0,25}(\\$\\s?[2-9]\\d{3,}|\\d{2,}\\s*million)",
+        "(high|huge|big)\\s+(salary|income|pay)",
+        "ເງິນເດືອນ(ສູງ|ຫຼາຍ)",
+        "ລາຍໄດ້ສູງ"
+      ],
+      "reason": {
+        "en": "Pay far above the market rate",
+        "lo": "ຄ່າຕອບແທນສູງກວ່າຕະຫຼາດຫຼາຍ"
+      }
+    },
+    {
+      "id": "contact_messaging_only",
+      "category": "scam",
+      "weight": 1,
+      "hard_red": false,
+      "patterns": [
+        "(contact|message|dm|add|chat|reach)[\\s\\S]{0,30}(whatsapp|telegram|wechat|line id)",
+        "(whatsapp|telegram)[\\s\\S]{0,15}(only|to apply|for details)",
+        "ຕິດຕໍ່[\\s\\S]{0,25}(WhatsApp|Telegram|ວອດແອັບ|ເທເລແກຣມ)"
+      ],
+      "reason": {
+        "en": "Asks you to contact via WhatsApp or Telegram",
+        "lo": "ໃຫ້ຕິດຕໍ່ຜ່ານ WhatsApp ຫຼື Telegram"
+      }
+    },
+    {
+      "id": "opportunity_post",
+      "category": "scam",
+      "weight": 3,
+      "hard_red": false,
+      "patterns": [
+        "\\b(hiring|job (opening|offer|vacancy)|vacancy|apply now|we are looking for|study abroad|scholarship|volunteer|invest(ment)?|loan)\\b",
+        "(ຮັບສະໝັກ|ຕ້ອງການຄົນ|ທຶນຮຽນ|ຮຽນຕໍ່ຕ່າງປະເທດ|ອາສາສະໝັກ|ລົງທຶນ|ເງິນກູ້)"
+      ],
+      "reason": {
+        "en": "Job, study-abroad, volunteer or finance offer from an unverified source",
+        "lo": "ການສະເໜີວຽກ, ຮຽນຕ່າງປະເທດ, ອາສາສະໝັກ ຫຼື ການເງິນ ຈາກແຫຼ່ງທີ່ຍັງບໍ່ໄດ້ກວດສອບ"
+      }
+    },
+    {
+      "id": "target_age_15_35",
+      "category": "scam",
+      "weight": 1,
+      "hard_red": false,
+      "patterns": [
+        "\\bages?\\s*(of\\s*)?(15|16|17|18)\\s*(-|–|to)\\s*(30|35)\\b",
+        "ອາຍຸ\\s*(15|16|17|18)\\s*(-|–|ເຖິງ)\\s*(30|35)"
+      ],
+      "reason": {
+        "en": "Offer aimed at ages 15 to 35",
+        "lo": "ການສະເໜີມຸ່ງໃສ່ອາຍຸ 15 ຫາ 35 ປີ"
+      }
+    },
+    {
+      "id": "expired_event",
+      "category": "content",
+      "weight": 3,
+      "hard_red": false,
+      "patterns": [
+        "\\b(expired|has ended|already (ended|passed)|registration closed)\\b",
+        "ໝົດເຂດ",
+        "ສິ້ນສຸດແລ້ວ",
+        "ປິດຮັບສະໝັກແລ້ວ"
+      ],
+      "reason": {
+        "en": "The event or offer has expired",
+        "lo": "ງານ ຫຼື ການສະເໜີນີ້ໝົດກຳນົດແລ້ວ"
+      }
+    },
+    {
+      "id": "missing_company_info",
+      "category": "scam",
+      "weight": 1,
+      "hard_red": false,
+      "requires_rule": "opportunity_post",
+      "unless": [
+        "\\b(co\\.?,?\\s*ltd|company|address|licen[cs]e\\s*(no|number)|registered)\\b",
+        "ບໍລິສັດ",
+        "ທີ່ຢູ່",
+        "ເລກທະບຽນ"
+      ],
+      "patterns": [
+        "[\\s\\S]"
+      ],
+      "reason": {
+        "en": "No address or registered company name",
+        "lo": "ບໍ່ມີທີ່ຢູ່ ຫຼື ຊື່ບໍລິສັດທີ່ຈົດທະບຽນ"
+      }
+    }
+  ]
+}

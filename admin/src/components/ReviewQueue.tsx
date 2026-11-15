@@ -31,6 +31,7 @@ export function ReviewQueue({posts,onReviewed,canReview=true}:{posts:AdminPost[]
   <ol className="sd-queue">{visible.map(p=>{const hours=ageHours(p),postLang=p.contentLanguage||p.check?.language;
    return <li key={p.id} className={`sd-qrow ${severity(p)}`}>
     <div className="sd-qmain">
+     {p.risk_level&&<p><strong>{p.risk_level==='red'?'🔴 Red':p.risk_level==='yellow'?'🟡 Yellow':'🟢 Green'}</strong>{(p.flag_count||0)>0&&` · ${p.flag_count} reports`}{p.risk_reasons?.length?` · ${p.risk_reasons.map(r=>r.en).join('; ')}`:''}</p>}
      <ModerationLabels post={p}/>
      <p className="sd-qtext" lang={postLang==='lo'?'lo':undefined}><Highlighted text={p.content} phrases={p.check?.reasons.map(r=>r.evidence)||[]}/></p>
      <p className="sd-qmeta"><strong>{p.author.name}</strong>{p.tags.length>0&&<span>{p.tags.map(tag=>'#'+tag).join(' ')}</span>}{p.createdAt&&<time title={fullDate(p.createdAt,lang)}>{ago(p.createdAt,lang)}</time>}</p>

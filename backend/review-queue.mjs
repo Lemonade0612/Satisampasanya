@@ -1,10 +1,11 @@
 import {randomUUID} from 'node:crypto';
 import {accessFor} from './access.mjs';
+import {riskNeedsReview} from './riskScore.mjs';
 export function notifyReviewers(db,now=Date.now()){
  const reviewers=db.prepare('SELECT id,email FROM users').all().filter(user=>{const access=accessFor(db,user);return access.status==='active'&&['admin','reviewer'].includes(access.role);});
  let changed=false;
- for(const row of db.prepare("SELECT * FROM posts WHERE (json_extract(data,'$.frozen')=1 OR json_extract(data,'$.check.verdict') IN ('caution','needs_expert')) AND COALESCE(json_extract(data,'$.seedArchived'),0)=0").all()){
-  const post=JSON.parse(row.data);if(post.review)continue;const deadline=post.expertReviewDeadline||row.created+48*3600000;
+ for(const row of db.prepare("SELECT * FROM posts WHERE (json_extract(data,'$.frozen')=1 OR json_extract(data,'$.check.verdict') IN ('caution','needs_expert') OR json_extract(data,'$.risk_level')='red' OR COALESCE(json_extract(data,'$.flag_count'),0)>=3) AND COALESCE(json_extract(data,'$.seedArchived'),0)=0").all()){
+  const post=JSON.parse(row.data);if(post.review||(post.risk_override&&!post.frozen&&!post.check))continue;if(!post.frozen&&!['caution','needs_expert'].includes(post.check?.verdict)&&!riskNeedsReview(post))continue;const deadline=post.expertReviewDeadline||row.created+48*3600000;
   const phase=now>=deadline?'overdue':'requested';
   const sent=post.reviewerNotifications||{};
   for(const user of reviewers){const key=user.id+':'+phase;if(sent[key])continue;

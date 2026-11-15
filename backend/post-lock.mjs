@@ -1,3 +1,4 @@
+import {hiddenByRisk} from './riskScore.mjs';
 export function postLocked(db,row){
  const seen=new Set();
  while(row){
@@ -16,7 +17,7 @@ export function visibleTo(db,row,viewerId){
  while(row){
   if(seen.has(row.id))return false;seen.add(row.id);
   const post=JSON.parse(row.data);
-  if(HIDDEN.includes(post.state)&&!(viewerId&&row.user_id===viewerId))return false;
+  if((HIDDEN.includes(post.state)||hiddenByRisk(post))&&!(viewerId&&row.user_id===viewerId))return false;
   if(!post.repostOf)return true;
   row=db.prepare('SELECT id,user_id,data FROM posts WHERE id=?').get(post.repostOf);
  }

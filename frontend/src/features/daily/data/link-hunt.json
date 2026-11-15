@@ -1,0 +1,145 @@
+{
+ "_note": "Link Hunt links. Edit freely: url, isReal, explanation_lo, explanation_en, redFlagPart (the exact piece of the url that gives a fake away; empty for real links). Keep about half real and half fake. Lao is a draft for native review.",
+ "links": [
+  {
+   "url": "https://www.google.com",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ google.com ຄືສ່ວນກ່ອນເຄື່ອງໝາຍ “/” ອັນທຳອິດ. ເລີ່ມດ້ວຍ https ແລະ ບໍ່ມີຄຳແປກປອມ.",
+   "explanation_en": "Real. The domain is google.com, the part right before the first single “/”. It starts with https and has no extra words.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.facebook.com",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ facebook.com. ຄຳວ່າ “www” ເປັນພຽງຊື່ຍ່ອຍທົ່ວໄປທີ່ຢູ່ໜ້າໂດເມນ.",
+   "explanation_en": "Real. The domain is facebook.com. “www” is just a normal subdomain in front of it.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.youtube.com",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ youtube.com ສະກົດຖືກຕ້ອງ ແລະ ບໍ່ມີຫຍັງຕໍ່ທ້າຍ.",
+   "explanation_en": "Real. The domain is youtube.com, spelled correctly, with nothing added after it.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.bcel.com.la",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. bcel.com.la ແມ່ນໂດເມນຂອງທະນາຄານເອງ ແລະ .com.la ເປັນຕົວຈົບຂອງທີ່ຢູ່ລາວ.",
+   "explanation_en": "Real. bcel.com.la is the bank’s own domain, and .com.la is a Lao address ending.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://laopdr.iom.int",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ iom.int ຂອງອົງການສະຫະປະຊາຊາດດ້ານການຍ້າຍຖິ່ນ. “laopdr” ເປັນຊື່ຍ່ອຍຂອງລາວ ປອດໄພ ເພາະ iom.int ຢູ່ຖັດຈາກມັນ.",
+   "explanation_en": "Real. The domain is iom.int, the UN migration agency. “laopdr” is its Laos subdomain, which is safe because iom.int comes right after it.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.unicef.org/laos",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ unicef.org. “/laos” ທີ່ຢູ່ຫຼັງມັນແມ່ນພຽງໜ້າໜຶ່ງພາຍໃນເວັບນັ້ນ.",
+   "explanation_en": "Real. The domain is unicef.org. The “/laos” after it is only a page inside that site.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.tiktok.com",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ tiktok.com. ກວດສ່ວນກ່ອນເຄື່ອງໝາຍ “/” ອັນທຳອິດ ແລ້ວກົງກັນ.",
+   "explanation_en": "Real. The domain is tiktok.com. Check the part right before the first single “/”, and it matches.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://m.me/facebook",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. m.me ແມ່ນລິ້ງສັ້ນທາງການຂອງ Messenger ຈາກ Facebook. ໂດເມນແມ່ນ m.me ແລະ “/facebook” ແມ່ນຊື່ໜ້າ.",
+   "explanation_en": "Real. m.me is Facebook’s official short link for Messenger. The domain is m.me, and “/facebook” is the page.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.who.int",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. who.int ແມ່ນອົງການອະນາໄມໂລກ. ໂດເມນຂອງເຂົາຈົບຫຼັງ “.int”.",
+   "explanation_en": "Real. who.int is the World Health Organization. Its own domain ends right after “.int”.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://www.wikipedia.org",
+   "isReal": true,
+   "explanation_lo": "ຂອງແທ້. ໂດເມນແມ່ນ wikipedia.org. ເປັນ https ແລະ ບໍ່ມີຫຍັງເຊື່ອງຢູ່ລະຫວ່າງຊື່ ກັບ “/” ອັນທຳອິດ.",
+   "explanation_en": "Real. The domain is wikipedia.org. It is https, and nothing is hidden between the name and the first “/”.",
+   "redFlagPart": ""
+  },
+  {
+   "url": "https://g00gle.com/login",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ນີ້ແມ່ນ g00gle.com ທີ່ໃຊ້ເລກສູນແທນຕົວ “o”. ຄົນຫຼອກລວງລອກຊື່ແທ້ ແຕ່ໃຊ້ຕົວອັກສອນທີ່ຄ້າຍກັນ.",
+   "explanation_en": "Fake. This is g00gle.com with zeros instead of the letter “o”. Scammers copy a real name with look-alike characters.",
+   "redFlagPart": "g00gle"
+  },
+  {
+   "url": "https://faceb00k-login.com",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນແມ່ນ faceb00k-login.com: ໃຊ້ເລກສູນແທນ “o” ແລະ ເພີ່ມຄຳວ່າ “login”. ຂອງແທ້ແມ່ນ facebook.com.",
+   "explanation_en": "Fake. The domain is faceb00k-login.com: zeros instead of “o”, and “login” added. The real one is facebook.com.",
+   "redFlagPart": "faceb00k-login.com"
+  },
+  {
+   "url": "https://youtube-gift.xyz/free-gift",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນຈິງແມ່ນ youtube-gift.xyz ບໍ່ແມ່ນ youtube.com. ຂອງແຖມຟຣີ ແລະ ຕົວຈົບ .xyz ເປັນສັນຍານເຕືອນ.",
+   "explanation_en": "Fake. The real domain is youtube-gift.xyz, not youtube.com. Free gifts and a .xyz ending are warning signs.",
+   "redFlagPart": "youtube-gift.xyz"
+  },
+  {
+   "url": "https://bcel-verify.net/account",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນແທ້ຂອງທະນາຄານແມ່ນ bcel.com.la. bcel-verify.net ເປັນເວັບອື່ນ ທີ່ພຽງແຕ່ເອົາຊື່ທະນາຄານມາໃຊ້.",
+   "explanation_en": "Fake. The bank’s real domain is bcel.com.la. bcel-verify.net is a different site that only uses the bank’s name.",
+   "redFlagPart": "bcel-verify.net"
+  },
+  {
+   "url": "https://www.facebook.com.secure-login.ru/",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໃຫ້ອ່ານໂດເມນຈາກທ້າຍຊື່ ກ່ອນເຄື່ອງໝາຍ “/” ອັນທຳອິດ: ແມ່ນ secure-login.ru. “facebook.com” ເປັນພຽງກົນລວງດ້ວຍຊື່ຍ່ອຍ.",
+   "explanation_en": "Fake. Read the domain from the end of the name, right before the first single “/”: it is secure-login.ru. “facebook.com” is only a subdomain trick.",
+   "redFlagPart": "secure-login.ru"
+  },
+  {
+   "url": "http://bit.ly/win-free-iphone",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ລິ້ງສັ້ນ bit.ly ເຊື່ອງປາຍທາງ, ສັນຍາວ່າໄດ້ລາງວັນ ແລະ ໃຊ້ http ແທນ https.",
+   "explanation_en": "Fake. A shortened bit.ly link hides where it goes, it promises a prize, and it uses http instead of https.",
+   "redFlagPart": "bit.ly/win-free-iphone"
+  },
+  {
+   "url": "https://free-visa-thailand.work/apply",
+   "isReal": false,
+   "explanation_lo": "ປອມ. “ວີຊາຟຣີ” ແມ່ນສັນຍານອັນຕະລາຍ. ວີຊາແທ້ບໍ່ແມ່ນຟຣີ ແລະ ຕົວຈົບ .work ບໍ່ແມ່ນເວັບທາງການ.",
+   "explanation_en": "Fake. “Free visa” is the red flag. Real visas are not free, and the .work ending is not an official site.",
+   "redFlagPart": "free-visa"
+  },
+  {
+   "url": "http://www.bcel.com.la.account-check.top/login",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນຈິງແມ່ນ account-check.top ຄືສ່ວນກ່ອນເຄື່ອງໝາຍ “/” ອັນທຳອິດ. ຊື່ທະນາຄານເປັນພຽງຊື່ຍ່ອຍ ແລະ ລິ້ງເປັນ http ບໍ່ແມ່ນ https.",
+   "explanation_en": "Fake. The real domain is account-check.top, the part right before the first single “/”. The bank’s name is only a subdomain, and the link is http, not https.",
+   "redFlagPart": "account-check.top"
+  },
+  {
+   "url": "https://tiktok-bonus.click/free-coins",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນແມ່ນ tiktok-bonus.click ບໍ່ແມ່ນ tiktok.com. ເຫຼຽນຟຣີ ແລະ ໂບນັດ ເປັນເຫຍື່ອລໍ້ທີ່ພົບເລື້ອຍ.",
+   "explanation_en": "Fake. The domain is tiktok-bonus.click, not tiktok.com. Free coins and bonuses are a common bait.",
+   "redFlagPart": "tiktok-bonus.click"
+  },
+  {
+   "url": "https://unicef-laos.help-donate.cc",
+   "isReal": false,
+   "explanation_lo": "ປອມ. ໂດເມນຈິງແມ່ນ help-donate.cc. ເວັບແທ້ຂອງ UNICEF ແມ່ນ unicef.org ສະນັ້ນຊື່ອົງການທີ່ຢູ່ໜ້າບໍ່ໄດ້ພິສູດຫຍັງ.",
+   "explanation_en": "Fake. The real domain is help-donate.cc. The real UNICEF site is unicef.org, so a charity name in front proves nothing.",
+   "redFlagPart": "help-donate.cc"
+  }
+ ]
+}

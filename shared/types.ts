@@ -71,6 +71,16 @@ export interface Post {
   // Seed teaching posts: shown with an "Example" label and the intended verdict colour.
   example?: boolean;
   exampleStatus?: 'green' | 'yellow' | 'red';
+  // Traffic-light flag (backend/riskScore.mjs). Reasons come in both languages; flag_count is the number of user reports.
+  risk_level?: 'green' | 'yellow' | 'red';
+  risk_reasons?: { en: string; lo: string }[];
+  flagged_by?: 'auto' | 'admin' | 'user';
+  flag_count?: number;
+  verified_source?: string;
+  warningExample?: boolean;
+  reported?: boolean;
+  needs_admin_review?: boolean;
+  report_reasons?: Record<string, number>;
   // ASEAN youth feed: where the post comes from (LA, TH, VN, PH, KH, MM) and what kind of scam it shows.
   country?: string;
   scamType?: string;

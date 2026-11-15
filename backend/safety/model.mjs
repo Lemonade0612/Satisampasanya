@@ -5,7 +5,7 @@ export function readSafetyConfig(){
  let local={};try{local=parseEnv(readFileSync('.env.local','utf8'));}catch{}
  const setting=name=>local[name]||process.env[name]||'';
  const provider=setting('AI_PROVIDER')||(setting('OPENROUTER_API_KEY')?'openrouter':'openai');
- return {provider,key:setting(provider==='openrouter'?'OPENROUTER_API_KEY':'OPENAI_API_KEY'),model:setting(provider==='openrouter'?'OPENROUTER_MODEL':'OPENAI_MODEL')||(provider==='openrouter'?'openai/gpt-4.1-mini':'gpt-4.1-mini'),helplines:setting('LOCAL_HELPLINES')||'[]',fallbacks:setting('OPENROUTER_FALLBACK_MODELS').split(',').map(v=>v.trim()).filter(Boolean)};
+ return {provider,key:setting(provider==='openrouter'?'OPENROUTER_API_KEY':'OPENAI_API_KEY'),model:setting(provider==='openrouter'?'OPENROUTER_MODEL':'OPENAI_MODEL')||(provider==='openrouter'?'openai/gpt-4.1-mini':'gpt-4.1-mini'),helplines:setting('LOCAL_HELPLINES')||'[]',safeBrowsingKey:setting('GOOGLE_SAFE_BROWSING_KEY'),fallbacks:setting('OPENROUTER_FALLBACK_MODELS').split(',').map(v=>v.trim()).filter(Boolean)};
 }
 export const modelConfigured=()=>!!readSafetyConfig().key;
 const failure=(lang,status=503)=>Object.assign(new Error(lang==='lo'?'ບໍລິການ AI ຍັງບໍ່ພ້ອມ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.':'The AI service is unavailable. Please try again later.'),{status});
@@ -36,4 +36,26 @@ export async function modelReply(instructions,input,{schema,name='sati_result',f
  else{if(value.status==='incomplete'||value.output?.some(item=>item.content?.some(part=>part.type==='refusal')))throw failure(language,502);result=value.output?.flatMap(item=>item.content||[]).filter(part=>part.type==='output_text').map(part=>part.text).join('').trim();}
  if(!result)throw failure(language,502);
  if(!schema)return result;try{return JSON.parse(unfence(result));}catch{throw failure(language,502);}
+}
+
+// Streams a plain-text answer token by token. onToken gets every piece as it arrives; the full text is returned.
+export async function modelStream(instructions,input,onToken,{fetcher=fetch,maxTokens=700,config=readSafetyConfig()}={}){
+ const language=input.language||inputLanguage(input.text||'');if(!config.key)throw failure(language);
+ if(!takeAiCall())throw resting(language);
+ const router=config.provider==='openrouter';
+ const body=router?{model:config.model,...(config.fallbacks?.length?{models:[config.model,...config.fallbacks]}:{}),messages:[{role:'system',content:instructions},{role:'user',content:JSON.stringify(input)}],max_tokens:maxTokens,stream:true}
+  :{model:config.model,store:false,instructions,input:JSON.stringify(input),max_output_tokens:maxTokens,stream:true};
+ let response;try{response=await fetcher(router?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${config.key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(60000),body:JSON.stringify(body)});}catch{throw failure(language);}
+ if(!response.ok||!response.body)throw failure(language,502);
+ const decoder=new TextDecoder();let buffer='',full='';
+ const handle=line=>{
+  if(!line.startsWith('data:'))return;const data=line.slice(5).trim();if(!data||data==='[DONE]')return;
+  let event;try{event=JSON.parse(data);}catch{return;}
+  const piece=router?event.choices?.[0]?.delta?.content:event.type==='response.output_text.delta'?event.delta:'';
+  if(typeof piece==='string'&&piece){full+=piece;onToken(piece);}
+ };
+ try{for await(const chunk of response.body){buffer+=decoder.decode(chunk,{stream:true});const lines=buffer.split('\n');buffer=lines.pop();lines.forEach(handle);}handle(buffer);}
+ catch{if(!full)throw failure(language,502);}
+ if(!full.trim())throw failure(language,502);
+ return full;
 }

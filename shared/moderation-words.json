@@ -1,0 +1,5 @@
+{
+  "_note": "Editable bad-word list for shared/moderation.mjs. English entries match whole words (case-insensitive). Lao has no spaces, so Lao entries match as substrings: keep them specific. REVIEW-LO: Lemon / a native speaker should extend and confirm the Lao list.",
+  "en": ["fuck", "fucking", "fucker", "shit", "bullshit", "bitch", "asshole", "bastard", "cunt", "dickhead", "motherfucker", "dumbass", "retard", "moron", "idiot", "stupid"],
+  "lo": ["ໄອ້ສັດ", "ອີສັດ", "ໄອ້ໝາ", "ໄອ້ຫມາ", "ອີໝາ", "ອີຫມາ", "ມຶງ ໂງ່", "ໄອ້ໂງ່", "ອີໂງ່"]
+}

@@ -803,3 +803,34 @@ test('seed posts visible per band match the agreed counts',async()=>{
   assert.ok(seed.every(p=>p.bands?.length>=1),'every seed post has a band');
  }finally{await f.close();}
 });
+
+test('traffic-light flags: red posts stay out of the public feed, reports escalate, admin overrides are logged',async()=>{
+ const f=await fixture();try{
+  const author=await f.register('author@example.com'),a=await f.register('a@example.com'),b=await f.register('b@example.com'),c=await f.register('c@example.com'),d=await f.register('d@example.com'),e=await f.register('e@example.com');
+  const admin=await f.admin('boss@example.com');
+  const red=await f.call('/posts','POST',{content:'Free visa, free flights and free tuition for ages 15-35. Pay a deposit first.',tags:['JobScam']},author.token);
+  assert.equal(red.status,201);assert.equal(red.value.risk_level,'red');
+  assert.equal((await f.call('/posts','GET',undefined,a.token)).value.some(p=>p.id===red.value.id),false);
+  assert.equal((await f.call('/posts','GET',undefined,author.token)).value.some(p=>p.id===red.value.id),true);
+  assert.ok((await f.call('/admin/dashboard','GET',undefined,admin.token)).value.posts.some(p=>p.id===red.value.id));
+  const shown=await f.call(`/admin/posts/${red.value.id}/risk`,'PATCH',{level:'red',warningExample:true,note:'teaching example'},admin.token);
+  assert.equal(shown.status,200);assert.equal(shown.value.flagged_by,'admin');assert.equal(shown.value.risk_log.length,1);
+  assert.equal((await f.call('/posts','GET',undefined,a.token)).value.find(p=>p.id===red.value.id).warningExample,true);
+  assert.equal((await f.call(`/admin/posts/${red.value.id}/risk`,'PATCH',{level:'blue'},admin.token)).status,400);
+  assert.equal((await f.call(`/admin/posts/${red.value.id}/risk`,'PATCH',{level:'green'},a.token)).status,403);
+
+  const green=await f.call('/posts','POST',{content:'Tips for keeping your account safe.',tags:['DigitalSafety']},author.token);
+  assert.equal(green.value.risk_level,'green');const id=green.value.id;
+  assert.equal((await f.call(`/posts/${id}/report`,'POST',{reason:'scam'},author.token)).status,403);
+  assert.equal((await f.call(`/posts/${id}/report`,'POST',{reason:'nonsense'},a.token)).status,400);
+  await f.call(`/posts/${id}/report`,'POST',{reason:'scam'},a.token);
+  assert.equal((await f.call(`/posts/${id}/report`,'POST',{reason:'scam'},a.token)).status,409);
+  await f.call(`/posts/${id}/report`,'POST',{reason:'fake_job'},b.token);
+  const third=await f.call(`/posts/${id}/report`,'POST',{reason:'off_topic'},c.token);
+  assert.equal(third.value.risk_level,'yellow');assert.equal(third.value.flag_count,3);assert.equal(third.value.reports,undefined);
+  assert.equal((await f.call('/posts','GET',undefined,a.token)).value.some(p=>p.id===id),true);
+  await f.call(`/posts/${id}/report`,'POST',{reason:'scam'},d.token);
+  await f.call(`/posts/${id}/report`,'POST',{reason:'scam'},e.token);
+  assert.equal((await f.call('/posts','GET',undefined,a.token)).value.some(p=>p.id===id),false);
+ }finally{await f.close();}
+});

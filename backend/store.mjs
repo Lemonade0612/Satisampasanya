@@ -81,6 +81,10 @@ export function postView(db, row, userId, depth=0, {staff=false}={}) {
     if(post.review)post.review={state:post.review.state,reviewedAt:post.review.reviewedAt};
     delete post.correction;delete post.correctionLo;delete post.screeningLogs;
   }
+  // Who reported a post stays private; everyone sees only the count, and whether they reported it themselves.
+  const reports=post.reports||[];post.flag_count=reports.length;post.reported=!!userId&&reports.some(r=>r.userId===userId);
+  if(staff)post.report_reasons=reports.reduce((all,r)=>({...all,[r.reason]:(all[r.reason]||0)+1}),{});else delete post.risk_log;
+  delete post.reports;
   delete post._expect;
   const hours=Math.floor((Date.now()-row.created)/3600000);post.timestamp=hours<1?'Just now':hours<24?`${hours}h`:`${Math.floor(hours/24)}d`;
   return { ...post, id: row.id, createdAt: row.created, liked: mine.includes('like'), warned: mine.includes('warned') };

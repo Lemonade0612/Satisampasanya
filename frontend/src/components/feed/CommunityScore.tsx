@@ -5,6 +5,6 @@ export function CommunityScore({post,lang}:{post:Post;lang:Lang}){
  return <details className="mt-3 text-xs font-lao text-emerald-700 dark:text-emerald-300">
   <summary className="min-h-11 flex items-center cursor-pointer gap-1">↗ {lang==='lo'?'ຄະແນນປະໂຫຍດຕໍ່ຊຸມຊົນ':'Community usefulness'} · {rank.score}</summary>
   <p className="leading-relaxed">{lang==='lo'?'ການກວດຄືນ':'Review'} {rank.parts.review} · {lang==='lo'?'ຄວາມປອດໄພ':'Safety'} {rank.parts.safety} · {lang==='lo'?'ການມີສ່ວນຮ່ວມ':'Engagement'} {rank.parts.engagement}</p>
-  <p className="mt-1 text-muted-foreground">{lang==='lo'?'ການມັກແລະແຊຣ໌ບໍ່ໄດ້ພິສູດວ່າຂໍ້ມູນເປັນຄວາມຈິງ.':'Likes and shares do not prove a claim is true.'}</p>
+  <p className="mt-1 text-muted-foreground">{lang==='lo'?'ການກົດມັກ ແລະ ການແບ່ງປັນ ບໍ່ໄດ້ພິສູດວ່າຂໍ້ມູນເປັນຄວາມຈິງ.':'Likes and shares do not prove a claim is true.'}</p>
  </details>;
 }

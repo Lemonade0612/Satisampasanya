@@ -1,0 +1,22 @@
+export type Level = 'green' | 'yellow' | 'red' | 'unknown';
+export type Signal = { check: string; result: 'pass' | 'warn' | 'fail' | 'skip'; detail_en: string; detail_lo: string; strong?: boolean; weak?: boolean; positive?: 'official' | 'hotline'; subject?: string };
+export type VerifyResult = {
+  level: Level; confidence: 'low' | 'medium' | 'high'; confidenceReason: { en: string; lo: string }; signals: Signal[];
+  actions: { en: string[]; lo: string[] }; showHotlines: boolean; trafficking: boolean;
+  detected: { urls: string[]; phones: string[] }; hasEvidence: boolean;
+};
+export declare const OFFICIAL_DOMAINS: string[];
+export declare const SHORTENERS: string[];
+export declare const RISKY_TLDS: string[];
+export declare function extractUrls(text: string): string[];
+export declare function extractPhones(text: string): { raw: string; digits: string; plus: boolean }[];
+export declare function levenshtein(a: string, b: string): number;
+export declare function lookalike(domain: string, official?: string[]): { kind: string; brand: string } | null;
+export declare function checkUrl(raw: string): { url: string; host?: string; domain: string; official?: boolean; signals: Signal[] };
+export declare function checkPhone(p: { raw: string; digits: string; plus: boolean }, text?: string): Signal[];
+export declare function makeScorer(rules: unknown): (text: string) => { score: number; hardRed: boolean; hits: { rule: string; en: string; lo: string; strong: boolean }[]; level: string };
+export declare function checkText(text: string, score?: (text: string) => ReturnType<ReturnType<typeof makeScorer>>): { signals: Signal[]; trafficking: boolean };
+export declare function combine(signals: Signal[], opts?: { trafficking?: boolean }): Omit<VerifyResult, 'detected' | 'hasEvidence'>;
+export declare function detect(text: string): { urls: string[]; phones: { raw: string; digits: string; plus: boolean }[] };
+export declare function verify(text: string, opts?: { score?: (text: string) => any }): VerifyResult;
+export declare function sanitizeClaims(text: string): string;

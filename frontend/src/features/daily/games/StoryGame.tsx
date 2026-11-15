@@ -10,7 +10,7 @@ import { SHOW_EXPERT_PANEL } from '../../../../../shared/flags.mjs';
 import { useBand } from '../../../lib/band';
 import type { ChatStep, Choice, FlagCategory, FlagStep, Lang, Scenario } from '../types';
 
-export type GameResult = { score: number; total: number; missed: FlagCategory[]; failed: boolean; scenarioIds: string[] };
+export type GameResult = { score: number; total: number; missed: FlagCategory[]; failed: boolean; scenarioIds: string[]; lessons?: string[] };
 
 // Plays scenarios back to back with a shared trust meter. mode 'flags' keeps only tap-the-flag steps.
 export function StoryGame({ lang, scenarios, mode, onExit, onFinish }: {

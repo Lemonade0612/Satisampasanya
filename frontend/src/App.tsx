@@ -113,7 +113,7 @@ export default function App() {
     setDailyAccount(null); setGuest(null); setView('feed');
     if (location.hash.startsWith('#/daily')) history.replaceState(null, '', location.pathname);
   };
-  useEffect(() => { writePref('sati-lang', lang); }, [lang]);
+  useEffect(() => { writePref('sati-lang', lang); document.documentElement.lang = lang === 'lo' ? 'lo' : 'en'; document.title = lang === 'lo' ? 'ສະຕິຊຳປະຊັນຍະ' : 'Satisampasanya'; }, [lang]);
   const [commentPostId, setCommentPostId] = useState<string | null>(null);
   const [showCompose, setShowCompose] = useState(false);
   const [alerts,setAlertList] = useState<Notification[]>([]);
@@ -215,12 +215,12 @@ export default function App() {
   if (showSplash) {
     return (
       <div className="app-shell w-full max-w-md mx-auto bg-background relative overflow-hidden">
-        <SplashScreen onDone={() => setShowSplash(false)} />
+        <SplashScreen lang={lang} onDone={() => setShowSplash(false)} />
       </div>
     );
   }
 
-  if (sessionLoading) return <div className="app-shell flex items-center justify-center" role="status">{lang === 'lo' ? 'ກຳລັງໂຫຼດ…' : 'Loading your account…'}</div>;
+  if (sessionLoading) return <div className="app-shell flex items-center justify-center" role="status">{lang === 'lo' ? 'ກຳລັງໂຫຼດບັນຊີຂອງທ່ານ…' : 'Loading your account…'}</div>;
 
   // Simple mode (Elders by default, or switched on in Profile): the elder shell, Home / Check / Learn, no feed.
   // Also offline: its message check runs on the phone.
@@ -234,8 +234,7 @@ export default function App() {
       <div className="app-shell w-full max-w-md mx-auto bg-background flex flex-col relative overflow-hidden">
         <div className="flex-1 min-h-0 overflow-hidden relative">
           <DailyScreen lang={lang} onCheckOnSati={() => void leaveGuest()}
-            homeHeader={<button onClick={toggleLang} aria-label={lang === 'lo' ? 'ປ່ຽນພາສາ' : 'Change language'}
-              className="min-h-11 min-w-11 rounded-full bg-white/20 hover:bg-white/30 px-3 text-sm font-bold font-lao">{lang === 'lo' ? 'EN' : 'ລາວ'}</button>}
+            homeHeader={<LangToggle lang={lang} onToggle={toggleLang} />}
             homeFooter={<GuestChip lang={lang} offline={offline} onAction={() => void leaveGuest()} />} />
         </div>
       </div>
@@ -349,7 +348,7 @@ export default function App() {
           onClose={() => setExpandedImage(null)}
         />
       )}
-      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
+      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton lang={lang} onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
       {/* Existing accounts without a band choose once after sign-in; afterwards it opens from the header or Settings. */}
       {(user ? !user.ageBand : !bandChosen) || bandSheet ? <BandSheet lang={lang} onClose={(user ? user.ageBand : bandChosen) ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} /> : null}
       {signupReason && !user && <SignupPrompt lang={lang} reason={signupReason} onClose={() => setSignupReason(null)} onDone={u => { setSignupReason(null); setActionError(''); applyUser(u); }} onEmail={() => { setSignupReason(null); setGuest(null); }} />}

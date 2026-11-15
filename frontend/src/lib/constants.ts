@@ -107,7 +107,7 @@ export const T = {
     safety_tip_apk: "Don't install APK files from unknown sources — they may contain malware",
     safety_tip_url: "Check URLs carefully — scammers use lookalike domains (e.g., facebo0k.com)",
     safety_tip_too_good: "If it sounds too good to be true (free money, guaranteed returns), it is",
-    footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
+    footer: "Your trusted source, built for youth.",
     repost: "Repost", repost_ph: "Add your thoughts (optional, max 150)", reposted: "Reposted!",
     show_more: "Show more", show_less: "Show less", following: "Following", follow: "Follow",
     // AI Screening translations
@@ -133,9 +133,9 @@ export const T = {
     review_deadline: "Review deadline",
   },
   lo: {
-    app_name: "ສະຕິຊໍາປະຊັນຍະ", app_short: "ສະຕິຊໍາປະຊັນຍະ",
+    app_name: "ສະຕິຊຳປະຊັນຍະ", app_short: "ສະຕິຊຳປະຊັນຍະ",
     welcome_title: "ປອດໄພ\nທາງອອນລາຍ",
-    welcome_sub: "ສະຕິຊໍາປະຊັນຍະ ຊ່ວຍໄວໜຸ່ມລາວຮູ້ຈັກການຫຼອກລວງ, ການຄ້າມະນຸດ ແລະ ໄພດິຈິຕອລ ກ່ອນທີ່ມັນຈະເກີດຂຶ້ນ.",
+    welcome_sub: "ສະຕິຊຳປະຊັນຍະ ຊ່ວຍໄວໜຸ່ມລາວຮູ້ຈັກການຫຼອກລວງ, ການຄ້າມະນຸດ ແລະ ໄພດິຈິຕອລ ກ່ອນທີ່ມັນຈະເກີດຂຶ້ນ.",
     btn_login: "ເຂົ້າສູ່ລະບົບ", btn_register: "ລົງທະບຽນ",
     login_title: "ຍິນດີຕ້ອນຮັບຄືນ", login_sub: "ພວກເຮົາຄິດຮອດທ່ານ!",
     register_title: "ສ້າງບັນຊີ", register_sub: "ເຂົ້າຮ່ວມໄວໜຸ່ມລາວທີ່ຮັກສາຄວາມປອດໄພ",
@@ -185,7 +185,7 @@ export const T = {
     safety_tip_apk: "ຢ່າຕິດຕັ້ງໄຟລ APK ຈາກແຫຼ່ງທີ່ບໍ່ຮູ້ຈັກ — ອາດມີ malware",
     safety_tip_url: "ກວດເບິ່ງ URL ໃຫ້ລະອຽດ — ຜູ້ຫຼອກລວງໃຊ້ໂດເມນທີ່ຄ້າຍຄືກັນ",
     safety_tip_too_good: "ຖ້າມັນດີເກີນຈິງ (ເງິນຟຣີ, ຜົນຕອບແທນຮັບປະກັນ), ມັນກໍ່ແມ່ນ",
-    footer: "Your trusted source, built for youth. · ແຫຼ່ງຂໍ້ມູນທີ່ໜ້າເຊື່ອ ສໍາລັບໄວໜຸ່ມ · Built for Lao youth safety",
+    footer: "ແຫຼ່ງຂໍ້ມູນທີ່ເຊື່ອຖືໄດ້ ສຳລັບໄວໜຸ່ມ",
     repost: "Repost", repost_ph: "ເພີ່ມຄວາມຄິດເຫັນ (ບໍ່ບັງຄັບ, ສູງສຸດ 150)", reposted: "Reposted!",
     show_more: "ສະແດງເພີ່ມ", show_less: "ສະແດງໜ້ອຍ", following: "ກຳລັງຕິດຕາມ", follow: "ຕິດຕາມ",
     // AI Screening translations

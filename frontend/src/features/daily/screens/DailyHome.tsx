@@ -157,7 +157,7 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
             <Play size={18} fill="currentColor" aria-hidden />{lo ? 'ເລີ່ມ' : 'Start'} · {lo ? 'ດ່ານທີ' : 'Level'} {current < 0 ? level.length : current + 1}
           </button>
           {boss && <p className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
-            <Swords size={16} aria-hidden className="text-muted-foreground shrink-0" /><span className="rounded-md bg-rose-100 text-rose-600 font-extrabold px-1.5 py-0.5 text-[11px]">BOSS</span>
+            <Swords size={16} aria-hidden className="text-muted-foreground shrink-0" /><span className="rounded-md bg-rose-100 text-rose-600 font-extrabold px-1.5 py-0.5 text-[11px]">{lo ? "ບອສ" : "BOSS"}</span>
             <span className="truncate">{lo ? 'ວັນອາທິດ' : 'Sunday'}: {boss.title[lang]}{SHOW_EXPERT_PANEL && boss.verifiedBy ? ` · ${t.verified_by} ${boss.verifiedBy}` : ''}</span>
           </p>}
         </div>

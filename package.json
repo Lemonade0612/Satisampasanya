@@ -19,6 +19,7 @@
     "dev:web": "vite",
     "backend": "node --env-file-if-exists=.env.local backend/server.mjs",
     "test": "node --test backend/*.test.mjs",
+    "test:e2e": "playwright test",
     "ios:live": "node scripts/run-ios.mjs --live",
     "typecheck": "tsc --noEmit --noUnusedLocals false --noUnusedParameters false",
     "ios:icon": "node scripts/sync-icon.mjs",
@@ -35,6 +36,7 @@
     "check:acceptance": "node scripts/evaluate-community.mjs",
     "seed:users": "node --env-file-if-exists=.env.local scripts/create-test-users.mjs",
     "seed:reviews": "node scripts/seed-review-posts.mjs",
+    "seed:risk": "node scripts/seed-risk-posts.mjs",
     "seed:scenarios": "node scripts/seed-scenarios.mjs"
   },
   "dependencies": {
@@ -50,10 +52,12 @@
     "mongodb": "^7.7.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "tldts": "^7.0.1",
     "tw-animate-css": "1.3.8"
   },
   "devDependencies": {
     "@capacitor/cli": "^8.5.3",
+    "@playwright/test": "^1.65.1",
     "@tailwindcss/vite": "4.1.12",
     "@types/node": "^24.19.1",
     "@types/react": "^18.3.31",

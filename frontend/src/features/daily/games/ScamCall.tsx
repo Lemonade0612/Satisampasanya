@@ -242,7 +242,7 @@ function DayScene(p: { day: Day; hour: number; lang: Lang; ringing?: boolean; on
         <div className={talking ? 'call-talk' : ''}><DashAvatar a={day.hero.avatar} size={thumb ? 44 : 72} pose="stand" /></div>
         {talking && <span className="absolute -top-3 -right-7 w-9 h-9 rounded-full bg-white text-emerald-600 shadow flex items-center justify-center juice-glow"><Phone size={16} /></span>}
       </div>
-      {onPhone && <button onClick={onPhone} aria-label="Answer phone" disabled={!ringing}
+      {onPhone && <button onClick={onPhone} aria-label={lang === 'lo' ? 'ຮັບສາຍ' : 'Answer phone'} disabled={!ringing}
         className={`absolute w-12 h-12 rounded-2xl bg-white text-primary border-2 border-primary flex items-center justify-center ${ringing ? 'call-ring' : ''}`} style={{ left: '30%', bottom: '14%' }}><Phone size={20} /></button>}
       {!onPhone && !thumb && <span className="absolute left-3 top-3 rounded-full bg-white/90 dark:bg-black/60 px-3 py-1 text-xs font-semibold flex items-center gap-1"><UserRound size={13} />{day.hero.name[lang]}, {day.hero.age}</span>}
     </div>
@@ -274,7 +274,7 @@ function Stall({ day, hour, ringing, onPhone, lang, talking, compact, thumb }: {
         <div className={talking ? 'call-talk' : ''}><DashAvatar a={day.hero.avatar} size={thumb ? 40 : 58} pose="stand" /></div>
         {talking && <span className="absolute -top-3 -right-7 w-9 h-9 rounded-full bg-white text-emerald-600 shadow flex items-center justify-center juice-glow"><Phone size={16} /></span>}
       </div>
-      {onPhone && <button onClick={onPhone} aria-label="Answer phone" disabled={!ringing}
+      {onPhone && <button onClick={onPhone} aria-label={lang === 'lo' ? 'ຮັບສາຍ' : 'Answer phone'} disabled={!ringing}
         className={`absolute w-12 h-12 rounded-2xl bg-white text-primary border-2 border-primary flex items-center justify-center ${ringing ? 'call-ring' : ''}`} style={{ left: '24%', bottom: '19%' }}><Phone size={20} /></button>}
       {!onPhone && !thumb && <span className="absolute left-3 top-3 rounded-full bg-white/90 dark:bg-black/60 px-3 py-1 text-xs font-semibold flex items-center gap-1"><UserRound size={13} />{day.hero.name[lang]}, {day.hero.age}</span>}
     </div>

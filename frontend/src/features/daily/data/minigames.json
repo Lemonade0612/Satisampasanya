@@ -14,6 +14,10 @@
       "why": {
         "en": "Lookalike link (3 instead of e) and asks for your PIN.",
         "lo": "ລິ້ງຄ້າຍຄື (3 ແທນ e) ແລະ ຂໍ PIN."
+      },
+      "redFlag": {
+        "en": "blu3lotus.example",
+        "lo": "blu3lotus.example"
       }
     },
     {
@@ -44,6 +48,10 @@
       "why": {
         "en": "Easy money plus a fee to 'unlock' work is a task scam.",
         "lo": "ເງິນງ່າຍ ບວກກັບຄ່າ 'ປົດລັອກ' ແມ່ນການຫຼອກລວງແບບວຽກ."
+      },
+      "redFlag": {
+        "en": "Pay 100,000 kip to unlock tasks",
+        "lo": "ຈ່າຍ 100,000 ກີບເພື່ອປົດລັອກ"
       }
     },
     {
@@ -74,6 +82,10 @@
       "why": {
         "en": "Your ID photo can be used to open accounts in your name.",
         "lo": "ຮູບບັດຂອງທ່ານອາດຖືກໃຊ້ເປີດບັນຊີໃນຊື່ທ່ານ."
+      },
+      "redFlag": {
+        "en": "Send your ID photo to claim",
+        "lo": "ສົ່ງຮູບບັດປະຈຳຕົວເພື່ອຮັບ"
       }
     },
     {
@@ -89,6 +101,10 @@
       "why": {
         "en": "'Guaranteed' returns plus secrecy.",
         "lo": "ກຳໄລ 'ຮັບປະກັນ' ບວກຄວາມລັບ."
+      },
+      "redFlag": {
+        "en": "Guaranteed 2x in 7 days",
+        "lo": "ຮັບປະກັນ 2 ເທົ່າ ໃນ 7 ມື້"
       }
     },
     {
@@ -104,6 +120,10 @@
       "why": {
         "en": "No interview, paid travel and a rush: common trafficking lure.",
         "lo": "ບໍ່ສຳພາດ, ຈ່າຍຄ່າເດີນທາງ ແລະ ເລັ່ງ: ເຫຍື່ອລໍ່ການຄ້າມະນຸດ."
+      },
+      "redFlag": {
+        "en": "no interview",
+        "lo": "ບໍ່ສຳພາດ"
       }
     },
     {
@@ -134,6 +154,10 @@
       "why": {
         "en": "The name looks right, but no bank asks you to send back a code. That code is the key to your account.",
         "lo": "ຊື່ເບິ່ງຄືແທ້ ແຕ່ບໍ່ມີທະນາຄານໃດໃຫ້ສົ່ງລະຫັດກັບ. ລະຫັດນັ້ນແມ່ນກະແຈບັນຊີ."
+      },
+      "redFlag": {
+        "en": "Reply with the 6-digit code",
+        "lo": "ຕອບກັບດ້ວຍລະຫັດ 6 ຕົວ"
       }
     },
     {
@@ -164,6 +188,10 @@
       "why": {
         "en": "A \"new number\" from family, easy profit and a deadline. Call her old number before believing it.",
         "lo": "\"ເບີໃໝ່\" ຂອງຄອບຄົວ, ກຳໄລງ່າຍ ແລະ ເສັ້ນຕາຍ. ໂທຫາເບີເກົ່າກ່ອນເຊື່ອ."
+      },
+      "redFlag": {
+        "en": "Join with my link before the bonus ends tonight",
+        "lo": "ສະໝັກຜ່ານລິ້ງກ່ອນໂບນັດໝົດຄືນນີ້"
       }
     },
     {
@@ -194,6 +222,10 @@
       "why": {
         "en": "Holding your passport and keeping it secret are trafficking warning signs.",
         "lo": "ການຍຶດໜັງສືຜ່ານແດນ ແລະ ໃຫ້ປິດລັບ ແມ່ນສັນຍານການຄ້າມະນຸດ."
+      },
+      "redFlag": {
+        "en": "I keep your passport safe",
+        "lo": "ຂ້ອຍຈະເກັບໜັງສືຜ່ານແດນໃຫ້"
       }
     },
     {
@@ -225,6 +257,10 @@
       "why": {
         "en": "Task scam. The balance is just a number on their screen. Never pay to get paid.",
         "lo": "ການຫຼອກແບບວຽກ. ຍອດເງິນເປັນພຽງຕົວເລກໃນໜ້າຈໍຂອງເຂົາ. ຢ່າຈ່າຍເງິນເພື່ອໃຫ້ໄດ້ຮັບເງິນ."
+      },
+      "redFlag": {
+        "en": "Deposit 300,000 kip to unlock withdrawal",
+        "lo": "ຝາກ 300,000 ກີບ ເພື່ອປົດລັອກການຖອນ"
       }
     },
     {
@@ -240,6 +276,10 @@
       "why": {
         "en": "When the country or worksite changes at the last minute, stop. This is a documented trafficking pattern.",
         "lo": "ເມື່ອປະເທດ ຫຼື ບ່ອນເຮັດວຽກປ່ຽນກະທັນຫັນ ໃຫ້ຢຸດ. ນີ້ແມ່ນຮູບແບບການຄ້າມະນຸດທີ່ມີການບັນທຶກ."
+      },
+      "redFlag": {
+        "en": "bring your passport",
+        "lo": "ເອົາໜັງສືຜ່ານແດນມາ"
       }
     },
     {
@@ -255,6 +295,10 @@
       "why": {
         "en": "'Chat girl' offers in Laos have turned free room and food into debts, with quotas nobody can reach.",
         "lo": "ວຽກ 'ສາວແຊັດ' ໃນລາວ ເຄີຍປ່ຽນຫ້ອງພັກ ແລະ ອາຫານຟຣີ ເປັນໜີ້ ພ້ອມເປົ້າໝາຍທີ່ບໍ່ມີໃຜເຮັດໄດ້."
+      },
+      "redFlag": {
+        "en": "free meals and free room",
+        "lo": "ອາຫານຟຣີ ຫ້ອງພັກຟຣີ"
       }
     },
     {
@@ -270,6 +314,10 @@
       "why": {
         "en": "An online friendship that turns into an investment tip is the classic romance-investment scam.",
         "lo": "ມິດຕະພາບອອນລາຍທີ່ກາຍເປັນການຊວນລົງທຶນ ແມ່ນການຫຼອກແບບຄວາມຮັກ-ລົງທຶນ."
+      },
+      "redFlag": {
+        "en": "just for us",
+        "lo": "ສະເພາະເຮົາສອງຄົນ"
       }
     },
     {
@@ -285,6 +333,10 @@
       "why": {
         "en": "Fake gambling sites are a tool of scam compounds. A 'licensed' badge and a working site prove nothing.",
         "lo": "ເວັບການພະນັນປອມ ແມ່ນເຄື່ອງມືຂອງແກ໊ງຫຼອກລວງ. ປ້າຍ 'ມີໃບອະນຸຍາດ' ແລະ ເວັບທີ່ໃຊ້ໄດ້ ພິສູດຫຍັງບໍ່ໄດ້."
+      },
+      "redFlag": {
+        "en": "Withdraw after 3 more deposits",
+        "lo": "ຖອນໄດ້ຫຼັງຝາກອີກ 3 ເທື່ອ"
       }
     },
     {
@@ -300,6 +352,10 @@
       "why": {
         "en": "Some trapped workers are forced to recruit a replacement to be released. A friend's invite is not proof of safety.",
         "lo": "ຄົນງານທີ່ຖືກກັກບາງຄົນ ຖືກບັງຄັບໃຫ້ຫາຄົນມາແທນ ຈຶ່ງຈະຖືກປ່ອຍ. ການຊວນຂອງໝູ່ບໍ່ໄດ້ພິສູດວ່າປອດໄພ."
+      },
+      "redFlag": {
+        "en": "they said I can go home if I bring friends",
+        "lo": "ເຂົາບອກວ່າຂ້ອຍກັບບ້ານໄດ້ ຖ້າພາໝູ່ມາ"
       }
     },
     {
@@ -315,6 +371,10 @@
       "why": {
         "en": "A signed contract does not mean safe work. A huge penalty for leaving is a debt trap.",
         "lo": "ສັນຍາທີ່ເຊັນແລ້ວ ບໍ່ໄດ້ໝາຍຄວາມວ່າວຽກປອດໄພ. ຄ່າປັບໃຫຍ່ຖ້າລາອອກ ແມ່ນກັບດັກໜີ້."
+      },
+      "redFlag": {
+        "en": "pay a 30M kip penalty",
+        "lo": "ຕ້ອງຈ່າຍຄ່າປັບ 30 ລ້ານກີບ"
       }
     },
     {
@@ -330,6 +390,10 @@
       "why": {
         "en": "Taking your documents or phone is how control starts. Keep your own passport, always.",
         "lo": "ການເອົາເອກະສານ ຫຼື ໂທລະສັບ ແມ່ນການເລີ່ມຄວບຄຸມ. ເກັບໜັງສືຜ່ານແດນໄວ້ເອງສະເໝີ."
+      },
+      "redFlag": {
+        "en": "keeps your passport and phone",
+        "lo": "ຈະເກັບໜັງສືຜ່ານແດນ ແລະ ໂທລະສັບໄວ້"
       }
     },
     {
@@ -345,6 +409,10 @@
       "why": {
         "en": "Crossing without papers leaves you with no protection at all on the other side.",
         "lo": "ການຂ້າມແດນໂດຍບໍ່ມີເອກະສານ ເຮັດໃຫ້ທ່ານບໍ່ມີການປົກປ້ອງຫຍັງເລີຍຢູ່ອີກຟາກ."
+      },
+      "redFlag": {
+        "en": "No passport needed",
+        "lo": "ບໍ່ຕ້ອງມີໜັງສືຜ່ານແດນ"
       }
     },
     {
@@ -360,6 +428,10 @@
       "why": {
         "en": "Task scams are built like games: levels, rewards, then a bigger deposit each time.",
         "lo": "ການຫຼອກແບບວຽກ ອອກແບບຄືເກມ: ເລເວລ, ລາງວັນ ແລ້ວໃຫ້ຝາກເງິນຫຼາຍຂຶ້ນທຸກເທື່ອ."
+      },
+      "redFlag": {
+        "en": "VIP needs a 1,000,000 kip top-up",
+        "lo": "VIP ຕ້ອງເຕີມ 1,000,000 ກີບ"
       }
     },
     {
@@ -375,6 +447,10 @@
       "why": {
         "en": "Fake platforms show made-up profits, then invent 'taxes' and 'fees' so you keep paying.",
         "lo": "ແພລດຟອມປອມສະແດງກຳໄລປອມ ແລ້ວສ້າງ 'ພາສີ' ແລະ 'ຄ່າທຳນຽມ' ໃຫ້ຈ່າຍຕໍ່ໄປ."
+      },
+      "redFlag": {
+        "en": "first pay 15% tax",
+        "lo": "ຕ້ອງຈ່າຍພາສີ 15% ໃຫ້ແພລດຟອມກ່ອນ"
       }
     },
     {
@@ -483,6 +559,10 @@
       "why": {
         "en": "Free stuff + a strange link that wants your login. Tell a trusted adult.",
         "lo": "ຂອງຟຣີ + ລິ້ງແປກທີ່ຂໍການເຂົ້າລະບົບ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      },
+      "redFlag": {
+        "en": "freeskinz-game.example",
+        "lo": "freeskinz-game.example"
       }
     },
     {
@@ -500,6 +580,10 @@
       "why": {
         "en": "A code from SMS is a key to money. Never share it.",
         "lo": "ລະຫັດຈາກ SMS ແມ່ນກະແຈເງິນ. ຢ່າແບ່ງປັນ."
+      },
+      "redFlag": {
+        "en": "Send me the code from your mum’s phone",
+        "lo": "ສົ່ງລະຫັດຈາກໂທລະສັບແມ່ມາ"
       }
     },
     {
@@ -517,6 +601,10 @@
       "why": {
         "en": "Asks where you study, moves to a private app and wants a secret. Tell a trusted adult.",
         "lo": "ຖາມບ່ອນຮຽນ, ຍ້າຍໄປແອັບສ່ວນຕົວ ແລະ ຢາກໃຫ້ເປັນຄວາມລັບ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      },
+      "redFlag": {
+        "en": "Don’t tell your mum",
+        "lo": "ຢ່າບອກແມ່"
       }
     },
     {
@@ -535,6 +623,10 @@
       "why": {
         "en": "Nobody wins just for visiting. It’s a trap link.",
         "lo": "ບໍ່ມີໃຜຖືກລາງວັນເພາະເຂົ້າເບິ່ງ. ແມ່ນລິ້ງກັບດັກ."
+      },
+      "redFlag": {
+        "en": "Tap to claim a free phone",
+        "lo": "ກົດເພື່ອຮັບໂທລະສັບຟຣີ"
       }
     },
     {
@@ -586,6 +678,10 @@
       "why": {
         "en": "Strangers asking for photos, your address or secrets are not safe. Tell a trusted adult.",
         "lo": "ຄົນແປກໜ້າທີ່ຂໍຮູບ, ທີ່ຢູ່ ຫຼື ຄວາມລັບ ບໍ່ປອດໄພ. ບອກຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ."
+      },
+      "redFlag": {
+        "en": "Send a selfie and your home address",
+        "lo": "ສົ່ງເຊວຟີ ແລະ ທີ່ຢູ່ເຮືອນມາ"
       }
     },
     {
@@ -604,6 +700,10 @@
       "why": {
         "en": "Police never ask you to move money.",
         "lo": "ຕຳຫຼວດບໍ່ເຄີຍໃຫ້ໂອນເງິນ."
+      },
+      "redFlag": {
+        "en": "Move your money to our safe account now",
+        "lo": "ໂອນເງິນມາບັນຊີປອດໄພດຽວນີ້"
       }
     },
     {
@@ -621,6 +721,10 @@
       "why": {
         "en": "New number + money now + secret. Call the old number.",
         "lo": "ເບີໃໝ່ + ເງິນດຽວນີ້ + ຄວາມລັບ. ໂທເບີເກົ່າ."
+      },
+      "redFlag": {
+        "en": "Don’t tell Mum",
+        "lo": "ຢ່າບອກແມ່"
       }
     },
     {
@@ -638,6 +742,10 @@
       "why": {
         "en": "Real prizes never ask you to pay first.",
         "lo": "ລາງວັນແທ້ບໍ່ໃຫ້ຈ່າຍກ່ອນ."
+      },
+      "redFlag": {
+        "en": "Pay 300,000 kip tax to receive it",
+        "lo": "ຈ່າຍພາສີ 300,000 ກີບ ເພື່ອຮັບ"
       }
     },
     {
@@ -655,6 +763,10 @@
       "why": {
         "en": "Companies don’t use personal accounts or 1-hour threats.",
         "lo": "ບໍລິສັດບໍ່ໃຊ້ບັນຊີສ່ວນຕົວ ຫຼື ຂູ່ 1 ຊົ່ວໂມງ."
+      },
+      "redFlag": {
+        "en": "Pay 350,000 kip to this personal account",
+        "lo": "ຈ່າຍ 350,000 ກີບ ໃສ່ບັນຊີສ່ວນຕົວນີ້"
       }
     },
     {

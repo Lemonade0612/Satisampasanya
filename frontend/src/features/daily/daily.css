@@ -61,3 +61,8 @@
 @keyframes juice-slide { from { transform: translateY(-24px) scale(.96); opacity: 0 } to { transform: none; opacity: 1 } }
 .juice-star { animation: daily-pop .5s cubic-bezier(.2,.9,.3,1.6) both; }
 @media (prefers-reduced-motion: reduce) { .juice-bit, .juice-rise, .juice-pulse, .juice-glow, .juice-slide, .juice-star { animation: none } .juice-bit { display: none } }
+
+/* Result card that slides up after an answer. */
+.daily-slide-up { animation: daily-slide-up .4s cubic-bezier(.2,.9,.3,1) both; }
+@keyframes daily-slide-up { from { transform: translateY(48px); opacity: 0 } to { transform: none; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .daily-slide-up { animation: none } }

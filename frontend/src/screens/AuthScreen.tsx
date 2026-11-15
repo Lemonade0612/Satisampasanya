@@ -53,21 +53,23 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
   const sheet = signup && <SignupSheet lang={lang} initialBand={easy ? 'elder' : null} onClose={() => setSignup(false)} onLogin={onLogin} onOffline={onOffline} />;
 
   if (view === "welcome") return (
-    <div className="h-full flex flex-col bg-background">
-      <div className="flex items-center justify-between px-5 pt-3">
+    <div className="h-full w-full max-w-md mx-auto overflow-y-auto overflow-x-hidden scrollbar-hide bg-background flex flex-col">
+      <header className="w-full px-5 pt-3 flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 min-w-0">
           <SatiLogo size={32} />
-          <span className="font-display font-bold text-base text-foreground truncate font-lao" style={{ letterSpacing:"-0.02em" }}>ສະຕິຊໍາປະຊັນຍະ</span>
+          <span className="font-display font-bold text-base text-foreground truncate font-lao" style={{ letterSpacing:"-0.02em" }}>
+            {t.app_name}
+          </span>
         </div>
         <LangToggle lang={lang} onToggle={onLangToggle} />
-      </div>
-      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-hide flex flex-col justify-center w-full max-w-md mx-auto">
-        <div className={`shrink-0 min-h-[120px] flex items-center justify-center px-8 pt-2 ${easy ? "h-[180px]" : "h-[250px]"}`}><img src="/images/welcome-community.png" alt="" className="h-full w-auto max-w-full object-contain" /></div>
-        <div className="px-6 pt-3 pb-5">
-          <h1 className="font-display font-bold mb-2 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(24px,7vw,30px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
+      </header>
+      <main className="flex-1 w-full px-5 flex flex-col py-4">
+        <div className="order-2 w-full min-w-0 flex flex-col">
+          <h1 className="font-display font-bold mb-2 whitespace-pre-line leading-tight text-foreground" style={{ fontSize:"clamp(28px,8vw,32px)", letterSpacing:"-0.02em" }}>{t.welcome_title}</h1>
           <p className="text-sm text-muted-foreground leading-relaxed mb-6 font-lao">{t.welcome_sub}</p>
+          <div>
           <button type="button" onClick={() => setSignup(true)} className={primaryBtn} style={primaryShadow}>{lo ? 'ເລີ່ມເລີຍ' : 'Get started'}<ArrowRight size={20} aria-hidden /></button>
-          <div className="grid grid-cols-2 gap-3 mt-3">
+          <div className="grid grid-cols-1 min-[420px]:grid-cols-2 gap-3 mt-3">
             <button type="button" onClick={onGuest} className="text-left rounded-2xl border border-[#E6E6F0] dark:border-border bg-background p-3 min-h-11 active:scale-[0.98] transition-transform font-lao">
               <span className="flex items-center gap-2 mb-2">
                 <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#EDE7FB] text-[#5B21D1] flex items-center justify-center"><Gamepad2 size={20} /></span>
@@ -79,25 +81,29 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
               className={`text-left rounded-2xl border bg-background p-3 min-h-11 active:scale-[0.98] transition-all font-lao ${easy ? 'border-[#2563EB] ring-1 ring-[#2563EB]' : 'border-[#E6E6F0] dark:border-border'}`}>
               <span className="flex items-center gap-2 mb-2">
                 <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#DCEBFE] text-[#2563EB] flex items-center justify-center"><ALargeSmall size={20} /></span>
-                <span className="flex-1 min-w-0 font-semibold text-sm text-foreground leading-tight">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
+                <span className="flex-1 min-w-0 font-semibold text-sm text-foreground leading-tight break-words">{lo ? 'ໂໝດງ່າຍ' : 'Easy mode'}</span>
                 <span aria-hidden className={`w-10 h-6 shrink-0 rounded-full p-0.5 transition-colors ${easy ? 'bg-[#2563EB]' : 'bg-[#D9DAE5]'}`}><span className={`block w-5 h-5 rounded-full bg-white shadow transition-transform ${easy ? 'translate-x-4' : ''}`} /></span>
               </span>
               <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຕົວອັກສອນໃຫຍ່ ແລະ ໜ້າຈໍງ່າຍ ສຳລັບຜູ້ສູງອາຍຸ' : 'Bigger text and simpler screens for elders'}</span>
             </button>
           </div>
+          <div className="mt-4 border-t border-[#EEEEF4] dark:border-border pt-2 pb-[env(safe-area-inset-bottom)] text-center">
+            <button type="button" onClick={() => setView("login")} className="min-h-11 inline-flex items-center gap-1 text-sm text-muted-foreground font-lao">
+              {lo ? 'ມີບັນຊີແລ້ວ?' : 'Already have an account?'} <span className="text-primary font-bold">{lo ? 'ເຂົ້າສູ່ລະບົບ' : 'Sign in'}</span><ChevronRight size={16} className="text-primary" aria-hidden />
+            </button>
+          </div>
+          </div>
         </div>
-        <div className="shrink-0 mx-6 border-t border-[#EEEEF4] dark:border-border pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] text-center">
-        <button type="button" onClick={() => setView("login")} className="min-h-11 inline-flex items-center gap-1 text-sm text-muted-foreground font-lao">
-          {lo ? 'ມີບັນຊີແລ້ວ?' : 'Already have an account?'} <span className="text-primary font-bold">{lo ? 'ເຂົ້າສູ່ລະບົບ' : 'Sign in'}</span><ChevronRight size={16} className="text-primary" aria-hidden />
-        </button>
+        <div className="order-1 relative flex-1 min-h-[180px] mb-4">
+          <img src="/images/welcome-community.png" alt="" className="absolute inset-0 w-full h-full object-contain" />
         </div>
-      </div>
+      </main>
       {sheet}
     </div>
   ); // REVIEW-LO
 
   if (view === "login") return (
-    <div className="h-full flex flex-col bg-background overflow-y-auto scrollbar-hide">
+    <div className="h-full w-full max-w-md mx-auto flex flex-col bg-background overflow-y-auto scrollbar-hide">
       <div className="flex items-center justify-between px-3 pt-2">
         <button type="button" aria-label={lo ? 'ກັບ' : 'Back'} onClick={() => setView("welcome")} className="min-h-11 min-w-11 flex items-center justify-center"><ArrowLeft size={22} strokeWidth={1.75} /></button>
         <SatiLogo size={32} className="mr-2" />
@@ -121,7 +127,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
   ); // REVIEW-LO
 
   return (
-    <div className="h-full flex flex-col bg-background">
+    <div className="h-full w-full max-w-md mx-auto flex flex-col bg-background">
       <div className="px-5 pt-3 pb-6 bg-background">
         <div className="flex items-center justify-between mb-5">
           <button type="button" onClick={() => setView("login")} className="p-2 -ml-2"><ArrowLeft size={20} strokeWidth={1.75} /></button>
@@ -131,13 +137,13 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
         <p className="text-sm text-muted-foreground font-lao">{t.forgot_sub}</p>
       </div>
       <div className="flex-1 px-5 pt-6">{feedback}
-        {resetToken && <div className="mb-5 space-y-3"><FormInput value={resetPassword} onChange={setResetPassword} type="password" placeholder={lang === 'lo' ? 'ລະຫັດຜ່ານໃໝ່' : 'New password (8+ characters)'} /><button className="touch-target rounded-full bg-primary text-white px-4" disabled={busy || resetPassword.length < 8} onClick={async () => {setBusy(true);setAuthError('');try {await request('/auth/reset','POST',{token:resetToken,password:resetPassword});setResetToken('');window.history.replaceState({},'',window.location.pathname);setView('login');}catch(e){setAuthError((e as Error).message);}finally{setBusy(false);}}}>{lang === 'lo' ? 'ບັນທຶກ' : 'Save password'}</button></div>}
+        {resetToken && <div className="mb-5 space-y-3"><FormInput value={resetPassword} onChange={setResetPassword} type="password" placeholder={lang === 'lo' ? 'ລະຫັດຜ່ານໃໝ່ (ຢ່າງໜ້ອຍ 8 ຕົວ)' : 'New password (8+ characters)'} /><button className="touch-target rounded-full bg-primary text-white px-4" disabled={busy || resetPassword.length < 8} onClick={async () => {setBusy(true);setAuthError('');try {await request('/auth/reset','POST',{token:resetToken,password:resetPassword});setResetToken('');window.history.replaceState({},'',window.location.pathname);setView('login');}catch(e){setAuthError((e as Error).message);}finally{setBusy(false);}}}>{lang === 'lo' ? 'ບັນທຶກລະຫັດຜ່ານ' : 'Save password'}</button></div>}
         {resetSent ? (
           <div className="rounded-2xl p-5 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-center">
               <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900 flex items-center justify-center mx-auto mb-3">
                 <Check size={24} className="text-emerald-600 dark:text-emerald-400" />
               </div>
-              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 font-lao">{lang === 'lo' ? 'ຖ້າມີບັນຊີນີ້ ລິ້ງປ່ຽນລະຫັດຈະສະແດງຢູ່ໃນ terminal ຂອງ backend. ຍັງບໍ່ໄດ້ຕັ້ງຄ່າອີເມລ.' : 'If this account exists, the reset link is in the backend terminal. Email delivery is not configured.'}</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300 font-lao">{lang === 'lo' ? 'ຖ້າມີບັນຊີນີ້ ລິ້ງຕັ້ງລະຫັດຜ່ານໃໝ່ຈະສະແດງຢູ່ໃນໜ້າຈໍຄຳສັ່ງຂອງລະບົບ ເພາະຍັງບໍ່ໄດ້ຕັ້ງຄ່າການສົ່ງອີເມວ.' : 'If this account exists, the reset link is in the backend terminal. Email delivery is not configured.'}</p>
             </div>
           ) : (
             <>

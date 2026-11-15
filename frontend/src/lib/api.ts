@@ -10,6 +10,7 @@ const TOKEN_KEY = 'sati-session';
 const store = (s: Storage) => { try { return s.getItem(TOKEN_KEY); } catch { return null; } };
 const token = () => store(sessionStorage) || store(localStorage);
 export const hasSession = () => !!token();
+export const authHeaders = (): Record<string, string> => (hasSession() ? { Authorization: `Bearer ${token()}` } : {});
 export const clearSession = () => { try { sessionStorage.removeItem(TOKEN_KEY); localStorage.removeItem(TOKEN_KEY); } catch { /* storage blocked */ } };
 export class ApiError extends Error { constructor(message: string, public status: number) { super(message); } }
 export async function request<T>(path: string, method = 'GET', data?: unknown, timeoutMs?: number): Promise<T> {
@@ -66,6 +67,8 @@ export const api = {
   async logout() { try { await request('/auth/logout','POST'); } finally { clearSession(); } },
   // The account's own band wins on the server; the local band covers accounts that have not chosen one yet.
   posts: () => request<Post[]>(`/posts?band=${getBand()}`),
+  // Curated Posts / ຂ່າວສານ: approved, unexpired posts only (the server filters).
+  curated: () => request<import('../data/posts').CuratedPost[]>('/curated', 'GET', undefined, 10000),
   createPost: (post:PostDraft,onProgress?:(stage:CheckStage,done?:boolean)=>void) => onProgress?publishWithProgress(post,onProgress):request<Post>('/posts','POST',post),
   comments: (id:string) => request<Comment[]>(`/posts/${id}/comments`),
   comment: (id:string,text:string) => request<Post>(`/posts/${id}/comments`,'POST',{text}),
