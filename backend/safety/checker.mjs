@@ -1,6 +1,7 @@
 import {CHECK_PROMPT,INTENT_PROMPT,askPrompt} from './prompts.mjs';
 import {modelReply,inputLanguage,readSafetyConfig} from './model.mjs';
-export const LABELS=['scam_risk','trafficking_recruitment','phishing','impersonation','misinformation','fear_bait','harassment','victim_blaming','profanity_only','off_topic','political_sarcasm','satire','safe_tip','news'];
+import {LABELS} from '../../shared/check-labels.mjs';
+export {LABELS};
 const reasonSchema={type:'object',additionalProperties:false,properties:{text:{type:'string'},evidence:{type:'string'}},required:['text','evidence']};
 export const CHECK_SCHEMA={type:'object',additionalProperties:false,properties:{verdict:{type:'string',enum:['approved','caution','needs_expert']},risk:{type:'string',enum:['low','medium','high']},labels:{type:'array',items:{type:'string',enum:LABELS}},on_topic:{type:'boolean'},reasons:{type:'array',maxItems:3,items:reasonSchema},suggested_edit:{type:'string'},summary:{type:'string'}},required:['verdict','risk','labels','on_topic','reasons','suggested_edit','summary']};
 const answerSchema={type:'object',additionalProperties:false,properties:{answer:{type:'string'},steps:{type:'array',minItems:2,maxItems:4,items:{type:'string'}},question:{type:'string'},offer:{type:'string'}},required:['answer','steps','question','offer']};

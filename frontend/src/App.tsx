@@ -5,6 +5,8 @@ import { useLivePosts } from "./hooks/useLivePosts";
 import { SplashScreen } from "./screens/SplashScreen";
 import { AuthScreen } from "./screens/AuthScreen";
 import { ProfileLayer } from './screens/ProfileLayer';
+import { HowSati } from './screens/HowSati';
+import { useHash } from './lib/hashRoute';
 import { FeedScreen } from "./screens/FeedScreen";
 import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
@@ -49,6 +51,7 @@ export default function App() {
   const [showSplash, setShowSplash] = useState(true);
   const [lang, setLang] = useState<Lang>(readPref("sati-lang") === "lo" ? "lo" : "en");
   const [user, setUser] = useState<CurrentUser | null>(null);
+  const hash = useHash();
   const [view, setView] = useState<ActiveView>(location.hash.startsWith("#/daily") ? "daily" : "feed");
   const [feedTab, setFeedTab] = useState(0);
   const [customTopic,setCustomTopic]=useState<string|null>(null);
@@ -284,6 +287,7 @@ export default function App() {
             }}
           />
         )}
+        {hash === '#/how-sati' && <div className="absolute inset-0 z-50 overflow-y-auto overflow-x-hidden overscroll-y-contain bg-background" role="region" aria-label={lang === 'lo' ? 'ວິທີ Sati ກວດ' : 'How Sati checks'}><HowSati lang={lang} onBack={() => { history.length > 1 ? history.back() : (location.hash = ''); }} /></div>}
         <ProfileLayer lang={lang} posts={posts} currentUserId={user?.id} canFollow={!!user} onNeedSignup={() => setSignupReason('follow')}
           card={{ onOpenComments: setCommentPostId, onLike: handleLike, onRepost: handleRepostCount, onWarnedMe: handleWarnedMe, onRepostClick: setRepostPost, onImageExpand: url => setExpandedImage(url), onTopicClick: topic => { setCustomTopic(topic); setFeedTab(0); setView('feed'); location.hash = ''; }, canReport: !!user }} />
         {view === "explore" && !showAlerts && (

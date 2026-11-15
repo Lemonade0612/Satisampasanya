@@ -324,6 +324,29 @@ function detectLanguage(content: string): { hasEn: boolean; hasLo: boolean; isBi
   return { hasEn, hasLo, isBilingual: hasEn && hasLo };
 }
 
+/** The 17 checks every post goes through, in the order analyzePostContent runs them. Shown on the How Sati page.
+ *  block = a hit blocks or sends the post to review; caution = a hit raises the risk score; boost = evidence that adds trust. */
+export type ScreeningCheck = { id: number; group: "block" | "caution" | "boost"; en: string; lo: string; whyEn: string; whyLo: string };
+export const SCREENING_CHECKS: ScreeningCheck[] = [
+  { id: 1, group: "block", en: "Dangerous content", lo: "ເນື້ອຫາອັນຕະລາຍ", whyEn: "Harmful instructions are blocked at once.", whyLo: "ຄຳແນະນຳທີ່ເປັນອັນຕະລາຍຖືກບລັອກທັນທີ." },
+  { id: 2, group: "block", en: "Profanity and vulgar language", lo: "ຄຳຫຍາບ", whyEn: "Rude words are flagged for review.", whyLo: "ຄຳຫຍາບຖືກສົ່ງໄປກວດ." },
+  { id: 3, group: "block", en: "Sexual content", lo: "ເນື້ອຫາທາງເພດ", whyEn: "Not allowed on Sati.", whyLo: "ບໍ່ອະນຸຍາດໃນ Sati." },
+  { id: 4, group: "block", en: "Animal insults", lo: "ດູຖູກດ້ວຍຊື່ສັດ", whyEn: "Name-calling is flagged.", whyLo: "ການຕໍ່ວ່າດ້ວຍຊື່ສັດຖືກສົ່ງໄປກວດ." },
+  { id: 5, group: "block", en: "Bias and discrimination", lo: "ອະຄະຕິ ແລະ ການເລືອກປະຕິບັດ", whyEn: "Attacks on groups are flagged.", whyLo: "ການໂຈມຕີກຸ່ມຄົນຖືກສົ່ງໄປກວດ." },
+  { id: 6, group: "block", en: "Bullying and harassment", lo: "ການຂົ່ມເຫັງ ແລະ ລົບກວນ", whyEn: "Targeting a person is flagged.", whyLo: "ການເຈາະຈົງໃສ່ຄົນຖືກສົ່ງໄປກວດ." },
+  { id: 7, group: "caution", en: "Off-topic content", lo: "ນອກຫົວຂໍ້", whyEn: "Sati is about scams and trafficking safety.", whyLo: "Sati ເວົ້າເລື່ອງການຫຼອກລວງ ແລະ ການຄ້າມະນຸດ." },
+  { id: 8, group: "caution", en: "Scam indicators", lo: "ສັນຍານການຫຼອກລວງ", whyEn: "Urgency, fees up front, too-good offers.", whyLo: "ເລັ່ງດ່ວນ, ເກັບເງິນລ່ວງໜ້າ, ຂໍ້ສະເໜີດີເກີນຈິງ." },
+  { id: 9, group: "caution", en: "Trafficking indicators", lo: "ສັນຍານການຄ້າມະນຸດ", whyEn: "Secret travel, held passports, unofficial crossings.", whyLo: "ເດີນທາງແບບລັບ, ເກັບໜັງສືຜ່ານແດນ, ຂ້າມແດນບໍ່ເປັນທາງການ." },
+  { id: 10, group: "caution", en: "Misinformation", lo: "ຂໍ້ມູນບໍ່ຖືກຕ້ອງ", whyEn: "Claims that spread fear without proof.", whyLo: "ຂໍ້ອ້າງທີ່ສ້າງຄວາມຢ້ານໂດຍບໍ່ມີຫຼັກຖານ." },
+  { id: 12, group: "caution", en: "Business and government claims", lo: "ອ້າງວ່າເປັນບໍລິສັດ ຫຼື ພາກລັດ", whyEn: "Claims to be an official body need proof.", whyLo: "ການອ້າງວ່າເປັນໜ່ວຍງານທາງການຕ້ອງມີຫຼັກຖານ." },
+  { id: 17, group: "caution", en: "Length", lo: "ຄວາມຍາວ", whyEn: "Very short posts give little context.", whyLo: "ໂພສສັ້ນຫຼາຍໃຫ້ຂໍ້ມູນໜ້ອຍ." },
+  { id: 11, group: "boost", en: "Credibility boosters", lo: "ສິ່ງທີ່ເພີ່ມຄວາມໜ້າເຊື່ອຖື", whyEn: "Hotline numbers, official names, clear advice.", whyLo: "ເບີສາຍດ່ວນ, ຊື່ທາງການ, ຄຳແນະນຳທີ່ຊັດເຈນ." },
+  { id: 13, group: "boost", en: "Source link", lo: "ລິ້ງແຫຼ່ງຂໍ້ມູນ", whyEn: "A source you can open and check.", whyLo: "ແຫຼ່ງທີ່ເປີດກວດໄດ້." },
+  { id: 14, group: "boost", en: "Visual evidence", lo: "ຫຼັກຖານເປັນຮູບ", whyEn: "A screenshot or photo of the message.", whyLo: "ພາບໜ້າຈໍ ຫຼື ຮູບຂອງຂໍ້ຄວາມ." },
+  { id: 15, group: "boost", en: "Tag relevance", lo: "ແທັກກົງກັບເນື້ອຫາ", whyEn: "Topic tags match what the post says.", whyLo: "ແທັກຫົວຂໍ້ກົງກັບສິ່ງທີ່ໂພສເວົ້າ." },
+  { id: 16, group: "boost", en: "Bilingual bonus", lo: "ສອງພາສາ", whyEn: "Lao and English make help easier to reach.", whyLo: "ລາວ ແລະ ອັງກິດ ເຮັດໃຫ້ເຂົ້າເຖິງງ່າຍຂຶ້ນ." },
+];
+
 /**
  * Comprehensive content analysis
  */
