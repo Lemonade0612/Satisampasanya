@@ -276,6 +276,7 @@ export default function App() {
             currentUserId={user?.id}
             onFollow={id=>{if(!user){setSignupReason('follow');return;}const current=user.following || [];void handleProfile({following:current.includes(id)?current.filter(value=>value!==id):[...current,id]}).catch(e=>setActionError(e.message));}}
             onOpenAlerts={handleOpenAlerts}
+            onOpenExplore={() => setView("explore")}
             alertCount={alertCount}
             onRepostClick={setRepostPost}
             onLangToggle={toggleLang}

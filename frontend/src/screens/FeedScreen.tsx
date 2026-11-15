@@ -1,8 +1,9 @@
 import logoImage from "/images/sati-mark.png";
 import { T } from "../lib/translations";
 import { DailySafetyTip } from "../components/feed/DailySafetyTip";
-import { Landmark, Bell, Settings, Phone, X, ShieldCheck, ChevronDown, Check, RefreshCw, ArrowUp, WifiOff } from "lucide-react";
+import { Landmark, Bell, Globe, Phone, X, ShieldCheck, ChevronDown, Check, ArrowUp, WifiOff } from "lucide-react";
 import { BANDS, canInteract, changeBand, leavingKidsNeedsPassword, postsForBand, useBand } from "../lib/band";
+import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TIERS } from "../features/daily/lib/age";
 import { DT } from "../features/daily/i18n";
@@ -21,12 +22,12 @@ import { scamTypeLabel, weeklyTrend } from "../lib/scamTypes";
 import type { GameId } from "../features/daily/types";
 import type { Band, Lang, Post } from "../types";
 
-export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onOpenAlerts, onOpenSettings, onOpenExplore, alertCount, onRepostClick, onChangeBand, onImageExpand, onTopicClick, onPlayGame, followedTopics, customTopic, following, currentUserId, onFollow }: {
+export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onOpenAlerts, onLangToggle, onOpenExplore, alertCount, onRepostClick, onChangeBand, onImageExpand, onTopicClick, onPlayGame, followedTopics, customTopic, following, currentUserId, onFollow }: {
   following: string[]; currentUserId?:string; onFollow:(id:string)=>void;
   followedTopics: string[]; customTopic?: string|null;
   lang: Lang; posts: Post[]; activeTab: number; onTabChange: (i: number) => void;
   onOpenComments: (id: string) => void; onLike: (id: string) => void; onRepost: (id: string) => void;
-  onWarnedMe: (id: string) => void; onCompose: () => void; onOpenAlerts: () => void; onOpenSettings?: () => void; onOpenExplore?: () => void; alertCount: number;
+  onWarnedMe: (id: string) => void; onCompose: () => void; onOpenAlerts: () => void; onOpenExplore?: () => void; alertCount: number;
   onRepostClick: (post: Post) => void; onLangToggle: () => void; onChangeBand: () => void; onImageExpand?: (url: string) => void; onTopicClick?: (topic: string) => void; onPlayGame?: (game: GameId) => void;
 }) {
   const t = T[lang];
@@ -103,8 +104,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
             <Bell size={20} aria-hidden />
             {alertCount > 0 && <span key={alertCount} aria-label={`${alertCount} unread`} className="badge-pop absolute top-2 right-[9px] w-2 h-2 rounded-full bg-[#EF4444] shadow-[0_0_0_2px_#fff]" />}
           </button>
-          {paged && <button type="button" aria-label={lang === "lo" ? "ໂຫຼດໃໝ່" : "Reload feed"} onClick={() => void feed.refresh()} disabled={feed.refreshing} className="hidden min-[420px]:[@media(pointer:fine)]:flex w-10 h-10 items-center justify-center text-[#5F6390] disabled:opacity-60"><RefreshCw size={20} aria-hidden className={feed.refreshing ? "animate-spin motion-reduce:animate-none" : ""} /></button>}
-          <button type="button" aria-label={lang === "lo" ? "ການຕັ້ງຄ່າ" : "Settings"} onClick={onOpenSettings} className="flex w-10 h-10 items-center justify-center text-[#5F6390]"><Settings size={20} aria-hidden /></button>
+          <LangButton lang={lang} onPick={onLangToggle} />
         </div>
         <div role="tablist" className="feed-tabs flex px-2">
           {tabs.map((tab, i) => (
@@ -268,4 +268,27 @@ function PinnedOfficial({ lang }: { lang: Lang }) {
       </div>
     </article>
   );
+}
+
+// Language switch: one globe button that opens a bottom sheet with the two languages (current one ticked).
+function LangButton({ lang, onPick }: { lang: Lang; onPick: () => void }) {
+  const [open, setOpen] = useState(false);
+  const lo = lang === "lo";
+  useEffect(() => { if (!open) return; const esc = (e: KeyboardEvent) => { if (e.key === "Escape") setOpen(false); }; document.addEventListener("keydown", esc); return () => document.removeEventListener("keydown", esc); }, [open]);
+  const choose = (l: Lang) => { setOpen(false); if (l !== lang) onPick(); };
+  return <>
+    <button type="button" aria-label={lo ? "ປ່ຽນພາສາ" : "Change language"} aria-haspopup="dialog" onClick={() => setOpen(true)} className="flex h-10 px-2 items-center gap-1 text-[#5F6390]"><Globe size={20} aria-hidden /><span className="text-[12px] font-bold font-[Inter,sans-serif]">{lo ? "ລາວ" : "EN"}</span></button>
+    {open && createPortal(<div className="fixed inset-0 z-[100] flex flex-col justify-end bg-[rgba(20,17,43,0.45)]">
+      <button type="button" aria-label={lo ? "ປິດ" : "Close"} onClick={() => setOpen(false)} className="flex-1" />
+      <div role="dialog" aria-modal="true" aria-label={lo ? "ພາສາ" : "Language"} className="mx-auto w-full max-w-[480px] bg-white rounded-t-[26px] px-5 pt-2.5 pb-[calc(24px+env(safe-area-inset-bottom))]">
+        <div className="flex justify-center mb-2.5"><span className="w-10 h-[5px] rounded-full bg-[#E0E1EB]" /></div>
+        <h2 className="mb-3 text-[20px] font-bold">{lo ? "ເລືອກພາສາ" : "Choose language"}</h2>
+        <div className="flex flex-col gap-2.5">
+          {([["lo", "ລາວ", "Lao"], ["en", "English", "ອັງກິດ"]] as const).map(([l, name, sub]) => <button key={l} type="button" autoFocus={l === lang} aria-pressed={l === lang} onClick={() => choose(l)} className={`min-h-14 flex items-center gap-3 px-4 rounded-2xl border-2 text-left ${l === lang ? "border-[#5B21D1] bg-[#F3F0FC]" : "border-[#ECECF4] bg-white"}`}>
+            <span className="flex-1"><span className="block text-[16px] font-bold">{name}</span><span className="block text-[12px] text-[#5F6390]">{sub}</span></span>{l === lang && <Check size={20} aria-hidden className="text-[#5B21D1]" />}</button>)}
+        </div>
+        <button type="button" onClick={() => setOpen(false)} className="w-full min-h-[50px] mt-4 rounded-[14px] bg-[#14112B] text-white text-[15px] font-bold">{lo ? "ປິດ" : "Done"}</button>
+      </div>
+    </div>, document.body)}
+  </>;
 }
