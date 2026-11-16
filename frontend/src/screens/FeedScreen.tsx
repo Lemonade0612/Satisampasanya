@@ -80,8 +80,11 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   }, [basePosts, endless, pool, loopCount, activeTab, customTopic, trendType]);
   // Windowing: at most MAX_CARDS cards are mounted. Cards dropped from the top are replaced by a spacer of their measured height, so scroll position stays put.
   const MAX_CARDS = 60;
-  const start = Math.max(0, rows.length - MAX_CARDS);
+  // Only the paged feeds (For you, Following) drop old cards from the top; Latest and Popular always start at the newest post.
+  const start = paged ? Math.max(0, rows.length - MAX_CARDS) : 0;
   const heights = useRef(new Map<string, number>());
+  // Heights measured on one tab must not push cards down on another.
+  useEffect(() => { heights.current.clear(); }, [activeTab, band, customTopic]);
   const spacer = useMemo(() => rows.slice(0, start).reduce((h, r) => h + (heights.current.get(r.key) ?? 0), 0), [rows, start]);
   const shownPosts = rows.map(r => r.post);
   const [helpHidden, setHelpHidden] = useState(false);
