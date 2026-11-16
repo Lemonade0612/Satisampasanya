@@ -160,7 +160,6 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
             <button type="button" onClick={openAuthor} className={`font-bold text-[16px] text-left min-h-11 ${red ? "text-[#6B6E8F]" : "text-[#14112B]"} -my-2 font-[BoonHome,sans-serif] break-words max-w-full`}>{post.org ? (lang === "lo" ? post.org.nameLo : post.org.nameEn) : post.author.name}</button>{post.org?.verified && <span role="img" aria-label={lo ? "ຢືນຢັນແລ້ວ" : "Verified"} className="text-[#2563EB]"><BadgeCheck size={16} aria-hidden /></span>}
             <LeafMark state={getLeafState()} size={14} />
             {post.isNews && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-primary">{t.news_label}</span>}
-            {post.country && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-text">{countryLabel(post.country, lang)}</span>}
           </div>
           <p className="text-[13px] text-[#5F6390] leading-snug">{when}{firstTag ? <> · <button type="button" onClick={()=>onTopicClick?.(firstTag)} className="text-[12px] text-[#5F6390]">#{tagLabel(firstTag, lang)}</button></> : null}</p>
         </div>
