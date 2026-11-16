@@ -854,6 +854,36 @@
     "contentLo": "ໄດ້ SMS ວ່າບັນຊີທະນາຄານຖືກລັອກ. ຂ້ອຍບໍ່ໄດ້ກົດ. ໂທຫາເບີຢູ່ຫຼັງບັດ ທະນາຄານບອກວ່າປອມ. ໃຫ້ໂທຫາເບີທີ່ທ່ານມີຢູ່ແລ້ວສະເໝີ."
   },
   {
+    "id": "ex-youth-30",
+    "bands": [
+      "youth"
+    ],
+    "scamType": "romance-crypto",
+    "tags": [
+      "RomanceScam",
+      "CryptoScam"
+    ],
+    "author": {
+      "name": "Noy K.",
+      "handle": "@noy_k",
+      "initials": "NK",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "contentLanguage": "en",
+    "example": true,
+    "exampleStatus": "red",
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "reviewLo": true,
+    "content": "Met someone online last month. She says her uncle’s crypto platform pays 40% weekly and I only need to deposit $500. Should I?",
+    "contentLo": "ຮູ້ຈັກຄົນໜຶ່ງທາງອອນລາຍເມື່ອເດືອນແລ້ວ. ລາວບອກວ່າແພລດຟອມຄຣິບໂຕຂອງລຸງລາວໃຫ້ກຳໄລ 40% ທຸກອາທິດ ແລະ ຂ້ອຍພຽງແຕ່ຝາກ $500. ຄວນເຮັດບໍ?"
+  },
+  {
     "id": "ex-adult-20",
     "bands": [
       "adult"
@@ -1031,6 +1061,37 @@
     "content": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
     "contentLo": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
     "translationText": "The bank will never ask for your PIN or OTP code. If someone asks, hang up. Then go to the bank or ask your children."
+  },
+  {
+    "id": "ex-adult-31",
+    "bands": [
+      "adult"
+    ],
+    "scamType": "investment",
+    "tags": [
+      "OnlineScam",
+      "InvestmentScam"
+    ],
+    "author": {
+      "name": "ວຽງໄຊ ສີສຸພັນ",
+      "handle": "@viengxay_s",
+      "initials": "ວສ",
+      "color": "#B45309",
+      "points": 0
+    },
+    "contentLanguage": "lo",
+    "example": true,
+    "exampleStatus": "red",
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "reviewLo": true,
+    "content": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
+    "contentLo": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
+    "translationText": "Invest 1 million kip, get 3 million back within 7 days, 100% guaranteed. Transfer first, then message me. Only a few spots left."
   },
   {
     "id": "ex-elder-26",
