@@ -1,6 +1,188 @@
 {
  "organisations": [
   {
+   "slug": "iom-laos",
+   "nameLo": "ອົງການ IOM ລາວ (UN Migration)",
+   "nameEn": "IOM Lao PDR",
+   "type": "intl",
+   "verified": true,
+   "logoUrl": "/orgs/iom-laos.svg",
+   "bannerUrl": "/orgs/iom-laos-banner.svg",
+   "bioLo": "ອົງການ IOM (UN Migration) ໃນ ສປປ ລາວ. ສູນຊ່ວຍເຫຼືອຜູ້ເຄື່ອນຍ້າຍ (iMAC): +856 20 97631319, iomlaopdr@iom.int.",
+   "bioEn": "IOM (UN Migration) in Lao PDR. Migrant Assistance Centre (iMAC): +856 20 97631319, iomlaopdr@iom.int.",
+   "website": "https://laopdr.iom.int",
+   "facebookUrl": "https://www.facebook.com/IOMLaoPDR"
+  },
+  {
+   "slug": "village-focus",
+   "nameLo": "Village Focus International",
+   "nameEn": "Village Focus International",
+   "type": "ngo",
+   "verified": true,
+   "logoUrl": "/orgs/village-focus.svg",
+   "bannerUrl": "/orgs/village-focus-banner.svg",
+   "bioLo": "ອົງການ Village Focus International. ໂທ 021 312519, info@villagefocus.org.",
+   "bioEn": "Village Focus International. Tel 021 312519, info@villagefocus.org.",
+   "website": "https://www.villagefocus.org",
+   "facebookUrl": null
+  },
+  {
+   "slug": "pfha-bokeo",
+   "nameLo": "ສະມາຄົມສົ່ງເສີມສຸຂະພາບຄອບຄົວ ບໍ່ແກ້ວ",
+   "nameEn": "PFHA Bokeo",
+   "type": "ngo",
+   "verified": true,
+   "logoUrl": "/orgs/pfha-bokeo.svg",
+   "bannerUrl": "/orgs/pfha-bokeo-banner.svg",
+   "bioLo": "ສົ່ງເສີມສຸຂະພາບຄອບຄົວ ແລະ ໄວໜຸ່ມ ໃນແຂວງບໍ່ແກ້ວ. ເປີດຮັບອາສາສະໝັກໄວໜຸ່ມ ປີ 2026.",
+   "bioEn": "Promotion of Family Health Association, Bokeo Branch. Recruiting youth volunteers for 2026.",
+   "website": null,
+   "facebookUrl": null
+  },
+  {
+   "slug": "laotian-times",
+   "nameLo": "Laotian Times",
+   "nameEn": "Laotian Times",
+   "type": "media",
+   "verified": true,
+   "logoUrl": "/orgs/laotian-times.svg",
+   "bannerUrl": "/orgs/laotian-times-banner.svg",
+   "bioLo": "ສື່ຂ່າວພາສາອັງກິດກ່ຽວກັບ ສປປ ລາວ.",
+   "bioEn": "English-language news about Lao PDR.",
+   "website": "https://laotiantimes.com",
+   "facebookUrl": null
+  },
+  {
+   "slug": "oudomxay-police",
+   "nameLo": "ປກສ ແຂວງອຸດົມໄຊ",
+   "nameEn": "Oudomxay police",
+   "type": "gov",
+   "verified": false,
+   "logoUrl": "/orgs/oudomxay-police.svg",
+   "bannerUrl": "/orgs/oudomxay-police-banner.svg",
+   "bioLo": "ແບ່ງປັນຂ່າວ ແລະ ການເຜີຍແຜ່ກົດໝາຍ ກ່ຽວກັບການຕ້ານການຄ້າມະນຸດ ໃນແຂວງອຸດົມໄຊ.",
+   "bioEn": "Shares news and legal awareness about fighting human trafficking in Oudomxay province. Emergency: police 1191.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/PoLiceodx"
+  },
+  {
+   "slug": "rfa-lao",
+   "nameLo": "RFA Lao",
+   "nameEn": "RFA Lao",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/rfa-lao.svg",
+   "bannerUrl": "/orgs/rfa-lao-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/LaosRFA"
+  },
+  {
+   "slug": "target-magazine-laos",
+   "nameLo": "Target Magazine Laos",
+   "nameEn": "Target Magazine Laos",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/target-magazine-laos.svg",
+   "bannerUrl": "/orgs/target-magazine-laos-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/targetmagazinelaos"
+  },
+  {
+   "slug": "ilsta",
+   "nameLo": "ILSTA",
+   "nameEn": "ILSTA",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/ilsta.svg",
+   "bannerUrl": "/orgs/ilsta-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/ILSTA.org"
+  },
+  {
+   "slug": "laophattana-news",
+   "nameLo": "ຂ່າວວີດີໂອລາວພັດທະນາ",
+   "nameEn": "Lao Phattana News",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/laophattana-news.svg",
+   "bannerUrl": "/orgs/laophattana-news-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/laophattananews"
+  },
+  {
+   "slug": "labdelines",
+   "nameLo": "labdelines",
+   "nameEn": "labdelines",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/labdelines.svg",
+   "bannerUrl": "/orgs/labdelines-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/labdelines"
+  },
+  {
+   "slug": "molsw-news",
+   "nameLo": "ຂ່າວສານແຮງງານ ແລະ ສະຫວັດດີການສັງຄົມ (ຮສສ)",
+   "nameEn": "Labour and Social Welfare news",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/molsw-news.svg",
+   "bannerUrl": "/orgs/molsw-news-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": null
+  },
+  {
+   "slug": "optahanhet",
+   "nameLo": "ເປີດຕາທັນເຫດ",
+   "nameEn": "ເປີດຕາທັນເຫດ",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/optahanhet.svg",
+   "bannerUrl": "/orgs/optahanhet-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": null
+  },
+  {
+   "slug": "laosatd",
+   "nameLo": "laosatd",
+   "nameEn": "laosatd",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/laosatd.svg",
+   "bannerUrl": "/orgs/laosatd-banner.svg",
+   "bioLo": "ໜ້າ Facebook. Sati ສະແດງໂພສພ້ອມເຄຣດິດ ແລະ ລິ້ງກັບໄປຫາຕົ້ນສະບັບ.",
+   "bioEn": "A Facebook page. Sati shows its posts with credit and a link back to the original.",
+   "website": null,
+   "facebookUrl": "https://www.facebook.com/laosatd"
+  },
+  {
+   "slug": "cna-insight",
+   "nameLo": "CNA Insight",
+   "nameEn": "CNA Insight",
+   "type": "media",
+   "verified": false,
+   "logoUrl": "/orgs/cna-insight.svg",
+   "bannerUrl": "/orgs/cna-insight-banner.svg",
+   "bioLo": "ລາຍການ Insight ຂອງ Channel NewsAsia.",
+   "bioEn": "The Insight programme of Channel NewsAsia.",
+   "website": "https://www.channelnewsasia.com",
+   "facebookUrl": null
+  },
+  {
    "slug": "unicef-laos",
    "nameLo": "ຢູນິເຊັບ ລາວ",
    "nameEn": "UNICEF Laos",
@@ -38,6 +220,76 @@
   }
  ],
  "posts": [
+  {
+   "timestamp": "10d",
+   "state": "clean",
+   "risk_level": "green",
+   "likes": 0,
+   "comments": 0,
+   "reposts": 0,
+   "warnedMe": 0,
+   "bands": [
+    "youth",
+    "adult",
+    "elder"
+   ],
+   "org": "unicef-laos",
+   "author": {
+    "name": "UNICEF Laos",
+    "handle": "@unicef-laos",
+    "initials": "UN",
+    "color": "#1CABE2",
+    "points": 0
+   },
+   "contentLanguage": "lo",
+   "tags": [
+    "MentalHealth",
+    "DigitalSafety"
+   ],
+   "type": "poster",
+   "id": "org-unicef-5ways",
+   "sourceUrl": "https://www.facebook.com/share/p/1bFt5R6njq/",
+   "media": [
+    {
+     "kind": "image",
+     "url": "/posts/unicef-1.jpg",
+     "caption_lo": "5 ວິທີ ທີ່ຈະຊ່ວຍໃຫ້ສຸຂະພາບຈິດຂອງທ່ານດີຂຶ້ນ ຈາກໂລກອອນໄລນ໌ · © UNICEF",
+     "caption_en": "5 ways to improve your mental health online · © UNICEF"
+    },
+    {
+     "kind": "image",
+     "url": "/posts/unicef-2.jpg",
+     "caption_lo": "1 · ຫຼີກລ້ຽງການເສບຂ່າວດ້ານລົບ · © UNICEF",
+     "caption_en": "1 · Avoid doomscrolling · © UNICEF"
+    },
+    {
+     "kind": "image",
+     "url": "/posts/unicef-3.jpg",
+     "caption_lo": "2 · ມີສະຕິໃນການນຳໃຊ້ສື່ອອນໄລນ໌ · © UNICEF",
+     "caption_en": "2 · Use online media mindfully · © UNICEF"
+    },
+    {
+     "kind": "image",
+     "url": "/posts/unicef-4.jpg",
+     "caption_lo": "3 · ປົກປ້ອງຕົນເອງ · © UNICEF",
+     "caption_en": "3 · Protect yourself · © UNICEF"
+    },
+    {
+     "kind": "image",
+     "url": "/posts/unicef-5.jpg",
+     "caption_lo": "4 · ມີສະຕິສະເໝີ · © UNICEF",
+     "caption_en": "4 · Stay mindful · © UNICEF"
+    },
+    {
+     "kind": "image",
+     "url": "/posts/unicef-6.jpg",
+     "caption_lo": "5 · ໃຊ້ເວລາກັບປັດຈຸບັນ ແລະ ສ້າງສຳພັນກັບຄົນອ້ອມຂ້າງ · © UNICEF",
+     "caption_en": "5 · Be present and connect with people around you · © UNICEF"
+    }
+   ],
+   "content": "5 ways to improve your mental health online\nUse the internet in a happy and safe way with these simple tips:\n1. Avoid doomscrolling – notice how what you watch makes you feel. Limit accounts that make you uncomfortable.\n2. Use online media mindfully – choose apps and content that support your mental health and happiness.\n3. Protect yourself – check your privacy settings. If something worries you, report it and ask for help.\n4. Stay mindful – share useful content and use kind, constructive words.\n5. Be present – meditating, walking or calling a friend helps you feel good and relax.",
+   "contentLo": "5 ວິທີ ທີ່ຈະຊ່ວຍໃຫ້ສຸຂະພາບຈິດຂອງທ່ານດີຂຶ້ນ ຈາກໂລກອອນໄລນ໌\nໃຊ້ອອນໄລນ໌ຢ່າງມີຄວາມສຸກ ແລະ ປອດໄພ ດ້ວຍ 5 ວິທີງ່າຍໆນີ້:\n1. ຫຼີກລ້ຽງການເສບຂ່າວດ້ານລົບ – ສັງເກດວ່າເນື້ອຫາທີ່ເບິ່ງ ເຮັດໃຫ້ຮູ້ສຶກແນວໃດ. ຈຳກັດບັນຊີທີ່ເຮັດໃຫ້ບໍ່ສະບາຍໃຈ.\n2. ມີສະຕິໃນການນຳໃຊ້ສື່ອອນໄລນ໌ – ເລືອກແອັບ ແລະ ເນື້ອຫາທີ່ຊ່ວຍສົ່ງເສີມສຸຂະພາບຈິດ ແລະ ຄວາມສຸກ.\n3. ປົກປ້ອງຕົນເອງ – ກວດສອບການຕັ້ງຄ່າຄວາມເປັນສ່ວນຕົວ. ຖ້າພົບສິ່ງທີ່ກັງວົນ ໃຫ້ລາຍງານ ແລະ ຂໍຄວາມຊ່ວຍເຫຼືອ.\n4. ມີສະຕິສະເໝີ – ແບ່ງປັນເນື້ອຫາທີ່ເປັນປະໂຫຍດ ແລະ ໃຊ້ຄຳເວົ້າທີ່ສຸພາບ ສ້າງສັນ.\n5. ໃຊ້ເວລາກັບປັດຈຸບັນ – ນັ່ງສະມາທິ, ຍ່າງຫຼິ້ນ ຫຼື ໂທຫາໝູ່ ຊ່ວຍໃຫ້ຮູ້ສຶກດີ ແລະ ຜ່ອນຄາຍ."
+  },
   {
    "tags": [
     "OnlineScam"
