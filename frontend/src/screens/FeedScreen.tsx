@@ -42,7 +42,8 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   const youth = band === "youth";
   const games = picksForToday(band);
   const tabs = lang === "lo" ? ["ສຳລັບທ່ານ", "ຕິດຕາມ", "ຫຼ້າສຸດ", "ຍອດນິຍົມ"] : ["For you", "Following", "Latest", "Popular"];
-  const score = (p: Post) => p.communityRanking?.rank || 0;
+  // Popular ranks on review and safety only, so likes, comments, shares and helpful votes do not push a post up.
+  const score = (p: Post) => { const r = p.communityRanking; return r?.eligible ? r.parts.review + r.parts.safety : 0; };
   const filteredPosts = (customTopic ? posts.filter(p => p.tags.includes(customTopic)) : activeTab === 1 ? posts.filter(p => !!p.author.id && following.includes(p.author.id)) : [...posts]);
   if (activeTab === 2) filteredPosts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
   if (activeTab === 3) filteredPosts.sort((a,b) => score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
