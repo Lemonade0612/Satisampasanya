@@ -249,7 +249,7 @@ const COUNTRIES: Record<string, { flag: string; en: string; lo: string }> = {
   LA: { flag: "🇱🇦", en: "Laos", lo: "ລາວ" }, TH: { flag: "🇹🇭", en: "Thailand", lo: "ໄທ" }, VN: { flag: "🇻🇳", en: "Vietnam", lo: "ຫວຽດນາມ" },
   PH: { flag: "🇵🇭", en: "Philippines", lo: "ຟີລິບປິນ" }, KH: { flag: "🇰🇭", en: "Cambodia", lo: "ກຳປູເຈຍ" }, MM: { flag: "🇲🇲", en: "Myanmar", lo: "ມຽນມາ" },
 };
-export const countryLabel = (code: string, lang: Lang) => { const c = COUNTRIES[code]; return c ? `${c.flag} ${c[lang]}` : code; };
+export const countryLabel = (code: string, lang: Lang) => { const c = COUNTRIES[code]; return c ? c[lang] : code; };
 
 // "Example" label on seed teaching posts, coloured like the risk legend (green / yellow / red).
 function ExampleBadge({ status, lang }: { status?: "green" | "yellow" | "red"; lang: Lang }) {
