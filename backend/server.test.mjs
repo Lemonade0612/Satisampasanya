@@ -797,9 +797,9 @@ test('seed posts visible per band match the agreed counts',async()=>{
  const f=await fixture({seed:true});try{
   const count=async b=>(await f.call(`/posts?band=${b}`)).value.length;
   // Kids: only reviewed intensity-1 posts. Elders see no feed in Simple mode; these are the posts when it is off.
-  assert.deepEqual({kids:await count('kids'),youth:await count('youth'),adult:await count('adult'),elder:await count('elder')},{kids:1,youth:22,adult:18,elder:11}); // +2 red demo examples (ex-youth-30 crypto, ex-adult-31 kip investment); +2 UNICEF org posts (5-ways carousel, hotline 1362); seed.json counts plus the 3 launch organisation posts (backend/seed-orgs.json); none are Kids-visible
+  assert.deepEqual({kids:await count('kids'),youth:await count('youth'),adult:await count('adult'),elder:await count('elder')},{kids:1,youth:23,adult:19,elder:11}); // +1 Korea poster (ex-shared-32, youth+adult); +2 red demo examples (ex-youth-30 crypto, ex-adult-31 kip investment); +2 UNICEF org posts (5-ways carousel, hotline 1362); seed.json counts plus the 3 launch organisation posts (backend/seed-orgs.json); none are Kids-visible
   const seed=JSON.parse((await import('node:fs')).readFileSync(new URL('./seed.json',import.meta.url),'utf8'));
-  assert.ok(seed.filter(p=>p.bands?.length>1).length<=2,'at most two shared seed posts');
+  assert.ok(seed.filter(p=>p.bands?.length>1).length<=3,'at most three shared seed posts');
   assert.ok(seed.every(p=>p.bands?.length>=1),'every seed post has a band');
  }finally{await f.close();}
 });

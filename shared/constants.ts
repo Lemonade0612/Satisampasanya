@@ -27,4 +27,6 @@ export const TOPIC_LABELS: Record<string, { en: string; lo: string }> = {
   PhishingAlert: { en: "PhishingAlert", lo: "ລິ້ງປອມ / ຟິດຊິງ" },
   RomanceScam:   { en: "RomanceScam",   lo: "ຫຼອກລວງຄວາມຮັກ" },
   DataPrivacy:   { en: "DataPrivacy",   lo: "ຄວາມເປັນສ່ວນຕົວ" },
+  JobsAbroad:    { en: "JobsAbroad",    lo: "ວຽກຕ່າງປະເທດ" },
+  InvestmentScam:{ en: "InvestmentScam",lo: "ຫຼອກລວງການລົງທຶນ" },
 };

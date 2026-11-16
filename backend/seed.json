@@ -586,6 +586,50 @@
     "contentLo": "ແຈ້ງເຕືອນ: Facebook ຂອງໝູ່ຂ້ອຍຖືກແຮັກ ຫຼັງກົດລິ້ງ 'ໂຫວດໃຫ້ພີ່ນ້ອງຂ້ອຍແດ່'. ຕອນນີ້ແຮັກເກີທັກທຸກຄົນຂໍຢືມເງິນ. ເປີດການຢືນຢັນ 2 ຂັ້ນຕອນມື້ນີ້."
   },
   {
+    "id": "ex-shared-32",
+    "bands": [
+      "youth",
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobsAbroad",
+      "JobScam"
+    ],
+    "author": {
+      "name": "ວຽກດີ ເກົາຫຼີ",
+      "handle": "@korea_jobs_la",
+      "initials": "ວກ",
+      "color": "#1D4ED8",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "image": "/seed/korea-job-scam.jpg",
+    "content": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ\nບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "contentLo": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ\nບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "translationText": "Great opportunity! Work in South Korea\nNo experience needed. Everything free: travel, housing, food. Good salary. Click the link to apply now!",
+    "screening": {
+      "mode": "rules",
+      "severity": "high",
+      "flags": [
+        "free_visa_flight_fees",
+        "no_company_address"
+      ],
+      "note": "No company name or licence, “everything free”, and pressure to click the link = a labour-trafficking scam pattern. Don't click.",
+      "noteLo": "ບໍ່ມີຊື່ບໍລິສັດ ຫຼື ໃບອະນຸຍາດ, “ຟຣີທຸກຢ່າງ”, ເລັ່ງໃຫ້ຄລິກລິ້ງ = ຮູບແບບການຫຼອກລວງແຮງງານ. ຢ່າຄລິກ.",
+      "checkedAt": 0
+    }
+  },
+  {
     "id": "ex-youth-11",
     "bands": [
       "youth"
@@ -1069,8 +1113,8 @@
     ],
     "scamType": "investment",
     "tags": [
-      "OnlineScam",
-      "InvestmentScam"
+      "InvestmentScam",
+      "OnlineScam"
     ],
     "author": {
       "name": "ວຽງໄຊ ສີສຸພັນ",
@@ -1091,7 +1135,17 @@
     "reviewLo": true,
     "content": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
     "contentLo": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
-    "translationText": "Invest 1 million kip, get 3 million back within 7 days, 100% guaranteed. Transfer first, then message me. Only a few spots left."
+    "translationText": "Invest 1 million kip, get 3 million back within 7 days, 100% guaranteed. Transfer first, then message me. Only a few spots left.",
+    "screening": {
+      "mode": "rules",
+      "severity": "high",
+      "flags": [
+        "upfront_fee"
+      ],
+      "note": "Guaranteed profit + pay first + pressure = an investment scam. Don't transfer.",
+      "noteLo": "ສັນຍາກຳໄລແນ່ນອນ + ໃຫ້ໂອນເງິນກ່ອນ + ເລັ່ງ = ການຫຼອກລວງການລົງທຶນ. ຢ່າໂອນ.",
+      "checkedAt": 0
+    }
   },
   {
     "id": "ex-elder-26",
