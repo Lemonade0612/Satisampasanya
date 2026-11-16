@@ -21,16 +21,16 @@ export function SplashScreen({ onDone, lang }: { onDone: () => void; lang: Lang 
   }, [onDone]);
 
   return (
-    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-between overflow-hidden px-6 pt-[18vh] pb-[12vh]"
+    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-between h-dvh overflow-hidden px-6 py-[8dvh]"
       style={{ background: "radial-gradient(120% 70% at 50% 30%, #F3EEFF 0%, #FFFFFF 60%)", opacity: fading ? 0 : 1, transition: "opacity 0.6s ease-in-out" }}>
       <style>{CSS}</style>
 
       <div className="relative flex flex-col items-center gap-4 text-center">
         <div className="relative flex items-center justify-center">
-          <span aria-hidden className="absolute w-[min(70vw,300px)] h-[min(70vw,300px)] rounded-full bg-[radial-gradient(circle,#D9C8FF_0%,transparent_70%)]"
+          <span aria-hidden className="absolute w-[min(62vw,260px)] h-[min(62vw,260px)] rounded-full bg-[radial-gradient(circle,#E4D9FF_0%,rgba(243,238,255,0)_72%)]"
             style={{ animation: "splash-glow 2.4s ease-in-out infinite" }} />
           <img src={logoImage} alt="Satisampasanya logo"
-            className="relative w-[min(63vw,252px)] h-[min(63vw,252px)] object-contain [mask-image:radial-gradient(closest-side,#000_70%,transparent_100%)] [-webkit-mask-image:radial-gradient(closest-side,#000_70%,transparent_100%)]"
+            className="relative w-[min(56vw,230px)] h-[min(56vw,230px)] object-contain [mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)] [-webkit-mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)]"
             style={{ animation: "splash-in 0.9s cubic-bezier(.2,.8,.2,1) both" }} />
         </div>
         <h1 className={`text-2xl font-bold leading-[1.35] tracking-normal text-[#14112B] font-[BoonHome,Phetsarath,sans-serif] ${lang === "lo" ? "" : "font-display"}`}
