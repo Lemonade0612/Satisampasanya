@@ -10,7 +10,7 @@ import { seedOrgs } from './orgs.mjs';
 const loadSeed = () => {
   const seed = JSON.parse(readFileSync(new URL('./seed.json', import.meta.url), 'utf8'));
   if (process.env.SEED_DEV_POSTS !== '1' || process.env.NODE_ENV === 'production' || process.env.VERCEL) return seed;
-  return [...JSON.parse(readFileSync(new URL('./seed-dev.json', import.meta.url), 'utf8')), ...seed];
+  return [...seed, ...JSON.parse(readFileSync(new URL('./seed-dev.json', import.meta.url), 'utf8'))];
 };
 
 export function openStore(filename, seed, seedOrganisations = false) {

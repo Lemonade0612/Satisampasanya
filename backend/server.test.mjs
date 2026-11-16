@@ -834,3 +834,13 @@ test('traffic-light flags: red posts stay out of the public feed, reports escala
   assert.equal((await f.call('/posts','GET',undefined,a.token)).value.some(p=>p.id===id),false);
  }finally{await f.close();}
 });
+
+test('red-coded posts refuse like, comment, helpful and share with 403; normal posts still work',async()=>{
+ const f=await fixture({seed:true});try{
+  const u=await f.register();
+  for(const [path,data] of [['reactions',{kind:'like',active:true}],['reactions',{kind:'warned',active:true}],['comments',{text:'hi'}],['share',{}]]){
+   assert.equal((await f.call(`/posts/ex-adult-31/${path}`,'POST',data,u.token)).status,403,path);
+  }
+  assert.equal((await f.call('/posts/ex-youth-11/reactions','POST',{kind:'like',active:true},u.token)).status,200);
+ }finally{await f.close();}
+});

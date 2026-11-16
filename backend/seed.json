@@ -1,5 +1,51 @@
 [
   {
+    "id": "ex-shared-32",
+    "bands": [
+      "youth",
+      "adult"
+    ],
+    "example": true,
+    "exampleStatus": "red",
+    "scamType": "fake-job-abroad",
+    "tags": [
+      "JobsAbroad",
+      "JobScam"
+    ],
+    "author": {
+      "name": "ວຽກດີ ເກົາຫຼີ",
+      "handle": "@korea_jobs_la",
+      "initials": "ວກ",
+      "color": "#1D4ED8",
+      "points": 0
+    },
+    "timestamp": "4h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "contentLanguage": "lo",
+    "reviewLo": true,
+    "image": "/seed/korea-job-scam.jpg",
+    "content": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "contentLo": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "translationText": "No experience needed. Everything free: travel, housing, food. Good salary. Click the link to apply now!",
+    "screening": {
+      "mode": "rules",
+      "severity": "high",
+      "flags": [
+        "free_visa_flight_fees",
+        "no_company_address"
+      ],
+      "note": "No company name or licence, “everything free”, and pressure to click the link = a labour-trafficking scam pattern. Don't click.",
+      "noteLo": "ບໍ່ມີຊື່ບໍລິສັດ ຫຼື ໃບອະນຸຍາດ, “ຟຣີທຸກຢ່າງ”, ເລັ່ງໃຫ້ຄລິກລິ້ງ = ຮູບແບບການຫຼອກລວງແຮງງານ. ຢ່າຄລິກ.",
+      "checkedAt": 0
+    },
+    "titleLo": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ",
+    "title": "Great opportunity! Work in South Korea"
+  },
+  {
     "id": "p1",
     "bands": [
       "adult",
@@ -29,6 +75,47 @@
     "image": "/images/image_2.png"
   },
   {
+    "id": "ex-adult-31",
+    "bands": [
+      "adult"
+    ],
+    "scamType": "investment",
+    "tags": [
+      "InvestmentScam",
+      "OnlineScam"
+    ],
+    "author": {
+      "name": "ວຽງໄຊ ສີສຸພັນ",
+      "handle": "@viengxay_s",
+      "initials": "ວສ",
+      "color": "#B45309",
+      "points": 0
+    },
+    "contentLanguage": "lo",
+    "example": true,
+    "exampleStatus": "red",
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "reviewLo": true,
+    "content": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
+    "contentLo": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
+    "translationText": "Invest 1 million kip, get 3 million back within 7 days, 100% guaranteed. Transfer first, then message me. Only a few spots left.",
+    "screening": {
+      "mode": "rules",
+      "severity": "high",
+      "flags": [
+        "upfront_fee"
+      ],
+      "note": "Guaranteed profit + pay first + pressure = an investment scam. Don't transfer.",
+      "noteLo": "ສັນຍາກຳໄລແນ່ນອນ + ໃຫ້ໂອນເງິນກ່ອນ + ເລັ່ງ = ການຫຼອກລວງການລົງທຶນ. ຢ່າໂອນ.",
+      "checkedAt": 0
+    }
+  },
+  {
     "id": "p2",
     "author": {
       "name": "Khamla Vongsa",
@@ -55,6 +142,36 @@
     "bands": [
       "kids"
     ]
+  },
+  {
+    "id": "ex-youth-30",
+    "bands": [
+      "youth"
+    ],
+    "scamType": "romance-crypto",
+    "tags": [
+      "RomanceScam",
+      "CryptoScam"
+    ],
+    "author": {
+      "name": "Noy K.",
+      "handle": "@noy_k",
+      "initials": "NK",
+      "color": "#0891B2",
+      "points": 0
+    },
+    "contentLanguage": "en",
+    "example": true,
+    "exampleStatus": "red",
+    "timestamp": "3h",
+    "state": "clean",
+    "likes": 0,
+    "comments": 0,
+    "reposts": 0,
+    "warnedMe": 0,
+    "reviewLo": true,
+    "content": "Met someone online last month. She says her uncle’s crypto platform pays 40% weekly and I only need to deposit $500. Should I?",
+    "contentLo": "ຮູ້ຈັກຄົນໜຶ່ງທາງອອນລາຍເມື່ອເດືອນແລ້ວ. ລາວບອກວ່າແພລດຟອມຄຣິບໂຕຂອງລຸງລາວໃຫ້ກຳໄລ 40% ທຸກອາທິດ ແລະ ຂ້ອຍພຽງແຕ່ຝາກ $500. ຄວນເຮັດບໍ?"
   },
   {
     "id": "p3",
@@ -586,52 +703,6 @@
     "contentLo": "ແຈ້ງເຕືອນ: Facebook ຂອງໝູ່ຂ້ອຍຖືກແຮັກ ຫຼັງກົດລິ້ງ 'ໂຫວດໃຫ້ພີ່ນ້ອງຂ້ອຍແດ່'. ຕອນນີ້ແຮັກເກີທັກທຸກຄົນຂໍຢືມເງິນ. ເປີດການຢືນຢັນ 2 ຂັ້ນຕອນມື້ນີ້."
   },
   {
-    "id": "ex-shared-32",
-    "bands": [
-      "youth",
-      "adult"
-    ],
-    "example": true,
-    "exampleStatus": "red",
-    "scamType": "fake-job-abroad",
-    "tags": [
-      "JobsAbroad",
-      "JobScam"
-    ],
-    "author": {
-      "name": "ວຽກດີ ເກົາຫຼີ",
-      "handle": "@korea_jobs_la",
-      "initials": "ວກ",
-      "color": "#1D4ED8",
-      "points": 0
-    },
-    "timestamp": "4h",
-    "state": "clean",
-    "likes": 0,
-    "comments": 0,
-    "reposts": 0,
-    "warnedMe": 0,
-    "contentLanguage": "lo",
-    "reviewLo": true,
-    "image": "/seed/korea-job-scam.jpg",
-    "content": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
-    "contentLo": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
-    "translationText": "No experience needed. Everything free: travel, housing, food. Good salary. Click the link to apply now!",
-    "screening": {
-      "mode": "rules",
-      "severity": "high",
-      "flags": [
-        "free_visa_flight_fees",
-        "no_company_address"
-      ],
-      "note": "No company name or licence, “everything free”, and pressure to click the link = a labour-trafficking scam pattern. Don't click.",
-      "noteLo": "ບໍ່ມີຊື່ບໍລິສັດ ຫຼື ໃບອະນຸຍາດ, “ຟຣີທຸກຢ່າງ”, ເລັ່ງໃຫ້ຄລິກລິ້ງ = ຮູບແບບການຫຼອກລວງແຮງງານ. ຢ່າຄລິກ.",
-      "checkedAt": 0
-    },
-    "titleLo": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ",
-    "title": "Great opportunity! Work in South Korea"
-  },
-  {
     "id": "ex-youth-11",
     "bands": [
       "youth"
@@ -900,36 +971,6 @@
     "contentLo": "ໄດ້ SMS ວ່າບັນຊີທະນາຄານຖືກລັອກ. ຂ້ອຍບໍ່ໄດ້ກົດ. ໂທຫາເບີຢູ່ຫຼັງບັດ ທະນາຄານບອກວ່າປອມ. ໃຫ້ໂທຫາເບີທີ່ທ່ານມີຢູ່ແລ້ວສະເໝີ."
   },
   {
-    "id": "ex-youth-30",
-    "bands": [
-      "youth"
-    ],
-    "scamType": "romance-crypto",
-    "tags": [
-      "RomanceScam",
-      "CryptoScam"
-    ],
-    "author": {
-      "name": "Noy K.",
-      "handle": "@noy_k",
-      "initials": "NK",
-      "color": "#0891B2",
-      "points": 0
-    },
-    "contentLanguage": "en",
-    "example": true,
-    "exampleStatus": "red",
-    "timestamp": "3h",
-    "state": "clean",
-    "likes": 0,
-    "comments": 0,
-    "reposts": 0,
-    "warnedMe": 0,
-    "reviewLo": true,
-    "content": "Met someone online last month. She says her uncle’s crypto platform pays 40% weekly and I only need to deposit $500. Should I?",
-    "contentLo": "ຮູ້ຈັກຄົນໜຶ່ງທາງອອນລາຍເມື່ອເດືອນແລ້ວ. ລາວບອກວ່າແພລດຟອມຄຣິບໂຕຂອງລຸງລາວໃຫ້ກຳໄລ 40% ທຸກອາທິດ ແລະ ຂ້ອຍພຽງແຕ່ຝາກ $500. ຄວນເຮັດບໍ?"
-  },
-  {
     "id": "ex-adult-20",
     "bands": [
       "adult"
@@ -1107,47 +1148,6 @@
     "content": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
     "contentLo": "ທະນາຄານຈະບໍ່ຂໍລະຫັດ PIN ຫຼື OTP ຂອງທ່ານ. ຖ້າມີຄົນຂໍ ໃຫ້ວາງສາຍ. ແລ້ວໄປທະນາຄານ ຫຼື ຖາມລູກຫຼານ.",
     "translationText": "The bank will never ask for your PIN or OTP code. If someone asks, hang up. Then go to the bank or ask your children."
-  },
-  {
-    "id": "ex-adult-31",
-    "bands": [
-      "adult"
-    ],
-    "scamType": "investment",
-    "tags": [
-      "InvestmentScam",
-      "OnlineScam"
-    ],
-    "author": {
-      "name": "ວຽງໄຊ ສີສຸພັນ",
-      "handle": "@viengxay_s",
-      "initials": "ວສ",
-      "color": "#B45309",
-      "points": 0
-    },
-    "contentLanguage": "lo",
-    "example": true,
-    "exampleStatus": "red",
-    "timestamp": "3h",
-    "state": "clean",
-    "likes": 0,
-    "comments": 0,
-    "reposts": 0,
-    "warnedMe": 0,
-    "reviewLo": true,
-    "content": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
-    "contentLo": "ລົງທຶນ 1 ລ້ານກີບ ໄດ້ຄືນ 3 ລ້ານ ພາຍໃນ 7 ມື້ ຮັບປະກັນ 100%. ໂອນມາກ່ອນ ແລ້ວທັກແຊັດມາເລີຍ ເຫຼືອບໍ່ຫຼາຍບ່ອນ.",
-    "translationText": "Invest 1 million kip, get 3 million back within 7 days, 100% guaranteed. Transfer first, then message me. Only a few spots left.",
-    "screening": {
-      "mode": "rules",
-      "severity": "high",
-      "flags": [
-        "upfront_fee"
-      ],
-      "note": "Guaranteed profit + pay first + pressure = an investment scam. Don't transfer.",
-      "noteLo": "ສັນຍາກຳໄລແນ່ນອນ + ໃຫ້ໂອນເງິນກ່ອນ + ເລັ່ງ = ການຫຼອກລວງການລົງທຶນ. ຢ່າໂອນ.",
-      "checkedAt": 0
-    }
   },
   {
     "id": "ex-elder-26",

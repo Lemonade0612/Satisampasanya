@@ -10,7 +10,7 @@ import { flagReasons } from "../../lib/flagReasons";
 import { T } from "../../lib/translations";
 import { Tr } from "../../lib/useTranslated";
 import { useEffect, useState } from "react";
-import { Pin, Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, ShieldCheck, Share2, Shield, Ellipsis } from "lucide-react";
+import { Pin, Clock, AlertOctagon, AlertTriangle, Check, Play, Link2, ExternalLink, Zap, TrendingUp, Heart, MessageCircle, Repeat2, ShieldCheck, Share2, Shield, Ellipsis, Lock } from "lucide-react";
 import { LeafMark } from "@/components/ui/LeafMark";
 import { postText } from "../../lib/band";
 import { postRisk, scamTypeLabel, checkLabel, tagLabel, reasonNote } from "../../lib/scamTypes";
@@ -132,6 +132,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   const risk = postRisk(post);
   const verdict = post.check?.verdict;
   const sv = statusOf(post);
+  const red = sv === "warn";
   const risky = verdict ? verdict !== "approved" : sv === "warn" || sv === "check" || risk === "red" || risk === "yellow";
   const safe = verdict ? verdict === "approved" : (sv === "safe" && !risky) || risk === "green" || (!!post.org?.verified && !risky);
   const chips = post.check?.labels?.length ? post.check.labels.slice(0, 3).map(l => checkLabel(l, lang)) : post.scamType ? [scamTypeLabel(post.scamType, lang)] : [];
@@ -142,18 +143,21 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   // Organisations open their organisation page; members open their public profile (by @handle).
   const profileTarget = post.org ? { kind: "org" as const, slug: post.org.slug } : post.author.handle ? { kind: "user" as const, handle: post.author.handle } : null;
   const openAuthor = () => { if (profileTarget) openProfile(profileTarget); };
-  const canMenu = !!onFollow && !!post.author.id;
+  const canMenu = !readOnly;
+  const [hidden, setHidden] = useState(false);
+  const copyLink = () => { void navigator.clipboard?.writeText(`${location.origin}/?post=${encodeURIComponent(post.id)}`); setMenu(false); };
 
+  if (hidden) return null;
   return (
-    <article ref={setCard} className="bg-white border border-[#ECECF4] p-4 rounded-[20px] overflow-hidden">
+    <article ref={setCard} className={`border p-4 rounded-[20px] overflow-hidden ${red ? "bg-[#F1F1F5] border-[#E0E1EB]" : "bg-white border-[#ECECF4]"}`}>
       <div>
       {post.repostOf&&<p className="mb-2.5 inline-flex max-w-full items-center gap-2 rounded-full bg-[#F1ECFE] border border-[#DDD3FB] pl-1 pr-3 py-1 text-[13px] text-[#5B21D1]"><span aria-hidden className="flex shrink-0 w-6 h-6 rounded-full bg-[#5B21D1] text-white items-center justify-center"><Repeat2 size={14} strokeWidth={2.5}/></span><b className="font-extrabold text-[#14112B] truncate font-[BoonHome,sans-serif]">{post.author.name}</b><span className="font-bold whitespace-nowrap">{lo?'ແບ່ງປັນຕໍ່':'reposted'}</span></p>}
       {!compact && !post.check && !post.seed && !post.isDemo && getStateBanner()}
       <div className="flex gap-2.5 items-center relative">
-        <button type="button" tabIndex={-1} aria-hidden={!profileTarget} onClick={openAuthor} className="w-10 h-10 shrink-0 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-bold" style={{ background: post.author.color }}>{post.org?.logoUrl ? <img src={post.org.logoUrl} alt="" className="w-full h-full object-cover" /> : post.author.initials}</button>
+        <button type="button" tabIndex={-1} aria-hidden={!profileTarget} onClick={openAuthor} className="w-10 h-10 shrink-0 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-bold" style={{ background: red ? "#9CA3AF" : post.author.color }}>{post.org?.logoUrl ? <img src={post.org.logoUrl} alt="" className="w-full h-full object-cover" /> : post.author.initials}</button>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <button type="button" onClick={openAuthor} className="font-bold text-[16px] text-[#14112B] text-left min-h-11 -my-2 font-[BoonHome,sans-serif] break-words max-w-full">{post.org ? (lang === "lo" ? post.org.nameLo : post.org.nameEn) : post.author.name}</button>{post.org?.verified && <span role="img" aria-label={lo ? "ຢືນຢັນແລ້ວ" : "Verified"} className="text-[#2563EB]"><BadgeCheck size={16} aria-hidden /></span>}
+            <button type="button" onClick={openAuthor} className={`font-bold text-[16px] text-left min-h-11 ${red ? "text-[#6B6E8F]" : "text-[#14112B]"} -my-2 font-[BoonHome,sans-serif] break-words max-w-full`}>{post.org ? (lang === "lo" ? post.org.nameLo : post.org.nameEn) : post.author.name}</button>{post.org?.verified && <span role="img" aria-label={lo ? "ຢືນຢັນແລ້ວ" : "Verified"} className="text-[#2563EB]"><BadgeCheck size={16} aria-hidden /></span>}
             <LeafMark state={getLeafState()} size={14} />
             {post.isNews && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-primary">{t.news_label}</span>}
             {post.country && <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-surface-2 text-text">{countryLabel(post.country, lang)}</span>}
@@ -162,12 +166,17 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
         </div>
         <StatusPill post={post} lang={lang} />
         {canMenu && <button type="button" aria-label={lo?'ຕົວເລືອກເພີ່ມເຕີມ':'More options'} aria-expanded={menu} onClick={()=>setMenu(v=>!v)} className="min-h-11 min-w-11 -mr-2 flex items-center justify-center rounded-full text-text-2"><Ellipsis size={22} aria-hidden/></button>}
-        {menu && canMenu && <div className="absolute right-0 top-11 z-10 rounded-xl border border-border bg-background shadow-[var(--shadow-soft)]"><button type="button" onClick={()=>{setMenu(false);onFollow!(post.author.id!);}} className="min-h-11 px-4 text-sm font-bold text-text whitespace-nowrap">{lo?(following?"ເຊົາຕິດຕາມ":"ຕິດຕາມ"):(following?"Unfollow":"Follow")}</button></div>}
+        {menu && canMenu && <div className="absolute right-0 top-11 z-10 flex flex-col items-stretch rounded-xl border border-border bg-background shadow-[var(--shadow-soft)]">
+          {onFollow && post.author.id && <button type="button" onClick={()=>{setMenu(false);onFollow(post.author.id!);}} className="min-h-11 px-4 text-left text-sm font-bold text-text whitespace-nowrap">{lo?(following?"ເຊົາຕິດຕາມ":"ຕິດຕາມ"):(following?"Unfollow":"Follow")}</button>}
+          {canReport && <span className="px-2"><ReportButton post={post} lang={lang} /></span>}
+          <button type="button" onClick={()=>{setMenu(false);setHidden(true);}} className="min-h-11 px-4 text-left text-sm font-bold text-text whitespace-nowrap">{lo?"ເຊື່ອງໂພສນີ້":"Hide this post"}</button>
+          <button type="button" onClick={copyLink} className="min-h-11 px-4 text-left text-sm font-bold text-text whitespace-nowrap">{lo?"ສຳເນົາລິ້ງ":"Copy link"}</button>
+        </div>}
       </div>
       {post.example && <ExampleBadge status={post.exampleStatus} lang={lang} />}
       <div className="mt-2 flex items-center gap-2 flex-wrap">{post.pinned && <span className="inline-flex items-center gap-1 text-[13px] font-bold text-text-muted"><Pin size={13} aria-hidden />{lo ? "ປັກໝຸດ" : "Pinned"}</span>}</div>
       {!(risky || safe) && <RedOverlay post={post} lang={lang} />}
-      {(!post.repostOf||post.repostText)&&(asList ? <TipList intro={tips.intro} items={tips.items} lang={lang} /> : <div className="mt-2.5">{title && <p className="text-[16px] font-bold leading-[1.5] text-[#14112B] text-left [overflow-wrap:anywhere] font-[BoonHome,sans-serif]">{title}</p>}<p className={`text-[15px] leading-[1.7] text-[#14112B] text-left whitespace-pre-wrap [overflow-wrap:anywhere] font-[BoonHome,sans-serif] ${title ? "mt-[6px]" : ""} ${!showFull ? "line-clamp-3" : ""}`}>{body}</p></div>)}
+      {(!post.repostOf||post.repostText)&&(asList ? <TipList intro={tips.intro} items={tips.items} lang={lang} /> : <div className="mt-2.5">{title && <p className={`text-[16px] font-bold leading-[1.5] text-left ${red ? "text-[#6B6E8F]" : "text-[#14112B]"} [overflow-wrap:anywhere] font-[BoonHome,sans-serif]`}>{title}</p>}<p className={`text-[15px] leading-[1.7] text-left ${red ? "text-[#6B6E8F]" : "text-[#14112B]"} whitespace-pre-wrap [overflow-wrap:anywhere] font-[BoonHome,sans-serif] ${title ? "mt-[6px]" : ""} ${!showFull ? "line-clamp-3" : ""}`}>{body}</p></div>)}
       {!(risky || safe) && <YellowBanner post={post} lang={lang} />}
       {((isLong || body.split("\n").length > 3) && !showFull) || needsAlt ? <div className="mt-[2px] flex items-center gap-4">
       {(isLong || body.split("\n").length > 3) && !showFull && <button type="button" onClick={() => setShowFull(true)} className="relative text-[14px] font-bold text-[#5B21D1] before:absolute before:-inset-y-3 before:-inset-x-1 before:content-['']">{lo ? "ອ່ານຕໍ່" : "Read more"}</button>}
@@ -175,7 +184,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       {translationError && <p role="alert" className="text-[13px] text-danger">{translationError}</p>}
       {post.originalPost&&<div className="mt-3 rounded-2xl border border-border p-3"><button type="button" className="font-bold min-h-11" onClick={()=>post.originalPost?.author.id&&setPeopleTarget({kind:"person",id:post.originalPost.author.id})}>{post.originalPost.author.name}</button><span className="ml-2 text-[13px] text-text-muted">{post.originalPost.author.handle}</span><p className="mt-1 text-base whitespace-pre-wrap">{post.originalPost.contentLanguage==='lo'?(post.originalPost.contentLo||post.originalPost.content):post.originalPost.content}</p></div>}
       </div>
-      {kind !== "text" && <div className="-mx-4 my-3 [&>*]:!mt-0">
+      {kind !== "text" && <div className="-mx-4 my-3 [&>*]:!mt-0" style={red ? { filter: "grayscale(1) opacity(0.7)" } : undefined}>
       {kind === "poster" && media.length > 0 && <PosterCarousel items={media.filter(m => m.kind === "image")} lang={lang} />}
       {kind === "video" && media.find(m => m.kind === "video") && <VideoBlock item={media.find(m => m.kind === "video")!} title={content.split("\n")[0].slice(0, 120)} lang={lang} />}
       {kind === "link" && source && <LinkCard url={source} thumb={media.find(m => m.kind === "image")?.url} title={content.split("\n")[0].slice(0, 140)} lang={lang} />}
@@ -195,14 +204,14 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       )}
       {shareError&&<p role="alert" className="text-sm text-danger">{shareError}</p>}
       </div>
-      <div className="flex justify-around items-center -mb-2 mt-2 text-[#5F6390]">
+      {red ? <p className="mt-3 pt-3 border-t border-[#E0E1EB] flex items-center gap-1.5 text-[13px] text-[#5F6390]"><Lock size={14} aria-hidden className="shrink-0" />{lo ? "ປິດການກົດຖືກໃຈ, ຄອມເມັນ ແລະ ແບ່ງປັນ ສຳລັບໂພສທີ່ຖືກເຕືອນ" : "Likes, comments and sharing are off for warned posts"}</p> : <div className="flex justify-around items-center -mb-2 mt-2 text-[#5F6390]">
         <button type="button" disabled={post.frozen} aria-pressed={liked} aria-label={lo?'ມັກ':'Like'} onClick={() => onLike(post.id)} className={`${abtn} ${liked?'text-[#E11D48]':''}`}><Heart size={18} aria-hidden fill={liked?'currentColor':'none'} /><span className="font-[BoonHome,sans-serif]">{post.likes}</span></button>
         {!readOnly&&<button type="button" disabled={post.frozen} aria-label={lo?'ຄຳເຫັນ':'Comment'} onClick={() => onOpenComments(post.id)} className={abtn}><MessageCircle size={18} aria-hidden /><span className="font-[BoonHome,sans-serif]">{post.comments}</span></button>}
         <button type="button" disabled={post.frozen} aria-pressed={warned} onClick={() => onWarnedMe(post.id)} className={`${abtn} ${warned?'text-[#5B21D1] font-bold':''}`}>{warned?<ShieldCheck size={18} aria-hidden />:<Shield size={18} aria-hidden />}{lo?'ມີປະໂຫຍດ':'Helpful'} {post.communityRanking?.eligible ? post.communityRanking.score : post.warnedMe}</button>
         {!readOnly&&<button type="button" disabled={post.frozen} aria-label={lo?'ແບ່ງປັນ':'Share'} onClick={() => void share()} className={abtn}><Share2 size={18} aria-hidden /></button>}
         {canReport&&<ReportButton post={post} lang={lang} />}
-      </div>
-      {!readOnly && !!post.interactionPeople?.length && (() => { const ppl = post.interactionPeople!, [a, b] = ppl[0].name.split(" "), first = b ? `${a} ${b[0]}.` : a, more = Math.max(post.comments, ppl.length) - 1; return (
+      </div>}
+      {!red && !readOnly && !!post.interactionPeople?.length && (() => { const ppl = post.interactionPeople!, [a, b] = ppl[0].name.split(" "), first = b ? `${a} ${b[0]}.` : a, more = Math.max(post.comments, ppl.length) - 1; return (
         <button type="button" onClick={()=>setPeopleTarget({kind:'activity',id:post.id})} className="mt-2 pt-3 w-full border-t border-[#F0EFF6] flex items-center gap-2 text-left min-w-0">
           <span className="flex -space-x-2 shrink-0">{ppl.slice(0,3).map(p=><span key={p.id} aria-hidden className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white text-[10px]" style={{background:p.color}}>{p.initials}</span>)}</span>
           <span className="min-w-0 truncate text-[13px] text-[#5F6390]">{more > 0 ? (lo ? `${first} ແລະ ອີກ ${more} ຄົນ ສະແດງຄວາມຄິດເຫັນ` : `${first} and ${more} others commented`) : (lo ? `${first} ສະແດງຄວາມຄິດເຫັນ` : `${first} commented`)}</span>

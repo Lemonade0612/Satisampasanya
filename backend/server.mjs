@@ -101,11 +101,12 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       if (req.method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
       const url = new URL(req.url, 'http://localhost'), path = url.pathname;
       if (req.method !== 'GET') {
-        const key = `${clientIp(req)}:${(path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 'auth' : 'write'}`;
+        const isAuthPath = path.startsWith('/api/auth') || path.startsWith('/api/admin/auth'), isTranslate = path.endsWith('/translate');
+        const key = `${clientIp(req)}:${isAuthPath ? 'auth' : isTranslate ? 'translate' : 'write'}`;
         const now = Date.now(); const entry = rate.get(key) || { count: 0, until: now + 60000 };
         if (entry.until < now) { entry.count = 0; entry.until = now + 60000; }
         entry.count++; rate.set(key, entry);
-        if (entry.count > ((path.startsWith('/api/auth') || path.startsWith('/api/admin/auth')) || path.endsWith('/translate') ? 20 : 120)) fail('Too many requests. Try again shortly.', 429);
+        if (entry.count > (isAuthPath ? 20 : isTranslate ? 90 : 120)) fail('Too many requests. Try again shortly.', 429);
         if (rate.size > 1000) for (const [k,v] of rate) if (v.until < now) rate.delete(k);
       }
       if(req.method === 'GET' && path === '/') {
@@ -309,7 +310,8 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if(!['text','post'].includes(data.kind||'text')||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
         const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
         const emit=value=>{if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify(value)+'\n');};
-        await assistantStream(db,user.id,{text:text(data.text,2000,true),kind:data.kind||'text',mode:data.mode||'auto',band:askBand,lang:data.lang==='lo'?'lo':'en'},emit,assistantServices.stream?{stream:assistantServices.stream,verify:assistantServices.verify}:assistantServices);
+        const photo=image(data.image);
+        await assistantStream(db,user.id,{text:text(data.text,2000,!photo),image:photo,kind:data.kind||'text',mode:data.mode||'auto',band:askBand,lang:data.lang==='lo'?'lo':'en'},emit,assistantServices.stream?{stream:assistantServices.stream,verify:assistantServices.verify}:assistantServices);
         return res.end();
       }
       if (req.method === 'POST' && path === '/api/translate') {
@@ -407,6 +409,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
             row.data=db.prepare('SELECT data FROM posts WHERE id=?').get(row.id).data;
           }
         }
+        {const p=JSON.parse(row.data);if(['comments','reactions','reposts','share'].includes(match[2])&&(p.exampleStatus==='red'||p.risk_level==='red'))fail('Likes, comments and sharing are turned off for posts Sati marked as a warning.',403);}
         if(postLocked(db,row)&&match[2]!=='translate')fail('This post is awaiting moderator review. Likes, comments, reposts and sharing are locked.',409);
         const data = await body(req);
         const notify=(kind)=>{if(row.user_id && row.user_id!==user.id)db.prepare('INSERT INTO notifications(id,user_id,actor_name,kind,post_id,created) VALUES (?,?,?,?,?,?)').run(randomUUID(),row.user_id,user.name,kind,row.id,Date.now());};
