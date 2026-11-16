@@ -191,10 +191,22 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       </div>}
       <div>
       {source && kind !== "link" && <SourceLink url={source} lang={lang} />}
-      {(risky || safe) && (() => { const k = statusOf(post), st = STATUS[k], note = safe ? (lo ? "Sati ກວດສອບໂພສນີ້ແລ້ວ" : "Sati checked this post") : (lo ? (/[\u0E80-\u0EFF]/.test(post.screening?.noteLo || "") ? post.screening?.noteLo : null) : post.screening?.note) || reasonNote(post.check?.labels, lang) || (lo ? st.loWhy : st.enWhy); return (
-        <p role={k === "warn" ? "alert" : undefined} className="mt-3 flex items-start gap-1.5 border-l-[3px] pl-2 text-[13px] leading-[1.5] text-[#3F4268] [overflow-wrap:anywhere]" style={{ borderColor: st.dot }}>
-          <Shield size={14} aria-hidden className="shrink-0 mt-[3px]" style={{ color: st.dot }} /><span><b>Sati:</b> <Tr lang={lang} text={note || ""} /></span>
-        </p>); })()}
+      {(risky || safe) && (() => { const k = statusOf(post), st = STATUS[k], Icon = st.Icon, ring = { safe: "#BBF7D0", check: "#FDE68A", warn: "#FECACA", pending: "#E6E6F0" }[k], fg = { safe: "#166534", check: "#92400E", warn: "#991B1B", pending: "#3F4268" }[k], box = { safe: "#22A06B", check: "#E8A33D", warn: "#E5484D", pending: "#8B8FB0" }[k], reasons = k !== "safe" ? flagReasons(post, lang) : []; return (
+        <div role={k === "warn" ? "alert" : undefined} className="mt-3 rounded-2xl border p-3" style={{ background: st.tint, borderColor: ring, color: fg }}>
+          <div className="flex items-center gap-3">
+            <span aria-hidden className="flex shrink-0 w-10 h-10 rounded-xl items-center justify-center text-white" style={{ background: box }}><Icon size={22} strokeWidth={2.25} /></span>
+            <div className="min-w-0 flex-1">
+              <span className="block text-[16.5px] font-bold leading-snug">{st[lang]}</span>
+              <span className="block mt-0.5 text-[14px] leading-snug opacity-90">{safe ? <Tr lang={lang} text={(risky ? reasonNote(post.check?.labels, lang) : null) || (lo ? (/[\u0E80-\u0EFF]/.test(post.screening?.noteLo || "") ? post.screening?.noteLo : st.loWhy) : post.screening?.note) || (risky ? (reasonNote(post.check?.labels, lang) ?? (lo ? "ອາດເປັນການຫຼອກລວງ." : "This may be a scam.")) + " " + (chips.length > 0 ? chips.join(" · ") : "") : (lo ? "ຄຳແນະນຳທີ່ປອດໄພ" : "Safe advice"))} /> : (lo ? "Sati ກວດສອບໂພສນີ້ແລ້ວ" : "Sati checked this post")}</span>
+            </div>
+          </div>
+          {risky && <button type="button" aria-expanded={why} onClick={() => setWhy(v => !v)} className="mt-3 w-full min-h-11 rounded-full bg-white border text-[14px] font-bold" style={{ borderColor: ring }}>{why ? (lo ? "ເຊື່ອງ ›" : "Hide ›") : (lo ? "ເບິ່ງວ່າເປັນຫຍັງ ›" : "See why ›")}</button>}
+          {risky && why && <div className="mt-3">
+            {reasons.length > 0 && <ul aria-label={lo ? "ສິ່ງທີ່ພົບ" : "What was found"} className="mb-2 flex flex-wrap gap-1.5">{reasons.map(r => <li key={r} className="rounded-full bg-white border px-2.5 py-0.5 text-[12px] font-bold" style={{ borderColor: ring }}>{r}</li>)}</ul>}
+            <p className="text-[14px] leading-[1.55]"><Tr lang={lang} text={(risky ? reasonNote(post.check?.labels, lang) : null) || (lo ? (/[\u0E80-\u0EFF]/.test(post.screening?.noteLo || "") ? post.screening?.noteLo : st.loWhy) : post.screening?.note) || (risky ? (reasonNote(post.check?.labels, lang) ?? (lo ? "ອາດເປັນການຫຼອກລວງ." : "This may be a scam.")) + " " + (chips.length > 0 ? chips.join(" · ") : "") : (lo ? "ຄຳແນະນຳທີ່ປອດໄພ" : "Safe advice"))} /></p>
+            <div className="mt-2 text-[#14112B] text-sm"><PostScreening post={post} lang={lang}/></div>
+          </div>}
+        </div>); })()}
       {!risky && !safe && !compact && <PostScreening post={post} lang={lang}/>}
       {post.points !== undefined && post.state === "confirmed" && (
         <div className="flex items-center gap-3 mt-2 text-[13px] text-text-muted">
