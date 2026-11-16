@@ -48,9 +48,9 @@ export function PosterCarousel({ items, lang }: { items: PostMediaItem[]; lang: 
   const many = items.length > 1;
   return <div className="mt-3 relative">
     <div ref={track} onScroll={e => { const t = e.currentTarget; setI(Math.round(t.scrollLeft / t.clientWidth)); }} role="group" aria-roledescription="carousel" aria-label={lo ? "ຮູບໂພສ" : "Post images"}
-      className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide bg-surface-2">
+      className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide">
       {items.map((m, k) => <button key={k} type="button" aria-label={`${lo ? "ເບິ່ງຮູບໃຫຍ່" : "Open image"} ${k + 1}/${items.length}`} onClick={() => setBox(true)} className="snap-center shrink-0 w-full block">
-        <img src={m.url} alt={caption(m, lang)} loading={k ? "lazy" : "eager"} width={m.width} height={m.height} className="w-full max-h-[460px] object-cover" />
+        <TallImg src={m.url} alt={caption(m, lang)} lazy={!!k} w={m.width} h={m.height} lang={lang} />
       </button>)}
     </div>
     {many && <>
@@ -61,6 +61,17 @@ export function PosterCarousel({ items, lang }: { items: PostMediaItem[]; lang: 
     </>}
     {box && <Lightbox items={items} start={i} lang={lang} onClose={() => setBox(false)} />}
   </div>;
+}
+
+// Tall posters show their top 300px with a fade and a "see full image" pill; the tap opens the lightbox.
+function TallImg({ src, alt, lazy, w, h, lang }: { src: string; alt: string; lazy: boolean; w?: number; h?: number; lang: Lang }) {
+  const [tall, setTall] = useState(false);
+  return <span className="relative block">
+    <img src={src} alt={alt} loading={lazy ? "lazy" : "eager"} width={w} height={h} onLoad={e => { const i = e.currentTarget; setTall(i.naturalHeight / i.naturalWidth * i.clientWidth > 300); }}
+      className={`w-full block ${tall ? "h-[300px] object-cover object-top" : "h-auto"}`} />
+    {tall && <><span aria-hidden className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-white" />
+      <span className="absolute left-1/2 -translate-x-1/2 bottom-3 h-[34px] px-4 inline-flex items-center rounded-full bg-white border border-[#E6E6F0] text-[13px] font-bold text-[#14112B] whitespace-nowrap">{lang === "lo" ? "ເບິ່ງຮູບເຕັມ" : "See full image"}</span></>}
+  </span>;
 }
 
 export function Lightbox({ items, start, lang, onClose }: { items: PostMediaItem[]; start: number; lang: Lang; onClose: () => void }) {
@@ -160,6 +171,6 @@ export function LinkCard({ url, thumb, title, lang, video }: { url: string; thum
 // "Open in Facebook" or the plain source link, under any post that has a source_url.
 export function SourceLink({ url, lang }: { url: string; lang: Lang }) {
   const lo = lang === "lo", host = domainOf(url), fb = /(^|\.)(facebook\.com|fb\.com|fb\.watch)$/.test(host);
-  return <a href={url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1.5 min-h-11 text-[14px] font-bold text-primary-ink">
-    <ExternalLink size={15} aria-hidden />{fb ? (lo ? "ເປີດໃນ Facebook" : "Open in Facebook") : `${lo ? "ແຫຼ່ງຂໍ້ມູນ" : "Source"}: ${host}`}</a>;
+  return <a href={url} target="_blank" rel="noopener noreferrer" className="-mt-1 inline-flex items-center gap-1 min-h-8 text-[13px] text-[#2563EB]">
+    <Link2 size={14} aria-hidden />{fb ? (lo ? "ເປີດໃນ Facebook" : "Open in Facebook") : (lo ? "ເບິ່ງຕົ້ນສະບັບ" : "See original")}</a>;
 }

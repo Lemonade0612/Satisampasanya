@@ -614,9 +614,9 @@
     "contentLanguage": "lo",
     "reviewLo": true,
     "image": "/seed/korea-job-scam.jpg",
-    "content": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ\nບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
-    "contentLo": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ\nບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
-    "translationText": "Great opportunity! Work in South Korea\nNo experience needed. Everything free: travel, housing, food. Good salary. Click the link to apply now!",
+    "content": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "contentLo": "ບໍ່ມີປະສົບການກໍເຮັດໄດ້. ຟຣີທຸກຢ່າງ ຄ່າເດີນທາງ, ທີ່ພັກ, ອາຫານ. ເງິນເດືອນດີ. ຄລິກລິ້ງເພື່ອສະໝັກເລີຍ!",
+    "translationText": "No experience needed. Everything free: travel, housing, food. Good salary. Click the link to apply now!",
     "screening": {
       "mode": "rules",
       "severity": "high",
@@ -627,7 +627,9 @@
       "note": "No company name or licence, “everything free”, and pressure to click the link = a labour-trafficking scam pattern. Don't click.",
       "noteLo": "ບໍ່ມີຊື່ບໍລິສັດ ຫຼື ໃບອະນຸຍາດ, “ຟຣີທຸກຢ່າງ”, ເລັ່ງໃຫ້ຄລິກລິ້ງ = ຮູບແບບການຫຼອກລວງແຮງງານ. ຢ່າຄລິກ.",
       "checkedAt": 0
-    }
+    },
+    "titleLo": "ໂອກາດດີ! ໄປເຮັດວຽກຢູ່ປະເທດເກົາຫຼີ",
+    "title": "Great opportunity! Work in South Korea"
   },
   {
     "id": "ex-youth-11",
