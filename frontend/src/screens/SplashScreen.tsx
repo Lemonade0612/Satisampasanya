@@ -27,10 +27,10 @@ export function SplashScreen({ onDone, lang }: { onDone: () => void; lang: Lang 
 
       <div className="relative flex flex-col items-center gap-4 text-center">
         <div className="relative flex items-center justify-center">
-          <span aria-hidden className="absolute w-[min(62vw,260px)] h-[min(62vw,260px)] rounded-full bg-[radial-gradient(circle,#E4D9FF_0%,rgba(243,238,255,0)_72%)]"
+          <span aria-hidden className="absolute w-[min(86vw,360px)] h-[min(86vw,360px)] rounded-full bg-[radial-gradient(circle,#E4D9FF_0%,rgba(243,238,255,0)_72%)]"
             style={{ animation: "splash-glow 2.4s ease-in-out infinite" }} />
           <img src={logoImage} alt="Satisampasanya logo"
-            className="relative w-[min(56vw,230px)] h-[min(56vw,230px)] object-contain [mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)] [-webkit-mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)]"
+            className="relative w-[min(78vw,320px)] h-[min(78vw,320px)] object-contain [mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)] [-webkit-mask-image:radial-gradient(closest-side,#000_45%,transparent_92%)]"
             style={{ animation: "splash-in 0.9s cubic-bezier(.2,.8,.2,1) both" }} />
         </div>
         <h1 className={`text-2xl font-bold leading-[1.35] tracking-normal text-[#14112B] font-[BoonHome,Phetsarath,sans-serif] ${lang === "lo" ? "" : "font-display"}`}
