@@ -5,8 +5,8 @@ import type { Lang } from "../types";
 export function SplashScreen({ onDone, lang }: { onDone: () => void; lang: Lang }) {
   const [fading, setFading] = useState(false);
   useEffect(() => {
-    const t1 = setTimeout(() => setFading(true), 2000);
-    const t2 = setTimeout(() => onDone(), 2600);
+    const t1 = setTimeout(() => setFading(true), 2400);
+    const t2 = setTimeout(() => onDone(), 3000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [onDone]);
 
