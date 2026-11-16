@@ -17,6 +17,8 @@ import { postRisk, scamTypeLabel, checkLabel, tagLabel, reasonNote } from "../..
 import type { Post, Lang, LeafState } from "../../types";
 
 let autoTranslations = 40;
+// Browsers allow only a few connections per host. Automatic translations run two at a time so they never block the feed requests.
+let autoInFlight = 0;
 
 // compact (the Youth feed): name + time, risk pill, text, a translate link only for non-Lao posts, and the action row.
 // readOnly (the Kids feed): no comments, reposts, shares or stranger profiles; Kids get gentle text when a post has it.
@@ -54,9 +56,9 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
     let alive = true;
     // Only cards actually on screen, and only a few per session: translation shares the sign-in rate limit.
     const seen = new IntersectionObserver(entries => {
-      if (!entries.some(e => e.isIntersecting) || autoTranslations <= 0) return;
-      seen.disconnect(); autoTranslations--;
-      request<Post>(`/posts/${post.id}/translate`, 'POST', {}).then(result => { if (alive) setTranslatedContent((loPost ? result.translationText : result.contentLo) || null); }).catch(() => { /* the pill below stays as a fallback */ });
+      if (!entries.some(e => e.isIntersecting) || autoTranslations <= 0 || autoInFlight >= 2) return;
+      seen.disconnect(); autoTranslations--; autoInFlight++;
+      request<Post>(`/posts/${post.id}/translate`, 'POST', {}).then(result => { if (alive) setTranslatedContent((loPost ? result.translationText : result.contentLo) || null); }).catch(() => { /* the pill below stays as a fallback */ }).finally(() => { autoInFlight--; });
     });
     seen.observe(card);
     return () => { alive = false; seen.disconnect(); };
