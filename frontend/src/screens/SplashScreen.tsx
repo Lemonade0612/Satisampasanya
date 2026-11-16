@@ -21,7 +21,7 @@ export function SplashScreen({ onDone, lang }: { onDone: () => void; lang: Lang 
   }, [onDone]);
 
   return (
-    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-between h-dvh overflow-hidden px-6 py-[8dvh]"
+    <div className="absolute inset-0 z-[100] flex flex-col items-center justify-center h-dvh overflow-hidden px-6"
       style={{ background: "radial-gradient(120% 70% at 50% 30%, #F3EEFF 0%, #FFFFFF 60%)", opacity: fading ? 0 : 1, transition: "opacity 0.6s ease-in-out" }}>
       <style>{CSS}</style>
 
@@ -39,7 +39,7 @@ export function SplashScreen({ onDone, lang }: { onDone: () => void; lang: Lang 
         </h1>
       </div>
 
-      <div className="flex flex-col items-center gap-4 w-full max-w-[220px]" style={{ animation: "splash-rise 0.7s 0.5s ease-out both" }}>
+      <div className="absolute bottom-[10dvh] left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 w-full max-w-[220px] px-6" style={{ animation: "splash-rise 0.7s 0.5s ease-out both" }}>
         <div role="progressbar" aria-label={lang === "lo" ? "ກຳລັງໂຫຼດ" : "Loading"} className="w-full h-1 rounded-full bg-[#ECE6FB] overflow-hidden">
           <span className="block h-full w-full origin-left rounded-full bg-gradient-to-r from-[#5B21D1] to-[#2563EB]"
             style={{ animation: `splash-bar ${TOTAL_MS}ms linear both` }} />
