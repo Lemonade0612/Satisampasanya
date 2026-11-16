@@ -73,7 +73,7 @@ export function AuthScreen({ lang, onLangToggle, onLogin, onGuest, onOffline }: 
             <button type="button" onClick={onGuest} className="text-left rounded-2xl border border-[#E6E6F0] dark:border-border bg-background p-3 min-h-11 active:scale-[0.98] transition-transform font-lao">
               <span className="flex items-center gap-2 mb-2">
                 <span aria-hidden className="w-9 h-9 shrink-0 rounded-xl bg-[#EDE7FB] text-[#5B21D1] flex items-center justify-center"><Gamepad2 size={20} /></span>
-                <span className="font-semibold text-sm text-foreground leading-tight">{lo ? 'ລອງຫຼິ້ນເກມ' : 'Try the games'}</span>
+                <span className="font-semibold text-sm text-foreground leading-tight">{lo ? 'ໂໝດແຂກ' : 'Guest mode'}</span>
               </span>
               <span className="block text-xs text-muted-foreground leading-snug mt-0.5">{lo ? 'ຝຶກຈັບການຫຼອກລວງ ໂດຍບໍ່ຕ້ອງມີບັນຊີ' : 'Practise spotting scams, no account needed'}</span>
             </button>
