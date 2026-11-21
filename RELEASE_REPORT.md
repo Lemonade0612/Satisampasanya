@@ -258,3 +258,69 @@ Also sign in as a Kids account and confirm `/api/assistant` returns 403 with the
 
 `docs/elder-v3-spec.md` does not exist, so it has no "Done when" list. Every Part C item: **not assessable (failed: not built)**.
 Part A-B-D-E items from your brief: A1-A10 passed (tests + curl); B1 passed with the fallback (logged under Blocked); B2-B6, B8 passed; B7 passed on the dev holdout but see the blind-set caveat above; D1-D4 code done, untested on device; D5 partly done (lazy loading only); D6 failed (not produced); E1-E5 passed (tunnel profile not started).
+
+---
+
+## 7. Screening round 2: 85% recall goal (English)
+
+**Verdict: PARTIAL. Local-only passes recall (88.2% >= 85%) but misses the false-positive bar (11.2% > 10%). The full pipeline and AI-only modes were NOT measured: there is no AI key on this machine. The 85%/10% bar is therefore not proven.**
+
+### What changed
+- **Routing (done first).** A local GREEN now goes to the AI whenever a real provider is configured; a local RED goes straight to experts with no AI call; the stricter verdict wins. With no provider (offline, or `AI_PROVIDER=mock`) the local result stands and a green is marked `unverified: true`. If the AI call fails, the local result stands (green stays `unverified`). Tests cover each path (`backend/local-screening.test.mjs`, "routing: ..."). Lao-majority text is unchanged (AI only).
+- **Agents** in `backend/screening/agents/`: `generator.mjs` (17 categories + 8 kinds of hard safe posts, styles mixed per call, dedupe against all known data, refuses the locked split), `grader.mjs` (independent second pass; drops disagreements and confidence < 0.75), `redteam.mjs` (5 variants per dev miss, graded, written to TRAIN only). `--lang=lo` is wired with a 6-row stub (`testdata/lo/stub.jsonl`, all `review: pending`); not tuned or evaluated. **The agents were only tested with a stubbed model (`backend/agents.test.mjs`); they have never run against a real model** because no provider key exists here. They refuse to run on the mock provider.
+- **Data splits.** train = `en.jsonl` train + graded generated train rows. dev = `en.jsonl` holdout (191) + `dev2.jsonl` (194, hand-written). **Locked = `testdata/locked/en.jsonl`: 320 items (204 harmful, >= 12 per category, 116 hard safe), every row `review: "pending"` for human checking.** It was written once before any tuning against it, without consulting the rules, and is protected: `eval.mjs --set=locked --misses` is refused. It was evaluated once.
+- **Rules round 1** (`rules-extra.mjs`, 85 generic patterns for all 17 categories) written from the dev v2 misses; everyday chatter (weather, football, recipes) is no longer flagged as off-topic by itself (family chat counts as safe). Safe-context damping now also covers misinformation and "is this real? / I am worried" questions.
+- Loop: dev v2 recall 76.5% -> 99.3% in one round (so the "dev >= 90%" stop was reached at round 1). **This dev number is contaminated by design (I tuned on it). Only the locked number is honest.**
+
+### Locked set, mode (a) local only (`npm run screen:eval -- --set=locked`)
+| Category | n | Recall % | Category-match % |
+|---|---|---|---|
+| profanity | 12 | 100 | 100 |
+| animal_insults | 12 | 83.3 | 83.3 |
+| bullying | 12 | 66.7 | 66.7 |
+| hate_speech | 12 | 83.3 | 83.3 |
+| political_claims | 12 | 83.3 | 83.3 |
+| sexual_content | 12 | 83.3 | 75 |
+| dangerous_content | 12 | 83.3 | 75 |
+| misinformation | 12 | 83.3 | 75 |
+| off_topic | 12 | 75 | 66.7 |
+| money_ask | 12 | 100 | 91.7 |
+| credential_request | 12 | 100 | 100 |
+| job_abroad | 12 | 100 | 91.7 |
+| trafficking_signs | 12 | 91.7 | 91.7 |
+| romance_scam | 12 | 100 | 91.7 |
+| authority_impersonation | 12 | 100 | 91.7 |
+| emotional_manipulation | 12 | 83.3 | 75 |
+| private_contact | 12 | 83.3 | 83.3 |
+| **Overall (204 harmful)** | | **88.2** | |
+| **Safe flagged (116)** | | **11.2% (13/116)** | |
+
+Recall counts any non-green result on a harmful post; category-match also needs the right category. The full confusion matrix prints with `--matrix`.
+
+### Modes (b) AI only and (c) full pipeline
+**Not run: no AI provider key on this machine.** `npm run screen:eval -- --set=locked --mode=all` runs all three and prints "NOT RUN" for ai/full until a key is set. Expected behaviour of (c): because "stricter wins", the full pipeline's false-positive rate can only equal or exceed local's 11.2%, and recall can only equal or exceed 88.2%. So (c) will pass recall but cannot pass the FP bar unless the local FPs are reduced or the AI is allowed to downgrade a local yellow (see gap below).
+
+### Old 85-item blind set (second check)
+Local only: 98.8% recall, 8.3% safe flagged (2/24). It is contaminated (I tuned on it in round 1 of the previous task), so it is not independent evidence.
+
+### 5 weakest categories on locked (examples from the report-only view)
+1. **bullying 66.7%**: "we're all laughing at your photo, you look disgusting 😂😂"; "i'm going to screenshot this and show the whole school how stupid u are"
+2. **off_topic 75%**: "good morning everyone!!! have a blessed day 🌞 (sending to 20 groups)"; "this is my cat, isn't he cute? 🐱 pic 7 of 40" (harmless chatter by our own policy, so low priority)
+3. **animal_insults 83.3%**: "the new kid is a clown and a parrot, repeats everything the teacher says"; "buffalo-brained idiot, even a chicken has more sense"
+4. **hate_speech 83.3%**: "gays are sick and should be locked away"; "that religion is evil, its followers deserve nothing"
+5. **political_claims 83.3%**: "they are brainwashing students in school for the party, resist"; "officials took bribes in the dam deal, anyone who denies it works for them"
+
+### AI cost per 1,000 posts
+Measured request size: about 3,300 characters of instructions plus the schema and the post, roughly **1,000 input tokens and about 150 output tokens per AI check** (token counts are estimated from characters; no live call was made). Per 1,000 posts that is about **1.0M input + 0.15M output tokens**, minus the local reds that skip the AI. Cost = `1.0 x input price + 0.15 x output price` per million tokens. **I have no verified price list for claude-haiku-5-5 in this environment, so I am not quoting a dollar figure.** As an example only: at $1 per million input and $5 per million output the cost would be about $1.75 per 1,000 posts. Now that green also goes to the AI, the AI is called for almost every English post (only local reds skip it), so this is roughly the old cost, not a saving. Prompt caching of the fixed instructions would cut the input side substantially.
+
+### PASS / FAIL on the 85% bar: **FAIL (not proven)**
+- Measured (local only, locked): recall 88.2% (passes 85%), false positives 11.2% (fails <= 10% by 1.2 points = 2 of 116 safe posts).
+- Not measured: AI-only and full pipeline (no key).
+- **Exact gap:** 13 safe posts flagged vs at most 11 allowed; and the full pipeline cannot lower that number as designed.
+- **Recommended fix:** (1) set a provider key and run `npm run screen:eval -- --set=locked --mode=all` once to get the real (b) and (c) numbers; (2) let the AI downgrade a local YELLOW (not red) when it says approved with low risk, so safe-but-suspicious posts stop being flagged, which keeps red -> experts unchanged; (3) run the generator + grader at scale (`generator.mjs --split=train --per=40`, `grader.mjs`, `redteam.mjs`) to replace hand-made data, retrain, and tune thresholds per category on dev only; (4) have a human check the `review: pending` labels in the locked set. Do not tune on the locked set again: it has now been evaluated once.
+
+### Caveats
+- The locked set was written by me (same author as the rules), so it may be easier than real posts. Real posts are the true test.
+- The classifier alone is still weak on unseen wording (rules carry generalisation); char n-grams were tried earlier and raised false positives, so they are not enabled.
+- Per-category thresholds were not tuned: every dev set is already above target, and tuning on it would only overfit.
+- Lao is only scaffolded.
