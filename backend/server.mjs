@@ -12,6 +12,7 @@ import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mj
 import {checkPost} from './safety/post-check.mjs';
 import {publicCurated,staffCurated,reviewCurated} from './curated.mjs';
 import {applyRisk,addReport} from './riskScore.mjs';
+import {dailyRoutes} from './daily.mjs';
 import {feedbackRoutes,listFeedback} from './feedback.mjs';
 import {modelConfigured} from './safety/model.mjs';
 import {hostedTranslate} from './safety/translate.mjs';
@@ -189,6 +190,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       // Public: approved, unexpired curated posts (Posts / ຂ່າວສານ). Pending and rejected posts never leave the server.
       if (req.method === 'GET' && path === '/api/curated') return send(res,200,publicCurated(db));
       // Public: live scenarios for one age band only. Drafts, approved-but-unpublished and rejected rows never leave the server.
+      if (dailyRoutes({ req, res, path, url, db, send, band })) return;
       if (req.method === 'GET' && path === '/api/scenarios') return send(res,200,publicScenarios(db,user?.age_band||requestedBand));
       if (req.method === 'GET' && path === '/api/events') {
         res.writeHead(200, { 'Content-Type':'text/event-stream', 'Cache-Control':'no-cache', Connection:'keep-alive' });
