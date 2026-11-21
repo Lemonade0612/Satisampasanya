@@ -1,0 +1,6 @@
+{"id":"lo-stub-1","text":"ຮັບສະໝັກພະນັກງານໄປເຮັດວຽກໄທ ເງິນເດືອນສູງ ບໍ່ຕ້ອງມີປະສົບການ ທັກມາເລີຍ","labels":["job_abroad"],"split":"train","lang":"lo","stub":true,"review":"pending"}
+{"id":"lo-stub-2","text":"ສົ່ງລະຫັດ OTP ທີ່ໄດ້ຮັບມາໃຫ້ຂ້ອຍແດ່ ດ່ວນ","labels":["credential_request"],"split":"train","lang":"lo","stub":true,"review":"pending"}
+{"id":"lo-stub-3","text":"ໂອນເງິນຄ່າທຳນຽມ 200,000 ກີບ ກ່ອນ ເພື່ອຮັບລາງວັນ","labels":["money_ask"],"split":"train","lang":"lo","stub":true,"review":"pending"}
+{"id":"lo-stub-4","text":"ເຈົ້າເປັນໝາ ໄປໃຫ້ພົ້ນ","labels":["animal_insults"],"split":"dev","lang":"lo","stub":true,"review":"pending"}
+{"id":"lo-stub-5","text":"ມື້ນີ້ອາກາດດີ ໄປຫຼິ້ນນຳກັນບໍ່","labels":[],"split":"dev","lang":"lo","stub":true,"review":"pending"}
+{"id":"lo-stub-6","text":"ທະນາຄານບໍ່ເຄີຍຖາມລະຫັດ OTP ຂອງທ່ານ ຢ່າບອກໃຜ","labels":[],"split":"dev","lang":"lo","stub":true,"review":"pending"}
