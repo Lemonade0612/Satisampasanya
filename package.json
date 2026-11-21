@@ -37,7 +37,10 @@
     "seed:users": "node --env-file-if-exists=.env.local scripts/create-test-users.mjs",
     "seed:reviews": "node scripts/seed-review-posts.mjs",
     "seed:risk": "node scripts/seed-risk-posts.mjs",
-    "seed:scenarios": "node scripts/seed-scenarios.mjs"
+    "seed:scenarios": "node scripts/seed-scenarios.mjs",
+    "screen:eval": "node backend/screening/eval.mjs",
+    "screen:train": "node backend/screening/train.mjs",
+    "screen:gen": "node backend/screening/testdata/gen.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",
