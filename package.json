@@ -40,7 +40,10 @@
     "seed:scenarios": "node scripts/seed-scenarios.mjs",
     "screen:eval": "node backend/screening/eval.mjs",
     "screen:train": "node backend/screening/train.mjs",
-    "screen:gen": "node backend/screening/testdata/gen.mjs"
+    "screen:gen": "node backend/screening/testdata/gen.mjs",
+    "sim:ios": "node scripts/sim.mjs ios",
+    "sim:android": "node scripts/sim.mjs android",
+    "dev:mobile": "node scripts/sim.mjs mobile"
   },
   "dependencies": {
     "@capacitor/android": "^8.6.0",

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, lazy, Suspense, ComponentProps } from "react";
 import { api, hasSession, clearSession, ApiError } from "./lib/api";
 import { usePhoneViewport } from "./hooks/usePhoneViewport";
 import { useLivePosts } from "./hooks/useLivePosts";
@@ -10,11 +10,11 @@ import { useHash } from './lib/hashRoute';
 import { FeedScreen } from "./screens/FeedScreen";
 import { ExploreScreen } from "./screens/ExploreScreen";
 import { ProfileScreen } from "./screens/ProfileScreen";
-import { AssistantScreen } from "./screens/AssistantScreen";
+const AssistantLazy = lazy(() => import("./screens/AssistantScreen").then(m => ({ default: m.AssistantScreen })));
 import { AlertsScreen } from "./screens/AlertsScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { TEXT_SCALE, useTextSize } from "./lib/textSize";
-import { DailyScreen } from "./features/daily";
+const DailyLazy = lazy(() => import("./features/daily").then(m => ({ default: m.DailyScreen })));
 import type { Launch } from "./features/daily/screens/DailyHome";
 import { CommentsModal } from "./components/modals/CommentsModal";
 import { ComposeModal } from "./components/modals/ComposeModal";
@@ -36,6 +36,10 @@ import { GuestProfile } from "./screens/GuestProfile";
 import { ElderApp } from "./features/elder/ElderApp";
 import { setSimpleModeAccount, useSimpleMode } from "./lib/simpleMode";
 import type { Lang, CurrentUser, ActiveView, Post, ThemeMode, PostDraft, Notification } from "./types";
+
+// Games and the assistant load on first use (their own chunks), so the first screen is smaller and starts sooner.
+const DailyScreen = (props: ComponentProps<typeof DailyLazy>) => <Suspense fallback={null}><DailyLazy {...props} /></Suspense>;
+const AssistantScreen = (props: ComponentProps<typeof AssistantLazy>) => <Suspense fallback={null}><AssistantLazy {...props} /></Suspense>;
 
 // Blocked storage (private mode, strict settings) must never stop the app from loading.
 const readPref = (key: string) => { try { return localStorage.getItem(key); } catch { return null; } };

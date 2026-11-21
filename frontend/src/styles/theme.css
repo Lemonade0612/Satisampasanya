@@ -19,10 +19,10 @@
   --success: #067647; --success-bg: #ECFDF3; --success-border: #ABEFC6;
   --disabled-bg: #ECEAF8; --disabled-fg: #6B6890;
   --shadow-soft: 0 4px 16px rgba(30, 27, 58, 0.10);
-  --font-body: "BoonHome", "Phetsarath", sans-serif;
-  --font-lao: "BoonHome", "Phetsarath", sans-serif;
-  --s-font: "BoonHome", "Phetsarath", sans-serif;
-  --font-display: "BoonHome", "Phetsarath", sans-serif;
+  --font-body: "BoonHome", "Lao Sangam MN", "Noto Sans Lao", "Phetsarath", sans-serif;
+  --font-lao: "BoonHome", "Lao Sangam MN", "Noto Sans Lao", "Phetsarath", sans-serif;
+  --s-font: "BoonHome", "Lao Sangam MN", "Noto Sans Lao", "Phetsarath", sans-serif;
+  --font-display: "BoonHome", "Lao Sangam MN", "Noto Sans Lao", "Phetsarath", sans-serif;
   --background: #FFFFFF;
   --foreground: #13112B;
   --card: #FFFFFF;
@@ -209,7 +209,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "BoonHome", "Phetsarath", sans-serif;
+    font-family: "BoonHome", "Lao Sangam MN", "Noto Sans Lao", "Phetsarath", sans-serif;
     font-size: 16px;
     line-height: 1.7;
     letter-spacing: 0.15px;
