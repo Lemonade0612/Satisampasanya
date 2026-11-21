@@ -12,6 +12,7 @@ import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mj
 import {checkPost} from './safety/post-check.mjs';
 import {publicCurated,staffCurated,reviewCurated} from './curated.mjs';
 import {applyRisk,addReport} from './riskScore.mjs';
+import {createMailer,resetMail} from './mailer.mjs';
 import {dailyRoutes} from './daily.mjs';
 import {feedbackRoutes,listFeedback} from './feedback.mjs';
 import {modelConfigured} from './safety/model.mjs';
@@ -60,7 +61,7 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, seedOrganisations = false, origins = [], trustProxy = false, trustCloudflare = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, seedOrganisations = false, origins = [], trustProxy = false, trustCloudflare = false, mailer, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
   const db = openStore(database, seed, seedOrganisations), clients = new Set(), rate = new Map(), loginFailures = new Map();
   // Headers are never trusted by default. CF-Connecting-IP is read only when TRUST_CLOUDFLARE=true; X-Forwarded-For (last hop) only
   // when TRUST_PROXY=true. Otherwise the socket address is the client. X-Real-IP is still honoured for the nginx setup (trustProxy option).
@@ -87,6 +88,8 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   const deliver=()=>{pushing=pushing.then(()=>dispatchPushes(db,push)).catch(error=>console.error('Push dispatch failed:',error.message));return pushing;};
   const pushTimer=setInterval(deliver,2000);pushTimer.unref();
   const interactionChecks=new Map();
+  let mailerReady=mailer?Promise.resolve(mailer):null;
+  const getMailer=()=>mailerReady??=createMailer();
   const server = createServer(async (req, res) => {
     try {
       if (req.headers.origin && !originAllowed(req.headers.origin)) fail('Origin is not allowed.', 403);
@@ -281,9 +284,9 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         return send(res,200,{user:userView(row),token:session(db,row.id)});
       }
       if (req.method === 'POST' && path === '/api/auth/forgot') {
-        const {email} = await body(req), row = db.prepare('SELECT * FROM users WHERE email=?').get(text(email,254,true).toLowerCase());
-        if (row) { const token = randomBytes(32).toString('hex'); db.prepare('DELETE FROM resets WHERE user_id=? OR expires<?').run(row.id,Date.now()); db.prepare('INSERT INTO resets VALUES (?,?,?)').run(digest(token),row.id,Date.now()+900000); console.log(`Local password reset link: http://localhost:5173/?reset=${token}`); }
-        return send(res,202,{message:'If the account exists, a reset link was printed in the local backend terminal. Email delivery is not configured.'});
+        const data = await body(req), {email} = data, row = db.prepare('SELECT * FROM users WHERE email=?').get(text(email,254,true).toLowerCase());
+        if (row) { const token = randomBytes(32).toString('hex'); db.prepare('DELETE FROM resets WHERE user_id=? OR expires<?').run(row.id,Date.now()); db.prepare('INSERT INTO resets VALUES (?,?,?)').run(digest(token),row.id,Date.now()+900000); const mail=resetMail(token,data.lang==='lo'?'lo':'en');try{await (await getMailer()).send({to:row.email,...mail});}catch(error){console.error('Reset email failed:',error.message);} }
+        return send(res,202,{message:'If the account exists, a reset link was sent. If no mail transport is configured (MAIL_TRANSPORT), it is only written to the backend console outside production.'});
       }
       if (req.method === 'POST' && path === '/api/auth/reset') {
         const data = await body(req); const token = text(data.token,64,true), pw = password(data.password);
