@@ -58,32 +58,24 @@ async function body(req) {
   try { const data = JSON.parse(Buffer.concat(chunks).toString() || '{}'); if (!data || Array.isArray(data) || typeof data !== 'object') fail('Invalid JSON.'); return data; } catch { fail('Invalid JSON.'); }
 }
 
-export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, seedOrganisations = false, origins = [], trustProxy = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
+export function createApp({ database = resolve('backend/data/sati.sqlite'), seed = false, seedOrganisations = false, origins = [], trustProxy = false, trustCloudflare = false, check = checkPost, hostedTranslation = hostedTranslate, assistantServices = {}, push = apnsSender() } = {}) {
   const db = openStore(database, seed, seedOrganisations), clients = new Set(), rate = new Map(), loginFailures = new Map();
-  // Behind nginx every socket is the proxy, so the client address comes from X-Real-IP, which nginx
-  // overwrites with $remote_addr. Without a trusted proxy the header is client-controlled and ignored.
-  const clientIp = req => { const real = trustProxy && req.headers['x-real-ip']; return typeof real === 'string' && real.trim() ? real.trim() : req.socket.remoteAddress; };
+  // Headers are never trusted by default. CF-Connecting-IP is read only when TRUST_CLOUDFLARE=true; X-Forwarded-For (last hop) only
+  // when TRUST_PROXY=true. Otherwise the socket address is the client. X-Real-IP is still honoured for the nginx setup (trustProxy option).
+  const clientIp = req => {
+    const first = value => typeof value === 'string' && value.trim() ? value.trim() : '';
+    if (trustCloudflare) { const cf = first(req.headers['cf-connecting-ip']); if (cf) return cf; }
+    if (trustProxy) { const real = first(req.headers['x-real-ip']); if (real) return real; const fwd = first(req.headers['x-forwarded-for']); if (fwd) return fwd.split(',').pop().trim(); }
+    return req.socket.remoteAddress;
+  };
   const LOGIN_FAILURES = 10, LOGIN_LOCK_MS = 15 * 60000;
-  const allowed = new Set([
-  // User frontend
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-
-  // Admin frontend (original)
-  'http://localhost:5174',
-  'http://127.0.0.1:5174',
-
-  // Admin frontend (new)
-  'http://localhost:5175',
-  'http://127.0.0.1:5175',
-
-  // Mobile application
-  'capacitor://localhost',
-  'http://localhost',
-
-  // Additional configured origins
-  ...origins,
-]);
+  // Defaults cover local dev, the mobile shells, the production Vercel sites and this project's Vercel/Netlify previews.
+  // ALLOWED_ORIGINS (comma list, or the `origins` option) adds more; CORS_REPLACE_DEFAULTS=true makes it the whole list.
+  const defaultOrigins = ['http://localhost:5173','http://127.0.0.1:5173','http://localhost:5174','http://127.0.0.1:5174','http://localhost:5175','http://127.0.0.1:5175','capacitor://localhost','http://localhost','https://localhost',
+    'https://sati-coral.vercel.app','https://sati-satii.vercel.app','https://sati-admin-xi.vercel.app','https://sati-admin-satii.vercel.app'];
+  const allowed = new Set([...(process.env.CORS_REPLACE_DEFAULTS === 'true' && origins.length ? [] : defaultOrigins), ...origins]);
+  const previewOrigin = /^https:\/\/sati-[a-z0-9-]+\.(vercel|netlify)\.app$/;
+  const originAllowed = origin => allowed.has(origin) || (process.env.CORS_REPLACE_DEFAULTS !== 'true' && previewOrigin.test(origin));
   const broadcast = () => {for(const client of clients)client.write('event: change\ndata: {}\n\n');};
   const send = (res, status, value) => { if(res.getHeader('Content-Type')==='application/x-ndjson'){res.end(JSON.stringify({type:'result',status,value})+'\n');return;} res.writeHead(status, { 'Content-Type':'application/json', 'Cache-Control':'no-store' }); res.end(JSON.stringify(value)); };
   const sweep=()=>{if(notifyReviewers(db))broadcast();};
@@ -95,7 +87,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
   const interactionChecks=new Map();
   const server = createServer(async (req, res) => {
     try {
-      if (req.headers.origin && !allowed.has(req.headers.origin)) fail('Origin is not allowed.', 403);
+      if (req.headers.origin && !originAllowed(req.headers.origin)) fail('Origin is not allowed.', 403);
       if (req.headers.origin) { res.setHeader('Access-Control-Allow-Origin', req.headers.origin); res.setHeader('Vary', 'Origin'); }
       res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
       res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,OPTIONS');
@@ -461,7 +453,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   let restored=false,snapshots=null;
   if(snapshotsEnabled())restored=await restoreSnapshot(database);
   const seed=process.env.SEED_DEMO==='true'||(snapshotsEnabled()&&!restored);
-  const app=createApp({database,seed,seedOrganisations:true,trustProxy:process.env.TRUST_PROXY==='1',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
+  const app=createApp({database,seed,seedOrganisations:true,trustProxy:process.env.TRUST_PROXY==='1'||process.env.TRUST_PROXY==='true',trustCloudflare:process.env.TRUST_CLOUDFLARE==='true',origins:(process.env.ALLOWED_ORIGINS||'').split(',').filter(Boolean)});
   if(snapshotsEnabled())snapshots=startSnapshots(app.db,database,{restored});
   const port=Number(process.env.PORT||process.env.API_PORT||3001),host=process.env.API_HOST||(process.env.NODE_ENV==='production'?'0.0.0.0':'127.0.0.1');
   app.server.on('error',error=>{if(error.code!=='EADDRINUSE')throw error;console.error(`Port ${port} is already in use: another Sati backend is probably still running.\nStop it with:  kill $(lsof -tiTCP:${port} -sTCP:LISTEN)\nThen run npm run dev again.`);process.exit(1);});
