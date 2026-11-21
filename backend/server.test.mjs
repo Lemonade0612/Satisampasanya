@@ -562,8 +562,11 @@ test('assistant passes the age band to Ask without storing it, and rejects unkno
  const f=await fixture({assistantServices:{classify:async()=> 'ask',check:async()=>{throw Error('unused');},ask:async(text,{band})=>{bands.push(band);return {language:'en',answer:'Tell a trusted adult.',steps:['Stop.','Tell someone.'],question:'',offer:'Paste it here.'};}}});
  try{
   const alice=await f.register();
-  for(const band of ['kids','elder','nonsense',undefined])assert.equal((await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band},alice.token)).status,200);
-  assert.deepEqual(bands,['kids','elder','youth','youth']);
+  for(const band of ['elder','nonsense',undefined])assert.equal((await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band},alice.token)).status,200);
+  assert.deepEqual(bands,['elder','youth','youth']);
+  // A guest-chosen Kids band is refused too, with a bilingual message.
+  const refused=await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band:'kids'},alice.token);
+  assert.equal(refused.status,403);assert.match(refused.value.error,/15/);assert.match(refused.value.error,/[຀-໿]/u);
   // The band sent with a question is never written; only a band the account chose itself is stored.
   assert.equal(f.db.prepare('SELECT age_band FROM users WHERE id=?').get(alice.user.id).age_band,null);
   const stored=JSON.stringify([f.db.prepare('SELECT * FROM users').all(),f.db.prepare('SELECT * FROM assistant_usage').all()]);
@@ -571,8 +574,8 @@ test('assistant passes the age band to Ask without storing it, and rejects unkno
   // An account's own band wins over whatever the request says.
   const kid=(await f.call('/auth/register','POST',{name:'Kid',email:'kid@example.com',password:'correct-password',ageBand:'kids'})).value;
   bands.length=0;
-  assert.equal((await f.call('/assistant','POST',{text:'Is this safe?',kind:'text',band:'adult'},kid.token)).status,200);
-  assert.deepEqual(bands,['kids']);
+  for(const [path,method,body] of [['/assistant','POST',{text:'Is this safe?',kind:'text',band:'adult'}],['/assistant/stream','POST',{text:'Is this safe?'}],['/assistant/usage','GET']]){const r=await f.call(path,method,body,kid.token);assert.equal(r.status,403,path);}
+  assert.deepEqual(bands,[]);
  }finally{await f.close();}
 });
 

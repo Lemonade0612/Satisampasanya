@@ -79,6 +79,7 @@ export default function App() {
   const [guest, setGuest] = useState<null | 'guest' | 'offline'>(() => (readPref(ELDER_GUEST) === '1' ? 'guest' : null));
   const [bandSheet, setBandSheet] = useState(false);
   const bandChosen = useHasBand();
+  const kidsBand = useBand() === 'kids'; // Kids have no AI chat: the server refuses it, so the entry points are hidden.
   const [signupReason, setSignupReason] = useState<SignupReason | null>(null);
   const browsing = !user && guest === 'guest';
   useEffect(() => { if (guest === null) dropPref(ELDER_GUEST); }, [guest]);
@@ -296,7 +297,7 @@ export default function App() {
             lang={lang} 
             posts={posts} 
             onOpenPost={setCommentPostId} 
-            onCheckLink={() => user ? openAssistant() : setSignupReason('assistant')}
+            onCheckLink={kidsBand ? undefined : () => user ? openAssistant() : setSignupReason('assistant')}
             onTopicClick={(topic) => {
               setCustomTopic(topic); setFeedTab(0);
               setView("feed");
@@ -356,7 +357,7 @@ export default function App() {
           onClose={() => setExpandedImage(null)}
         />
       )}
-      {(view === "feed" || view === "explore") && !showAlerts && <AskSatiButton lang={lang} onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
+      {(view === "feed" || view === "explore") && !showAlerts && !kidsBand && <AskSatiButton lang={lang} onClick={() => user ? openAssistant() : setSignupReason('assistant')} />}
       {/* Existing accounts without a band choose once after sign-in; afterwards it opens from the header or Settings. */}
       {(user ? !user.ageBand : !bandChosen) || bandSheet ? <BandSheet lang={lang} onClose={(user ? user.ageBand : bandChosen) ? () => setBandSheet(false) : undefined} onSaved={() => setBandSheet(false)} /> : null}
       {signupReason && !user && <SignupPrompt lang={lang} reason={signupReason} onClose={() => setSignupReason(null)} onDone={u => { setSignupReason(null); setActionError(''); applyUser(u); }} onEmail={() => { setSignupReason(null); setGuest(null); }} />}

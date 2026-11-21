@@ -92,6 +92,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </div>
           </section>
 
+          {onCheckLink && (
           <button type="button" onClick={onCheckLink} className="w-full min-h-[72px] rounded-2xl border border-border bg-background p-3.5 flex items-center gap-3 text-left">
             <span aria-hidden className="w-11 h-11 shrink-0 rounded-xl bg-[#EDE7FB] text-primary flex items-center justify-center"><Link2 size={22} /></span>
             <span className="flex-1 min-w-0">
@@ -100,6 +101,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </span>
             <ChevronRight size={20} aria-hidden className="text-text-muted shrink-0" />
           </button>
+          )}
 
           {ranked.length > 0 && <section>
             <h2 className="flex items-center gap-2 font-bold mb-3"><TrendingUp size={18} className="text-rose-500" aria-hidden />{lo ? "ກຳລັງເປັນກະແສ" : "Trending"}</h2>

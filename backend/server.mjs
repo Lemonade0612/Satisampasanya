@@ -41,6 +41,8 @@ const bandView = (db, row) => {
   const source = original ? JSON.parse(original.data) : null;
   return source ? { ...post, bands: source.bands, intensity: post.intensity ?? source.intensity, tags: [...(post.tags || []), ...(source.tags || [])] } : post;
 };
+// Sati AI chat is for ages 15 and up. Kids get a bilingual 403 on every assistant endpoint.
+const KIDS_CHAT_BLOCKED = 'Sati AI chat is for ages 15 and up. Ask a trusted adult for help. / Sati AI ແມ່ນສຳລັບອາຍຸ 15 ປີຂຶ້ນໄປ. ກະລຸນາຖາມຜູ້ໃຫຍ່ທີ່ໄວ້ໃຈ.'; // REVIEW-LO
 const QUICK_CHARS = 'abcdefghjkmnpqrstuvwxyz23456789', QUICK_CODE = /^sati-[a-z0-9]{6}$/;
 const quickEmail = code => `${code}@quick.sati`;
 const password = value => { if (typeof value !== 'string' || value.length < 8 || value.length > 128) fail('Password must contain 8–128 characters.'); return value; };
@@ -298,17 +300,20 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         return send(res,200,db.prepare('SELECT comments.*,users.name,users.profile FROM comments JOIN users ON users.id=comments.user_id WHERE post_id=? ORDER BY created').all(match[1]).map(r=>({id:r.id,text:r.text,createdAt:r.created,author:authorView({...r,id:r.user_id})})));
       }
       if (!user) fail('Please sign in.',401);
+      if (path.startsWith('/api/assistant') && user.age_band === 'kids') fail(KIDS_CHAT_BLOCKED,403);
       if (req.method === 'GET' && path === '/api/assistant/usage') return send(res,200,assistantUsage(db,user.id));
       if (req.method === 'POST' && path === '/api/assistant') {
         const data=await body(req);
         if(!['text','post'].includes(data.kind)||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
         const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
+        if(askBand==='kids')fail(KIDS_CHAT_BLOCKED,403);
         return send(res,200,await assistantReply(db,user.id,{text:text(data.text,2000,true),kind:data.kind,mode:data.mode||'auto',band:askBand},assistantServices));
       }
       if (req.method === 'POST' && path === '/api/assistant/stream') {
         const data=await body(req);
         if(!['text','post'].includes(data.kind||'text')||!['auto','ask','check'].includes(data.mode||'auto'))fail('Choose a valid check type and mode.');
         const askBand=user.age_band||(isBand(data.band)?data.band:'youth');
+        if(askBand==='kids')fail(KIDS_CHAT_BLOCKED,403);
         const emit=value=>{if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify(value)+'\n');};
         const photo=image(data.image);
         await assistantStream(db,user.id,{text:text(data.text,2000,!photo),image:photo,kind:data.kind||'text',mode:data.mode||'auto',band:askBand,lang:data.lang==='lo'?'lo':'en'},emit,assistantServices.stream?{stream:assistantServices.stream,verify:assistantServices.verify}:assistantServices);
