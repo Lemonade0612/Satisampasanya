@@ -27,10 +27,10 @@ const STRICT = { green: 0, yellow: 1, red: 2 };
 const FROM_AI = { approved: 'green', caution: 'yellow', needs_expert: 'red' };
 export const stricter = (a, b) => (STRICT[a] >= STRICT[b] ? a : b);
 
-// The LLM is asked only when the local result is yellow. When both answer, the stricter verdict wins. Never throws on AI trouble.
+// The LLM is asked unless the local result is red (red goes straight to experts). When both answer, the stricter verdict wins. Never throws on AI trouble.
 export async function screenWithAI(text, { llm, model } = {}) {
   const local = screenText(text, { model });
-  if (local.status !== 'yellow' || !llm) return { ...local, ai: null, finalStatus: local.status };
+  if (local.status === 'red' || !llm) return { ...local, ai: null, finalStatus: local.status };
   try {
     const ai = await llm(text), aiStatus = FROM_AI[ai?.verdict] ?? 'yellow';
     const status = stricter(local.status, aiStatus);

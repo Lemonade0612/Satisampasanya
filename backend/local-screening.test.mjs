@@ -27,13 +27,13 @@ test('B4/B6: output shape, strictness and context', () => {
   assert.equal(screenText('We are hiring a cashier. Apply by email with your CV and visit our office.').status, 'green');
   assert.ok(screenText('DM me').scores.private_contact >= 0);
 });
-test('B6: the AI is called only for yellow, and the stricter verdict wins; AI errors never throw', async () => {
+test('B6: the AI is asked for green and yellow but never for red, and the stricter verdict wins; AI errors never throw', async () => {
   let calls = 0; const llm = verdict => async () => { calls++; return { verdict, labels: [], summary: 's' }; };
-  const green = await screenWithAI('Good morning everyone', { llm: llm('needs_expert') }); assert.equal(green.finalStatus, 'green'); assert.equal(calls, 0);
-  const red = await screenWithAI('Send a deposit of 500000 kip first to secure your visa', { llm: llm('approved') }); assert.equal(red.finalStatus, 'red'); assert.equal(calls, 0);
+  const green = await screenWithAI('Good morning everyone', { llm: llm('needs_expert') }); assert.equal(green.finalStatus, 'red'); assert.equal(calls, 1);
+  const red = await screenWithAI('Send a deposit of 500000 kip first to secure your visa', { llm: llm('approved') }); assert.equal(red.finalStatus, 'red'); assert.equal(calls, 1);
   const yellowText = rows.map(r => r.text).find(t => screenText(t).status === 'yellow'); assert.ok(yellowText, 'dataset has a yellow example');
-  const upgraded = await screenWithAI(yellowText, { llm: llm('needs_expert') }); assert.equal(upgraded.finalStatus, 'red'); assert.equal(calls, 1);
-  const kept = await screenWithAI(yellowText, { llm: llm('approved') }); assert.equal(kept.finalStatus, 'yellow'); assert.equal(calls, 2);
+  const upgraded = await screenWithAI(yellowText, { llm: llm('needs_expert') }); assert.equal(upgraded.finalStatus, 'red'); assert.equal(calls, 2);
+  const kept = await screenWithAI(yellowText, { llm: llm('approved') }); assert.equal(kept.finalStatus, 'yellow'); assert.equal(calls, 3);
   const broken = await screenWithAI(yellowText, { llm: async () => { throw new Error('down'); } }); assert.equal(broken.finalStatus, 'yellow'); assert.equal(broken.ai.error, true);
 });
 test('B7: dev holdout meets the targets (recall per category >= 95%, false positives <= 10%)', () => {
@@ -75,4 +75,29 @@ test('B8: Lao text keeps the old AI-only path, unchanged', async () => {
   // checkPost with an injected checker behaves exactly as before for Lao and English.
   const calls = []; const post = { content: 'English', contentLo: lao, contentLanguage: 'lo', tags: [] };
   await checkPost(post, { check: async t => { calls.push(t); return stub; } }); assert.ok(calls.includes(lao)); assert.equal(post.check, stub);
+});
+
+test('routing: green asks the AI when a provider is configured; stricter wins', async () => {
+  const text = 'Good morning everyone, remember to check official sources before applying for a scholarship';
+  let calls = 0; const stub = v => async () => { calls++; return { verdict: v, risk: v === 'approved' ? 'low' : 'high', labels: ['scam_risk'], on_topic: true, reasons: [], suggested_edit: '', summary: 'ai', language: 'en', checkedAt: 1 }; };
+  const up = await localFirstCheck(text, { llm: stub('needs_expert'), ai: true }); assert.equal(calls, 1); assert.equal(up.verdict, 'needs_expert');
+  const same = await localFirstCheck(text, { llm: stub('approved'), ai: true }); assert.equal(calls, 2); assert.equal(same.verdict, 'approved'); assert.ok(!same.unverified);
+});
+test('routing: local red goes to experts with no AI call', async () => {
+  let calls = 0; const r = await localFirstCheck('Send a deposit of 500000 kip first to secure your visa job in Cambodia', { llm: async () => { calls++; return { verdict: 'approved', risk: 'low' }; }, ai: true });
+  assert.equal(r.verdict, 'needs_expert'); assert.equal(calls, 0);
+});
+test('routing: no provider keeps the local result and marks green as unverified', async () => {
+  let calls = 0; const llm = async () => { calls++; throw new Error('must not be called'); };
+  const g = await localFirstCheck('Good morning everyone, have a nice day', { llm, ai: false }); assert.equal(g.verdict, 'approved'); assert.equal(g.unverified, true); assert.equal(calls, 0);
+  const y = rows.map(r => r.text).find(t => screenText(t).status === 'yellow');
+  const yr = await localFirstCheck(y, { llm, ai: false }); assert.equal(yr.verdict, 'caution'); assert.ok(!yr.unverified);
+});
+test('routing: an AI failure falls back to the local result, green stays unverified', async () => {
+  const boom = async () => { throw new Error('down'); };
+  const g = await localFirstCheck('Good morning everyone, have a nice day', { llm: boom, ai: true }); assert.equal(g.verdict, 'approved'); assert.equal(g.unverified, true);
+});
+test('routing: mock provider counts as no provider', async () => {
+  const old = process.env.AI_PROVIDER; process.env.AI_PROVIDER = 'mock';
+  try { const { aiAvailable } = await import('./screening/local-check.mjs'); assert.equal(aiAvailable(), false); } finally { old === undefined ? delete process.env.AI_PROVIDER : process.env.AI_PROVIDER = old; }
 });
