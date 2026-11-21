@@ -15,3 +15,9 @@ translation/cache
 translation/__pycache__
 
 deployment/*.env
+android
+docs/screenshots
+**/node_modules
+*.log
+backend/Dockerfile
+docker-compose.yml

@@ -1,0 +1,49 @@
+# Full dev stack:        docker compose up
+# With a public tunnel:  docker compose --profile tunnel up
+# The iOS Simulator and Android emulator cannot run in Docker; they run on the host and talk to the backend container (see DEPLOY.md).
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      PORT: "3001"
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+      AI_PROVIDER: ${AI_PROVIDER:-mock}
+    ports:
+      - "${API_PORT:-3001}:3001"
+    volumes:
+      - sati-data:/data
+    restart: unless-stopped
+
+  frontend-dev:
+    image: node:24-alpine
+    working_dir: /app
+    command: sh -c "npm ci --no-audit --no-fund && npx vite --host 0.0.0.0 --port 5173"
+    environment:
+      VITE_API_URL: http://localhost:${API_PORT:-3001}/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules   # installed inside the container, so native modules match Linux and installs are cached
+    depends_on:
+      - backend
+
+  # Optional public tunnel, off by default. Needs CLOUDFLARE_TUNNEL_TOKEN (named tunnel) in .env. Quick test: see DEPLOY.md.
+  cloudflared:
+    profiles: ["tunnel"]
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:-}
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  sati-data:
+  node_modules:

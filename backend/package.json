@@ -6,5 +6,12 @@
     "dev": "npm --prefix .. run dev:all",
     "start": "npm --prefix .. run backend",
     "test": "npm --prefix .. run test"
+  },
+  "dependencies": {
+    "mongodb": "^7.7.0",
+    "tldts": "^7.0.1"
+  },
+  "engines": {
+    "node": ">=24"
   }
 }
