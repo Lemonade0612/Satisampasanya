@@ -1,6 +1,6 @@
 # Release report: release/sati-v3
 
-Branch `release/sati-v3` (worktree `../sati-release`, from the committed HEAD of `feat/local-screening`, 6d0e0f7). PR into `develop`: see the link at the bottom.
+Branch `release/sati-v3` (worktree `../sati-release`, from the committed HEAD of `feat/local-screening`, 6d0e0f7). PR into `develop`: **not opened** (the `gh` CLI is not signed in on this machine). Open it here: https://github.com/Lemonade0612/Satisampasanya/compare/develop...release/sati-v3?expand=1
 
 ## 1. Summary
 
@@ -232,7 +232,8 @@ The `cloudflared` service (profile `tunnel`) was not started: no tunnel token.
 8. The Lao strings I added (`// REVIEW-LO`): kids-chat refusal, reset email, mock answers, mock check text. They need a native-speaker pass.
 9. Screening needs real posts: replace the synthetic dataset, re-run `npm run screen:train`, and re-measure before relying on a local green.
 10. Follow-up: SMTP for password reset (A9).
-11. `/api/features` still reports `translationProvider: OpenAI` when `AI_PROVIDER=mock` (cosmetic).
+11. **PR not opened:** run `gh auth login`, or use the compare link in section 1. The branch is pushed.
+12. `/api/features` still reports `translationProvider: OpenAI` when `AI_PROVIDER=mock` (cosmetic).
 
 ## 5. Production deploy checklist
 
