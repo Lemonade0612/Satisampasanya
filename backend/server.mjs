@@ -178,7 +178,11 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         fail('Route not found.',404);
       }
       if (req.method === 'GET' && path === '/api/features') return send(res,200,{automaticTranslation:translationEnabled()||modelConfigured(),translationProvider:translationEnabled()?'NLLB-200':modelConfigured()?'OpenAI':'none',screening:modelConfigured()?'ai':'unavailable',assistant:modelConfigured()});
-      if (req.method === 'GET' && path === '/api/health') return send(res, 200, { ok:true });
+      // /health is the container and tunnel probe. It runs a real DB query, so a broken database fails the probe (503).
+      if (req.method === 'GET' && (path === '/api/health' || path === '/health')) {
+        let dbOk = false; try { dbOk = db.prepare('SELECT 1 AS ok').get().ok === 1; } catch {}
+        return send(res, dbOk ? 200 : 503, { ok: dbOk, db: dbOk ? 'ok' : 'error', ai: process.env.AI_PROVIDER || (modelConfigured() ? 'configured' : 'none'), uptime: Math.round(process.uptime()) });
+      }
       // Public: approved, unexpired curated posts (Posts / ຂ່າວສານ). Pending and rejected posts never leave the server.
       if (req.method === 'GET' && path === '/api/curated') return send(res,200,publicCurated(db));
       // Public: live scenarios for one age band only. Drafts, approved-but-unpublished and rejected rows never leave the server.

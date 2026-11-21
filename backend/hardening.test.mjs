@@ -48,3 +48,10 @@ test('A4: env origins add to the defaults', async () => {
     assert.equal((await f.call('/api/health', { headers: { Origin: 'https://app.example.org' } })).status, 200);
   } finally { await f.close(); }
 });
+test('A5: /health and /api/health report DB status', async () => {
+  const f = await start(); try {
+    for (const path of ['/health', '/api/health']) { const r = await f.call(path); assert.equal(r.status, 200); assert.equal(r.value.ok, true); assert.equal(r.value.db, 'ok'); }
+    f.db.close();
+    assert.equal((await f.call('/health')).status, 503);
+  } finally { f.server.closeAllConnections(); await new Promise(r => f.server.close(r)); }
+});
