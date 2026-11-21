@@ -300,6 +300,15 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
       }
       if (!user) fail('Please sign in.',401);
       if (path.startsWith('/api/assistant') && user.age_band === 'kids') fail(KIDS_CHAT_BLOCKED,403);
+      // Poll endpoint for the screening progress of the caller's own post: queued -> checking -> done.
+      const statusMatch = /^\/api\/posts\/([^/]+)\/check-status$/.exec(path);
+      if (req.method === 'GET' && statusMatch) {
+        const row = db.prepare('SELECT id,user_id,data FROM posts WHERE id=?').get(statusMatch[1]);
+        if (!row || row.user_id !== user.id) fail('Post not found.', 404); // not the owner: same answer as a missing post (no IDOR)
+        const post = JSON.parse(row.data), checking = interactionChecks.has(row.id);
+        const done = !!(post.check || post.review), status = done ? 'done' : checking ? 'checking' : 'queued';
+        return send(res, 200, { id: row.id, status, progress: done ? 100 : checking ? 50 : 0, state: post.state ?? null, stage: post.screeningStage ?? null, verdict: post.check?.verdict ?? null, underExpertReview: post.screeningStage === 'expert_review', expertReviewDeadline: post.expertReviewDeadline ?? null });
+      }
       if (req.method === 'GET' && path === '/api/assistant/usage') return send(res,200,assistantUsage(db,user.id));
       if (req.method === 'POST' && path === '/api/assistant') {
         const data=await body(req);
