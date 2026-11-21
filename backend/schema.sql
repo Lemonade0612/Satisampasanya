@@ -41,3 +41,7 @@ CREATE TABLE IF NOT EXISTS sati_feedback (id TEXT PRIMARY KEY, user_id TEXT, vot
 -- Website feedback (POST /api/feedback). Additive: safe to apply on an existing database.
 CREATE TABLE IF NOT EXISTS feedback (id TEXT PRIMARY KEY, user_id TEXT, name TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', message TEXT NOT NULL, page TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'lo', created INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS feedback_created ON feedback(created DESC);
+
+-- Anonymous scam-check counts (POST /api/reports). No message text, no user id.
+CREATE TABLE IF NOT EXISTS scam_reports (id TEXT PRIMARY KEY, category TEXT NOT NULL, verdict TEXT NOT NULL CHECK(verdict IN ('green','yellow','red')), band TEXT NOT NULL CHECK(band IN ('kids','youth','adult','elder')), created INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS scam_reports_created ON scam_reports(created DESC, category);
