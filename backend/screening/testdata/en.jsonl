@@ -1,0 +1,957 @@
+{"id":"en-0001","text":"What the fuck is wrong with this app","labels":["profanity"],"tier":"obvious","group":"profanity-0","split":"train"}
+{"id":"en-0002","text":"This is bullshit, fix your damn system","labels":["profanity"],"tier":"obvious","group":"profanity-1","split":"train"}
+{"id":"en-0003","text":"You are an asshole and so is your admin","labels":["profanity"],"tier":"obvious","group":"profanity-2","split":"train"}
+{"id":"en-0004","text":"Shut the fuck up already","labels":["profanity"],"tier":"obvious","group":"profanity-3","split":"train"}
+{"id":"en-0005","text":"holy shit this post is trash","labels":["profanity"],"tier":"obvious","group":"profanity-4","split":"holdout"}
+{"id":"en-0006","text":"Go to hell you piece of shit","labels":["profanity"],"tier":"obvious","group":"profanity-5","split":"train"}
+{"id":"en-0007","text":"Who the fuck approved this garbage","labels":["profanity"],"tier":"obvious","group":"profanity-6","split":"train"}
+{"id":"en-0008","text":"Stop being such a dickhead","labels":["profanity"],"tier":"obvious","group":"profanity-7","split":"train"}
+{"id":"en-0009","text":"wtf is this crap, stfu everyone","labels":["profanity"],"tier":"obvious","group":"profanity-8","split":"train"}
+{"id":"en-0010","text":"Fucking useless people","labels":["profanity"],"tier":"obvious","group":"profanity-9","split":"holdout"}
+{"id":"en-0011","text":"That is some serious bullshit if you ask me","labels":["profanity"],"tier":"subtle","group":"profanity-10","split":"train"}
+{"id":"en-0012","text":"Pissed off at this whole thing, what a crock of shit","labels":["profanity"],"tier":"subtle","group":"profanity-11","split":"train"}
+{"id":"en-0013","text":"ugh whatever, this group is full of dumbasses","labels":["profanity"],"tier":"subtle","group":"profanity-12","split":"train"}
+{"id":"en-0014","text":"He is such a jackass about it","labels":["profanity"],"tier":"subtle","group":"profanity-13","split":"train"}
+{"id":"en-0015","text":"Damn this crap, I am so done with you people","labels":["profanity"],"tier":"subtle","group":"profanity-14","split":"holdout"}
+{"id":"en-0016","text":"screw you and your rules honestly","labels":["profanity"],"tier":"subtle","group":"profanity-15","split":"train"}
+{"id":"en-0017","text":"so f*cking annoying, seriously","labels":["profanity"],"tier":"subtle","group":"profanity-16","split":"train"}
+{"id":"en-0018","text":"sh*t like this makes me furious","labels":["profanity"],"tier":"subtle","group":"profanity-17","split":"train"}
+{"id":"en-0019","text":"not gonna lie, you are a bit of a prick","labels":["profanity"],"tier":"subtle","group":"profanity-18","split":"train"}
+{"id":"en-0020","text":"Total bastard move from the admin","labels":["profanity"],"tier":"subtle","group":"profanity-19","split":"holdout"}
+{"id":"en-0021","text":"What the fuck is wrong with this app ທັກມາເລີຍ","labels":["profanity"],"tier":"disguised","group":"profanity-0","split":"train","transform":"mixedLao"}
+{"id":"en-0022","text":"T h i s is bullshit, fix your damn s y s t e m","labels":["profanity"],"tier":"disguised","group":"profanity-1","split":"train","transform":"spaced"}
+{"id":"en-0023","text":"You are an a​s​s​h​o​l​e and so is y​o​u​r a​d​m​i​n","labels":["profanity"],"tier":"disguised","group":"profanity-2","split":"train","transform":"zerowidth"}
+{"id":"en-0024","text":"Shut the fuck up aleady","labels":["profanity"],"tier":"disguised","group":"profanity-3","split":"train","transform":"typos"}
+{"id":"en-0025","text":"holy shit t*is post is t*ash","labels":["profanity"],"tier":"disguised","group":"profanity-4","split":"holdout","transform":"masked"}
+{"id":"en-0026","text":"Go to hell you piece of s.h.i.t","labels":["profanity"],"tier":"disguised","group":"profanity-5","split":"train","transform":"dotted"}
+{"id":"en-0027","text":"WHO THE FUCK APPROVED THIS GARBAGE!!!","labels":["profanity"],"tier":"disguised","group":"profanity-6","split":"train","transform":"caps"}
+{"id":"en-0028","text":"Stop beingggg such a dickheadddd","labels":["profanity"],"tier":"disguised","group":"profanity-7","split":"train","transform":"repeat"}
+{"id":"en-0029","text":"wtf is 7hi5 crap, s7fu 3very0ne","labels":["profanity"],"tier":"disguised","group":"profanity-8","split":"train","transform":"leet"}
+{"id":"en-0030","text":"Fuсkіng usеlеss реорlе","labels":["profanity"],"tier":"disguised","group":"profanity-9","split":"holdout","transform":"homoglyph"}
+{"id":"en-0031","text":"‼️ That is some serious bullshit if you ask me 💰✅","labels":["profanity"],"tier":"disguised","group":"profanity-10","split":"train","transform":"emoji"}
+{"id":"en-0032","text":"Pissed off at this whole thing, what a crock of shit ທັກມາເລີຍ","labels":["profanity"],"tier":"disguised","group":"profanity-11","split":"train","transform":"mixedLao"}
+{"id":"en-0033","text":"ugh whatever, t h i s g r o u p is full of dumbasses","labels":["profanity"],"tier":"disguised","group":"profanity-12","split":"train","transform":"spaced"}
+{"id":"en-0034","text":"He is s​u​c​h a j​a​c​k​a​s​s a​b​o​u​t it","labels":["profanity"],"tier":"disguised","group":"profanity-13","split":"train","transform":"zerowidth"}
+{"id":"en-0035","text":"Damn this crap, I am so done with you peple","labels":["profanity"],"tier":"disguised","group":"profanity-14","split":"holdout","transform":"typos"}
+{"id":"en-0036","text":"s*rew you and y*ur rules honestly","labels":["profanity"],"tier":"disguised","group":"profanity-15","split":"train","transform":"masked"}
+{"id":"en-0037","text":"so f*cking annoying, s.e.r.i.o.u.s.l.y","labels":["profanity"],"tier":"disguised","group":"profanity-16","split":"train","transform":"dotted"}
+{"id":"en-0038","text":"SH*T LIKE THIS MAKES ME FURIOUS!!!","labels":["profanity"],"tier":"disguised","group":"profanity-17","split":"train","transform":"caps"}
+{"id":"en-0039","text":"not gonnaaaa lie, you are a bit of a prickkkk","labels":["profanity"],"tier":"disguised","group":"profanity-18","split":"train","transform":"repeat"}
+{"id":"en-0040","text":"Total b4stard move from the 4dm1n","labels":["profanity"],"tier":"disguised","group":"profanity-19","split":"holdout","transform":"leet"}
+{"id":"en-0041","text":"What the fuck is wrong with thіs app","labels":["profanity"],"tier":"disguised","group":"profanity-0","split":"train","transform":"homoglyph"}
+{"id":"en-0042","text":"🔥 This is bullshit, fix your damn system 👇‼️","labels":["profanity"],"tier":"disguised","group":"profanity-1","split":"train","transform":"emoji"}
+{"id":"en-0043","text":"You are an asshole and so is your admin ຂອບໃຈ","labels":["profanity"],"tier":"disguised","group":"profanity-2","split":"train","transform":"mixedLao"}
+{"id":"en-0044","text":"S h u t the fuck up a l r e a d y","labels":["profanity"],"tier":"disguised","group":"profanity-3","split":"train","transform":"spaced"}
+{"id":"en-0045","text":"holy shit t​h​i​s p​o​s​t is t​r​a​s​h","labels":["profanity"],"tier":"disguised","group":"profanity-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0046","text":"Go to hell you pice of shit","labels":["profanity"],"tier":"disguised","group":"profanity-5","split":"train","transform":"typos"}
+{"id":"en-0047","text":"Who the f*ck approved this g*rbage","labels":["profanity"],"tier":"disguised","group":"profanity-6","split":"train","transform":"masked"}
+{"id":"en-0048","text":"Stop b.e.i.n.g such a dickhead","labels":["profanity"],"tier":"disguised","group":"profanity-7","split":"train","transform":"dotted"}
+{"id":"en-0049","text":"WTF IS THIS CRAP, STFU EVERYONE!!!","labels":["profanity"],"tier":"disguised","group":"profanity-8","split":"train","transform":"caps"}
+{"id":"en-0050","text":"Fuckingggg uselesssss people","labels":["profanity"],"tier":"disguised","group":"profanity-9","split":"holdout","transform":"repeat"}
+{"id":"en-0051","text":"You are a pig, nobody wants you here","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-0","split":"train"}
+{"id":"en-0052","text":"Those people are like dogs, they breed everywhere","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-1","split":"train"}
+{"id":"en-0053","text":"stupid buffalo, learn to read","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-2","split":"train"}
+{"id":"en-0054","text":"You dirty monkey go back to the jungle","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-3","split":"train"}
+{"id":"en-0055","text":"He is a snake and a rat, stay away","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-4","split":"holdout"}
+{"id":"en-0056","text":"Look at this fat pig trying to dance","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-5","split":"train"}
+{"id":"en-0057","text":"son of a dog, you will pay","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-6","split":"train"}
+{"id":"en-0058","text":"These villagers are animals","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-7","split":"train"}
+{"id":"en-0059","text":"you worthless cockroach","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-8","split":"train"}
+{"id":"en-0060","text":"What a donkey, cannot even count","labels":["animal_insults"],"tier":"obvious","group":"animal_insults-9","split":"holdout"}
+{"id":"en-0061","text":"honestly she acts like a total cow lately","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-10","split":"train"}
+{"id":"en-0062","text":"He has the brain of a buffalo, no offense","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-11","split":"train"}
+{"id":"en-0063","text":"you are such a rat for telling the teacher","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-12","split":"train"}
+{"id":"en-0064","text":"They behave like monkeys in that class","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-13","split":"train"}
+{"id":"en-0065","text":"my classmate is a pig, eats like one too","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-14","split":"holdout"}
+{"id":"en-0066","text":"That boy is basically a dog, follows the boss everywhere","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-15","split":"train"}
+{"id":"en-0067","text":"what a worm, hiding behind a fake account","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-16","split":"train"}
+{"id":"en-0068","text":"People like that are parasites, plain and simple","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-17","split":"train"}
+{"id":"en-0069","text":"you little rat, I saw what you did","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-18","split":"train"}
+{"id":"en-0070","text":"Acting like a goat in front of everyone, so embarrassing","labels":["animal_insults"],"tier":"subtle","group":"animal_insults-19","split":"holdout"}
+{"id":"en-0071","text":"You are a pig, nоbodу wаnts you hеrе","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-0","split":"train","transform":"homoglyph"}
+{"id":"en-0072","text":"🔥 Those people are like dogs, they breed everywhere 📢‼️","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-1","split":"train","transform":"emoji"}
+{"id":"en-0073","text":"stupid buffalo, learn to read ສະບາຍດີ","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-2","split":"train","transform":"mixedLao"}
+{"id":"en-0074","text":"You dirty monkey go b a c k to the j u n g l e","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-3","split":"train","transform":"spaced"}
+{"id":"en-0075","text":"He is a s​n​a​k​e and a rat, s​t​a​y a​w​a​y","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0076","text":"Look at this fat pig tring to dace","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-5","split":"train","transform":"typos"}
+{"id":"en-0077","text":"son of a dog, you w*ll pay","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-6","split":"train","transform":"masked"}
+{"id":"en-0078","text":"These villagers are a.n.i.m.a.l.s","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-7","split":"train","transform":"dotted"}
+{"id":"en-0079","text":"YOU WORTHLESS COCKROACH!!!","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-8","split":"train","transform":"caps"}
+{"id":"en-0080","text":"Whatttt a donkey, cannotttt even count","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-9","split":"holdout","transform":"repeat"}
+{"id":"en-0081","text":"honestly she 4c75 like a 707al cow lately","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-10","split":"train","transform":"leet"}
+{"id":"en-0082","text":"He has the brаіn of a buffalo, no offеnsе","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-11","split":"train","transform":"homoglyph"}
+{"id":"en-0083","text":"‼️ you are such a rat for telling the teacher 💰🚨","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-12","split":"train","transform":"emoji"}
+{"id":"en-0084","text":"They behave like monkeys in that class ທັກມາເລີຍ","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-13","split":"train","transform":"mixedLao"}
+{"id":"en-0085","text":"my c l a s s m a t e is a pig, eats l i k e one too","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-14","split":"holdout","transform":"spaced"}
+{"id":"en-0086","text":"That boy is b​a​s​i​c​a​l​l​y a dog, follows the b​o​s​s e​v​e​r​y​w​h​e​r​e","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-15","split":"train","transform":"zerowidth"}
+{"id":"en-0087","text":"what a worm, hiing beind a fake account","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-16","split":"train","transform":"typos"}
+{"id":"en-0088","text":"People like t*at are parasites, plain and s*mple","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-17","split":"train","transform":"masked"}
+{"id":"en-0089","text":"you l.i.t.t.l.e rat, I saw what you did","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-18","split":"train","transform":"dotted"}
+{"id":"en-0090","text":"ACTING LIKE A GOAT IN FRONT OF EVERYONE, SO EMBARRASSING!!!","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-19","split":"holdout","transform":"caps"}
+{"id":"en-0091","text":"You are a pig, nobodyyyy wantssss you here","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-0","split":"train","transform":"repeat"}
+{"id":"en-0092","text":"7hose peopl3 are like dogs, 7h3y breed everywhere","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-1","split":"train","transform":"leet"}
+{"id":"en-0093","text":"stuріd buffalo, lеarn to rеаd","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-2","split":"train","transform":"homoglyph"}
+{"id":"en-0094","text":"💰 You dirty monkey go back to the jungle 💰✅","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-3","split":"train","transform":"emoji"}
+{"id":"en-0095","text":"He is a snake and a rat, stay away ເງິນດີ","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-4","split":"holdout","transform":"mixedLao"}
+{"id":"en-0096","text":"Look at this fat pig t r y i n g to d a n c e","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-5","split":"train","transform":"spaced"}
+{"id":"en-0097","text":"son of a dog, you w​i​l​l pay","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-6","split":"train","transform":"zerowidth"}
+{"id":"en-0098","text":"Thse vilagers are anmals","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-7","split":"train","transform":"typos"}
+{"id":"en-0099","text":"you w*rthless c*ckroach","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-8","split":"train","transform":"masked"}
+{"id":"en-0100","text":"What a donkey, cannot e.v.e.n count","labels":["animal_insults"],"tier":"disguised","group":"animal_insults-9","split":"holdout","transform":"dotted"}
+{"id":"en-0101","text":"Nobody likes you, just leave the group","labels":["bullying"],"tier":"obvious","group":"bullying-0","split":"train"}
+{"id":"en-0102","text":"kill yourself, no one would miss you","labels":["bullying"],"tier":"obvious","group":"bullying-1","split":"train"}
+{"id":"en-0103","text":"You are so ugly and fat, everyone laughs at you","labels":["bullying"],"tier":"obvious","group":"bullying-2","split":"train"}
+{"id":"en-0104","text":"I will find you after school and beat you","labels":["bullying"],"tier":"obvious","group":"bullying-3","split":"train"}
+{"id":"en-0105","text":"Everyone hates you, you loser","labels":["bullying"],"tier":"obvious","group":"bullying-4","split":"holdout"}
+{"id":"en-0106","text":"go die loser","labels":["bullying"],"tier":"obvious","group":"bullying-5","split":"train"}
+{"id":"en-0107","text":"You are worthless and pathetic","labels":["bullying"],"tier":"obvious","group":"bullying-6","split":"train"}
+{"id":"en-0108","text":"We are all going to expose you tomorrow","labels":["bullying"],"tier":"obvious","group":"bullying-7","split":"train"}
+{"id":"en-0109","text":"Stay away from us, freak","labels":["bullying"],"tier":"obvious","group":"bullying-8","split":"train"}
+{"id":"en-0110","text":"Nobody cares about you, why are you even here","labels":["bullying"],"tier":"obvious","group":"bullying-9","split":"holdout"}
+{"id":"en-0111","text":"Funny how nobody invited her to the party again","labels":["bullying"],"tier":"subtle","group":"bullying-10","split":"train"}
+{"id":"en-0112","text":"Everyone should just ignore him, he is so weird","labels":["bullying"],"tier":"subtle","group":"bullying-11","split":"train"}
+{"id":"en-0113","text":"she thinks she is pretty but we all know the truth lol","labels":["bullying"],"tier":"subtle","group":"bullying-12","split":"train"}
+{"id":"en-0114","text":"Don't play with her, she smells","labels":["bullying"],"tier":"subtle","group":"bullying-13","split":"train"}
+{"id":"en-0115","text":"let us all make fun of his new haircut tomorrow","labels":["bullying"],"tier":"subtle","group":"bullying-14","split":"holdout"}
+{"id":"en-0116","text":"He cried again, what a baby, screenshot it and share","labels":["bullying"],"tier":"subtle","group":"bullying-15","split":"train"}
+{"id":"en-0117","text":"Maybe if you were less annoying people would talk to you","labels":["bullying"],"tier":"subtle","group":"bullying-16","split":"train"}
+{"id":"en-0118","text":"Poor thing, still has no friends, so sad","labels":["bullying"],"tier":"subtle","group":"bullying-17","split":"train"}
+{"id":"en-0119","text":"We should all unfollow him and see how he copes","labels":["bullying"],"tier":"subtle","group":"bullying-18","split":"train"}
+{"id":"en-0120","text":"You are such a failure, your parents must be ashamed","labels":["bullying"],"tier":"subtle","group":"bullying-19","split":"holdout"}
+{"id":"en-0121","text":"Nobody likes you, justttt leaveeee the group","labels":["bullying"],"tier":"disguised","group":"bullying-0","split":"train","transform":"repeat"}
+{"id":"en-0122","text":"k1ll yourself, no one w0uld m155 you","labels":["bullying"],"tier":"disguised","group":"bullying-1","split":"train","transform":"leet"}
+{"id":"en-0123","text":"You are so ugly and fat, еverуоnе laughs at you","labels":["bullying"],"tier":"disguised","group":"bullying-2","split":"train","transform":"homoglyph"}
+{"id":"en-0124","text":"‼️ I will find you after school and beat you 🚨🚨","labels":["bullying"],"tier":"disguised","group":"bullying-3","split":"train","transform":"emoji"}
+{"id":"en-0125","text":"ທັກມາເລີຍ Everyone hates you, you loser","labels":["bullying"],"tier":"disguised","group":"bullying-4","split":"holdout","transform":"mixedLao"}
+{"id":"en-0126","text":"go die l o s e r","labels":["bullying"],"tier":"disguised","group":"bullying-5","split":"train","transform":"spaced"}
+{"id":"en-0127","text":"You are w​o​r​t​h​l​e​s​s and p​a​t​h​e​t​i​c","labels":["bullying"],"tier":"disguised","group":"bullying-6","split":"train","transform":"zerowidth"}
+{"id":"en-0128","text":"We are all gong to exose you toorrow","labels":["bullying"],"tier":"disguised","group":"bullying-7","split":"train","transform":"typos"}
+{"id":"en-0129","text":"S*ay away from us, f*eak","labels":["bullying"],"tier":"disguised","group":"bullying-8","split":"train","transform":"masked"}
+{"id":"en-0130","text":"Nobody c.a.r.e.s about you, why are you even here","labels":["bullying"],"tier":"disguised","group":"bullying-9","split":"holdout","transform":"dotted"}
+{"id":"en-0131","text":"FUNNY HOW NOBODY INVITED HER TO THE PARTY AGAIN!!!","labels":["bullying"],"tier":"disguised","group":"bullying-10","split":"train","transform":"caps"}
+{"id":"en-0132","text":"Everyoneeee should justttt ignore him, he is so weird","labels":["bullying"],"tier":"disguised","group":"bullying-11","split":"train","transform":"repeat"}
+{"id":"en-0133","text":"she th1nk5 she is pretty but we all know the 7ru7h lol","labels":["bullying"],"tier":"disguised","group":"bullying-12","split":"train","transform":"leet"}
+{"id":"en-0134","text":"Don't рlaу wіth her, she smеlls","labels":["bullying"],"tier":"disguised","group":"bullying-13","split":"train","transform":"homoglyph"}
+{"id":"en-0135","text":"✅ let us all make fun of his new haircut tomorrow ✅😍","labels":["bullying"],"tier":"disguised","group":"bullying-14","split":"holdout","transform":"emoji"}
+{"id":"en-0136","text":"He cried again, what a baby, screenshot it and share ລະວັງ","labels":["bullying"],"tier":"disguised","group":"bullying-15","split":"train","transform":"mixedLao"}
+{"id":"en-0137","text":"Maybe if you were l e s s annoying people would t a l k to you","labels":["bullying"],"tier":"disguised","group":"bullying-16","split":"train","transform":"spaced"}
+{"id":"en-0138","text":"P​o​o​r thing, s​t​i​l​l has no friends, so sad","labels":["bullying"],"tier":"disguised","group":"bullying-17","split":"train","transform":"zerowidth"}
+{"id":"en-0139","text":"We shuld all unollow him and see how he coes","labels":["bullying"],"tier":"disguised","group":"bullying-18","split":"train","transform":"typos"}
+{"id":"en-0140","text":"You are such a failure, your parents m*st be a*hamed","labels":["bullying"],"tier":"disguised","group":"bullying-19","split":"holdout","transform":"masked"}
+{"id":"en-0141","text":"Nobody likes you, just leave the g.r.o.u.p","labels":["bullying"],"tier":"disguised","group":"bullying-0","split":"train","transform":"dotted"}
+{"id":"en-0142","text":"KILL YOURSELF, NO ONE WOULD MISS YOU!!!","labels":["bullying"],"tier":"disguised","group":"bullying-1","split":"train","transform":"caps"}
+{"id":"en-0143","text":"You are so uglyyyy and fat, everyone laughssss at you","labels":["bullying"],"tier":"disguised","group":"bullying-2","split":"train","transform":"repeat"}
+{"id":"en-0144","text":"I will f1nd you after scho0l and b347 you","labels":["bullying"],"tier":"disguised","group":"bullying-3","split":"train","transform":"leet"}
+{"id":"en-0145","text":"еveryоne hаtes you, you losеr","labels":["bullying"],"tier":"disguised","group":"bullying-4","split":"holdout","transform":"homoglyph"}
+{"id":"en-0146","text":"👇 go die loser 🔥💰","labels":["bullying"],"tier":"disguised","group":"bullying-5","split":"train","transform":"emoji"}
+{"id":"en-0147","text":"You are worthless and pathetic ທັກມາເລີຍ","labels":["bullying"],"tier":"disguised","group":"bullying-6","split":"train","transform":"mixedLao"}
+{"id":"en-0148","text":"We are all g o i n g to e x p o s e you tomorrow","labels":["bullying"],"tier":"disguised","group":"bullying-7","split":"train","transform":"spaced"}
+{"id":"en-0149","text":"S​t​a​y a​w​a​y f​r​o​m us, freak","labels":["bullying"],"tier":"disguised","group":"bullying-8","split":"train","transform":"zerowidth"}
+{"id":"en-0150","text":"Noody cares abut you, why are you even here","labels":["bullying"],"tier":"disguised","group":"bullying-9","split":"holdout","transform":"typos"}
+{"id":"en-0151","text":"All Hmong people are criminals and thieves","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-0","split":"train"}
+{"id":"en-0152","text":"Muslims should be banned from this country","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-1","split":"train"}
+{"id":"en-0153","text":"Go back to your country, you are not welcome in Laos","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-2","split":"train"}
+{"id":"en-0154","text":"Those Vietnamese are dirty and lazy","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-3","split":"train"}
+{"id":"en-0155","text":"Gays are a disease and should be removed","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-4","split":"holdout"}
+{"id":"en-0156","text":"Women belong in the kitchen, they are stupid","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-5","split":"train"}
+{"id":"en-0157","text":"The Chinese are vermin, wipe them out","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-6","split":"train"}
+{"id":"en-0158","text":"foreigners ruin everything, deport them all","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-7","split":"train"}
+{"id":"en-0159","text":"These blacks are subhuman","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-8","split":"train"}
+{"id":"en-0160","text":"Disabled people are a burden and inferior","labels":["hate_speech"],"tier":"obvious","group":"hate_speech-9","split":"holdout"}
+{"id":"en-0161","text":"You know how those people are, they never change","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-10","split":"train"}
+{"id":"en-0162","text":"Every time something is stolen it is always the same ethnic group","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-11","split":"train"}
+{"id":"en-0163","text":"I am not racist but the Vietnamese are all alike, lazy and sly","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-12","split":"train"}
+{"id":"en-0164","text":"Girls are just not as smart as boys, that is science","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-13","split":"train"}
+{"id":"en-0165","text":"Those villagers are backwards and will never learn","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-14","split":"holdout"}
+{"id":"en-0166","text":"Real Lao people do not mix with them","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-15","split":"train"}
+{"id":"en-0167","text":"Why do we let these migrants take our jobs, send them back","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-16","split":"train"}
+{"id":"en-0168","text":"Not all of them are bad, just most of the Indians","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-17","split":"train"}
+{"id":"en-0169","text":"He is gay so of course he cannot be trusted with kids","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-18","split":"train"}
+{"id":"en-0170","text":"Their religion is the problem, they should not be allowed in","labels":["hate_speech"],"tier":"subtle","group":"hate_speech-19","split":"holdout"}
+{"id":"en-0171","text":"All Hmong people are crim1n4l5 and thi3ves","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-0","split":"train","transform":"leet"}
+{"id":"en-0172","text":"Muslims should be bannеd from thіs cоuntry","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-1","split":"train","transform":"homoglyph"}
+{"id":"en-0173","text":"✅ Go back to your country, you are not welcome in Laos 🚨🔥","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-2","split":"train","transform":"emoji"}
+{"id":"en-0174","text":"Those Vietnamese are dirty and lazy ຟຣີ ຟຣີ","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-3","split":"train","transform":"mixedLao"}
+{"id":"en-0175","text":"Gays are a d i s e a s e and s h o u l d be removed","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-4","split":"holdout","transform":"spaced"}
+{"id":"en-0176","text":"W​o​m​e​n b​e​l​o​n​g in the kitchen, t​h​e​y are stupid","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-5","split":"train","transform":"zerowidth"}
+{"id":"en-0177","text":"The Chnese are vermin, wipe them out","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-6","split":"train","transform":"typos"}
+{"id":"en-0178","text":"f*reigners ruin everything, deport t*em all","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-7","split":"train","transform":"masked"}
+{"id":"en-0179","text":"These blacks are s.u.b.h.u.m.a.n","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-8","split":"train","transform":"dotted"}
+{"id":"en-0180","text":"DISABLED PEOPLE ARE A BURDEN AND INFERIOR!!!","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-9","split":"holdout","transform":"caps"}
+{"id":"en-0181","text":"You know how those people are, theyyyy never changeeee","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-10","split":"train","transform":"repeat"}
+{"id":"en-0182","text":"Ev3ry time something is stolen it is 4lw4y5 the same ethnic group","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-11","split":"train","transform":"leet"}
+{"id":"en-0183","text":"I am not rасist but the Vіеtnаmеsе are all alike, lаzу and sly","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-12","split":"train","transform":"homoglyph"}
+{"id":"en-0184","text":"👇 Girls are just not as smart as boys, that is science ✅🔥","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-13","split":"train","transform":"emoji"}
+{"id":"en-0185","text":"Those villagers are backwards and will never learn ສະບາຍດີ","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-14","split":"holdout","transform":"mixedLao"}
+{"id":"en-0186","text":"R e a l Lao people do not mix with t h e m","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-15","split":"train","transform":"spaced"}
+{"id":"en-0187","text":"Why do we let these m​i​g​r​a​n​t​s t​a​k​e our jobs, send them b​a​c​k","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-16","split":"train","transform":"zerowidth"}
+{"id":"en-0188","text":"Not all of them are bad, just most of the Inians","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-17","split":"train","transform":"typos"}
+{"id":"en-0189","text":"He is gay so of c*urse he cannot be trusted with k*ds","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-18","split":"train","transform":"masked"}
+{"id":"en-0190","text":"Their r.e.l.i.g.i.o.n is the problem, they should not be allowed in","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-19","split":"holdout","transform":"dotted"}
+{"id":"en-0191","text":"ALL HMONG PEOPLE ARE CRIMINALS AND THIEVES!!!","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-0","split":"train","transform":"caps"}
+{"id":"en-0192","text":"Muslimssss should be banned from this countryyyy","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-1","split":"train","transform":"repeat"}
+{"id":"en-0193","text":"Go b4ck to your country, you are not w3lc0m3 in Laos","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-2","split":"train","transform":"leet"}
+{"id":"en-0194","text":"Thosе Vіetnаmеse are dіrty and lazy","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-3","split":"train","transform":"homoglyph"}
+{"id":"en-0195","text":"💰 Gays are a disease and should be removed 👇💰","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-4","split":"holdout","transform":"emoji"}
+{"id":"en-0196","text":"ຂອບໃຈ Women belong in the kitchen, they are stupid","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-5","split":"train","transform":"mixedLao"}
+{"id":"en-0197","text":"The Chinese are vermin, w i p e t h e m out","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-6","split":"train","transform":"spaced"}
+{"id":"en-0198","text":"f​o​r​e​i​g​n​e​r​s r​u​i​n everything, d​e​p​o​r​t them all","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-7","split":"train","transform":"zerowidth"}
+{"id":"en-0199","text":"Thse blcks are suhuman","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-8","split":"train","transform":"typos"}
+{"id":"en-0200","text":"Disabled p*ople are a burden and i*ferior","labels":["hate_speech"],"tier":"disguised","group":"hate_speech-9","split":"holdout","transform":"masked"}
+{"id":"en-0201","text":"The government is corrupt and stole the money","labels":["political_claims"],"tier":"obvious","group":"political_claims-0","split":"train"}
+{"id":"en-0202","text":"Vote for the opposition party in the next election","labels":["political_claims"],"tier":"obvious","group":"political_claims-1","split":"train"}
+{"id":"en-0203","text":"The election was rigged, do not believe the results","labels":["political_claims"],"tier":"obvious","group":"political_claims-2","split":"train"}
+{"id":"en-0204","text":"The prime minister is a puppet and a liar","labels":["political_claims"],"tier":"obvious","group":"political_claims-3","split":"train"}
+{"id":"en-0205","text":"Overthrow the regime now","labels":["political_claims"],"tier":"obvious","group":"political_claims-4","split":"holdout"}
+{"id":"en-0206","text":"The party hides the truth from the people","labels":["political_claims"],"tier":"obvious","group":"political_claims-5","split":"train"}
+{"id":"en-0207","text":"Join the protest at the national assembly tomorrow","labels":["political_claims"],"tier":"obvious","group":"political_claims-6","split":"train"}
+{"id":"en-0208","text":"Down with the dictator, long live the opposition","labels":["political_claims"],"tier":"obvious","group":"political_claims-7","split":"train"}
+{"id":"en-0209","text":"Ministers are secretly stealing from the budget","labels":["political_claims"],"tier":"obvious","group":"political_claims-8","split":"train"}
+{"id":"en-0210","text":"Boycott the election, it is a fraud","labels":["political_claims"],"tier":"obvious","group":"political_claims-9","split":"holdout"}
+{"id":"en-0211","text":"Funny how every official gets rich but the village roads stay broken","labels":["political_claims"],"tier":"subtle","group":"political_claims-10","split":"train"}
+{"id":"en-0212","text":"They do not want you to know what the party really does","labels":["political_claims"],"tier":"subtle","group":"political_claims-11","split":"train"}
+{"id":"en-0213","text":"Our leaders are lying again about the numbers, as usual","labels":["political_claims"],"tier":"subtle","group":"political_claims-12","split":"train"}
+{"id":"en-0214","text":"The president only cares about his own family","labels":["political_claims"],"tier":"subtle","group":"political_claims-13","split":"train"}
+{"id":"en-0215","text":"If the government were honest we would see the accounts","labels":["political_claims"],"tier":"subtle","group":"political_claims-14","split":"holdout"}
+{"id":"en-0216","text":"Why is the national assembly always silent about corruption","labels":["political_claims"],"tier":"subtle","group":"political_claims-15","split":"train"}
+{"id":"en-0217","text":"I heard the minister secretly sold land to foreigners","labels":["political_claims"],"tier":"subtle","group":"political_claims-16","split":"train"}
+{"id":"en-0218","text":"Support the movement for change, you know which one","labels":["political_claims"],"tier":"subtle","group":"political_claims-17","split":"train"}
+{"id":"en-0219","text":"Every politician is the same thief, vote them all out","labels":["political_claims"],"tier":"subtle","group":"political_claims-18","split":"train"}
+{"id":"en-0220","text":"The police chief should resign after what he did","labels":["political_claims"],"tier":"subtle","group":"political_claims-19","split":"holdout"}
+{"id":"en-0221","text":"THE GOVERNMENT IS CORRUPT AND STOLE THE MONEY!!!","labels":["political_claims"],"tier":"disguised","group":"political_claims-0","split":"train","transform":"caps"}
+{"id":"en-0222","text":"Vote for the opposition party in the nextttt electionnnn","labels":["political_claims"],"tier":"disguised","group":"political_claims-1","split":"train","transform":"repeat"}
+{"id":"en-0223","text":"The 3l3cti0n was rigged, do not bel1ev3 the re5ul75","labels":["political_claims"],"tier":"disguised","group":"political_claims-2","split":"train","transform":"leet"}
+{"id":"en-0224","text":"The рrimе minіstеr is a puppet and a liar","labels":["political_claims"],"tier":"disguised","group":"political_claims-3","split":"train","transform":"homoglyph"}
+{"id":"en-0225","text":"💰 Overthrow the regime now 📢👇","labels":["political_claims"],"tier":"disguised","group":"political_claims-4","split":"holdout","transform":"emoji"}
+{"id":"en-0226","text":"ຂອບໃຈ The party hides the truth from the people","labels":["political_claims"],"tier":"disguised","group":"political_claims-5","split":"train","transform":"mixedLao"}
+{"id":"en-0227","text":"Join the protest at the n a t i o n a l assembly t o m o r r o w","labels":["political_claims"],"tier":"disguised","group":"political_claims-6","split":"train","transform":"spaced"}
+{"id":"en-0228","text":"Down with the dictator, l​o​n​g l​i​v​e the o​p​p​o​s​i​t​i​o​n","labels":["political_claims"],"tier":"disguised","group":"political_claims-7","split":"train","transform":"zerowidth"}
+{"id":"en-0229","text":"Miisters are secretly stealing from the buget","labels":["political_claims"],"tier":"disguised","group":"political_claims-8","split":"train","transform":"typos"}
+{"id":"en-0230","text":"B*ycott the election, it is a f*aud","labels":["political_claims"],"tier":"disguised","group":"political_claims-9","split":"holdout","transform":"masked"}
+{"id":"en-0231","text":"Funny how every official gets rich but the v.i.l.l.a.g.e roads stay broken","labels":["political_claims"],"tier":"disguised","group":"political_claims-10","split":"train","transform":"dotted"}
+{"id":"en-0232","text":"THEY DO NOT WANT YOU TO KNOW WHAT THE PARTY REALLY DOES!!!","labels":["political_claims"],"tier":"disguised","group":"political_claims-11","split":"train","transform":"caps"}
+{"id":"en-0233","text":"Our leaderssss are lyingggg again about the numbers, as usual","labels":["political_claims"],"tier":"disguised","group":"political_claims-12","split":"train","transform":"repeat"}
+{"id":"en-0234","text":"The pres1dent only cares about his own f4mily","labels":["political_claims"],"tier":"disguised","group":"political_claims-13","split":"train","transform":"leet"}
+{"id":"en-0235","text":"If the gоvernment were honest we wоuld see the aссоunts","labels":["political_claims"],"tier":"disguised","group":"political_claims-14","split":"holdout","transform":"homoglyph"}
+{"id":"en-0236","text":"📢 Why is the national assembly always silent about corruption 📢🚨","labels":["political_claims"],"tier":"disguised","group":"political_claims-15","split":"train","transform":"emoji"}
+{"id":"en-0237","text":"ຂອບໃຈ I heard the minister secretly sold land to foreigners","labels":["political_claims"],"tier":"disguised","group":"political_claims-16","split":"train","transform":"mixedLao"}
+{"id":"en-0238","text":"Support the movement for change, you k n o w w h i c h one","labels":["political_claims"],"tier":"disguised","group":"political_claims-17","split":"train","transform":"spaced"}
+{"id":"en-0239","text":"Every p​o​l​i​t​i​c​i​a​n is the s​a​m​e thief, v​o​t​e them all out","labels":["political_claims"],"tier":"disguised","group":"political_claims-18","split":"train","transform":"zerowidth"}
+{"id":"en-0240","text":"The poice chief shuld resign afer what he did","labels":["political_claims"],"tier":"disguised","group":"political_claims-19","split":"holdout","transform":"typos"}
+{"id":"en-0241","text":"The government is corrupt and s*ole the m*ney","labels":["political_claims"],"tier":"disguised","group":"political_claims-0","split":"train","transform":"masked"}
+{"id":"en-0242","text":"Vote for the o.p.p.o.s.i.t.i.o.n party in the next election","labels":["political_claims"],"tier":"disguised","group":"political_claims-1","split":"train","transform":"dotted"}
+{"id":"en-0243","text":"THE ELECTION WAS RIGGED, DO NOT BELIEVE THE RESULTS!!!","labels":["political_claims"],"tier":"disguised","group":"political_claims-2","split":"train","transform":"caps"}
+{"id":"en-0244","text":"The prime ministerrrr is a puppet and a liarrrr","labels":["political_claims"],"tier":"disguised","group":"political_claims-3","split":"train","transform":"repeat"}
+{"id":"en-0245","text":"Ov3r7hr0w the r3g1me now","labels":["political_claims"],"tier":"disguised","group":"political_claims-4","split":"holdout","transform":"leet"}
+{"id":"en-0246","text":"The party hides the truth frоm the реoрle","labels":["political_claims"],"tier":"disguised","group":"political_claims-5","split":"train","transform":"homoglyph"}
+{"id":"en-0247","text":"‼️ Join the protest at the national assembly tomorrow 🚨🚨","labels":["political_claims"],"tier":"disguised","group":"political_claims-6","split":"train","transform":"emoji"}
+{"id":"en-0248","text":"ດ່ວນ Down with the dictator, long live the opposition","labels":["political_claims"],"tier":"disguised","group":"political_claims-7","split":"train","transform":"mixedLao"}
+{"id":"en-0249","text":"M i n i s t e r s are s e c r e t l y stealing from the budget","labels":["political_claims"],"tier":"disguised","group":"political_claims-8","split":"train","transform":"spaced"}
+{"id":"en-0250","text":"B​o​y​c​o​t​t the election, it is a f​r​a​u​d","labels":["political_claims"],"tier":"disguised","group":"political_claims-9","split":"holdout","transform":"zerowidth"}
+{"id":"en-0251","text":"Hot girls waiting for you, adult chat 18+","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-0","split":"train"}
+{"id":"en-0252","text":"Leaked nudes of a famous singer, click here","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-1","split":"train"}
+{"id":"en-0253","text":"Watch free porn videos now","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-2","split":"train"}
+{"id":"en-0254","text":"Selling sex video, DM me for price","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-3","split":"train"}
+{"id":"en-0255","text":"Looking for hookup tonight, send nudes","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-4","split":"holdout"}
+{"id":"en-0256","text":"OnlyFans leak, naked pics inside","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-5","split":"train"}
+{"id":"en-0257","text":"Escort service available in Vientiane","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-6","split":"train"}
+{"id":"en-0258","text":"sexy girls video call show, paid chat","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-7","split":"train"}
+{"id":"en-0259","text":"Free xxx site, no sign up","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-8","split":"train"}
+{"id":"en-0260","text":"Massage with happy ending, call now","labels":["sexual_content"],"tier":"obvious","group":"sexual_content-9","split":"holdout"}
+{"id":"en-0261","text":"spicy pics for those who know, check my private story","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-10","split":"train"}
+{"id":"en-0262","text":"Lonely tonight? Meet mature singles near you, 18+ only","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-11","split":"train"}
+{"id":"en-0263","text":"New private show uploaded, you will not believe what she wears","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-12","split":"train"}
+{"id":"en-0264","text":"Selling my girlfriend's private photos to the highest bidder","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-13","split":"train"}
+{"id":"en-0265","text":"who wants to see what is under the towel, comment yes","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-14","split":"holdout"}
+{"id":"en-0266","text":"Adult content creator accepting new subscribers, link in bio","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-15","split":"train"}
+{"id":"en-0267","text":"hot babes online now, tap to chat","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-16","split":"train"}
+{"id":"en-0268","text":"special girls for special guests, discreet service","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-17","split":"train"}
+{"id":"en-0269","text":"she sent me a very private video, want to see","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-18","split":"train"}
+{"id":"en-0270","text":"sexy lingerie photoshoot, uncensored version in the group","labels":["sexual_content"],"tier":"subtle","group":"sexual_content-19","split":"holdout"}
+{"id":"en-0271","text":"Hot girls wаitіng for you, аdult chаt 18+","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-0","split":"train","transform":"homoglyph"}
+{"id":"en-0272","text":"✅ Leaked nudes of a famous singer, click here 🚨✅","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-1","split":"train","transform":"emoji"}
+{"id":"en-0273","text":"ສະບາຍດີ Watch free porn videos now","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-2","split":"train","transform":"mixedLao"}
+{"id":"en-0274","text":"S e l l i n g sex video, DM me for p r i c e","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-3","split":"train","transform":"spaced"}
+{"id":"en-0275","text":"L​o​o​k​i​n​g for h​o​o​k​u​p tonight, send n​u​d​e​s","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0276","text":"OnyFans leak, naed pics inside","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-5","split":"train","transform":"typos"}
+{"id":"en-0277","text":"Escort service a*ailable in V*entiane","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-6","split":"train","transform":"masked"}
+{"id":"en-0278","text":"sexy girls video call show, paid c.h.a.t","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-7","split":"train","transform":"dotted"}
+{"id":"en-0279","text":"FREE XXX SITE, NO SIGN UP!!!","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-8","split":"train","transform":"caps"}
+{"id":"en-0280","text":"Massageeee withhhh happy ending, call now","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-9","split":"holdout","transform":"repeat"}
+{"id":"en-0281","text":"spicy pics for 7ho5e who know, ch3ck my private 5t0ry","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-10","split":"train","transform":"leet"}
+{"id":"en-0282","text":"Lonely tonight? Mееt mаturе singles near you, 18+ оnly","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-11","split":"train","transform":"homoglyph"}
+{"id":"en-0283","text":"💰 New private show uploaded, you will not believe what she wears 📢👇","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-12","split":"train","transform":"emoji"}
+{"id":"en-0284","text":"ເງິນດີ Selling my girlfriend's private photos to the highest bidder","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-13","split":"train","transform":"mixedLao"}
+{"id":"en-0285","text":"who w a n t s to see w h a t is under the towel, comment yes","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-14","split":"holdout","transform":"spaced"}
+{"id":"en-0286","text":"Adult c​o​n​t​e​n​t c​r​e​a​t​o​r a​c​c​e​p​t​i​n​g new subscribers, link in bio","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-15","split":"train","transform":"zerowidth"}
+{"id":"en-0287","text":"hot baes onine now, tap to chat","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-16","split":"train","transform":"typos"}
+{"id":"en-0288","text":"special g*rls for s*ecial guests, discreet service","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-17","split":"train","transform":"masked"}
+{"id":"en-0289","text":"she sent me a v.e.r.y private video, want to see","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-18","split":"train","transform":"dotted"}
+{"id":"en-0290","text":"SEXY LINGERIE PHOTOSHOOT, UNCENSORED VERSION IN THE GROUP!!!","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-19","split":"holdout","transform":"caps"}
+{"id":"en-0291","text":"Hot girlssss waitingggg for you, adult chat 18+","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-0","split":"train","transform":"repeat"}
+{"id":"en-0292","text":"Leaked nud35 of a f4m0u5 singer, click h3re","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-1","split":"train","transform":"leet"}
+{"id":"en-0293","text":"Wаtch frеe porn vіdеos now","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-2","split":"train","transform":"homoglyph"}
+{"id":"en-0294","text":"💰 Selling sex video, DM me for price 🚨💰","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-3","split":"train","transform":"emoji"}
+{"id":"en-0295","text":"Looking for hookup tonight, send nudes ໂອເຄ","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-4","split":"holdout","transform":"mixedLao"}
+{"id":"en-0296","text":"OnlyFans leak, n a k e d pics i n s i d e","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-5","split":"train","transform":"spaced"}
+{"id":"en-0297","text":"Escort s​e​r​v​i​c​e a​v​a​i​l​a​b​l​e in V​i​e​n​t​i​a​n​e","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-6","split":"train","transform":"zerowidth"}
+{"id":"en-0298","text":"sexy gils video call show, paid chat","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-7","split":"train","transform":"typos"}
+{"id":"en-0299","text":"F*ee xxx site, no s*gn up","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-8","split":"train","transform":"masked"}
+{"id":"en-0300","text":"Massage w.i.t.h happy ending, call now","labels":["sexual_content"],"tier":"disguised","group":"sexual_content-9","split":"holdout","transform":"dotted"}
+{"id":"en-0301","text":"How to make a bomb at home step by step","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-0","split":"train"}
+{"id":"en-0302","text":"Suicide methods that are painless","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-1","split":"train"}
+{"id":"en-0303","text":"Selling meth and yaba, cheap, delivery available","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-2","split":"train"}
+{"id":"en-0304","text":"I want to kill myself tonight","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-3","split":"train"}
+{"id":"en-0305","text":"How to build a gun with household items","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-4","split":"holdout"}
+{"id":"en-0306","text":"Buy heroin and cocaine online, discreet delivery","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-5","split":"train"}
+{"id":"en-0307","text":"I will poison him and no one will know","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-6","split":"train"}
+{"id":"en-0308","text":"Best ways to hurt yourself without leaving marks","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-7","split":"train"}
+{"id":"en-0309","text":"Get explosives and grenades, no questions asked","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-8","split":"train"}
+{"id":"en-0310","text":"Overdose guide: how many pills to end your life","labels":["dangerous_content"],"tier":"obvious","group":"dangerous_content-9","split":"holdout"}
+{"id":"en-0311","text":"Does anyone know how much of this medicine is too much? asking for a reason","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-10","split":"train"}
+{"id":"en-0312","text":"Join the choking challenge, it is totally safe","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-11","split":"train"}
+{"id":"en-0313","text":"I am thinking about ending it all, nobody would notice","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-12","split":"train"}
+{"id":"en-0314","text":"Where can I get some yaba tonight, party time","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-13","split":"train"}
+{"id":"en-0315","text":"what household chemicals mixed make a big bang","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-14","split":"holdout"}
+{"id":"en-0316","text":"Try this bleach challenge, dare you to drink it","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-15","split":"train"}
+{"id":"en-0317","text":"Looking for someone who sells pistols, serious buyers only","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-16","split":"train"}
+{"id":"en-0318","text":"I have a plan for the school on Monday, you will see","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-17","split":"train"}
+{"id":"en-0319","text":"Cutting myself helps a little, tips on hiding it?","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-18","split":"train"}
+{"id":"en-0320","text":"selling weed, cheap, hit me up","labels":["dangerous_content"],"tier":"subtle","group":"dangerous_content-19","split":"holdout"}
+{"id":"en-0321","text":"🚨 How to make a bomb at home step by step 🔥✅","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-0","split":"train","transform":"emoji"}
+{"id":"en-0322","text":"Suicide methods that are painless ທັກມາເລີຍ","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-1","split":"train","transform":"mixedLao"}
+{"id":"en-0323","text":"Selling m e t h and yaba, cheap, delivery a v a i l a b l e","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-2","split":"train","transform":"spaced"}
+{"id":"en-0324","text":"I w​a​n​t to k​i​l​l myself t​o​n​i​g​h​t","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-3","split":"train","transform":"zerowidth"}
+{"id":"en-0325","text":"How to buld a gun with hosehold items","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-4","split":"holdout","transform":"typos"}
+{"id":"en-0326","text":"Buy h*roin and cocaine online, d*screet delivery","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-5","split":"train","transform":"masked"}
+{"id":"en-0327","text":"I will poison him and no one w.i.l.l know","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-6","split":"train","transform":"dotted"}
+{"id":"en-0328","text":"BEST WAYS TO HURT YOURSELF WITHOUT LEAVING MARKS!!!","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-7","split":"train","transform":"caps"}
+{"id":"en-0329","text":"Get explosives and grenades, no questionssss askedddd","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-8","split":"train","transform":"repeat"}
+{"id":"en-0330","text":"Overdose guide: how m4ny p1lls to end y0ur life","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-9","split":"holdout","transform":"leet"}
+{"id":"en-0331","text":"Does anyone know how muсh of thіs medicine is too much? asking for a rеasоn","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-10","split":"train","transform":"homoglyph"}
+{"id":"en-0332","text":"📢 Join the choking challenge, it is totally safe ✅📢","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-11","split":"train","transform":"emoji"}
+{"id":"en-0333","text":"I am thinking about ending it all, nobody would notice ໂອເຄ","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-12","split":"train","transform":"mixedLao"}
+{"id":"en-0334","text":"W h e r e can I get s o m e yaba tonight, party time","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-13","split":"train","transform":"spaced"}
+{"id":"en-0335","text":"w​h​a​t h​o​u​s​e​h​o​l​d chemicals m​i​x​e​d make a big bang","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-14","split":"holdout","transform":"zerowidth"}
+{"id":"en-0336","text":"Try this blach challenge, dare you to drink it","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-15","split":"train","transform":"typos"}
+{"id":"en-0337","text":"L*oking for someone who sells pistols, s*rious buyers only","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-16","split":"train","transform":"masked"}
+{"id":"en-0338","text":"I have a plan for the s.c.h.o.o.l on Monday, you will see","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-17","split":"train","transform":"dotted"}
+{"id":"en-0339","text":"CUTTING MYSELF HELPS A LITTLE, TIPS ON HIDING IT?!!!","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-18","split":"train","transform":"caps"}
+{"id":"en-0340","text":"sellingggg weed, cheap, hit me up","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-19","split":"holdout","transform":"repeat"}
+{"id":"en-0341","text":"How to make a b0mb at h0me step by 573p","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-0","split":"train","transform":"leet"}
+{"id":"en-0342","text":"Suісіde methods that are рaіnless","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-1","split":"train","transform":"homoglyph"}
+{"id":"en-0343","text":"😍 Selling meth and yaba, cheap, delivery available 🔥📢","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-2","split":"train","transform":"emoji"}
+{"id":"en-0344","text":"ເງິນດີ I want to kill myself tonight","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-3","split":"train","transform":"mixedLao"}
+{"id":"en-0345","text":"How to build a gun w i t h h o u s e h o l d items","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-4","split":"holdout","transform":"spaced"}
+{"id":"en-0346","text":"Buy h​e​r​o​i​n and c​o​c​a​i​n​e online, d​i​s​c​r​e​e​t delivery","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-5","split":"train","transform":"zerowidth"}
+{"id":"en-0347","text":"I will poson him and no one will know","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-6","split":"train","transform":"typos"}
+{"id":"en-0348","text":"Best ways to hurt yourself w*thout l*aving marks","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-7","split":"train","transform":"masked"}
+{"id":"en-0349","text":"Get explosives and grenades, no q.u.e.s.t.i.o.n.s asked","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-8","split":"train","transform":"dotted"}
+{"id":"en-0350","text":"OVERDOSE GUIDE: HOW MANY PILLS TO END YOUR LIFE!!!","labels":["dangerous_content"],"tier":"disguised","group":"dangerous_content-9","split":"holdout","transform":"caps"}
+{"id":"en-0351","text":"Doctors do not want you to know this miracle cure for cancer","labels":["misinformation"],"tier":"obvious","group":"misinformation-0","split":"train"}
+{"id":"en-0352","text":"5G causes covid, share before they delete this","labels":["misinformation"],"tier":"obvious","group":"misinformation-1","split":"train"}
+{"id":"en-0353","text":"Vaccines contain a microchip to track you","labels":["misinformation"],"tier":"obvious","group":"misinformation-2","split":"train"}
+{"id":"en-0354","text":"Drinking hot water cures diabetes, 100% proven","labels":["misinformation"],"tier":"obvious","group":"misinformation-3","split":"train"}
+{"id":"en-0355","text":"Breaking: confirmed by WHO that rice causes disease, forward to everyone","labels":["misinformation"],"tier":"obvious","group":"misinformation-4","split":"holdout"}
+{"id":"en-0356","text":"The government is hiding the real cure for HIV","labels":["misinformation"],"tier":"obvious","group":"misinformation-5","split":"train"}
+{"id":"en-0357","text":"Eating garlic prevents the virus, scientists confirm","labels":["misinformation"],"tier":"obvious","group":"misinformation-6","split":"train"}
+{"id":"en-0358","text":"Share this to 10 groups, the medical secret they hide","labels":["misinformation"],"tier":"obvious","group":"misinformation-7","split":"train"}
+{"id":"en-0359","text":"Fluoride in water is a poison to control us, wake up","labels":["misinformation"],"tier":"obvious","group":"misinformation-8","split":"train"}
+{"id":"en-0360","text":"This one weird herb cures everything, big pharma hates it","labels":["misinformation"],"tier":"obvious","group":"misinformation-9","split":"holdout"}
+{"id":"en-0361","text":"My uncle said a famous doctor announced that tea kills dengue","labels":["misinformation"],"tier":"subtle","group":"misinformation-10","split":"train"}
+{"id":"en-0362","text":"Someone told me the news will not report it but the border will close tomorrow","labels":["misinformation"],"tier":"subtle","group":"misinformation-11","split":"train"}
+{"id":"en-0363","text":"I read that the bank will be shut for a month, forward to your family","labels":["misinformation"],"tier":"subtle","group":"misinformation-12","split":"train"}
+{"id":"en-0364","text":"WHO says masks are useless now, finally the truth","labels":["misinformation"],"tier":"subtle","group":"misinformation-13","split":"train"}
+{"id":"en-0365","text":"Leaked memo from the ministry shows the real numbers, they lied to us","labels":["misinformation"],"tier":"subtle","group":"misinformation-14","split":"holdout"}
+{"id":"en-0366","text":"natural remedy that doctors ignore, worked for my aunt, 100% real","labels":["misinformation"],"tier":"subtle","group":"misinformation-15","split":"train"}
+{"id":"en-0367","text":"Insiders confirm the new law bans all mobile money starting Monday","labels":["misinformation"],"tier":"subtle","group":"misinformation-16","split":"train"}
+{"id":"en-0368","text":"Wifi routers make children sick, experts agree","labels":["misinformation"],"tier":"subtle","group":"misinformation-17","split":"train"}
+{"id":"en-0369","text":"I do not know if this is true but pass it on just in case","labels":["misinformation"],"tier":"subtle","group":"misinformation-18","split":"train"}
+{"id":"en-0370","text":"Official announcement: everyone must exchange their kip this week, share quickly","labels":["misinformation"],"tier":"subtle","group":"misinformation-19","split":"holdout"}
+{"id":"en-0371","text":"Doctors do not want you to know this mirасlе сurе for cancer","labels":["misinformation"],"tier":"disguised","group":"misinformation-0","split":"train","transform":"homoglyph"}
+{"id":"en-0372","text":"📢 5G causes covid, share before they delete this 👇👇","labels":["misinformation"],"tier":"disguised","group":"misinformation-1","split":"train","transform":"emoji"}
+{"id":"en-0373","text":"Vaccines contain a microchip to track you ເງິນດີ","labels":["misinformation"],"tier":"disguised","group":"misinformation-2","split":"train","transform":"mixedLao"}
+{"id":"en-0374","text":"Drinking hot water c u r e s diabetes, 100% p r o v e n","labels":["misinformation"],"tier":"disguised","group":"misinformation-3","split":"train","transform":"spaced"}
+{"id":"en-0375","text":"Breaking: c​o​n​f​i​r​m​e​d by WHO t​h​a​t rice causes disease, f​o​r​w​a​r​d to everyone","labels":["misinformation"],"tier":"disguised","group":"misinformation-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0376","text":"The goernment is hiing the real cure for HIV","labels":["misinformation"],"tier":"disguised","group":"misinformation-5","split":"train","transform":"typos"}
+{"id":"en-0377","text":"E*ting garlic prevents the virus, s*ientists confirm","labels":["misinformation"],"tier":"disguised","group":"misinformation-6","split":"train","transform":"masked"}
+{"id":"en-0378","text":"Share this to 10 groups, the medical secret t.h.e.y hide","labels":["misinformation"],"tier":"disguised","group":"misinformation-7","split":"train","transform":"dotted"}
+{"id":"en-0379","text":"FLUORIDE IN WATER IS A POISON TO CONTROL US, WAKE UP!!!","labels":["misinformation"],"tier":"disguised","group":"misinformation-8","split":"train","transform":"caps"}
+{"id":"en-0380","text":"Thissss one weird herb cures everything, big pharmaaaa hates it","labels":["misinformation"],"tier":"disguised","group":"misinformation-9","split":"holdout","transform":"repeat"}
+{"id":"en-0381","text":"My uncl3 said a famous doctor announced 7h47 tea kills d3ngu3","labels":["misinformation"],"tier":"disguised","group":"misinformation-10","split":"train","transform":"leet"}
+{"id":"en-0382","text":"Someone told me the news will not reроrt it but the border will close tomorrow","labels":["misinformation"],"tier":"disguised","group":"misinformation-11","split":"train","transform":"homoglyph"}
+{"id":"en-0383","text":"🚨 I read that the bank will be shut for a month, forward to your family ✅💰","labels":["misinformation"],"tier":"disguised","group":"misinformation-12","split":"train","transform":"emoji"}
+{"id":"en-0384","text":"WHO says masks are useless now, finally the truth ທັກມາເລີຍ","labels":["misinformation"],"tier":"disguised","group":"misinformation-13","split":"train","transform":"mixedLao"}
+{"id":"en-0385","text":"Leaked memo f r o m the ministry s h o w s the real numbers, they lied to us","labels":["misinformation"],"tier":"disguised","group":"misinformation-14","split":"holdout","transform":"spaced"}
+{"id":"en-0386","text":"n​a​t​u​r​a​l r​e​m​e​d​y t​h​a​t doctors ignore, worked for my aunt, 100% real","labels":["misinformation"],"tier":"disguised","group":"misinformation-15","split":"train","transform":"zerowidth"}
+{"id":"en-0387","text":"Insiders confirm the new law bans all moile moey starting Monday","labels":["misinformation"],"tier":"disguised","group":"misinformation-16","split":"train","transform":"typos"}
+{"id":"en-0388","text":"W*fi routers make children sick, experts a*ree","labels":["misinformation"],"tier":"disguised","group":"misinformation-17","split":"train","transform":"masked"}
+{"id":"en-0389","text":"I do not know if this is t.r.u.e but pass it on just in case","labels":["misinformation"],"tier":"disguised","group":"misinformation-18","split":"train","transform":"dotted"}
+{"id":"en-0390","text":"OFFICIAL ANNOUNCEMENT: EVERYONE MUST EXCHANGE THEIR KIP THIS WEEK, SHARE QUICKLY!!!","labels":["misinformation"],"tier":"disguised","group":"misinformation-19","split":"holdout","transform":"caps"}
+{"id":"en-0391","text":"Doctors do not wantttt you to know thissss miracle cure for cancer","labels":["misinformation"],"tier":"disguised","group":"misinformation-0","split":"train","transform":"repeat"}
+{"id":"en-0392","text":"5G cau53s covid, share b3fore they d3l3t3 this","labels":["misinformation"],"tier":"disguised","group":"misinformation-1","split":"train","transform":"leet"}
+{"id":"en-0393","text":"Vаcсіnеs contain a miсrосhір to trасk you","labels":["misinformation"],"tier":"disguised","group":"misinformation-2","split":"train","transform":"homoglyph"}
+{"id":"en-0394","text":"😍 Drinking hot water cures diabetes, 100% proven 💰💰","labels":["misinformation"],"tier":"disguised","group":"misinformation-3","split":"train","transform":"emoji"}
+{"id":"en-0395","text":"ຂອບໃຈ Breaking: confirmed by WHO that rice causes disease, forward to everyone","labels":["misinformation"],"tier":"disguised","group":"misinformation-4","split":"holdout","transform":"mixedLao"}
+{"id":"en-0396","text":"The government is h i d i n g the real c u r e for HIV","labels":["misinformation"],"tier":"disguised","group":"misinformation-5","split":"train","transform":"spaced"}
+{"id":"en-0397","text":"E​a​t​i​n​g garlic p​r​e​v​e​n​t​s the virus, s​c​i​e​n​t​i​s​t​s confirm","labels":["misinformation"],"tier":"disguised","group":"misinformation-6","split":"train","transform":"zerowidth"}
+{"id":"en-0398","text":"Shre this to 10 groups, the medical seret they hide","labels":["misinformation"],"tier":"disguised","group":"misinformation-7","split":"train","transform":"typos"}
+{"id":"en-0399","text":"Fluoride in w*ter is a poison to control us, w*ke up","labels":["misinformation"],"tier":"disguised","group":"misinformation-8","split":"train","transform":"masked"}
+{"id":"en-0400","text":"T.h.i.s one weird herb cures everything, big pharma hates it","labels":["misinformation"],"tier":"disguised","group":"misinformation-9","split":"holdout","transform":"dotted"}
+{"id":"en-0401","text":"Selling my motorbike, cheap price, 3 million kip","labels":["off_topic"],"tier":"obvious","group":"off_topic-0","split":"train"}
+{"id":"en-0402","text":"Best pizza recipe in Vientiane, so delicious","labels":["off_topic"],"tier":"obvious","group":"off_topic-1","split":"train"}
+{"id":"en-0403","text":"Who won the football match tonight? Final score 2-1","labels":["off_topic"],"tier":"obvious","group":"off_topic-2","split":"train"}
+{"id":"en-0404","text":"Check out my new song on YouTube, like and subscribe","labels":["off_topic"],"tier":"obvious","group":"off_topic-3","split":"train"}
+{"id":"en-0405","text":"Flash sale 50% off sneakers, order now","labels":["off_topic"],"tier":"obvious","group":"off_topic-4","split":"holdout"}
+{"id":"en-0406","text":"Happy birthday to my best friend","labels":["off_topic"],"tier":"obvious","group":"off_topic-5","split":"train"}
+{"id":"en-0407","text":"Casino night jackpot tonight at the resort","labels":["off_topic"],"tier":"obvious","group":"off_topic-6","split":"train"}
+{"id":"en-0408","text":"Look at my cute puppy","labels":["off_topic"],"tier":"obvious","group":"off_topic-7","split":"train"}
+{"id":"en-0409","text":"Celebrity gossip: BTS member spotted in Bangkok","labels":["off_topic"],"tier":"obvious","group":"off_topic-8","split":"train"}
+{"id":"en-0410","text":"Order now, free shipping on all phone cases","labels":["off_topic"],"tier":"obvious","group":"off_topic-9","split":"holdout"}
+{"id":"en-0411","text":"anyone know a good coffee shop with wifi near the university","labels":["off_topic"],"tier":"subtle","group":"off_topic-10","split":"train"}
+{"id":"en-0412","text":"my favorite team lost again, rip fantasy league","labels":["off_topic"],"tier":"subtle","group":"off_topic-11","split":"train"}
+{"id":"en-0413","text":"New episode of the drama drops tomorrow, cannot wait","labels":["off_topic"],"tier":"subtle","group":"off_topic-12","split":"train"}
+{"id":"en-0414","text":"what should I wear to the party this weekend","labels":["off_topic"],"tier":"subtle","group":"off_topic-13","split":"train"}
+{"id":"en-0415","text":"Weather looks great for a picnic today","labels":["off_topic"],"tier":"subtle","group":"off_topic-14","split":"holdout"}
+{"id":"en-0416","text":"Lucky numbers for the lottery this week","labels":["off_topic"],"tier":"subtle","group":"off_topic-15","split":"train"}
+{"id":"en-0417","text":"Selfie time with my friends at the market","labels":["off_topic"],"tier":"subtle","group":"off_topic-16","split":"train"}
+{"id":"en-0418","text":"Looking for a travel deal to Luang Prabang, any hotel tips","labels":["off_topic"],"tier":"subtle","group":"off_topic-17","split":"train"}
+{"id":"en-0419","text":"my cat did the funniest thing today","labels":["off_topic"],"tier":"subtle","group":"off_topic-18","split":"train"}
+{"id":"en-0420","text":"follow my page for daily memes","labels":["off_topic"],"tier":"subtle","group":"off_topic-19","split":"holdout"}
+{"id":"en-0421","text":"Selling my motorbike, cheap price, 3 million kip ເງິນດີ","labels":["off_topic"],"tier":"disguised","group":"off_topic-0","split":"train","transform":"mixedLao"}
+{"id":"en-0422","text":"B e s t pizza r e c i p e in Vientiane, so delicious","labels":["off_topic"],"tier":"disguised","group":"off_topic-1","split":"train","transform":"spaced"}
+{"id":"en-0423","text":"Who won the f​o​o​t​b​a​l​l match tonight? F​i​n​a​l s​c​o​r​e 2-1","labels":["off_topic"],"tier":"disguised","group":"off_topic-2","split":"train","transform":"zerowidth"}
+{"id":"en-0424","text":"Chck out my new song on YouTube, like and suscribe","labels":["off_topic"],"tier":"disguised","group":"off_topic-3","split":"train","transform":"typos"}
+{"id":"en-0425","text":"F*ash sale 50% off sneakers, o*der now","labels":["off_topic"],"tier":"disguised","group":"off_topic-4","split":"holdout","transform":"masked"}
+{"id":"en-0426","text":"H.a.p.p.y birthday to my best friend","labels":["off_topic"],"tier":"disguised","group":"off_topic-5","split":"train","transform":"dotted"}
+{"id":"en-0427","text":"CASINO NIGHT JACKPOT TONIGHT AT THE RESORT!!!","labels":["off_topic"],"tier":"disguised","group":"off_topic-6","split":"train","transform":"caps"}
+{"id":"en-0428","text":"Lookkkk at my cute puppyyyy","labels":["off_topic"],"tier":"disguised","group":"off_topic-7","split":"train","transform":"repeat"}
+{"id":"en-0429","text":"C3l3br17y gossip: BTS m3mber spotted in B4ngk0k","labels":["off_topic"],"tier":"disguised","group":"off_topic-8","split":"train","transform":"leet"}
+{"id":"en-0430","text":"оrdеr now, free shірpіng on all рhоnе cases","labels":["off_topic"],"tier":"disguised","group":"off_topic-9","split":"holdout","transform":"homoglyph"}
+{"id":"en-0431","text":"‼️ anyone know a good coffee shop with wifi near the university 🚨💰","labels":["off_topic"],"tier":"disguised","group":"off_topic-10","split":"train","transform":"emoji"}
+{"id":"en-0432","text":"ດ່ວນ my favorite team lost again, rip fantasy league","labels":["off_topic"],"tier":"disguised","group":"off_topic-11","split":"train","transform":"mixedLao"}
+{"id":"en-0433","text":"New episode of the d r a m a drops tomorrow, cannot w a i t","labels":["off_topic"],"tier":"disguised","group":"off_topic-12","split":"train","transform":"spaced"}
+{"id":"en-0434","text":"w​h​a​t s​h​o​u​l​d I wear to the p​a​r​t​y this weekend","labels":["off_topic"],"tier":"disguised","group":"off_topic-13","split":"train","transform":"zerowidth"}
+{"id":"en-0435","text":"Weather loks grat for a pinic today","labels":["off_topic"],"tier":"disguised","group":"off_topic-14","split":"holdout","transform":"typos"}
+{"id":"en-0436","text":"Lucky n*mbers for the lottery this w*ek","labels":["off_topic"],"tier":"disguised","group":"off_topic-15","split":"train","transform":"masked"}
+{"id":"en-0437","text":"S.e.l.f.i.e time with my friends at the market","labels":["off_topic"],"tier":"disguised","group":"off_topic-16","split":"train","transform":"dotted"}
+{"id":"en-0438","text":"LOOKING FOR A TRAVEL DEAL TO LUANG PRABANG, ANY HOTEL TIPS!!!","labels":["off_topic"],"tier":"disguised","group":"off_topic-17","split":"train","transform":"caps"}
+{"id":"en-0439","text":"my cat did the funniestttt thingggg today","labels":["off_topic"],"tier":"disguised","group":"off_topic-18","split":"train","transform":"repeat"}
+{"id":"en-0440","text":"foll0w my p4ge for daily m3m3s","labels":["off_topic"],"tier":"disguised","group":"off_topic-19","split":"holdout","transform":"leet"}
+{"id":"en-0441","text":"Sellіng my motorbike, chеар price, 3 mіllіon kip","labels":["off_topic"],"tier":"disguised","group":"off_topic-0","split":"train","transform":"homoglyph"}
+{"id":"en-0442","text":"✅ Best pizza recipe in Vientiane, so delicious 📢😍","labels":["off_topic"],"tier":"disguised","group":"off_topic-1","split":"train","transform":"emoji"}
+{"id":"en-0443","text":"Who won the football match tonight? Final score 2-1 ທັກມາເລີຍ","labels":["off_topic"],"tier":"disguised","group":"off_topic-2","split":"train","transform":"mixedLao"}
+{"id":"en-0444","text":"Check out my new song on YouTube, l i k e and s u b s c r i b e","labels":["off_topic"],"tier":"disguised","group":"off_topic-3","split":"train","transform":"spaced"}
+{"id":"en-0445","text":"F​l​a​s​h s​a​l​e 50% off sneakers, o​r​d​e​r now","labels":["off_topic"],"tier":"disguised","group":"off_topic-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0446","text":"Hapy birthday to my best frend","labels":["off_topic"],"tier":"disguised","group":"off_topic-5","split":"train","transform":"typos"}
+{"id":"en-0447","text":"Casino n*ght jackpot t*night at the resort","labels":["off_topic"],"tier":"disguised","group":"off_topic-6","split":"train","transform":"masked"}
+{"id":"en-0448","text":"L.o.o.k at my cute puppy","labels":["off_topic"],"tier":"disguised","group":"off_topic-7","split":"train","transform":"dotted"}
+{"id":"en-0449","text":"CELEBRITY GOSSIP: BTS MEMBER SPOTTED IN BANGKOK!!!","labels":["off_topic"],"tier":"disguised","group":"off_topic-8","split":"train","transform":"caps"}
+{"id":"en-0450","text":"Orderrrr now, freeeee shipping on all phone cases","labels":["off_topic"],"tier":"disguised","group":"off_topic-9","split":"holdout","transform":"repeat"}
+{"id":"en-0451","text":"Send a deposit of 500000 kip first to secure your place","labels":["money_ask"],"tier":"obvious","group":"money_ask-0","split":"train"}
+{"id":"en-0452","text":"Pay the registration fee today or lose your spot","labels":["money_ask"],"tier":"obvious","group":"money_ask-1","split":"train"}
+{"id":"en-0453","text":"Transfer 2 million kip to this BCEL account to release your parcel","labels":["money_ask"],"tier":"obvious","group":"money_ask-2","split":"train"}
+{"id":"en-0454","text":"Invest $100 and get $500 back in one week, guaranteed profit","labels":["money_ask"],"tier":"obvious","group":"money_ask-3","split":"train"}
+{"id":"en-0455","text":"Double your money in 24 hours with our platform","labels":["money_ask"],"tier":"obvious","group":"money_ask-4","split":"holdout"}
+{"id":"en-0456","text":"Pay the visa fee first and we arrange everything","labels":["money_ask"],"tier":"obvious","group":"money_ask-5","split":"train"}
+{"id":"en-0457","text":"Need processing fee of 300 baht before we send the contract","labels":["money_ask"],"tier":"obvious","group":"money_ask-6","split":"train"}
+{"id":"en-0458","text":"send me money for the customs tax, I will pay you back","labels":["money_ask"],"tier":"obvious","group":"money_ask-7","split":"train"}
+{"id":"en-0459","text":"Earn $200 a day from home, just pay the activation fee","labels":["money_ask"],"tier":"obvious","group":"money_ask-8","split":"train"}
+{"id":"en-0460","text":"Advance payment required, no refund","labels":["money_ask"],"tier":"obvious","group":"money_ask-9","split":"holdout"}
+{"id":"en-0461","text":"small admin cost to unlock your prize, only 150000 kip, it is normal","labels":["money_ask"],"tier":"subtle","group":"money_ask-10","split":"train"}
+{"id":"en-0462","text":"To get started just top up your account and you receive commission daily","labels":["money_ask"],"tier":"subtle","group":"money_ask-11","split":"train"}
+{"id":"en-0463","text":"all you need is a refundable guarantee of 1,000,000 kip","labels":["money_ask"],"tier":"subtle","group":"money_ask-12","split":"train"}
+{"id":"en-0464","text":"Spots are limited, the insurance fee must arrive by tonight","labels":["money_ask"],"tier":"subtle","group":"money_ask-13","split":"train"}
+{"id":"en-0465","text":"Contribute 50 dollars to join the exclusive investment circle","labels":["money_ask"],"tier":"subtle","group":"money_ask-14","split":"holdout"}
+{"id":"en-0466","text":"Please cover the transport cost first, we reimburse later","labels":["money_ask"],"tier":"subtle","group":"money_ask-15","split":"train"}
+{"id":"en-0467","text":"It is only a training fee, everybody pays it, then you earn 5000 baht a month","labels":["money_ask"],"tier":"subtle","group":"money_ask-16","split":"train"}
+{"id":"en-0468","text":"buy the starter pack and your monthly income is assured","labels":["money_ask"],"tier":"subtle","group":"money_ask-17","split":"train"}
+{"id":"en-0469","text":"Wire a small bond and the job is yours","labels":["money_ask"],"tier":"subtle","group":"money_ask-18","split":"train"}
+{"id":"en-0470","text":"help me with 3 million kip, my bank card is stuck, I swear I will repay tomorrow","labels":["money_ask"],"tier":"subtle","group":"money_ask-19","split":"holdout"}
+{"id":"en-0471","text":"Send a deposit of 500000 kip first to secure your place ຟຣີ ຟຣີ","labels":["money_ask"],"tier":"disguised","group":"money_ask-0","split":"train","transform":"mixedLao"}
+{"id":"en-0472","text":"Pay the registration fee t o d a y or l o s e your spot","labels":["money_ask"],"tier":"disguised","group":"money_ask-1","split":"train","transform":"spaced"}
+{"id":"en-0473","text":"T​r​a​n​s​f​e​r 2 million kip to t​h​i​s BCEL a​c​c​o​u​n​t to release your parcel","labels":["money_ask"],"tier":"disguised","group":"money_ask-2","split":"train","transform":"zerowidth"}
+{"id":"en-0474","text":"Inest $100 and get $500 back in one week, guranteed profit","labels":["money_ask"],"tier":"disguised","group":"money_ask-3","split":"train","transform":"typos"}
+{"id":"en-0475","text":"Double your m*ney in 24 h*urs with our platform","labels":["money_ask"],"tier":"disguised","group":"money_ask-4","split":"holdout","transform":"masked"}
+{"id":"en-0476","text":"Pay the visa fee f.i.r.s.t and we arrange everything","labels":["money_ask"],"tier":"disguised","group":"money_ask-5","split":"train","transform":"dotted"}
+{"id":"en-0477","text":"NEED PROCESSING FEE OF 300 BAHT BEFORE WE SEND THE CONTRACT!!!","labels":["money_ask"],"tier":"disguised","group":"money_ask-6","split":"train","transform":"caps"}
+{"id":"en-0478","text":"sendddd me money for the customs tax, I willlll pay you back","labels":["money_ask"],"tier":"disguised","group":"money_ask-7","split":"train","transform":"repeat"}
+{"id":"en-0479","text":"E4rn $200 a day from home, jus7 pay the 4c71v4t1on fee","labels":["money_ask"],"tier":"disguised","group":"money_ask-8","split":"train","transform":"leet"}
+{"id":"en-0480","text":"Advanсе рaуment required, no refund","labels":["money_ask"],"tier":"disguised","group":"money_ask-9","split":"holdout","transform":"homoglyph"}
+{"id":"en-0481","text":"💰 small admin cost to unlock your prize, only 150000 kip, it is normal 😍💰","labels":["money_ask"],"tier":"disguised","group":"money_ask-10","split":"train","transform":"emoji"}
+{"id":"en-0482","text":"To get started just top up your account and you receive commission daily ລະວັງ","labels":["money_ask"],"tier":"disguised","group":"money_ask-11","split":"train","transform":"mixedLao"}
+{"id":"en-0483","text":"all you n e e d is a r e f u n d a b l e guarantee of 1,000,000 kip","labels":["money_ask"],"tier":"disguised","group":"money_ask-12","split":"train","transform":"spaced"}
+{"id":"en-0484","text":"Spots are limited, the i​n​s​u​r​a​n​c​e fee m​u​s​t a​r​r​i​v​e by tonight","labels":["money_ask"],"tier":"disguised","group":"money_ask-13","split":"train","transform":"zerowidth"}
+{"id":"en-0485","text":"Cotribute 50 dollars to join the exlusive investment circle","labels":["money_ask"],"tier":"disguised","group":"money_ask-14","split":"holdout","transform":"typos"}
+{"id":"en-0486","text":"Please c*ver the t*ansport cost first, we reimburse later","labels":["money_ask"],"tier":"disguised","group":"money_ask-15","split":"train","transform":"masked"}
+{"id":"en-0487","text":"It is only a training fee, everybody pays it, t.h.e.n you earn 5000 baht a month","labels":["money_ask"],"tier":"disguised","group":"money_ask-16","split":"train","transform":"dotted"}
+{"id":"en-0488","text":"BUY THE STARTER PACK AND YOUR MONTHLY INCOME IS ASSURED!!!","labels":["money_ask"],"tier":"disguised","group":"money_ask-17","split":"train","transform":"caps"}
+{"id":"en-0489","text":"Wire a smalllll bondddd and the job is yours","labels":["money_ask"],"tier":"disguised","group":"money_ask-18","split":"train","transform":"repeat"}
+{"id":"en-0490","text":"help me with 3 million kip, my bank card is stuck, I sw34r I will repay 7om0rr0w","labels":["money_ask"],"tier":"disguised","group":"money_ask-19","split":"holdout","transform":"leet"}
+{"id":"en-0491","text":"Sеnd a dеpоsіt of 500000 kip fіrst to secure your place","labels":["money_ask"],"tier":"disguised","group":"money_ask-0","split":"train","transform":"homoglyph"}
+{"id":"en-0492","text":"🚨 Pay the registration fee today or lose your spot 📢🔥","labels":["money_ask"],"tier":"disguised","group":"money_ask-1","split":"train","transform":"emoji"}
+{"id":"en-0493","text":"Transfer 2 million kip to this BCEL account to release your parcel ດ່ວນ","labels":["money_ask"],"tier":"disguised","group":"money_ask-2","split":"train","transform":"mixedLao"}
+{"id":"en-0494","text":"I n v e s t $100 and get $500 back in one week, g u a r a n t e e d profit","labels":["money_ask"],"tier":"disguised","group":"money_ask-3","split":"train","transform":"spaced"}
+{"id":"en-0495","text":"D​o​u​b​l​e your m​o​n​e​y in 24 hours with our p​l​a​t​f​o​r​m","labels":["money_ask"],"tier":"disguised","group":"money_ask-4","split":"holdout","transform":"zerowidth"}
+{"id":"en-0496","text":"Pay the visa fee fist and we arange everything","labels":["money_ask"],"tier":"disguised","group":"money_ask-5","split":"train","transform":"typos"}
+{"id":"en-0497","text":"Need processing fee of 300 b*ht b*fore we send the contract","labels":["money_ask"],"tier":"disguised","group":"money_ask-6","split":"train","transform":"masked"}
+{"id":"en-0498","text":"send me money for the c.u.s.t.o.m.s tax, I will pay you back","labels":["money_ask"],"tier":"disguised","group":"money_ask-7","split":"train","transform":"dotted"}
+{"id":"en-0499","text":"EARN $200 A DAY FROM HOME, JUST PAY THE ACTIVATION FEE!!!","labels":["money_ask"],"tier":"disguised","group":"money_ask-8","split":"train","transform":"caps"}
+{"id":"en-0500","text":"Advanceeee paymentttt required, no refund","labels":["money_ask"],"tier":"disguised","group":"money_ask-9","split":"holdout","transform":"repeat"}
+{"id":"en-0501","text":"Send me your OTP code to verify your account","labels":["credential_request"],"tier":"obvious","group":"credential_request-0","split":"train"}
+{"id":"en-0502","text":"Give me your password and PIN to unlock the prize","labels":["credential_request"],"tier":"obvious","group":"credential_request-1","split":"train"}
+{"id":"en-0503","text":"Share your ID card and bank login to claim","labels":["credential_request"],"tier":"obvious","group":"credential_request-2","split":"train"}
+{"id":"en-0504","text":"Your account is suspended, click this link and enter your password","labels":["credential_request"],"tier":"obvious","group":"credential_request-3","split":"train"}
+{"id":"en-0505","text":"Reply with your verification code now","labels":["credential_request"],"tier":"obvious","group":"credential_request-4","split":"holdout"}
+{"id":"en-0506","text":"we need your passport photo and bank account number","labels":["credential_request"],"tier":"obvious","group":"credential_request-5","split":"train"}
+{"id":"en-0507","text":"Confirm your PIN to receive the refund","labels":["credential_request"],"tier":"obvious","group":"credential_request-6","split":"train"}
+{"id":"en-0508","text":"Enter your card number and CVV to continue","labels":["credential_request"],"tier":"obvious","group":"credential_request-7","split":"train"}
+{"id":"en-0509","text":"Tell me the 6 digit code you just received by SMS","labels":["credential_request"],"tier":"obvious","group":"credential_request-8","split":"train"}
+{"id":"en-0510","text":"Verify your Facebook account: send your login details","labels":["credential_request"],"tier":"obvious","group":"credential_request-9","split":"holdout"}
+{"id":"en-0511","text":"quick check, can you read me the code that was just texted to you","labels":["credential_request"],"tier":"subtle","group":"credential_request-10","split":"train"}
+{"id":"en-0512","text":"To finish the application, please upload a selfie holding your ID card","labels":["credential_request"],"tier":"subtle","group":"credential_request-11","split":"train"}
+{"id":"en-0513","text":"Your KYC has expired, update your details at this page","labels":["credential_request"],"tier":"subtle","group":"credential_request-12","split":"train"}
+{"id":"en-0514","text":"Our bank staff will confirm your identity, just share the number on your card","labels":["credential_request"],"tier":"subtle","group":"credential_request-13","split":"train"}
+{"id":"en-0515","text":"Your wallet was flagged, reactivate it by entering your secret code","labels":["credential_request"],"tier":"subtle","group":"credential_request-14","split":"holdout"}
+{"id":"en-0516","text":"tap the link below to secure your account before it is closed","labels":["credential_request"],"tier":"subtle","group":"credential_request-15","split":"train"}
+{"id":"en-0517","text":"Just forward me the SMS you got, it is for the delivery","labels":["credential_request"],"tier":"subtle","group":"credential_request-16","split":"train"}
+{"id":"en-0518","text":"I need your login to help you recover the lost account","labels":["credential_request"],"tier":"subtle","group":"credential_request-17","split":"train"}
+{"id":"en-0519","text":"Please send the reference code from the app, I will process your refund","labels":["credential_request"],"tier":"subtle","group":"credential_request-18","split":"train"}
+{"id":"en-0520","text":"Type your PIN into this form so we can verify it is really you","labels":["credential_request"],"tier":"subtle","group":"credential_request-19","split":"holdout"}
+{"id":"en-0521","text":"Send me your OTP code to veify your account","labels":["credential_request"],"tier":"disguised","group":"credential_request-0","split":"train","transform":"typos"}
+{"id":"en-0522","text":"Give me your p*ssword and PIN to unlock the p*ize","labels":["credential_request"],"tier":"disguised","group":"credential_request-1","split":"train","transform":"masked"}
+{"id":"en-0523","text":"Share your ID c.a.r.d and bank login to claim","labels":["credential_request"],"tier":"disguised","group":"credential_request-2","split":"train","transform":"dotted"}
+{"id":"en-0524","text":"YOUR ACCOUNT IS SUSPENDED, CLICK THIS LINK AND ENTER YOUR PASSWORD!!!","labels":["credential_request"],"tier":"disguised","group":"credential_request-3","split":"train","transform":"caps"}
+{"id":"en-0525","text":"Reply withhhh your verificationnnn code now","labels":["credential_request"],"tier":"disguised","group":"credential_request-4","split":"holdout","transform":"repeat"}
+{"id":"en-0526","text":"we n33d your passport photo and bank acc0un7 number","labels":["credential_request"],"tier":"disguised","group":"credential_request-5","split":"train","transform":"leet"}
+{"id":"en-0527","text":"соnfіrm your PIN to recеіvе the refund","labels":["credential_request"],"tier":"disguised","group":"credential_request-6","split":"train","transform":"homoglyph"}
+{"id":"en-0528","text":"🔥 Enter your card number and CVV to continue ✅👇","labels":["credential_request"],"tier":"disguised","group":"credential_request-7","split":"train","transform":"emoji"}
+{"id":"en-0529","text":"ໂອເຄ Tell me the 6 digit code you just received by SMS","labels":["credential_request"],"tier":"disguised","group":"credential_request-8","split":"train","transform":"mixedLao"}
+{"id":"en-0530","text":"V e r i f y your F a c e b o o k account: send your login details","labels":["credential_request"],"tier":"disguised","group":"credential_request-9","split":"holdout","transform":"spaced"}
+{"id":"en-0531","text":"q​u​i​c​k check, can you read me the c​o​d​e that was just t​e​x​t​e​d to you","labels":["credential_request"],"tier":"disguised","group":"credential_request-10","split":"train","transform":"zerowidth"}
+{"id":"en-0532","text":"To fiish the application, please upload a selfie holding your ID card","labels":["credential_request"],"tier":"disguised","group":"credential_request-11","split":"train","transform":"typos"}
+{"id":"en-0533","text":"Your KYC has expired, u*date your d*tails at this page","labels":["credential_request"],"tier":"disguised","group":"credential_request-12","split":"train","transform":"masked"}
+{"id":"en-0534","text":"Our bank staff will confirm your identity, just share the number on y.o.u.r card","labels":["credential_request"],"tier":"disguised","group":"credential_request-13","split":"train","transform":"dotted"}
+{"id":"en-0535","text":"YOUR WALLET WAS FLAGGED, REACTIVATE IT BY ENTERING YOUR SECRET CODE!!!","labels":["credential_request"],"tier":"disguised","group":"credential_request-14","split":"holdout","transform":"caps"}
+{"id":"en-0536","text":"tap the linkkkk below to secure your accountttt before it is closed","labels":["credential_request"],"tier":"disguised","group":"credential_request-15","split":"train","transform":"repeat"}
+{"id":"en-0537","text":"Ju5t f0rw4rd me the SMS you got, it is for the del1v3ry","labels":["credential_request"],"tier":"disguised","group":"credential_request-16","split":"train","transform":"leet"}
+{"id":"en-0538","text":"I need уоur login to help you recover the lоst аcсоunt","labels":["credential_request"],"tier":"disguised","group":"credential_request-17","split":"train","transform":"homoglyph"}
+{"id":"en-0539","text":"👇 Please send the reference code from the app, I will process your refund 😍💰","labels":["credential_request"],"tier":"disguised","group":"credential_request-18","split":"train","transform":"emoji"}
+{"id":"en-0540","text":"ດ່ວນ Type your PIN into this form so we can verify it is really you","labels":["credential_request"],"tier":"disguised","group":"credential_request-19","split":"holdout","transform":"mixedLao"}
+{"id":"en-0541","text":"Send me your OTP c o d e to verify y o u r account","labels":["credential_request"],"tier":"disguised","group":"credential_request-0","split":"train","transform":"spaced"}
+{"id":"en-0542","text":"Give me your p​a​s​s​w​o​r​d and PIN to u​n​l​o​c​k the p​r​i​z​e","labels":["credential_request"],"tier":"disguised","group":"credential_request-1","split":"train","transform":"zerowidth"}
+{"id":"en-0543","text":"Shre your ID card and bank login to claim","labels":["credential_request"],"tier":"disguised","group":"credential_request-2","split":"train","transform":"typos"}
+{"id":"en-0544","text":"Your account is suspended, click this link and enter y*ur p*ssword","labels":["credential_request"],"tier":"disguised","group":"credential_request-3","split":"train","transform":"masked"}
+{"id":"en-0545","text":"Reply with your verification c.o.d.e now","labels":["credential_request"],"tier":"disguised","group":"credential_request-4","split":"holdout","transform":"dotted"}
+{"id":"en-0546","text":"WE NEED YOUR PASSPORT PHOTO AND BANK ACCOUNT NUMBER!!!","labels":["credential_request"],"tier":"disguised","group":"credential_request-5","split":"train","transform":"caps"}
+{"id":"en-0547","text":"Confirm your PIN to receiveeee the refundddd","labels":["credential_request"],"tier":"disguised","group":"credential_request-6","split":"train","transform":"repeat"}
+{"id":"en-0548","text":"3n73r your card number and CVV to c0n71nu3","labels":["credential_request"],"tier":"disguised","group":"credential_request-7","split":"train","transform":"leet"}
+{"id":"en-0549","text":"Tell me the 6 dіgit сodе you just received by SMS","labels":["credential_request"],"tier":"disguised","group":"credential_request-8","split":"train","transform":"homoglyph"}
+{"id":"en-0550","text":"📢 Verify your Facebook account: send your login details 🚨😍","labels":["credential_request"],"tier":"disguised","group":"credential_request-9","split":"holdout","transform":"emoji"}
+{"id":"en-0551","text":"Urgent hiring! Customer service in Cambodia, salary $1500, no experience needed, free visa and flights","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-0","split":"train"}
+{"id":"en-0552","text":"Easy job in Thailand, high salary, we arrange visa and accommodation","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-1","split":"train"}
+{"id":"en-0553","text":"Work abroad in Dubai, big money, no exam no degree","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-2","split":"train"}
+{"id":"en-0554","text":"Casino staff needed in Golden Triangle SEZ, free food and room","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-3","split":"train"}
+{"id":"en-0555","text":"Factory jobs in Korea, no language needed, salary up to $2000","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-4","split":"holdout"}
+{"id":"en-0556","text":"Online chat agents needed in Myanmar border town, $1200 a month","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-5","split":"train"}
+{"id":"en-0557","text":"Girls aged 18-25 wanted for hostess work in Malaysia, free travel","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-6","split":"train"}
+{"id":"en-0558","text":"Hiring now: data entry in Poipet, easy work, free accommodation","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-7","split":"train"}
+{"id":"en-0559","text":"No experience needed, high salary job abroad, we handle your visa","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-8","split":"train"}
+{"id":"en-0560","text":"Work in China, good salary, passports arranged by our agent","labels":["job_abroad"],"tier":"obvious","group":"job_abroad-9","split":"holdout"}
+{"id":"en-0561","text":"A friend of mine earns a lot working a simple online job near the border, I can connect you","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-10","split":"train"}
+{"id":"en-0562","text":"company pays everything, you only need to show up at the river crossing","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-11","split":"train"}
+{"id":"en-0563","text":"Looking for young people who want to work overseas and change their life, no skills needed","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-12","split":"train"}
+{"id":"en-0564","text":"Cashier job in Bangkok, ten thousand baht, transport provided from the village","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-13","split":"train"}
+{"id":"en-0565","text":"Our partner in Sihanoukville is looking for chat staff, you can start next week","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-14","split":"holdout"}
+{"id":"en-0566","text":"Student holiday job in Malaysia, we cover tickets and housing","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-15","split":"train"}
+{"id":"en-0567","text":"Special economic zone hiring, bring your ID, no interview","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-16","split":"train"}
+{"id":"en-0568","text":"Easy money job in Dubai for pretty girls, very well paid","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-17","split":"train"}
+{"id":"en-0569","text":"Join our team in Myawaddy, simple typing work, excellent pay, free lodging","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-18","split":"train"}
+{"id":"en-0570","text":"Good salary construction job in Japan, our agent arranges papers quickly","labels":["job_abroad"],"tier":"subtle","group":"job_abroad-19","split":"holdout"}
+{"id":"en-0571","text":"U*gent hiring! Customer service in Cambodia, salary $1500, no e*perience needed, free visa and flights","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-0","split":"train","transform":"masked"}
+{"id":"en-0572","text":"E.a.s.y job in Thailand, high salary, we arrange visa and accommodation","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-1","split":"train","transform":"dotted"}
+{"id":"en-0573","text":"WORK ABROAD IN DUBAI, BIG MONEY, NO EXAM NO DEGREE!!!","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-2","split":"train","transform":"caps"}
+{"id":"en-0574","text":"Casino staff neededddd in Golden Triangle SEZ, free food and roommmm","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-3","split":"train","transform":"repeat"}
+{"id":"en-0575","text":"Fac70ry job5 in Korea, no language needed, 54lary up to $2000","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-4","split":"holdout","transform":"leet"}
+{"id":"en-0576","text":"Online chat agents neеded in Myаnmаr border town, $1200 a mоnth","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-5","split":"train","transform":"homoglyph"}
+{"id":"en-0577","text":"📢 Girls aged 18-25 wanted for hostess work in Malaysia, free travel 🚨🔥","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-6","split":"train","transform":"emoji"}
+{"id":"en-0578","text":"ສະບາຍດີ Hiring now: data entry in Poipet, easy work, free accommodation","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-7","split":"train","transform":"mixedLao"}
+{"id":"en-0579","text":"No experience needed, h i g h salary job abroad, we h a n d l e your visa","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-8","split":"train","transform":"spaced"}
+{"id":"en-0580","text":"W​o​r​k in China, g​o​o​d salary, passports a​r​r​a​n​g​e​d by our agent","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-9","split":"holdout","transform":"zerowidth"}
+{"id":"en-0581","text":"A friend of mine eans a lot working a siple online job near the border, I can connect you","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-10","split":"train","transform":"typos"}
+{"id":"en-0582","text":"c*mpany pays everything, you only n*ed to show up at the river crossing","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-11","split":"train","transform":"masked"}
+{"id":"en-0583","text":"Looking for young p.e.o.p.l.e who want to work overseas and change their life, no skills needed","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-12","split":"train","transform":"dotted"}
+{"id":"en-0584","text":"CASHIER JOB IN BANGKOK, TEN THOUSAND BAHT, TRANSPORT PROVIDED FROM THE VILLAGE!!!","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-13","split":"train","transform":"caps"}
+{"id":"en-0585","text":"Our partnerrrr in Sihanoukville is looking for chat staff, you can start next weekkkk","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-14","split":"holdout","transform":"repeat"}
+{"id":"en-0586","text":"57ud3nt holiday job in Malaysia, we cover 7ick375 and h0u51ng","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-15","split":"train","transform":"leet"}
+{"id":"en-0587","text":"Spесіal есоnоmic zоnе hiring, bring your ID, no interview","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-16","split":"train","transform":"homoglyph"}
+{"id":"en-0588","text":"💰 Easy money job in Dubai for pretty girls, very well paid ✅💰","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-17","split":"train","transform":"emoji"}
+{"id":"en-0589","text":"ຟຣີ ຟຣີ Join our team in Myawaddy, simple typing work, excellent pay, free lodging","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-18","split":"train","transform":"mixedLao"}
+{"id":"en-0590","text":"Good salary construction job in Japan, our agent arranges p a p e r s q u i c k l y","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-19","split":"holdout","transform":"spaced"}
+{"id":"en-0591","text":"Urgent hiring! Customer service in Cambodia, s​a​l​a​r​y $1500, no experience needed, f​r​e​e visa and f​l​i​g​h​t​s","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-0","split":"train","transform":"zerowidth"}
+{"id":"en-0592","text":"Easy job in Thailand, high salary, we arange visa and accommodation","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-1","split":"train","transform":"typos"}
+{"id":"en-0593","text":"W*rk a*road in Dubai, big money, no exam no degree","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-2","split":"train","transform":"masked"}
+{"id":"en-0594","text":"Casino staff needed in G.o.l.d.e.n Triangle SEZ, free food and room","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-3","split":"train","transform":"dotted"}
+{"id":"en-0595","text":"FACTORY JOBS IN KOREA, NO LANGUAGE NEEDED, SALARY UP TO $2000!!!","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-4","split":"holdout","transform":"caps"}
+{"id":"en-0596","text":"Online chatttt agents needed in Myanmarrrr border town, $1200 a month","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-5","split":"train","transform":"repeat"}
+{"id":"en-0597","text":"Girls 4g3d 18-25 wanted for h0s7355 work in Malaysia, fre3 travel","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-6","split":"train","transform":"leet"}
+{"id":"en-0598","text":"Hiring now: dаta entry in Poipet, еаsу work, free ассоmmоdаtіоn","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-7","split":"train","transform":"homoglyph"}
+{"id":"en-0599","text":"👇 No experience needed, high salary job abroad, we handle your visa ✅👇","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-8","split":"train","transform":"emoji"}
+{"id":"en-0600","text":"Work in China, good salary, passports arranged by our agent ໂອເຄ","labels":["job_abroad"],"tier":"disguised","group":"job_abroad-9","split":"holdout","transform":"mixedLao"}
+{"id":"en-0601","text":"The agent will keep your passport for safekeeping until the contract ends","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-0","split":"train"}
+{"id":"en-0602","text":"You cannot leave until you pay off the debt","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-1","split":"train"}
+{"id":"en-0603","text":"Girls for sale, young and healthy, DM for price","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-2","split":"train"}
+{"id":"en-0604","text":"We take you across the river without passport or immigration","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-3","split":"train"}
+{"id":"en-0605","text":"Girls needed to accompany VIP guests and entertain them","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-4","split":"holdout"}
+{"id":"en-0606","text":"They beat us if we do not reach the scam quota","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-5","split":"train"}
+{"id":"en-0607","text":"The boss locked us in and took our phones and documents","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-6","split":"train"}
+{"id":"en-0608","text":"Selling a virgin to the highest bidder","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-7","split":"train"}
+{"id":"en-0609","text":"Do not tell your parents, it is a secret trip","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-8","split":"train"}
+{"id":"en-0610","text":"Workers are forced to work 18 hours with no pay","labels":["trafficking_signs"],"tier":"obvious","group":"trafficking_signs-9","split":"holdout"}
+{"id":"en-0611","text":"After you arrive the company holds your documents, standard procedure","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-10","split":"train"}
+{"id":"en-0612","text":"You will owe the agent for the trip, you can work it off over a few months","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-11","split":"train"}
+{"id":"en-0613","text":"Nobody leaves the compound before the contract finishes, but the pay is great","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-12","split":"train"}
+{"id":"en-0614","text":"We know a guide who skips immigration checkpoints, very safe","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-13","split":"train"}
+{"id":"en-0615","text":"keep this between us, your family does not need to know where you work","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-14","split":"holdout"}
+{"id":"en-0616","text":"Young girls from the village wanted for private service to important guests","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-15","split":"train"}
+{"id":"en-0617","text":"They said I can go home after I earn back what they paid for me","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-16","split":"train"}
+{"id":"en-0618","text":"the managers confiscate phones during the first month","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-17","split":"train"}
+{"id":"en-0619","text":"no days off, no phone, but food and a room are free","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-18","split":"train"}
+{"id":"en-0620","text":"We need teenagers to work and marry abroad, parents will be paid","labels":["trafficking_signs"],"tier":"subtle","group":"trafficking_signs-19","split":"holdout"}
+{"id":"en-0621","text":"‼️ The agent will keep your passport for safekeeping until the contract ends 😍‼️","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-0","split":"train","transform":"emoji"}
+{"id":"en-0622","text":"ສະບາຍດີ You cannot leave until you pay off the debt","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-1","split":"train","transform":"mixedLao"}
+{"id":"en-0623","text":"G i r l s for sale, y o u n g and healthy, DM for price","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-2","split":"train","transform":"spaced"}
+{"id":"en-0624","text":"We t​a​k​e you across the river w​i​t​h​o​u​t passport or i​m​m​i​g​r​a​t​i​o​n","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-3","split":"train","transform":"zerowidth"}
+{"id":"en-0625","text":"Gils needed to acompany VIP guests and enertain them","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-4","split":"holdout","transform":"typos"}
+{"id":"en-0626","text":"They beat us if we do not r*ach the s*am quota","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-5","split":"train","transform":"masked"}
+{"id":"en-0627","text":"The b.o.s.s locked us in and took our phones and documents","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-6","split":"train","transform":"dotted"}
+{"id":"en-0628","text":"SELLING A VIRGIN TO THE HIGHEST BIDDER!!!","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-7","split":"train","transform":"caps"}
+{"id":"en-0629","text":"Do not tell yourrrr parents, it is a secret tripppp","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-8","split":"train","transform":"repeat"}
+{"id":"en-0630","text":"Workers are f0rc3d to work 18 hours with no pay","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-9","split":"holdout","transform":"leet"}
+{"id":"en-0631","text":"After you аrrіvе the company holds your documents, standard proсеdure","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-10","split":"train","transform":"homoglyph"}
+{"id":"en-0632","text":"📢 You will owe the agent for the trip, you can work it off over a few months 💰✅","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-11","split":"train","transform":"emoji"}
+{"id":"en-0633","text":"Nobody leaves the compound before the contract finishes, but the pay is great ຂອບໃຈ","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-12","split":"train","transform":"mixedLao"}
+{"id":"en-0634","text":"We k n o w a guide who skips i m m i g r a t i o n checkpoints, very safe","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-13","split":"train","transform":"spaced"}
+{"id":"en-0635","text":"keep t​h​i​s between us, your family d​o​e​s not need to k​n​o​w where you work","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-14","split":"holdout","transform":"zerowidth"}
+{"id":"en-0636","text":"Yong girls from the village wanted for private sevice to imortant guests","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-15","split":"train","transform":"typos"}
+{"id":"en-0637","text":"They said I can go home after I e*rn b*ck what they paid for me","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-16","split":"train","transform":"masked"}
+{"id":"en-0638","text":"the m.a.n.a.g.e.r.s confiscate phones during the first month","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-17","split":"train","transform":"dotted"}
+{"id":"en-0639","text":"NO DAYS OFF, NO PHONE, BUT FOOD AND A ROOM ARE FREE!!!","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-18","split":"train","transform":"caps"}
+{"id":"en-0640","text":"We need teenagers to work and marry abroad, parentssss will be paidddd","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-19","split":"holdout","transform":"repeat"}
+{"id":"en-0641","text":"The 4g3n7 will k33p your passport for safekeeping until the contrac7 ends","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-0","split":"train","transform":"leet"}
+{"id":"en-0642","text":"You саnnot lеаvе untіl you pay off the debt","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-1","split":"train","transform":"homoglyph"}
+{"id":"en-0643","text":"‼️ Girls for sale, young and healthy, DM for price ✅👇","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-2","split":"train","transform":"emoji"}
+{"id":"en-0644","text":"We take you across the river without passport or immigration ຟຣີ ຟຣີ","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-3","split":"train","transform":"mixedLao"}
+{"id":"en-0645","text":"Girls needed to a c c o m p a n y VIP guests and entertain t h e m","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-4","split":"holdout","transform":"spaced"}
+{"id":"en-0646","text":"They b​e​a​t us if we do not reach the s​c​a​m q​u​o​t​a","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-5","split":"train","transform":"zerowidth"}
+{"id":"en-0647","text":"The boss loked us in and took our phones and douments","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-6","split":"train","transform":"typos"}
+{"id":"en-0648","text":"S*lling a v*rgin to the highest bidder","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-7","split":"train","transform":"masked"}
+{"id":"en-0649","text":"Do not t.e.l.l your parents, it is a secret trip","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-8","split":"train","transform":"dotted"}
+{"id":"en-0650","text":"WORKERS ARE FORCED TO WORK 18 HOURS WITH NO PAY!!!","labels":["trafficking_signs"],"tier":"disguised","group":"trafficking_signs-9","split":"holdout","transform":"caps"}
+{"id":"en-0651","text":"I am a US soldier in Syria, I fell in love with you, I need money for the customs","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-0","split":"train"}
+{"id":"en-0652","text":"My love, send me gift cards, I am stuck at the airport","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-1","split":"train"}
+{"id":"en-0653","text":"Baby I need 3 million kip for the hospital, I promise to pay you back","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-2","split":"train"}
+{"id":"en-0654","text":"I am a widow engineer on an oil rig, I want to marry you, send money for my ticket","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-3","split":"train"}
+{"id":"en-0655","text":"Honey, invest in this crypto platform with me, guaranteed profit","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-4","split":"holdout"}
+{"id":"en-0656","text":"My darling, the parcel I sent you is held at customs, pay the fee","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-5","split":"train"}
+{"id":"en-0657","text":"I love you so much, please help me with a small loan, trust me","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-6","split":"train"}
+{"id":"en-0658","text":"I met you on Facebook and I know we are soulmates, send money for my visa","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-7","split":"train"}
+{"id":"en-0659","text":"My bank account is frozen, my angel, please wire me funds","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-8","split":"train"}
+{"id":"en-0660","text":"I cannot video call, my camera is broken, but I am deeply in love","labels":["romance_scam"],"tier":"obvious","group":"romance_scam-9","split":"holdout"}
+{"id":"en-0661","text":"I never felt like this before, could you cover my flight so I can finally meet you","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-10","split":"train"}
+{"id":"en-0662","text":"my uncle teaches me a trading app, join me and we will be rich together","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-11","split":"train"}
+{"id":"en-0663","text":"The gift I sent you needs a small handling fee at the airport, my love","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-12","split":"train"}
+{"id":"en-0664","text":"You are the only person I trust, I am in a bit of trouble abroad","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-13","split":"train"}
+{"id":"en-0665","text":"I am a doctor with the peacekeeping mission, retiring soon, looking for a serious partner","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-14","split":"holdout"}
+{"id":"en-0666","text":"dear, my inheritance is stuck until I pay the tax, then we can start our life together","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-15","split":"train"}
+{"id":"en-0667","text":"I only chat here, please add me on WhatsApp, I want to know you better","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-16","split":"train"}
+{"id":"en-0668","text":"handsome engineer from London looking for a good wife, I am lonely","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-17","split":"train"}
+{"id":"en-0669","text":"honey I lost my wallet, can you send a little money for my hotel","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-18","split":"train"}
+{"id":"en-0670","text":"We should invest together, it is our future, you can start with 100 dollars","labels":["romance_scam"],"tier":"subtle","group":"romance_scam-19","split":"holdout"}
+{"id":"en-0671","text":"I am a US soldier in Syria, I f e l l in love with you, I need m o n e y for the customs","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-0","split":"train","transform":"spaced"}
+{"id":"en-0672","text":"My love, s​e​n​d me g​i​f​t cards, I am s​t​u​c​k at the airport","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-1","split":"train","transform":"zerowidth"}
+{"id":"en-0673","text":"Baby I need 3 million kip for the hospital, I prmise to pay you back","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-2","split":"train","transform":"typos"}
+{"id":"en-0674","text":"I am a widow engineer on an oil rig, I want to marry you, s*nd money for my t*cket","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-3","split":"train","transform":"masked"}
+{"id":"en-0675","text":"Honey, invest in this c.r.y.p.t.o platform with me, guaranteed profit","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-4","split":"holdout","transform":"dotted"}
+{"id":"en-0676","text":"MY DARLING, THE PARCEL I SENT YOU IS HELD AT CUSTOMS, PAY THE FEE!!!","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-5","split":"train","transform":"caps"}
+{"id":"en-0677","text":"I love you so much, please help me withhhh a small loan, trustttt me","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-6","split":"train","transform":"repeat"}
+{"id":"en-0678","text":"I met you on Fac3b00k and I know we are soulmates, send m0ney for my v1s4","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-7","split":"train","transform":"leet"}
+{"id":"en-0679","text":"My bаnk acсоunt is frozen, my angel, please wіre me funds","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-8","split":"train","transform":"homoglyph"}
+{"id":"en-0680","text":"‼️ I cannot video call, my camera is broken, but I am deeply in love ‼️📢","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-9","split":"holdout","transform":"emoji"}
+{"id":"en-0681","text":"I never felt like this before, could you cover my flight so I can finally meet you ລະວັງ","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-10","split":"train","transform":"mixedLao"}
+{"id":"en-0682","text":"my u n c l e teaches me a trading app, join me and we will be rich t o g e t h e r","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-11","split":"train","transform":"spaced"}
+{"id":"en-0683","text":"The g​i​f​t I s​e​n​t you n​e​e​d​s a small handling fee at the airport, my love","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-12","split":"train","transform":"zerowidth"}
+{"id":"en-0684","text":"You are the only peson I trust, I am in a bit of truble aboad","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-13","split":"train","transform":"typos"}
+{"id":"en-0685","text":"I am a doctor with the peacekeeping mission, r*tiring soon, l*oking for a serious partner","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-14","split":"holdout","transform":"masked"}
+{"id":"en-0686","text":"dear, my inheritance is stuck until I pay the tax, then we can start our life t.o.g.e.t.h.e.r","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-15","split":"train","transform":"dotted"}
+{"id":"en-0687","text":"I ONLY CHAT HERE, PLEASE ADD ME ON WHATSAPP, I WANT TO KNOW YOU BETTER!!!","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-16","split":"train","transform":"caps"}
+{"id":"en-0688","text":"handsome engineerrrr frommmm London looking for a good wife, I am lonely","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-17","split":"train","transform":"repeat"}
+{"id":"en-0689","text":"h0ney I lost my wallet, can you 53nd a little m0n3y for my hotel","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-18","split":"train","transform":"leet"}
+{"id":"en-0690","text":"We shоuld invest together, it is our future, you can start wіth 100 dollars","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-19","split":"holdout","transform":"homoglyph"}
+{"id":"en-0691","text":"✅ I am a US soldier in Syria, I fell in love with you, I need money for the customs ‼️😍","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-0","split":"train","transform":"emoji"}
+{"id":"en-0692","text":"My love, send me gift cards, I am stuck at the airport ຟຣີ ຟຣີ","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-1","split":"train","transform":"mixedLao"}
+{"id":"en-0693","text":"Baby I need 3 m i l l i o n kip for the hospital, I p r o m i s e to pay you back","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-2","split":"train","transform":"spaced"}
+{"id":"en-0694","text":"I am a w​i​d​o​w e​n​g​i​n​e​e​r on an oil rig, I want to marry you, send m​o​n​e​y for my ticket","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-3","split":"train","transform":"zerowidth"}
+{"id":"en-0695","text":"Honey, inest in this crpto platform with me, guaranteed profit","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-4","split":"holdout","transform":"typos"}
+{"id":"en-0696","text":"My darling, the parcel I s*nt you is h*ld at customs, pay the fee","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-5","split":"train","transform":"masked"}
+{"id":"en-0697","text":"I love you so much, please help me with a s.m.a.l.l loan, trust me","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-6","split":"train","transform":"dotted"}
+{"id":"en-0698","text":"I MET YOU ON FACEBOOK AND I KNOW WE ARE SOULMATES, SEND MONEY FOR MY VISA!!!","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-7","split":"train","transform":"caps"}
+{"id":"en-0699","text":"My bank account is frozen, my angel, please wireeee me fundssss","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-8","split":"train","transform":"repeat"}
+{"id":"en-0700","text":"I cann07 v1d30 call, my camera is broken, but I am deeply in love","labels":["romance_scam"],"tier":"disguised","group":"romance_scam-9","split":"holdout","transform":"leet"}
+{"id":"en-0701","text":"This is the police, your name is linked to a money laundering case, transfer to the safe account","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-0","split":"train"}
+{"id":"en-0702","text":"We are from the Ministry, your passport is under investigation, pay the fine now","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-1","split":"train"}
+{"id":"en-0703","text":"Bank security department: your account is frozen, transfer funds to a secure account","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-2","split":"train"}
+{"id":"en-0704","text":"Lao Post notice: your parcel is held at customs, pay the clearance fee","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-3","split":"train"}
+{"id":"en-0705","text":"This is an official summons, you will be arrested unless you comply","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-4","split":"holdout"}
+{"id":"en-0706","text":"Interpol notice: you are involved in a criminal case, do not tell anyone","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-5","split":"train"}
+{"id":"en-0707","text":"We are calling from the embassy about your visa case, you must transfer a bond","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-6","split":"train"}
+{"id":"en-0708","text":"Tax office: unpaid tax, pay a penalty or face prosecution","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-7","split":"train"}
+{"id":"en-0709","text":"Court order: transfer money for verification or be detained","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-8","split":"train"}
+{"id":"en-0710","text":"This is the cyber crime unit, do not hang up, your phone number was used in fraud","labels":["authority_impersonation"],"tier":"obvious","group":"authority_impersonation-9","split":"holdout"}
+{"id":"en-0711","text":"A police officer called and said my number is linked to a case, so I need to check","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-10","split":"train"}
+{"id":"en-0712","text":"Official letter from the revenue department, your account needs verification, please call back","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-11","split":"train"}
+{"id":"en-0713","text":"We are your bank, please move your savings to a safe holding account while we investigate","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-12","split":"train"}
+{"id":"en-0714","text":"Immigration reminder: your documents are flagged, settle the penalty today","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-13","split":"train"}
+{"id":"en-0715","text":"DHL delivery on hold, customs duty must be paid via this link","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-14","split":"holdout"}
+{"id":"en-0716","text":"Your telecom operator will block your SIM today unless you verify your identity","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-15","split":"train"}
+{"id":"en-0717","text":"The ministry requires all residents to confirm their ID by transferring a small fee","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-16","split":"train"}
+{"id":"en-0718","text":"Facebook security team: your page will be deleted, verify within 24 hours","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-17","split":"train"}
+{"id":"en-0719","text":"This is customer support from your bank, we noticed unusual activity, please confirm your details","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-18","split":"train"}
+{"id":"en-0720","text":"Hello, I am from the court office, there is a fine linked to your name","labels":["authority_impersonation"],"tier":"subtle","group":"authority_impersonation-19","split":"holdout"}
+{"id":"en-0721","text":"T h i s is the police, your name is linked to a money laundering case, transfer to the safe a c c o u n t","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-0","split":"train","transform":"spaced"}
+{"id":"en-0722","text":"We are from the Ministry, your p​a​s​s​p​o​r​t is u​n​d​e​r investigation, pay the f​i​n​e now","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-1","split":"train","transform":"zerowidth"}
+{"id":"en-0723","text":"Bank security department: your acount is frozen, transfer fuds to a secure account","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-2","split":"train","transform":"typos"}
+{"id":"en-0724","text":"Lao Post notice: y*ur p*rcel is held at customs, pay the clearance fee","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-3","split":"train","transform":"masked"}
+{"id":"en-0725","text":"This is an o.f.f.i.c.i.a.l summons, you will be arrested unless you comply","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-4","split":"holdout","transform":"dotted"}
+{"id":"en-0726","text":"INTERPOL NOTICE: YOU ARE INVOLVED IN A CRIMINAL CASE, DO NOT TELL ANYONE!!!","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-5","split":"train","transform":"caps"}
+{"id":"en-0727","text":"We are calling from the embassyyyy about yourrrr visa case, you must transfer a bond","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-6","split":"train","transform":"repeat"}
+{"id":"en-0728","text":"Tax office: unpa1d tax, pay a pen4lty or face pr053cu7i0n","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-7","split":"train","transform":"leet"}
+{"id":"en-0729","text":"Court order: trаnsfеr money for verіfiсаtіоn or be detаined","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-8","split":"train","transform":"homoglyph"}
+{"id":"en-0730","text":"😍 This is the cyber crime unit, do not hang up, your phone number was used in fraud ✅📢","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-9","split":"holdout","transform":"emoji"}
+{"id":"en-0731","text":"ລະວັງ A police officer called and said my number is linked to a case, so I need to check","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-10","split":"train","transform":"mixedLao"}
+{"id":"en-0732","text":"Official letter f r o m the revenue department, your account needs verification, please c a l l back","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-11","split":"train","transform":"spaced"}
+{"id":"en-0733","text":"We are your bank, p​l​e​a​s​e move your savings to a safe h​o​l​d​i​n​g account w​h​i​l​e we investigate","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-12","split":"train","transform":"zerowidth"}
+{"id":"en-0734","text":"Imigration reminder: your documents are flagged, settle the penalty toay","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-13","split":"train","transform":"typos"}
+{"id":"en-0735","text":"DHL delivery on hold, customs duty must be p*id via t*is link","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-14","split":"holdout","transform":"masked"}
+{"id":"en-0736","text":"Y.o.u.r telecom operator will block your SIM today unless you verify your identity","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-15","split":"train","transform":"dotted"}
+{"id":"en-0737","text":"THE MINISTRY REQUIRES ALL RESIDENTS TO CONFIRM THEIR ID BY TRANSFERRING A SMALL FEE!!!","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-16","split":"train","transform":"caps"}
+{"id":"en-0738","text":"Facebook security team: yourrrr page will be deleted, verify within 24 hourssss","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-17","split":"train","transform":"repeat"}
+{"id":"en-0739","text":"This is customer support from your bank, we noticed unu5u4l activity, ple453 confirm your details","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-18","split":"train","transform":"leet"}
+{"id":"en-0740","text":"Hello, I am frоm the court office, there is a finе lіnkеd to your name","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-19","split":"holdout","transform":"homoglyph"}
+{"id":"en-0741","text":"‼️ This is the police, your name is linked to a money laundering case, transfer to the safe account ✅👇","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-0","split":"train","transform":"emoji"}
+{"id":"en-0742","text":"We are from the Ministry, your passport is under investigation, pay the fine now ລະວັງ","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-1","split":"train","transform":"mixedLao"}
+{"id":"en-0743","text":"Bank s e c u r i t y department: y o u r account is frozen, transfer funds to a secure account","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-2","split":"train","transform":"spaced"}
+{"id":"en-0744","text":"Lao P​o​s​t notice: y​o​u​r parcel is held at customs, pay the c​l​e​a​r​a​n​c​e fee","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-3","split":"train","transform":"zerowidth"}
+{"id":"en-0745","text":"This is an official summons, you will be arrested unless you coply","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-4","split":"holdout","transform":"typos"}
+{"id":"en-0746","text":"Interpol notice: you are i*volved in a c*iminal case, do not tell anyone","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-5","split":"train","transform":"masked"}
+{"id":"en-0747","text":"We are c.a.l.l.i.n.g from the embassy about your visa case, you must transfer a bond","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-6","split":"train","transform":"dotted"}
+{"id":"en-0748","text":"TAX OFFICE: UNPAID TAX, PAY A PENALTY OR FACE PROSECUTION!!!","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-7","split":"train","transform":"caps"}
+{"id":"en-0749","text":"Court order: transferrrr money for verification or be detainedddd","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-8","split":"train","transform":"repeat"}
+{"id":"en-0750","text":"This is the cyber crime unit, do not hang up, y0ur ph0n3 number was u5ed in fraud","labels":["authority_impersonation"],"tier":"disguised","group":"authority_impersonation-9","split":"holdout","transform":"leet"}
+{"id":"en-0751","text":"Share this to 10 groups or you will have bad luck for a year","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-0","split":"train"}
+{"id":"en-0752","text":"If you love your mother you will share this now","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-1","split":"train"}
+{"id":"en-0753","text":"Only true friends will repost this, the rest do not care","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-2","split":"train"}
+{"id":"en-0754","text":"Your family will suffer if you do not forward this message","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-3","split":"train"}
+{"id":"en-0755","text":"Last chance! Only 2 hours left, act now before it is too late","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-4","split":"holdout"}
+{"id":"en-0756","text":"Please help, my child is dying in hospital, send money now","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-5","split":"train"}
+{"id":"en-0757","text":"WARNING! Kidnappers in white vans are taking children, share to everyone you know","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-6","split":"train"}
+{"id":"en-0758","text":"You will regret it forever if you ignore this","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-7","split":"train"}
+{"id":"en-0759","text":"forward this to 20 contacts or something terrible will happen","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-8","split":"train"}
+{"id":"en-0760","text":"How can you be so heartless? Share and save a life","labels":["emotional_manipulation"],"tier":"obvious","group":"emotional_manipulation-9","split":"holdout"}
+{"id":"en-0761","text":"I do not usually ask but please, every share counts, you could save a life","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-10","split":"train"}
+{"id":"en-0762","text":"If you are a good Buddhist you will pass this on","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-11","split":"train"}
+{"id":"en-0763","text":"My grandmother is very sick, any amount helps, no one else will help us","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-12","split":"train"}
+{"id":"en-0764","text":"Do not ignore this, the last person who did lost everything","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-13","split":"train"}
+{"id":"en-0765","text":"Think about your kids before you scroll past this post","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-14","split":"holdout"}
+{"id":"en-0766","text":"Share quickly, they are deleting this tonight, tell everyone you know","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-15","split":"train"}
+{"id":"en-0767","text":"People who really care will send something right now","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-16","split":"train"}
+{"id":"en-0768","text":"a child was taken near the market yesterday, forward this to every parent","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-17","split":"train"}
+{"id":"en-0769","text":"You do not want to be the one who broke the chain, do you","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-18","split":"train"}
+{"id":"en-0770","text":"Please, I am begging you, one click and my family is saved","labels":["emotional_manipulation"],"tier":"subtle","group":"emotional_manipulation-19","split":"holdout"}
+{"id":"en-0771","text":"5har3 7h1s to 10 groups or you will have bad luck for a year","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-0","split":"train","transform":"leet"}
+{"id":"en-0772","text":"If you lovе yоur mother you will shаrе this now","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-1","split":"train","transform":"homoglyph"}
+{"id":"en-0773","text":"🚨 Only true friends will repost this, the rest do not care ✅‼️","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-2","split":"train","transform":"emoji"}
+{"id":"en-0774","text":"Your family will suffer if you do not forward this message ຟຣີ ຟຣີ","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-3","split":"train","transform":"mixedLao"}
+{"id":"en-0775","text":"Last chance! Only 2 hours left, act now b e f o r e it is too l a t e","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-4","split":"holdout","transform":"spaced"}
+{"id":"en-0776","text":"Please help, my c​h​i​l​d is dying in hospital, s​e​n​d m​o​n​e​y now","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-5","split":"train","transform":"zerowidth"}
+{"id":"en-0777","text":"WARNING! Kidnappers in whte vans are taing children, share to evryone you know","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-6","split":"train","transform":"typos"}
+{"id":"en-0778","text":"You w*ll regret it forever if you ignore t*is","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-7","split":"train","transform":"masked"}
+{"id":"en-0779","text":"forward this to 20 contacts or something terrible w.i.l.l happen","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-8","split":"train","transform":"dotted"}
+{"id":"en-0780","text":"HOW CAN YOU BE SO HEARTLESS? SHARE AND SAVE A LIFE!!!","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-9","split":"holdout","transform":"caps"}
+{"id":"en-0781","text":"I do not usually ask but please, every shareeee counts, you couldddd save a life","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-10","split":"train","transform":"repeat"}
+{"id":"en-0782","text":"If you are a good Buddh157 you will p4s5 this on","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-11","split":"train","transform":"leet"}
+{"id":"en-0783","text":"My grandmother is vеry sick, any amount helps, no one else wіll hеlр us","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-12","split":"train","transform":"homoglyph"}
+{"id":"en-0784","text":"🔥 Do not ignore this, the last person who did lost everything 📢✅","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-13","split":"train","transform":"emoji"}
+{"id":"en-0785","text":"ໂອເຄ Think about your kids before you scroll past this post","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-14","split":"holdout","transform":"mixedLao"}
+{"id":"en-0786","text":"S h a r e quickly, they are d e l e t i n g this tonight, tell everyone you know","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-15","split":"train","transform":"spaced"}
+{"id":"en-0787","text":"P​e​o​p​l​e who really c​a​r​e will send s​o​m​e​t​h​i​n​g right now","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-16","split":"train","transform":"zerowidth"}
+{"id":"en-0788","text":"a child was taken near the maket yesterday, foward this to every parent","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-17","split":"train","transform":"typos"}
+{"id":"en-0789","text":"You do not w*nt to be the one who b*oke the chain, do you","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-18","split":"train","transform":"masked"}
+{"id":"en-0790","text":"Please, I am begging you, one click and my f.a.m.i.l.y is saved","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-19","split":"holdout","transform":"dotted"}
+{"id":"en-0791","text":"SHARE THIS TO 10 GROUPS OR YOU WILL HAVE BAD LUCK FOR A YEAR!!!","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-0","split":"train","transform":"caps"}
+{"id":"en-0792","text":"If you love your motherrrr you will shareeee this now","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-1","split":"train","transform":"repeat"}
+{"id":"en-0793","text":"Only 7rue fr1end5 will repost this, the rest do not care","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-2","split":"train","transform":"leet"}
+{"id":"en-0794","text":"Yоur family will suffer if you do not fоrward this messаgе","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-3","split":"train","transform":"homoglyph"}
+{"id":"en-0795","text":"🔥 Last chance! Only 2 hours left, act now before it is too late 😍‼️","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-4","split":"holdout","transform":"emoji"}
+{"id":"en-0796","text":"Please help, my child is dying in hospital, send money now ສະບາຍດີ","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-5","split":"train","transform":"mixedLao"}
+{"id":"en-0797","text":"WARNING! Kidnappers in white v a n s are taking children, share to everyone you k n o w","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-6","split":"train","transform":"spaced"}
+{"id":"en-0798","text":"You w​i​l​l regret it f​o​r​e​v​e​r if you i​g​n​o​r​e this","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-7","split":"train","transform":"zerowidth"}
+{"id":"en-0799","text":"foward this to 20 contacts or something terible will hapen","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-8","split":"train","transform":"typos"}
+{"id":"en-0800","text":"How can you be so heartless? S*are and s*ve a life","labels":["emotional_manipulation"],"tier":"disguised","group":"emotional_manipulation-9","split":"holdout","transform":"masked"}
+{"id":"en-0801","text":"DM me for details, WhatsApp only +856 20 5555 5555","labels":["private_contact"],"tier":"obvious","group":"private_contact-0","split":"train"}
+{"id":"en-0802","text":"Inbox me now to join, Telegram @easyjobs88","labels":["private_contact"],"tier":"obvious","group":"private_contact-1","split":"train"}
+{"id":"en-0803","text":"Contact us on Line only, no calls","labels":["private_contact"],"tier":"obvious","group":"private_contact-2","split":"train"}
+{"id":"en-0804","text":"Add my WeChat for the offer, link in bio","labels":["private_contact"],"tier":"obvious","group":"private_contact-3","split":"train"}
+{"id":"en-0805","text":"Scan the QR code below to join our private group","labels":["private_contact"],"tier":"obvious","group":"private_contact-4","split":"holdout"}
+{"id":"en-0806","text":"Join our VIP Telegram channel https://t.me/earnfast","labels":["private_contact"],"tier":"obvious","group":"private_contact-5","split":"train"}
+{"id":"en-0807","text":"Message me on WhatsApp 020 5555 1234 to apply today","labels":["private_contact"],"tier":"obvious","group":"private_contact-6","split":"train"}
+{"id":"en-0808","text":"ib me for price, only Telegram","labels":["private_contact"],"tier":"obvious","group":"private_contact-7","split":"train"}
+{"id":"en-0809","text":"Click bit.ly/3xYz12 and contact the admin privately","labels":["private_contact"],"tier":"obvious","group":"private_contact-8","split":"train"}
+{"id":"en-0810","text":"WhatsApp me directly, no email, no office visit","labels":["private_contact"],"tier":"obvious","group":"private_contact-9","split":"holdout"}
+{"id":"en-0811","text":"If interested, just message and I will explain everything privately","labels":["private_contact"],"tier":"subtle","group":"private_contact-10","split":"train"}
+{"id":"en-0812","text":"details in the comments, hit me up there","labels":["private_contact"],"tier":"subtle","group":"private_contact-11","split":"train"}
+{"id":"en-0813","text":"we do not talk on the phone, find us on the chat app","labels":["private_contact"],"tier":"subtle","group":"private_contact-12","split":"train"}
+{"id":"en-0814","text":"Looking for 5 people, my contact is in my profile","labels":["private_contact"],"tier":"subtle","group":"private_contact-13","split":"train"}
+{"id":"en-0815","text":"Use the link in my story to book your seat, DM if it fails","labels":["private_contact"],"tier":"subtle","group":"private_contact-14","split":"holdout"}
+{"id":"en-0816","text":"serious people only, text me first and we go from there","labels":["private_contact"],"tier":"subtle","group":"private_contact-15","split":"train"}
+{"id":"en-0817","text":"All our updates are in the private group, ask me for the invite","labels":["private_contact"],"tier":"subtle","group":"private_contact-16","split":"train"}
+{"id":"en-0818","text":"My handle is on my page, reach out whenever","labels":["private_contact"],"tier":"subtle","group":"private_contact-17","split":"train"}
+{"id":"en-0819","text":"Interested? Send \"yes\" to my inbox","labels":["private_contact"],"tier":"subtle","group":"private_contact-18","split":"train"}
+{"id":"en-0820","text":"for the form, scan the code on the poster and chat with our staff","labels":["private_contact"],"tier":"subtle","group":"private_contact-19","split":"holdout"}
+{"id":"en-0821","text":"DM me for details, W​h​a​t​s​A​p​p o​n​l​y +856 20 5555 5555","labels":["private_contact"],"tier":"disguised","group":"private_contact-0","split":"train","transform":"zerowidth"}
+{"id":"en-0822","text":"Inox me now to join, Teegram @easyjobs88","labels":["private_contact"],"tier":"disguised","group":"private_contact-1","split":"train","transform":"typos"}
+{"id":"en-0823","text":"C*ntact us on L*ne only, no calls","labels":["private_contact"],"tier":"disguised","group":"private_contact-2","split":"train","transform":"masked"}
+{"id":"en-0824","text":"Add my W.e.C.h.a.t for the offer, link in bio","labels":["private_contact"],"tier":"disguised","group":"private_contact-3","split":"train","transform":"dotted"}
+{"id":"en-0825","text":"SCAN THE QR CODE BELOW TO JOIN OUR PRIVATE GROUP!!!","labels":["private_contact"],"tier":"disguised","group":"private_contact-4","split":"holdout","transform":"caps"}
+{"id":"en-0826","text":"Joinnnn our VIP Telegrammmm channel https://t.me/earnfast","labels":["private_contact"],"tier":"disguised","group":"private_contact-5","split":"train","transform":"repeat"}
+{"id":"en-0827","text":"M35sag3 me on WhatsApp 020 5555 1234 to apply 7od4y","labels":["private_contact"],"tier":"disguised","group":"private_contact-6","split":"train","transform":"leet"}
+{"id":"en-0828","text":"ib me for price, оnly Tеlegrаm","labels":["private_contact"],"tier":"disguised","group":"private_contact-7","split":"train","transform":"homoglyph"}
+{"id":"en-0829","text":"😍 Click bit.ly/3xYz12 and contact the admin privately 📢👇","labels":["private_contact"],"tier":"disguised","group":"private_contact-8","split":"train","transform":"emoji"}
+{"id":"en-0830","text":"WhatsApp me directly, no email, no office visit ຟຣີ ຟຣີ","labels":["private_contact"],"tier":"disguised","group":"private_contact-9","split":"holdout","transform":"mixedLao"}
+{"id":"en-0831","text":"If interested, just m e s s a g e and I will e x p l a i n everything privately","labels":["private_contact"],"tier":"disguised","group":"private_contact-10","split":"train","transform":"spaced"}
+{"id":"en-0832","text":"d​e​t​a​i​l​s in the comments, hit me up t​h​e​r​e","labels":["private_contact"],"tier":"disguised","group":"private_contact-11","split":"train","transform":"zerowidth"}
+{"id":"en-0833","text":"we do not talk on the phone, find us on the chat app","labels":["private_contact"],"tier":"disguised","group":"private_contact-12","split":"train","transform":"typos"}
+{"id":"en-0834","text":"L*oking for 5 people, my contact is in my p*ofile","labels":["private_contact"],"tier":"disguised","group":"private_contact-13","split":"train","transform":"masked"}
+{"id":"en-0835","text":"Use the link in my story to book y.o.u.r seat, DM if it fails","labels":["private_contact"],"tier":"disguised","group":"private_contact-14","split":"holdout","transform":"dotted"}
+{"id":"en-0836","text":"SERIOUS PEOPLE ONLY, TEXT ME FIRST AND WE GO FROM THERE!!!","labels":["private_contact"],"tier":"disguised","group":"private_contact-15","split":"train","transform":"caps"}
+{"id":"en-0837","text":"All our updates are in the privateeee group, ask me for the inviteeee","labels":["private_contact"],"tier":"disguised","group":"private_contact-16","split":"train","transform":"repeat"}
+{"id":"en-0838","text":"My h4ndl3 is on my page, r3ach out wh3n3v3r","labels":["private_contact"],"tier":"disguised","group":"private_contact-17","split":"train","transform":"leet"}
+{"id":"en-0839","text":"Interested? Sеnd \"yes\" to my inboх","labels":["private_contact"],"tier":"disguised","group":"private_contact-18","split":"train","transform":"homoglyph"}
+{"id":"en-0840","text":"😍 for the form, scan the code on the poster and chat with our staff 🔥👇","labels":["private_contact"],"tier":"disguised","group":"private_contact-19","split":"holdout","transform":"emoji"}
+{"id":"en-0841","text":"DM me for details, WhatsApp only +856 20 5555 5555 ທັກມາເລີຍ","labels":["private_contact"],"tier":"disguised","group":"private_contact-0","split":"train","transform":"mixedLao"}
+{"id":"en-0842","text":"I n b o x me now to join, T e l e g r a m @easyjobs88","labels":["private_contact"],"tier":"disguised","group":"private_contact-1","split":"train","transform":"spaced"}
+{"id":"en-0843","text":"C​o​n​t​a​c​t us on L​i​n​e only, no c​a​l​l​s","labels":["private_contact"],"tier":"disguised","group":"private_contact-2","split":"train","transform":"zerowidth"}
+{"id":"en-0844","text":"Add my Wehat for the offer, link in bio","labels":["private_contact"],"tier":"disguised","group":"private_contact-3","split":"train","transform":"typos"}
+{"id":"en-0845","text":"S*an the QR code below to join our p*ivate group","labels":["private_contact"],"tier":"disguised","group":"private_contact-4","split":"holdout","transform":"masked"}
+{"id":"en-0846","text":"J.o.i.n our VIP Telegram channel https://t.me/earnfast","labels":["private_contact"],"tier":"disguised","group":"private_contact-5","split":"train","transform":"dotted"}
+{"id":"en-0847","text":"MESSAGE ME ON WHATSAPP 020 5555 1234 TO APPLY TODAY!!!","labels":["private_contact"],"tier":"disguised","group":"private_contact-6","split":"train","transform":"caps"}
+{"id":"en-0848","text":"ib me for price, onlyyyy Telegrammmm","labels":["private_contact"],"tier":"disguised","group":"private_contact-7","split":"train","transform":"repeat"}
+{"id":"en-0849","text":"Cl1ck bit.ly/3xYz12 and contact the 4dm1n priv473ly","labels":["private_contact"],"tier":"disguised","group":"private_contact-8","split":"train","transform":"leet"}
+{"id":"en-0850","text":"Whаtsарр me directly, no email, no offісе visіt","labels":["private_contact"],"tier":"disguised","group":"private_contact-9","split":"holdout","transform":"homoglyph"}
+{"id":"en-0851","text":"Police arrested five suspects running a fake job scam in Savannakhet, officials said","labels":[],"tier":"safe","group":"safe-0","split":"train"}
+{"id":"en-0852","text":"Warning: never share your OTP with anyone, not even the bank","labels":[],"tier":"safe","group":"safe-1","split":"train"}
+{"id":"en-0853","text":"I paid a deposit for a job in Thailand and now the agent is silent. Was it a scam? What should I do?","labels":[],"tier":"safe","group":"safe-2","split":"train"}
+{"id":"en-0854","text":"Beware of fake job offers that ask for a visa fee first. Real employers never charge you to hire you","labels":[],"tier":"safe","group":"safe-3","split":"train"}
+{"id":"en-0855","text":"Tips to spot a romance scam: they never video call and soon ask for money","labels":[],"tier":"safe","group":"safe-4","split":"holdout"}
+{"id":"en-0856","text":"Our team is hiring a cashier at a Vientiane shop. Apply by email with your CV, interview at our office","labels":[],"tier":"safe","group":"safe-5","split":"train"}
+{"id":"en-0857","text":"Rescued trafficking victims were repatriated to Laos this week, the ministry announced","labels":[],"tier":"safe","group":"safe-6","split":"train"}
+{"id":"en-0858","text":"How to report a scam: call 1362 or visit your local police station","labels":[],"tier":"safe","group":"safe-7","split":"train"}
+{"id":"en-0859","text":"My cousin got a message saying her account was frozen and to send her PIN. We did not reply. Is that a scam?","labels":[],"tier":"safe","group":"safe-8","split":"train"}
+{"id":"en-0860","text":"Scammers often pretend to be police and ask you to transfer money to a safe account. Hang up and call the real number","labels":[],"tier":"safe","group":"safe-9","split":"holdout"}
+{"id":"en-0861","text":"Parody: \"Breaking: local cat declares itself president of the kitchen.\" Obviously a joke","labels":[],"tier":"safe","group":"safe-10","split":"train"}
+{"id":"en-0862","text":"A new study explains how traffickers lure young people with promises of easy jobs abroad","labels":[],"tier":"safe","group":"safe-11","split":"train"}
+{"id":"en-0863","text":"The bank will never ask for your password. Stay safe online","labels":[],"tier":"safe","group":"safe-12","split":"train"}
+{"id":"en-0864","text":"Hotline 1300 is available for victims of trafficking. Please share to raise awareness","labels":[],"tier":"safe","group":"safe-13","split":"train"}
+{"id":"en-0865","text":"Is this job offer real? It says free visa and no experience needed, in Cambodia. I am worried","labels":[],"tier":"safe","group":"safe-14","split":"holdout"}
+{"id":"en-0866","text":"We are recruiting a volunteer English teacher for our village library, contact our office during working hours","labels":[],"tier":"safe","group":"safe-15","split":"train"}
+{"id":"en-0867","text":"Fact check: the claim that 5G causes covid is false, according to the WHO","labels":[],"tier":"safe","group":"safe-16","split":"train"}
+{"id":"en-0868","text":"Local news: police warn of fake lottery messages circulating on WhatsApp","labels":[],"tier":"safe","group":"safe-17","split":"train"}
+{"id":"en-0869","text":"Study abroad fair at the National University next Saturday, official scholarship information and free entry","labels":[],"tier":"safe","group":"safe-18","split":"train"}
+{"id":"en-0870","text":"How to protect your accounts: use strong passwords and turn on two-step verification","labels":[],"tier":"safe","group":"safe-19","split":"holdout"}
+{"id":"en-0871","text":"The court sentenced a gang that sold girls across the border, reported the Vientiane Times","labels":[],"tier":"safe","group":"safe-20","split":"train"}
+{"id":"en-0872","text":"Lesson for kids: if a stranger online asks for your address, tell a trusted adult","labels":[],"tier":"safe","group":"safe-21","split":"train"}
+{"id":"en-0873","text":"My friend was scammed with a fake parcel fee. Please be careful and never pay to receive a prize","labels":[],"tier":"safe","group":"safe-22","split":"train"}
+{"id":"en-0874","text":"Awareness campaign against online scams starts this Monday at all district schools","labels":[],"tier":"safe","group":"safe-23","split":"train"}
+{"id":"en-0875","text":"Red flags of fake jobs: no interview, upfront fees, passport held by the agent, contact only on Telegram","labels":[],"tier":"safe","group":"safe-24","split":"holdout"}
+{"id":"en-0876","text":"Our shop sells school supplies. Visit us on weekdays, 8 to 5","labels":[],"tier":"safe","group":"safe-25","split":"train"}
+{"id":"en-0877","text":"The ministry said recruiters must be licensed. Check the list before you apply","labels":[],"tier":"safe","group":"safe-26","split":"train"}
+{"id":"en-0878","text":"Can someone check this link for me? I think it is phishing, I did not click","labels":[],"tier":"safe","group":"safe-27","split":"train"}
+{"id":"en-0879","text":"A survivor shares her story of being forced to work in a scam compound and how she escaped","labels":[],"tier":"safe","group":"safe-28","split":"train"}
+{"id":"en-0880","text":"Reminder: never send money to someone you only met online, even if they seem kind","labels":[],"tier":"safe","group":"safe-29","split":"holdout"}
+{"id":"en-0881","text":"Interview with a police officer about how romance scammers work","labels":[],"tier":"safe","group":"safe-30","split":"train"}
+{"id":"en-0882","text":"How do I know if a recruitment agent is legal? What documents should I ask for?","labels":[],"tier":"safe","group":"safe-31","split":"train"}
+{"id":"en-0883","text":"PSA: if someone claims to be from customs and demands a fee by chat, it is a scam. Report it","labels":[],"tier":"safe","group":"safe-32","split":"train"}
+{"id":"en-0884","text":"We reviewed the new anti-trafficking law and what it means for migrant workers","labels":[],"tier":"safe","group":"safe-33","split":"train"}
+{"id":"en-0885","text":"Good morning everyone, remember to check the official site before applying for any scholarship","labels":[],"tier":"safe","group":"safe-34","split":"holdout"}
+{"id":"en-0886","text":"This post is satire: the new app that tells you to send your PIN to everyone for good luck","labels":[],"tier":"safe","group":"safe-35","split":"train"}
+{"id":"en-0887","text":"I got a call from someone saying he was a police officer asking me to transfer money. I hung up. What else should I do?","labels":[],"tier":"safe","group":"safe-36","split":"train"}
+{"id":"en-0888","text":"Never hand over your passport to an agent. This is a common sign of trafficking","labels":[],"tier":"safe","group":"safe-37","split":"train"}
+{"id":"en-0889","text":"Our NGO offers free legal advice to workers who return from abroad","labels":[],"tier":"safe","group":"safe-38","split":"train"}
+{"id":"en-0890","text":"The university is hiring a lecturer in computer science, details on the official website","labels":[],"tier":"safe","group":"safe-39","split":"holdout"}
+{"id":"en-0891","text":"Teacher here: we taught the class how to spot phishing emails today","labels":[],"tier":"safe","group":"safe-40","split":"train"}
+{"id":"en-0892","text":"Scam alert from the telecom company: they will never ask for your PIN by message","labels":[],"tier":"safe","group":"safe-41","split":"train"}
+{"id":"en-0893","text":"What is the difference between a real job offer and a scam? Share your experience","labels":[],"tier":"safe","group":"safe-42","split":"train"}
+{"id":"en-0894","text":"A friend lost money in a fake investment. The police said to report it and keep screenshots","labels":[],"tier":"safe","group":"safe-43","split":"train"}
+{"id":"en-0895","text":"Fake news warning: the message about banks closing for a month is not true, the central bank confirmed","labels":[],"tier":"safe","group":"safe-44","split":"holdout"}
+{"id":"en-0896","text":"Report: young women lured by false job ads were stopped at the border by officers","labels":[],"tier":"safe","group":"safe-45","split":"train"}
+{"id":"en-0897","text":"Tips for parents: talk to your children about online strangers and keep devices in common rooms","labels":[],"tier":"safe","group":"safe-46","split":"train"}
+{"id":"en-0898","text":"The village volunteers held a meeting about safe migration and how to check an employer","labels":[],"tier":"safe","group":"safe-47","split":"train"}
+{"id":"en-0899","text":"How to recognise a scam call: urgency, threats, and requests for money or codes","labels":[],"tier":"safe","group":"safe-48","split":"train"}
+{"id":"en-0900","text":"Please share this poster so more people know the hotline number","labels":[],"tier":"safe","group":"safe-49","split":"holdout"}
+{"id":"en-0901","text":"Support group for families who lost money to online fraud meets on Thursdays","labels":[],"tier":"safe","group":"safe-50","split":"train"}
+{"id":"en-0902","text":"Good morning everyone, have a great day","labels":[],"tier":"safe","group":"safe-o0","split":"train"}
+{"id":"en-0903","text":"Selling nothing, just sharing a photo of the sunset at the Mekong","labels":[],"tier":"safe","group":"safe-o1","split":"train"}
+{"id":"en-0904","text":"Study group for the exam meets at 3 pm in the library","labels":[],"tier":"safe","group":"safe-o2","split":"train"}
+{"id":"en-0905","text":"We are hiring a waiter at our family restaurant in Luang Prabang, apply in person with your CV","labels":[],"tier":"safe","group":"safe-o3","split":"train"}
+{"id":"en-0906","text":"Thanks for all the birthday wishes, I am so happy","labels":[],"tier":"safe","group":"safe-o4","split":"holdout"}
+{"id":"en-0907","text":"The library is open on Saturdays from 9 to 4","labels":[],"tier":"safe","group":"safe-o5","split":"train"}
+{"id":"en-0908","text":"Does anyone have notes from the biology class?","labels":[],"tier":"safe","group":"safe-o6","split":"train"}
+{"id":"en-0909","text":"Community clean-up at the riverside this Sunday morning, bring gloves","labels":[],"tier":"safe","group":"safe-o7","split":"train"}
+{"id":"en-0910","text":"Tips for a safe trip: keep copies of your passport in a separate bag","labels":[],"tier":"safe","group":"safe-o8","split":"train"}
+{"id":"en-0911","text":"Please be kind in the comments, we are all learning","labels":[],"tier":"safe","group":"safe-o9","split":"holdout"}
+{"id":"en-0912","text":"Job opening: nurse assistant at the district hospital, apply at the hospital office with your documents","labels":[],"tier":"safe","group":"safe-o10","split":"train"}
+{"id":"en-0913","text":"Lao New Year celebration photos from our village","labels":[],"tier":"safe","group":"safe-o11","split":"train"}
+{"id":"en-0914","text":"How can I improve my English for a scholarship interview?","labels":[],"tier":"safe","group":"safe-o12","split":"train"}
+{"id":"en-0915","text":"I am looking for a roommate near the university, contact me by email","labels":[],"tier":"safe","group":"safe-o13","split":"train"}
+{"id":"en-0916","text":"Never click unknown links. Instead, go to the official website yourself","labels":[],"tier":"safe","group":"safe-o14","split":"holdout"}
+{"id":"en-0917","text":"GOOD MORNING EVERYONE, HAVE A GREAT DAY!!!","labels":[],"tier":"safe","group":"safe-o0","split":"train","transform":"caps"}
+{"id":"en-0918","text":"😍 Selling nothing, just sharing a photo of the sunset at the Mekong 🚨💰","labels":[],"tier":"safe","group":"safe-o1","split":"train","transform":"emoji"}
+{"id":"en-0919","text":"Stdy group for the exam meets at 3 pm in the lirary","labels":[],"tier":"safe","group":"safe-o2","split":"train","transform":"typos"}
+{"id":"en-0920","text":"ລະວັງ We are hiring a waiter at our family restaurant in Luang Prabang, apply in person with your CV","labels":[],"tier":"safe","group":"safe-o3","split":"train","transform":"mixedLao"}
+{"id":"en-0921","text":"Thankssss for all the birthday wishes, I am so happyyyy","labels":[],"tier":"safe","group":"safe-o4","split":"holdout","transform":"repeat"}
+{"id":"en-0922","text":"THE LIBRARY IS OPEN ON SATURDAYS FROM 9 TO 4!!!","labels":[],"tier":"safe","group":"safe-o5","split":"train","transform":"caps"}
+{"id":"en-0923","text":"✅ Does anyone have notes from the biology class? 📢‼️","labels":[],"tier":"safe","group":"safe-o6","split":"train","transform":"emoji"}
+{"id":"en-0924","text":"Community clean-up at the rierside this Sunday morning, brng gloves","labels":[],"tier":"safe","group":"safe-o7","split":"train","transform":"typos"}
+{"id":"en-0925","text":"Tips for a safe trip: keep copies of your passport in a separate bag ໂອເຄ","labels":[],"tier":"safe","group":"safe-o8","split":"train","transform":"mixedLao"}
+{"id":"en-0926","text":"Pleaseeee be kindddd in the comments, we are all learning","labels":[],"tier":"safe","group":"safe-o9","split":"holdout","transform":"repeat"}
+{"id":"en-0927","text":"JOB OPENING: NURSE ASSISTANT AT THE DISTRICT HOSPITAL, APPLY AT THE HOSPITAL OFFICE WITH YOUR DOCUMENTS!!!","labels":[],"tier":"safe","group":"safe-o10","split":"train","transform":"caps"}
+{"id":"en-0928","text":"😍 Lao New Year celebration photos from our village 🚨📢","labels":[],"tier":"safe","group":"safe-o11","split":"train","transform":"emoji"}
+{"id":"en-0929","text":"How can I imrove my Enlish for a scolarship interview?","labels":[],"tier":"safe","group":"safe-o12","split":"train","transform":"typos"}
+{"id":"en-0930","text":"ເງິນດີ I am looking for a roommate near the university, contact me by email","labels":[],"tier":"safe","group":"safe-o13","split":"train","transform":"mixedLao"}
+{"id":"en-0931","text":"Never click unknownnnn links. Instead, go to the official website yourselffff","labels":[],"tier":"safe","group":"safe-o14","split":"holdout","transform":"repeat"}
+{"id":"en-0932","text":"POLICE ARRESTED FIVE SUSPECTS RUNNING A FAKE JOB SCAM IN SAVANNAKHET, OFFICIALS SAID!!!","labels":[],"tier":"safe","group":"safe-0","split":"train","transform":"caps"}
+{"id":"en-0933","text":"ດ່ວນ I paid a deposit for a job in Thailand and now the agent is silent. Was it a scam? What should I do?","labels":[],"tier":"safe","group":"safe-2","split":"train","transform":"mixedLao"}
+{"id":"en-0934","text":"😍 Tips to spot a romance scam: they never video call and soon ask for money 👇🚨","labels":[],"tier":"safe","group":"safe-4","split":"holdout","transform":"emoji"}
+{"id":"en-0935","text":"RESCUED TRAFFICKING VICTIMS WERE REPATRIATED TO LAOS THIS WEEK, THE MINISTRY ANNOUNCED!!!","labels":[],"tier":"safe","group":"safe-6","split":"train","transform":"caps"}
+{"id":"en-0936","text":"ດ່ວນ My cousin got a message saying her account was frozen and to send her PIN. We did not reply. Is that a scam?","labels":[],"tier":"safe","group":"safe-8","split":"train","transform":"mixedLao"}
+{"id":"en-0937","text":"✅ Parody: \"Breaking: local cat declares itself president of the kitchen.\" Obviously a joke 🔥🔥","labels":[],"tier":"safe","group":"safe-10","split":"train","transform":"emoji"}
+{"id":"en-0938","text":"THE BANK WILL NEVER ASK FOR YOUR PASSWORD. STAY SAFE ONLINE!!!","labels":[],"tier":"safe","group":"safe-12","split":"train","transform":"caps"}
+{"id":"en-0939","text":"ຂອບໃຈ Is this job offer real? It says free visa and no experience needed, in Cambodia. I am worried","labels":[],"tier":"safe","group":"safe-14","split":"holdout","transform":"mixedLao"}
+{"id":"en-0940","text":"📢 Fact check: the claim that 5G causes covid is false, according to the WHO ‼️🔥","labels":[],"tier":"safe","group":"safe-16","split":"train","transform":"emoji"}
+{"id":"en-0941","text":"STUDY ABROAD FAIR AT THE NATIONAL UNIVERSITY NEXT SATURDAY, OFFICIAL SCHOLARSHIP INFORMATION AND FREE ENTRY!!!","labels":[],"tier":"safe","group":"safe-18","split":"train","transform":"caps"}
+{"id":"en-0942","text":"The court sentenced a gang that sold girls across the border, reported the Vientiane Times ໂອເຄ","labels":[],"tier":"safe","group":"safe-20","split":"train","transform":"mixedLao"}
+{"id":"en-0943","text":"🚨 My friend was scammed with a fake parcel fee. Please be careful and never pay to receive a prize 🚨🔥","labels":[],"tier":"safe","group":"safe-22","split":"train","transform":"emoji"}
+{"id":"en-0944","text":"RED FLAGS OF FAKE JOBS: NO INTERVIEW, UPFRONT FEES, PASSPORT HELD BY THE AGENT, CONTACT ONLY ON TELEGRAM!!!","labels":[],"tier":"safe","group":"safe-24","split":"holdout","transform":"caps"}
+{"id":"en-0945","text":"The ministry said recruiters must be licensed. Check the list before you apply ຂອບໃຈ","labels":[],"tier":"safe","group":"safe-26","split":"train","transform":"mixedLao"}
+{"id":"en-0946","text":"🚨 A survivor shares her story of being forced to work in a scam compound and how she escaped 📢📢","labels":[],"tier":"safe","group":"safe-28","split":"train","transform":"emoji"}
+{"id":"en-0947","text":"INTERVIEW WITH A POLICE OFFICER ABOUT HOW ROMANCE SCAMMERS WORK!!!","labels":[],"tier":"safe","group":"safe-30","split":"train","transform":"caps"}
+{"id":"en-0948","text":"PSA: if someone claims to be from customs and demands a fee by chat, it is a scam. Report it ທັກມາເລີຍ","labels":[],"tier":"safe","group":"safe-32","split":"train","transform":"mixedLao"}
+{"id":"en-0949","text":"🚨 Good morning everyone, remember to check the official site before applying for any scholarship 💰👇","labels":[],"tier":"safe","group":"safe-34","split":"holdout","transform":"emoji"}
+{"id":"en-0950","text":"I GOT A CALL FROM SOMEONE SAYING HE WAS A POLICE OFFICER ASKING ME TO TRANSFER MONEY. I HUNG UP. WHAT ELSE SHOULD I DO?!!!","labels":[],"tier":"safe","group":"safe-36","split":"train","transform":"caps"}
+{"id":"en-0951","text":"ຟຣີ ຟຣີ Our NGO offers free legal advice to workers who return from abroad","labels":[],"tier":"safe","group":"safe-38","split":"train","transform":"mixedLao"}
+{"id":"en-0952","text":"✅ Teacher here: we taught the class how to spot phishing emails today ✅👇","labels":[],"tier":"safe","group":"safe-40","split":"train","transform":"emoji"}
+{"id":"en-0953","text":"WHAT IS THE DIFFERENCE BETWEEN A REAL JOB OFFER AND A SCAM? SHARE YOUR EXPERIENCE!!!","labels":[],"tier":"safe","group":"safe-42","split":"train","transform":"caps"}
+{"id":"en-0954","text":"Fake news warning: the message about banks closing for a month is not true, the central bank confirmed ທັກມາເລີຍ","labels":[],"tier":"safe","group":"safe-44","split":"holdout","transform":"mixedLao"}
+{"id":"en-0955","text":"😍 Tips for parents: talk to your children about online strangers and keep devices in common rooms 👇📢","labels":[],"tier":"safe","group":"safe-46","split":"train","transform":"emoji"}
+{"id":"en-0956","text":"HOW TO RECOGNISE A SCAM CALL: URGENCY, THREATS, AND REQUESTS FOR MONEY OR CODES!!!","labels":[],"tier":"safe","group":"safe-48","split":"train","transform":"caps"}
+{"id":"en-0957","text":"ເງິນດີ Support group for families who lost money to online fraud meets on Thursdays","labels":[],"tier":"safe","group":"safe-50","split":"train","transform":"mixedLao"}
