@@ -37,3 +37,7 @@ CREATE TABLE IF NOT EXISTS follows (user_id TEXT NOT NULL REFERENCES users(id) O
 CREATE INDEX IF NOT EXISTS follows_target ON follows(target_kind,target_id);
 CREATE TABLE IF NOT EXISTS game_progress (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, game TEXT NOT NULL, best_score INTEGER NOT NULL DEFAULT 0, xp INTEGER NOT NULL DEFAULT 0, plays INTEGER NOT NULL DEFAULT 0, updated INTEGER NOT NULL, PRIMARY KEY(user_id,game));
 CREATE TABLE IF NOT EXISTS sati_feedback (id TEXT PRIMARY KEY, user_id TEXT, vote TEXT NOT NULL CHECK(vote IN ('up','down')), topic TEXT NOT NULL DEFAULT '', note TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'lo', created INTEGER NOT NULL);
+
+-- Website feedback (POST /api/feedback). Additive: safe to apply on an existing database.
+CREATE TABLE IF NOT EXISTS feedback (id TEXT PRIMARY KEY, user_id TEXT, name TEXT NOT NULL DEFAULT '', email TEXT NOT NULL DEFAULT '', message TEXT NOT NULL, page TEXT NOT NULL DEFAULT '', lang TEXT NOT NULL DEFAULT 'lo', created INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS feedback_created ON feedback(created DESC);

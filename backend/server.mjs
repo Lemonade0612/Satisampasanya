@@ -12,6 +12,7 @@ import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mj
 import {checkPost} from './safety/post-check.mjs';
 import {publicCurated,staffCurated,reviewCurated} from './curated.mjs';
 import {applyRisk,addReport} from './riskScore.mjs';
+import {feedbackRoutes,listFeedback} from './feedback.mjs';
 import {modelConfigured} from './safety/model.mjs';
 import {hostedTranslate} from './safety/translate.mjs';
 import { createServer } from 'node:http';
@@ -126,6 +127,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         if (req.method === 'GET' && path === '/api/admin/dashboard') return send(res,200,adminSnapshot(db,user));
         // Viewers may read scenarios and the log; only reviewers and admins may submit or decide.
         const canReview=['reviewer','admin'].includes(access.role);
+        if (req.method === 'GET' && path === '/api/admin/feedback') return send(res,200,listFeedback(db));
         if (req.method === 'GET' && path === '/api/admin/curated') return send(res,200,staffCurated(db));
         const curatedReview = /^\/api\/admin\/curated\/([^/]+)$/.exec(path);
         if (req.method === 'PATCH' && curatedReview) {
@@ -183,6 +185,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         let dbOk = false; try { dbOk = db.prepare('SELECT 1 AS ok').get().ok === 1; } catch {}
         return send(res, dbOk ? 200 : 503, { ok: dbOk, db: dbOk ? 'ok' : 'error', ai: process.env.AI_PROVIDER || (modelConfigured() ? 'configured' : 'none'), uptime: Math.round(process.uptime()) });
       }
+      if (await feedbackRoutes({ req, res, path, db, user, send, body: () => body(req), ip: clientIp(req) })) return;
       // Public: approved, unexpired curated posts (Posts / ຂ່າວສານ). Pending and rejected posts never leave the server.
       if (req.method === 'GET' && path === '/api/curated') return send(res,200,publicCurated(db));
       // Public: live scenarios for one age band only. Drafts, approved-but-unpublished and rejected rows never leave the server.

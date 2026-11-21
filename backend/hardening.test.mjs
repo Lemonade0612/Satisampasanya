@@ -1,18 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createApp } from './server.mjs';
+import { start } from './test-helpers.mjs';
 
-async function start(options = {}) {
-  const app = createApp({ database: ':memory:', seed: false, ...options });
-  await new Promise(r => app.server.listen(0, '127.0.0.1', r));
-  const root = `http://127.0.0.1:${app.server.address().port}`;
-  const call = async (path, { method = 'GET', body, headers = {}, token } = {}) => {
-    const response = await fetch(root + path, { method, headers: { ...(body ? { 'Content-Type': 'application/json' } : {}), ...(token ? { Authorization: `Bearer ${token}` } : {}), ...headers }, body: body ? JSON.stringify(body) : undefined });
-    const text = await response.text(); let value; try { value = JSON.parse(text); } catch { value = text; }
-    return { status: response.status, value, headers: response.headers };
-  };
-  return { ...app, root, call };
-}
 const burst = async (f, headers, n = 25) => { let last; for (let i = 0; i < n; i++) last = await f.call('/api/auth/login', { method: 'POST', body: { email: `x${i}@example.com`, password: 'wrong-password' }, headers }); return last.status; };
 
 test('A3: forwarded headers are ignored by default, so spoofing cannot dodge the rate limit', async () => {
