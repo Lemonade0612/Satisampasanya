@@ -14,7 +14,7 @@ export function screenText(text, { model } = {}) {
   for (const cat of CATEGORIES) {
     let rule = rules[cat].score, learned = clf[cat] >= 0.5 ? (0.5 + (clf[cat] - 0.5) * 0.9) * 0.8 : 0;
     // A warning, a news report or a victim's question quotes lure words without offering them: damp the lure categories only.
-    if (safeContext && LURE.has(cat)) { rule *= 0.35; learned *= 0.5; }
+    if (safeContext && (LURE.has(cat) || cat === 'misinformation')) { rule *= 0.35; learned *= 0.5; }
     scores[cat] = Math.round(noisyOr(rule, learned) * 1000) / 1000;
   }
   const categories = CATEGORIES.filter(c => scores[c] >= YELLOW).sort((a, b) => scores[b] - scores[a]);

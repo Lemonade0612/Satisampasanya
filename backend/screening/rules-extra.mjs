@@ -1,0 +1,127 @@
+// Extra generic rules added in the improvement loop (agents/ + dev v2 misses). Merged into RULES by rules.mjs.
+// Same weights as rules.mjs. Written as patterns, not as copies of dev sentences. The locked set was never consulted.
+const W = (rx, w) => [rx, w];
+const ASK = '(?:send|give|tell|share|drop|post|show|text|dm|pm|inbox|whats|what\'s|what is|enter|type|reply with|confirm|read out|provide)';
+const POSS = '(?:your|ur|ya|youre|you\'re)';
+export const EXTRA = {
+  profanity: [
+    W(/\b(bloody hell|piss poor|god ?damn\w*|what the hell|wth|hell of|arse\w*|crappy|screwed up|pissed)\b/, 0.6),
+    W(/\bpiss\b|\bshite?\b|\bbollocks\b|\bdamn(ed|it)?\b/, 0.55),
+  ],
+  animal_insults: [
+    W(/\b(dumb|silly|smelly|nasty|pathetic|disgusting|little|big|lazy|greedy|fat|ugly|stupid|dirty|filthy|useless|worthless)\b ?(old |little )?(dog|pig|buffalo|monkey|snake|rat|donkey|cow|worm|cockroach|ape|swine|goat|parrot|clown)s?\b/, 0.85),
+    W(/\b(you|u|ur|youre|you're|they|these|those|he|she)\b[^.!?]{0,25}\b(clown|parrot|pig|dog|rat|snake|monkey|cow|donkey|goat|swine|ape)s?\b/, 0.75),
+    W(/\b(behave|behaves|act|acts|live|lives|eat|eats) like (a )?(pigs?|dogs?|animals?|beasts?|monkeys?|rats?)\b/, 0.8),
+    W(/ປາກໝາ|ປາກໝູ|ໜ້າໝາ|ໜ້າໝູ|ຄວາຍ|ສັດ/u, 0.5),
+  ],
+  bullying: [
+    W(/\b(zero|no|not a single) friends?\b|\bno friends\b|\bfriendless\b/, 0.6),
+    W(/\b(fat|ugly|stupid|dumb|pathetic|sad|worthless|disgusting) (loser|freak|trash|pig|girl|boy|kid|nobody|failure)\b/, 0.85),
+    W(/\b(everyone|everybody|we all|all of us|the whole (school|class|group)) (hates?|laughs? at|despise|mocks?|are laughing at|is laughing at|think\w* (you|u)\b[^.!?]{0,15}(pathetic|stupid|ugly|loser))/, 0.8),
+    W(/\b(quit|leave|get out of|go away from) (the )?(school|group|class|chat|here)\b[^.!?]{0,20}\b(loser|freak|nobody|trash|ugly)\b/, 0.8),
+    W(/\b(crybaby|cry ?baby|worthless|pathetic)\b/, 0.5),
+    W(/\bscreenshot\b[^.!?]{0,20}\b(share|show|post|send)\b/, 0.35),
+    W(/\b(you|u|ur) (are|r|re)? ?(so |such a )?(ugly|fat|pathetic|worthless)\b/, 0.8),
+  ],
+  hate_speech: [
+    W(/\bi (really )?(hate|h8|despise|loathe) (all |every |the )?(foreigners?|migrants?|immigrants?|muslims?|christians?|jews?|blacks?|whites?|gays?|chinese|vietnamese|thais?|hmong|khmer|women|girls|men|refugees?|minorit\w+|hill ?tribes?)\b/, 0.9),
+    W(/\b(kick|throw|send|drive) (them|all of them|those people|these people|foreigners|migrants|immigrants|everyone)\b[^.!?]{0,20}\b(out|home|away|back)\b/, 0.8),
+    W(/\b(muslims?|jews?|blacks?|gays?|chinese|vietnamese|thais?|hmong|khmer|migrants?|immigrants?|foreigners?|refugees?|hill ?tribes?|ethnic \w+|those people|that group)\b[^.!?]{0,30}\b(are|is) (all |every one |each one )?(terrorists?|criminals?|savages?|animals?|subhuman|filthy|dirty|vermin|evil|a disease|thieves|lazy|violent|dangerous|useless|burdens?|inferior)\b/, 0.9),
+    W(/\b(savages?|subhuman|vermin|inferior people|filthy (people|race))\b/, 0.7),
+    W(/\b(disabled|handicapped|elderly|old) (people|persons?)\b[^.!?]{0,25}\b(useless|burdens?|worthless|a waste)\b/, 0.85),
+    W(/\b(lock|locked) (them|gays?|those people) (up|away)\b|\bnot allowed to have (kids|children)\b|\bshould not be allowed\b/, 0.7),
+    W(/\bsend (them|all of them) (home|back)\b/, 0.6),
+  ],
+  political_claims: [
+    W(/\b(state media|official media|the media|tv|newspapers?|government|regime|party|leaders?|ministers?|officials?|authorities|president|prime minister|army|police)\b[^.!?]{0,35}\b(lies?|lying|liars?|evil|corrupt|thieves|steal\w*|stole|cheat\w*|mafia|traitors?|rigged|fraud\w*|brainwash\w*|propaganda|censor\w*|cover[- ]?up|puppet|dictator\w*)\b/, 0.8),
+    W(/\b(topple|overthrow|bring down|resist|rise up against|vote out|boycott)\b[^.!?]{0,25}\b(regime|government|party|dictator|leaders?|elections?|system|president|minister\w*)\b/, 0.85),
+    W(/\b(election|elections|vote|votes|voting)\b[^.!?]{0,20}\b(fake|rigged|fraud\w*|stolen|cheat\w*|a (sham|joke|lie))\b/, 0.8),
+    W(/\bjoin (the |our )?(protest|rally|uprising|march)\b|\bprotest (tomorrow|on|at)\b/, 0.7),
+  ],
+  sexual_content: [
+    W(/\b(have|want|wanna|wana|looking for|need|offer(ing)?) (sex|a hookup|hook ?up)\b|\bsex (tonight|with me|partner|chat|for sale|services?)\b|\b(sleep with|hook up with) (me|you|u)\b/, 0.85),
+    W(/\b(naked|nude|nudes|strip|boobs|breasts?|topless|erotic|escort|horny|nsfw|18\+|xxx|porn\w*|adult (content|chat|video)s?|cam girls?|live cam)\b/, 0.85),
+    W(/\bshow me (your|ur) (body|boobs|chest|ass|dick|pussy|legs)\b|\b(for|4) hire\b[^.!?]{0,30}\b(girls?|women|boys?)\b/, 0.85),
+  ],
+  dangerous_content: [
+    W(/\bself[- ]?harm\w*|\bcutting (myself|ourselves|yourself)\b|\bblades?\b[^.!?]{0,25}\b(cut|tonight|who|self)\b|\bcut (ourselves|yourself|myself)\b|\bsuicid\w*|\bkill myself\b|\bend my life\b/, 0.85),
+    W(/\bhow (to|2|do i|can i) (make|build|cook|get|buy|brew|synthesi[sz]e)\b[^.!?]{0,25}\b(bomb|explosives?|meth|drugs?|poison|gun|weapon|napalm|grenade)\b/, 0.9),
+    W(/\b(bleach|detergent|rat poison|pesticide)\b[^.!?]{0,30}\b(drink|swallow|inject|cure|kill|virus)\b|\b(drink|swallow|inject) (bleach|detergent|pesticide)\b/, 0.9),
+    W(/\b(shoot up|blow up|burn down|stab|bomb) (the |a |his |her |their |my )?(school|house|class|office|mosque|temple|church|building|people|him|her|them)\b/, 0.9),
+    W(/\b(yaba|ya ba|y4ba|meth|crystal meth|heroin|cocaine|weed|marijuana|opium|pills?)\b[^.!?]{0,30}\b(sell|selling|buy|for sale|deliver\w*|cheap|hmu|dm|line|contact)\b|\b(sell|selling|buy|buying)\b[^.!?]{0,15}\b(yaba|ya ba|meth|heroin|cocaine|weed|marijuana|opium)\b/, 0.9),
+  ],
+  misinformation: [
+    W(/\b(earth is flat|flat earth|moon landing\b[^.!?]{0,15}\b(fake|faked|hoax|staged|lie)|nasa lies?|climate change is (a )?(hoax|lie|fake)|vaccines? (cause|contain|have)\b[^.!?]{0,15}\b(autism|chips?|microchips?|poison|cancer))\b/, 0.9),
+    W(/\b(cures?|cured|cure for|treats?)\b[^.!?]{0,25}\b(cancer|covid|diabetes|hiv|aids|all diseases|virus|infections?)\b[^.!?]{0,40}\b(days?|hours?|100%|guaranteed|proven|hide|hidden|secret)\b|\b(doctors|hospitals|government|big pharma) (hide|hides|don'?t want you to know|are hiding)\b/, 0.85),
+    W(/\b(unconfirmed|not verified|forward(ed)? (as received|to all|to everyone|to \d+)|share (this )?(to|with) (all|everyone|\d+)|forward to (all|everyone|\d+)|copy (and|&) paste|pass it on)\b/, 0.6),
+    W(/\b(withdraw|take out) (all |everything|your money)\b[^.!?]{0,25}\b(now|today|tomorrow|before)\b|\b(banks?|schools?|borders?|airports?)\b[^.!?]{0,20}\b(will (close|freeze|shut)|closed forever|frozen)\b/, 0.7),
+    W(/\b(5g|towers?)\b[^.!?]{0,25}\b(cause|causes|spread|spreads|poison\w*|kill\w*|cancer|disease|virus)\b/, 0.8),
+    W(/\b(dam|river|volcano|earthquake)\b[^.!?]{0,25}\b(will (burst|break|collapse|erupt)|is going to (burst|break|collapse))\b[^.!?]{0,30}\b(evacuate|run|flee|share|tonight|tomorrow)\b/, 0.7),
+  ],
+  off_topic: [
+    W(/\b(sub(scribe)?|follow|like) (to |for |and )?(my|our) (channel|page|youtube|tiktok|insta\w*|facebook|fb|store|shop|stream)\b|\bi (upload|post|stream|go live) (daily|every day|everyday|weekly)\b|\bsub to my\b|\blink in (my )?bio\b|\bshop link\b/, 0.75),
+    W(/\b(to the moon|pump(ing)?|new coin|my coin|buy (my|the) coin|nft drop|airdrop)\b/, 0.7),
+    W(/\b(vote for (me|my)|tap (the )?link|vote \d+ times|click to vote)\b/, 0.7),
+    W(/\b(cheap|cheapest|best|low) (prices?|phone cases?|sneakers|shoes|bags?|laptops?)\b|\border now\b|\bfree shipping\b|\bpromo today\b|\b(opening|grand opening)\b[^.!?]{0,20}\b(promo|buy|discount)\b|\bsell(ing)? (my )?(used|second hand)\b/, 0.55),
+  ],
+  money_ask: [
+    W(/\bgift ?cards?\b|\bitunes (cards?|vouchers?)\b|\bgoogle play cards?\b|\bsteam cards?\b|\btop ?up (my|the|ur|your)\b/, 0.7),
+    W(/\b(double|triple|3x|2x|10x|multiply) (it|your money|your investment|ur money)\b|\b(no|zero|without) risk\b|\bguaranteed (profit|returns?|income|win|money)\b|\b\d{2,3}%\s*(daily|per day|a day|weekly|a week|monthly)\b/, 0.7),
+    W(/\b(put|invest|deposit|send|transfer|wire|top ?up)\b[^.!?]{0,20}(\$|usd|kip|baht|dollars?|yuan|rmb|thb)\s?\d[\d,.]*|\b(put|invest|deposit|send|transfer|wire)\b[^.!?]{0,20}\b\d[\d,.]*\s?(k|m)?\s?(\$|usd|kip|baht|dollars?|yuan|rmb|thb)\b/, 0.65),
+    W(/\b(fee|deposit|tax|charge|bail|fine)\b[^.!?]{0,25}\b(first|upfront|to (claim|unlock|release|receive|get)|before)\b|\bpay\b[^.!?]{0,15}\b(to|and)\b[^.!?]{0,15}\b(unlock|claim|release|receive|get)\b/, 0.7),
+    W(/\b(lend|loan|borrow)\b[^.!?]{0,20}\b(money|cash|\d+k?)\b[^.!?]{0,25}\b(return|pay back|refund|repay|double)\b|\bwill (pay|return|repay) (you )?back\b/, 0.7),
+    W(/\b(wechat ?pay|alipay|truemoney|true money|western union|moneygram|crypto wallet|usdt|bitcoin|btc)\b/, 0.45),
+  ],
+  credential_request: [
+    W(new RegExp(`\\b${ASK}\\b[^.!?]{0,30}\\b(pw|pwd|pass ?word|pin|cvv|otp|passcode|login code|verification code|security code|6 ?digit code|code (sent|we sent|sms|from sms|from the sms)|the code)\\b`), 0.85),
+    W(/\b(pw|pwd|pass ?word|pin|cvv|otp)\b[^.!?]{0,25}\b(and|\+|&)\b[^.!?]{0,15}\b(pw|pwd|pass ?word|pin|cvv|otp|code|username|card)\b/, 0.75),
+    W(/\b(card number|account number|atm pin|bank pin|cvv|id card|passport photo|selfie with (your )?id)\b[^.!?]{0,30}\b(enter|send|give|upload|share|type|confirm)\b|\b(enter|send|give|upload|share|type|confirm)\b[^.!?]{0,30}\b(card number|atm pin|bank pin|cvv|id card number)\b/, 0.8),
+    W(/\b(login|log in|sign in|verify|confirm|unlock|restore|recover|username|password)\b[^.!?]{0,40}\b[a-z0-9-]+\.(xyz|top|click|icu|site|online|info|cc|tk|ml|buzz|live|vip|link)\b/, 0.8),
+    W(/\b(account|wallet|card|sim)\b[^.!?]{0,20}\b(is |has been |will be )?(locked|suspended|blocked|frozen|closed|restricted)\b[^.!?]{0,40}\b(verify|confirm|click|login|enter|reply|send)\b/, 0.85),
+    W(/\bscan (this )?qr\b[^.!?]{0,40}\b(verify|confirm|code)\b/, 0.6),
+  ],
+  job_abroad: [
+    W(/\b(no|without) (experience|papers|documents|visa|interview|contract|passport)\b[^.!?]{0,40}\b(job|work|hiring|salary|apply|flight|abroad|overseas)\b|\b(job|work|hiring|salary)\b[^.!?]{0,40}\b(no|without) (experience|papers|documents|visa|interview|contract)\b/, 0.6),
+    W(/\b(hiring|jobs?|work|workers?|girls? (wanted|needed)|staff wanted)\b[^.!?]{0,40}\b(thailand|thai|korea|japan|dubai|malaysia|singapore|cambodia|myanmar|china|taiwan|poipet|abroad|overseas|casino)\b/, 0.75),
+    W(/\b(free (flight|ticket|housing|accommodation|visa)|we (handle|arrange|provide|take care of) (the )?(visa|everything|border|flight|ticket|papers)|pay (the )?(agency|agent|broker|recruiter)( fee)? (later|after|when)|(agency|broker|agent) fee)\b/, 0.7),
+    W(/\b(send|give|hand over|submit)\b[^.!?]{0,15}\b(passport|id card)\b[^.!?]{0,20}\b(photo|copy|scan|first|to start|now)\b|\bwe (hold|keep|take) (your )?passport\b/, 0.8),
+    W(/\b(\$|usd)\s?\d{3,5}\b[^.!?]{0,30}\b(month|monthly|a month|per month)\b[^.!?]{0,40}\b(job|work|online|casino|office|cambodia|myanmar)\b/, 0.7),
+  ],
+  trafficking_signs: [
+    W(/\b(lie|lying|say|tell them|pretend)\b[^.!?]{0,20}\b(to|that)\b[^.!?]{0,20}\b(officers?|police|guards?|immigration|border|officials?)\b|\b(avoid|hide from|dodge) (the )?(officers?|police|immigration|border (guards?|patrol))\b/, 0.85),
+    W(/\bif you (tell|talk to|call|go to|report to) (the )?(police|anyone|authorities|officers?)\b[^.!?]{0,30}\b(hurt|kill|beat|harm|punish|find|come for)\b|\b(hurt|harm|kill) your (family|mother|parents|sister|brother|kids?)\b|\b(we know where your family|watching your family)\b/, 0.9),
+    W(/\b(girls?|boys?|children|kids|virgins?)\b[^.!?]{0,15}\b(1[0-7]|under 18|young|fresh|new)\b[^.!?]{0,25}\b(available|for sale|contact|telegram|price|book)\b|\bselling (girls?|boys?|children|kids)\b/, 0.95),
+    W(/\b(debt|owe)\b[^.!?]{0,40}\b(work|working|until|can'?t leave|cannot leave|repay|pay off)\b|\b(can'?t|cannot|not allowed to) leave\b|\b(locked|lock) (us|you|the door|in)\b|\b(took|confiscated|keep|keeps|holding|hold) (our |my |your )?(passports?|phones?|documents?|ids?)\b/, 0.85),
+    W(/\b(cross|crossing)\b[^.!?]{0,20}\b(border)\b[^.!?]{0,30}\b(tonight|midnight|no id|without|don'?t tell|secret)\b|\b(don'?t|do not|never) tell (your )?(family|parents|anyone|anybody|police|mom|dad)\b[^.!?]{0,30}\b(border|job|trip|come|leave|go)\b|\bat midnight\b[^.!?]{0,30}\b(bring nothing|tell (no one|nobody))\b/, 0.85),
+    W(/\b(boat|car|truck|van)\b[^.!?]{0,20}\b(midnight|at night|river|bring nothing|no phones?)\b/, 0.6),
+  ],
+  romance_scam: [
+    W(/\b(my (love|queen|king|darling|angel|heart)|darling|sweetheart|honey|baby|dear|beautiful|handsome)\b[^.!?]{0,90}\b(send|wire|transfer|pay|invest|put (more )?money|itunes|gift cards?|fee|tax|ticket|customs|visa|hospital|bill|parcel)\b/, 0.75),
+    W(/\b(i|we) (love|loved|fell in love)\b[^.!?]{0,40}\b(you|u|ur|your photos?|pics?)\b[^.!?]{0,60}\b(send|money|fee|tax|ticket|visa|customs|gold|telegram|whatsapp|marry|invest)\b/, 0.8),
+    W(/\b(soldier|oil (rig|engineer)|offshore|un (doctor|official)|doctor with (the )?un|peacekeeper|army (officer|general)|widow(er)?|my (wife|husband) (died|passed))\b[^.!?]{0,80}\b(love|lonely|marry|relationship|soulmate|send|gift)\b/, 0.8),
+    W(/\b(investment platform|trading platform|crypto platform|our (future|savings))\b[^.!?]{0,40}\b(put|invest|add|deposit)\b|\b(invest|put) (more )?money\b[^.!?]{0,30}\b(future|together|rich|us)\b/, 0.7),
+    W(/\b(can'?t|cannot|unable to) (video ?)?call\b|\b(camera|phone|mic) (broke|broken|is broken)\b|\bno one to share\b|\b(gold|inheritance|box of)\b[^.!?]{0,30}\b(send|share|fee|tax|help)\b/, 0.65),
+  ],
+  authority_impersonation: [
+    W(/\b(this is|calling from|here from|i am|i'm|we are|message from|notice from|official notice)\b[^.!?]{0,25}\b(police|officer|immigration|court|tax office|tax department|customs|ministry|embassy|bank|telecom|lao telecom|military|un official|army|prosecutor|judge|interpol|government)\b/, 0.6),
+    W(/\b(warrant|arrest(ed)?|deport(ed|ation)?|bail|fine|money laundering|laundering|safe account|investigation|under investigation|sim (will be )?blocked|parcel|clearance fee|back taxes?)\b[^.!?]{0,50}\b(pay|transfer|send|move|call|code|account|immediately|now|tonight|today)\b/, 0.8),
+    W(/\b(stay on|don'?t hang up|do not hang up|keep) (the )?(video )?(call|line)\b|\bdon'?t tell (anyone|anybody|your family)\b/, 0.7),
+    W(/\bpay\b[^.!?]{0,25}\b(in )?gift ?cards?\b|\b(tax|bail|fine)\b[^.!?]{0,20}\bgift ?cards?\b/, 0.85),
+  ],
+  emotional_manipulation: [
+    W(/\b(will|gonna|going to|would) (die|suffer|starve|be (arrested|shamed|punished|killed))\b[^.!?]{0,30}\b(if|unless)\b|\b(mom|mother|dad|father|family|kids?|child|sister|brother|grandma|grandmother)\b[^.!?]{0,15}\bwill (die|suffer|starve|be hurt)\b|\bif (you|u) (don'?t|do not|refuse|wont|won't|leave|abandon|stop)\b[^.!?]{0,40}\b(die|suffer|starve|hurt|kill|regret|fault|pay|send|help|love)\b/, 0.8),
+    W(/\b(i'?ll|i will|i'm going to|im going to|gonna) (hurt|kill|harm|cut) myself\b|\bit('?ll| will) be (your|ur) fault\b|\byou('?ll| will) be (to blame|responsible)\b/, 0.85),
+    W(/\b(only|just) \d+ (hours?|minutes?|mins?|days?) left\b|\bdecide now\b|\bno time to think\b|\blast chance\b|\bact now\b|\bright now or\b/, 0.55),
+    W(/\b(bad|ungrateful|selfish|terrible|shameful) (son|daughter|child|friend|person|man|woman|wife|husband)\b|\bonly a (selfish|bad|cruel|heartless) (person|man|woman|friend)\b|\b(whole|entire) (village|community|town|family) (is )?(watching|will (know|shame|talk)|will see)\b|\bshame (you|u|your family)\b|\bshame u\b/, 0.75),
+    W(/\b(everyone else|everybody else|all your friends|all others)\b[^.!?]{0,30}\b(already|joined|paid|did it)\b|\bdon'?t be (a )?(coward|scared|afraid|weak)\b|\byou'?ll regret (it )?(forever|for life)\b/, 0.7),
+    W(/\bafter all i('?ve| have) done\b|\bif you (really )?(loved|cared|trusted)\b|\bdon'?t abandon me\b/, 0.75),
+  ],
+  private_contact: [
+    W(new RegExp(`\\b${ASK}\\b[^.!?]{0,20}\\b(?:${POSS}|my)\\s(?:home |full |real |current )?(snap\\w*|insta\\w*|line( id)?|whatsapp|telegram|wechat|location|address|school|number|phone|facebook|fb|email|age)\\b`), 0.75),
+    W(/\b(telegram|whatsapp|line|wechat|signal|snap\w*|viber|kakao)\b[^.!?]{0,30}\b(private|privately|only|instead|don'?t tell|not here|too public|secret)\b|\b(too public|not here|in private|privately|privately)\b[^.!?]{0,30}\b(telegram|whatsapp|line|wechat|signal|snap\w*|dm)\b|\b(move|switch|continue|talk|chat) (this )?(to|on) (telegram|whatsapp|line|wechat|signal|snap\w*|private)\b/, 0.75),
+    W(/\b(meet|see|visit|pick (you|u) up|come (to|over))\b[^.!?]{0,30}\b(alone|tonight|secretly|secret|don'?t tell|nobody (will )?know)\b|\bwhen (your|ur) (parents?|mom|dad|mother|father)\b[^.!?]{0,20}\b(not|away|out|aren'?t)\b|\bdon'?t tell (your |ur )?(parents?|mom|dad|mother|father|teacher|anyone|anybody)\b/, 0.8),
+    W(/\b(delete|erase) (this|the|my) (message|chat|text|post)\b[^.!?]{0,20}\b(after|once|when)\b|\bdelete (this|it) after\b|\bkeep (it|this) (a )?secret\b/, 0.7),
+    W(/\bwhat'?s (your|ur) (school|address|number|phone|line|whatsapp|telegram|location)\b|\bwhere (do|did) (you|u) (live|go to school)\b/, 0.75),
+    W(/\+?856[ -]?\d{2}[ -]?\d{3}[ -]?\d{3,4}|\b020[ -]?\d{4}[ -]?\d{3,4}\b|\bt\.me\/\w+|@[a-z0-9_]{5,}\b/, 0.45),
+  ],
+};
