@@ -17,12 +17,14 @@ export function buildPrompt({ category, kind, styles, n, lang, persona = '' }) {
     : `Write ${n} different SAFE posts that must NOT be flagged. Kind: ${kind}. Hard cases are welcome: they should mention scams, banks, jobs or police in a harmless way. Apply these styles across the posts: ${styles.join('; ')}. Write as different people, for example ${persona}.`;
   return { system, user: { task, count: n } };
 }
-export async function generate({ split, per = 20, seed = 1, lang = 'en', ask = realAsk, batch = 12, log = () => {} }) {
+export async function generate({ split, per = 20, seed = 1, lang = 'en', ask = realAsk, batch = 12, log = () => {}, onRows = () => {}, concurrency = 1 }) {
   if (/locked/.test(split)) throw new Error('The generator never writes to a locked test set. Use split=pool; assign-splits.mjs separates locked-gen after grading.');
   if (!['train', 'dev', 'pool'].includes(split)) throw new Error('--split must be pool, train or dev');
   const rnd = rng(seed), known = knownKeys(), out = [];
   const targets = [...CATEGORIES.map(c => ({ category: c })), ...SAFE_KINDS.map(k => ({ kind: k }))];
-  for (const t of targets) {
+  const queue = [...targets];
+  const worker = async () => { for (let t; (t = queue.shift());) {
+    const mine = [];
     const want = t.category ? per : Math.max(4, Math.round(per * CATEGORIES.length / SAFE_KINDS.length / 2));
     for (let have = 0, guard = 0; have < want && guard < 6; guard++) {
       const styles = [...STYLES].sort(() => rnd() - 0.5).slice(0, 3);
@@ -31,15 +33,17 @@ export async function generate({ split, per = 20, seed = 1, lang = 'en', ask = r
       for (const text of (Array.isArray(res?.posts) ? res.posts : [])) {
         const k = key(text); if (typeof text !== 'string' || text.length < 8 || text.length > 600 || known.has(k)) continue;
         known.add(k); have++;
-        out.push({ id: `gen-${lang}-${split}-${seed}-${out.length + 1}`, text: text.trim(), labels: t.category ? [t.category] : [], split, lang, source: 'generator', promptVersion: PROMPT_VERSION, seed, safeKind: t.kind, graded: false });
+        const row = { id: `gen-${lang}-${split}-${seed}-${out.length + 1}`, text: text.trim(), labels: t.category ? [t.category] : [], split, lang, source: 'generator', promptVersion: PROMPT_VERSION, seed, safeKind: t.kind, graded: false  };
+        out.push(row); mine.push(row);
       }
     }
-    log(`${t.category || t.kind}: total ${out.length}`);
-  }
+    log(`${t.category || t.kind}: total ${out.length}`); onRows(mine);
+  } };
+  await Promise.all(Array.from({ length: concurrency }, worker));
   return out;
 }
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
-  const rows = await generate({ split: argOf('split', 'train'), per: Number(argOf('per', 20)), seed: Number(argOf('seed', 1)), lang: argOf('lang', 'en'), log: m => console.error(m) });
-  appendJsonl(generatedPath(argOf('lang', 'en')), rows);
+  const lang = argOf('lang', 'en'); let total = 0;
+  const rows = await generate({ split: argOf('split', 'train'), per: Number(argOf('per', 20)), seed: Number(argOf('seed', 1)), lang, concurrency: Number(argOf('concurrency', 3)), log: m => console.error(m), onRows: r => { appendJsonl(generatedPath(lang), r); total += r.length; } });
   console.log(`generated ${rows.length} ungraded rows. Run grader.mjs next: ungraded rows are ignored by training.`);
 }

@@ -14,7 +14,7 @@ export async function cachedReply(instructions, input, options = {}) {
   const id = createHash('sha256').update(JSON.stringify([cfg.provider, cfg.model, instructions, input, options.schema ?? null])).digest('hex');
   const file = new URL(id + '.json', DIR);
   if (existsSync(file)) { cacheStats.hits++; return JSON.parse(readFileSync(file, 'utf8')); }
-  const wait = last + minInterval() - Date.now(); if (wait > 0) await pause(wait); last = Date.now();
+  const slot = Math.max(Date.now(), last + minInterval()); last = slot; const wait = slot - Date.now(); if (wait > 0) await pause(wait); // reserves a slot, so parallel callers stay under the rate limit
   cacheStats.calls++;
   try {
     const out = await modelReply(instructions, input, options);
