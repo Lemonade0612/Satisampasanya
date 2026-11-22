@@ -8,8 +8,8 @@ import { CATEGORIES } from './screening/categories.mjs';
 import { loadSet } from './screening/eval.mjs';
 import { readFileSync } from 'node:fs';
 
-test('agents: the generator refuses the locked split and the mock provider', async () => {
-  await assert.rejects(generate({ split: 'locked', ask: async () => ({ posts: [] }) }), /never writes to the locked/);
+test('agents: the generator refuses locked splits and the mock provider', async () => {
+  await assert.rejects(generate({ split: 'locked', ask: async () => ({ posts: [] }) }), /never writes to a locked/);
   const old = process.env.AI_PROVIDER; process.env.AI_PROVIDER = 'mock';
   try { await assert.rejects(realAsk('s', {}, {}), /No AI provider/); } finally { old === undefined ? delete process.env.AI_PROVIDER : process.env.AI_PROVIDER = old; }
 });

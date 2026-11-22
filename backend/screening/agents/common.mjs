@@ -1,7 +1,7 @@
 // Shared helpers for the test-data agents. Everything here is offline-safe: `ask` is injectable so tests never call a model.
 import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-import { modelReply } from '../../safety/model.mjs';
+import { cachedReply } from './ai.mjs';
 import { aiAvailable } from '../local-check.mjs';
 
 export const DATA = new URL('../testdata/', import.meta.url);
@@ -26,5 +26,5 @@ export class NoProviderError extends Error { constructor() { super('No AI provid
 // ask(system, userObject, schema) -> parsed JSON. Real provider only; the mock would return canned check results, not data.
 export async function realAsk(system, user, schema) {
   if (!aiAvailable()) throw new NoProviderError();
-  return modelReply(system, { text: JSON.stringify(user) }, { schema, maxTokens: 3000 });
+  return cachedReply(system, { text: JSON.stringify(user) }, { schema, maxTokens: 3000 });
 }

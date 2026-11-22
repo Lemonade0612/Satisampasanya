@@ -16,28 +16,34 @@ export function loadSet(name) {
   if (name === 'dev2') return load('./testdata/dev2.jsonl');
   if (name === 'dev') return [...en.filter(r => r.split === 'holdout'), ...load('./testdata/dev2.jsonl'), ...load('./testdata/generated/en.jsonl').filter(r => r.split === 'dev')];
   if (name === 'locked') return load('./testdata/locked/en.jsonl');
+  if (name === 'locked-gen') return load('./testdata/locked-gen/en.jsonl');
+  if (name === 'locked-real') return load('./testdata/locked-real/en.jsonl');
   if (name === 'blind') return Object.entries(BLIND).flatMap(([cat, list]) => (Array.isArray(list) ? list : []).map((text, i) => ({ id: `${cat}-${i}`, text, labels: [cat] }))).concat(BLIND_SAFE.map((text, i) => ({ id: `safe-${i}`, text, labels: [] })));
   throw new Error('unknown set ' + name);
 }
 const pct = (a, b) => b ? Math.round(a / b * 1000) / 10 : null;
 
 // Predict: returns { flagged, cats } for a row in the given mode.
+export const downgrades = [];
 async function predictor(mode) {
   if (mode === 'local') return async text => { const o = screenText(text); return { flagged: o.status !== 'green', cats: o.status === 'green' ? [] : o.categories }; };
   const { aiAvailable, localFirstCheck } = await import('./local-check.mjs');
   if (!aiAvailable()) return null;
   const { checkContent } = await import('../safety/checker.mjs');
-  const llm = text => checkContent(text);
-  if (mode === 'ai') return async text => { try { const r = await llm(text); return { flagged: r.verdict !== 'approved', cats: [], labels: r.labels || [] }; } catch { return { flagged: true, cats: [], error: true }; } };
-  return async text => { try { const r = await localFirstCheck(text, { llm, ai: true }); return { flagged: r.verdict !== 'approved', cats: r.local ? screenText(text).categories : [], labels: r.labels || [] }; } catch { return { flagged: true, cats: [], error: true }; } };
+  const { cachedReply } = await import('./agents/ai.mjs');
+  const llm = text => checkContent(text, { reply: cachedReply });
+  if (mode === 'ai') return async text => { try { const r = await llm(text); return { flagged: r.verdict !== 'approved', cats: [], labels: r.labels || [] }; } catch { return { error: true }; } };
+  return async text => { const r = await localFirstCheck(text, { llm, ai: true, log: () => {}, onDowngrade: d => downgrades.push(d) }); return { flagged: r.verdict !== 'approved', cats: r.local ? screenText(text).categories : [], labels: r.labels || [], unverified: !!r.unverified, downgraded: !!r.downgradedFromYellow }; };
 }
 async function pool(items, fn, n = 8) { const out = new Array(items.length); let i = 0; await Promise.all(Array.from({ length: n }, async () => { while (i < items.length) { const k = i++; out[k] = await fn(items[k]); } })); return out; }
 
 export async function evaluate(set, mode) {
-  const rows = loadSet(set), predict = await predictor(mode);
+  const rows = loadSet(set);
+  if (!rows.length) return { mode, set, notRun: `set "${set}" is empty` };
+  const predict = await predictor(mode);
   if (!predict) return { mode, notRun: 'no AI provider configured (set AI_PROVIDER + key); ai/full modes need a real model' };
-  const preds = await pool(rows, r => predict(r.text));
-  const results = rows.map((r, i) => ({ r, p: preds[i] }));
+  const preds = await pool(rows, r => predict(r.text), mode === 'local' ? 8 : 1);
+  const all = rows.map((r, i) => ({ r, p: preds[i] })), results = all.filter(x => !x.p.error); // AI-only errors are excluded and reported, never counted as a flag
   const harm = results.filter(x => x.r.labels.length), safe = results.filter(x => !x.r.labels.length);
   const caught = x => x.p.flagged;
   const table = {};
@@ -48,11 +54,11 @@ export async function evaluate(set, mode) {
   const fp = safe.filter(caught), tp = harm.filter(caught);
   const top = x => !x.p.flagged ? '-' : (x.p.cats[0] || 'flagged');
   const cm = {}; for (const x of results) { const t = x.r.labels[0] || 'safe', p = top(x); (cm[t] ||= {})[p] = (cm[t][p] || 0) + 1; }
-  return { mode, set, n: rows.length, harm: harm.length, safe: safe.length, recall: pct(tp.length, harm.length), fpRate: pct(fp.length, safe.length), fp: fp.length, table, cm, results, errors: results.filter(x => x.p.error).length };
+  return { mode, set, n: rows.length, harm: harm.length, safe: safe.length, recall: pct(tp.length, harm.length), fpRate: pct(fp.length, safe.length), fp: fp.length, table, cm, results, errors: all.length - results.length, unverified: results.filter(x => x.p.unverified).length, downgraded: results.filter(x => x.p.downgraded).length };
 }
 const show = (res, { matrix, misses, report, set }) => {
   if (res.notRun) return console.log(`\n[${res.mode}] NOT RUN: ${res.notRun}`);
-  console.log(`\n[${res.mode}] ${set}: ${res.n} items (${res.harm} harmful, ${res.safe} safe)${res.errors ? `, ${res.errors} AI errors counted as flagged` : ''}`);
+  console.log(`\n[${res.mode}] ${set}: ${res.n} items (${res.harm} harmful, ${res.safe} safe)${res.errors ? `, ${res.errors} AI errors EXCLUDED` : ''}${res.unverified ? `, ${res.unverified} unverified` : ''}${res.downgraded ? `, ${res.downgraded} yellow->green downgrades` : ''}`);
   console.table(Object.fromEntries(Object.entries(res.table).map(([c, v]) => [c, { n: v.n, 'recall %': v.recall, ...(v.strictRecall != null ? { 'category-match %': v.strictRecall } : {}) }])));
   console.log(`Overall harmful recall ${res.recall}%  |  safe posts flagged ${res.fp}/${res.safe} = ${res.fpRate}%  (bars: recall >= 85, false positives <= 10)`);
   if (matrix) console.table(res.cm);
@@ -61,7 +67,7 @@ const show = (res, { matrix, misses, report, set }) => {
 };
 if (process.argv[1] && import.meta.url === new URL(process.argv[1], 'file:').href) {
   const set = arg('set', 'holdout'), mode = arg('mode', 'local'), opts = { matrix: flag('matrix'), misses: flag('misses'), report: flag('report'), set };
-  if (set === 'locked' && opts.misses) { console.error('--misses is refused on the locked set: it must not drive tuning. Use --report for the written report.'); process.exit(2); }
+  if (/^locked/.test(set) && opts.misses) { console.error('--misses is refused on the locked set: it must not drive tuning. Use --report for the written report.'); process.exit(2); }
   const modes = mode === 'all' ? ['local', 'ai', 'full'] : [mode], out = [];
   for (const m of modes) { const r = await evaluate(set, m); show(r, opts); out.push({ mode: m, set, notRun: r.notRun, recall: r.recall, fpRate: r.fpRate, table: r.table }); }
   if (flag('json')) console.log(JSON.stringify(out));

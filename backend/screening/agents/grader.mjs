@@ -15,11 +15,25 @@ export async function gradeRow(row, ask = realAsk, min = 0.75) {
   const agree = row.labels.length ? cats.includes(row.labels[0]) : cats.length === 0;
   return agree ? { keep: true, conf, graderCategories: cats } : { keep: false, why: `grader said [${cats.join(',')}]`, conf };
 }
+const BATCH_SCHEMA = { type: 'object', additionalProperties: false, required: ['results'], properties: { results: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['index', 'categories', 'confidence'], properties: { index: { type: 'integer' }, categories: { type: 'array', items: { type: 'string', enum: CATEGORIES } }, confidence: { type: 'number' } } } } } };
+// Grades up to 10 rows per request (saves quota). Returns one verdict per row, in order.
+export async function gradeBatch(batch, ask = realAsk, min = 0.75) {
+  const res = await ask(SYSTEM + ' You get a list of posts; answer one result per post with the same index.', { posts: batch.map((r, i) => ({ index: i, post: r.text })) }, BATCH_SCHEMA);
+  const by = new Map((Array.isArray(res?.results) ? res.results : []).map(x => [x.index, x]));
+  return batch.map((r, i) => { const x = by.get(i), cats = Array.isArray(x?.categories) ? x.categories.filter(c => CATEGORIES.includes(c)) : null, conf = Number(x?.confidence);
+    if (!cats || !Number.isFinite(conf)) return { keep: false, why: 'unusable grader answer' };
+    if (conf < min) return { keep: false, why: `low confidence ${conf}`, conf };
+    const agree = r.labels.length ? cats.includes(r.labels[0]) : cats.length === 0;
+    return agree ? { keep: true, conf, graderCategories: cats } : { keep: false, why: `grader said [${cats.join(',')}]`, conf }; });
+}
 export async function gradeAll({ lang = 'en', min = 0.75, ask = realAsk, log = () => {} } = {}) {
   const rows = readJsonl(generatedPath(lang)), kept = [], rejected = [];
-  for (const r of rows) {
-    if (r.graded) { kept.push(r); continue; }
-    try { const g = await gradeRow(r, ask, min); (g.keep ? kept : rejected).push(g.keep ? { ...r, graded: true, graderConfidence: g.conf } : { ...r, rejectedBecause: g.why }); } catch (e) { if (/No AI provider/.test(e.message)) throw e; rejected.push({ ...r, rejectedBecause: 'grader error: ' + e.message }); }
+  const todo = rows.filter(r => !r.graded); kept.push(...rows.filter(r => r.graded));
+  for (let i = 0; i < todo.length; i += 10) {
+    const chunk = todo.slice(i, i + 10);
+    try { (await gradeBatch(chunk, ask, min)).forEach((g, k) => (g.keep ? kept : rejected).push(g.keep ? { ...chunk[k], graded: true, graderConfidence: g.conf } : { ...chunk[k], rejectedBecause: g.why })); }
+    catch (e) { if (/No AI provider/.test(e.message)) throw e; kept.push(...chunk); log(`grader batch failed (${e.message}); rows stay ungraded`); } // ungraded rows are ignored by training and evals
+    log(`graded ${Math.min(i + 10, todo.length)}/${todo.length}`);
   }
   log(`kept ${kept.length}, rejected ${rejected.length}`);
   return { kept, rejected };
