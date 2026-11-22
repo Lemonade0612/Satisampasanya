@@ -1,9 +1,10 @@
 import {CHECK_PROMPT,INTENT_PROMPT,askPrompt} from './prompts.mjs';
 import {modelReply,inputLanguage,readSafetyConfig} from './model.mjs';
+import {scrubPii} from './scrub.mjs';
 import {LABELS} from '../../shared/check-labels.mjs';
 export {LABELS};
 const reasonSchema={type:'object',additionalProperties:false,properties:{text:{type:'string'},evidence:{type:'string'}},required:['text','evidence']};
-export const CHECK_SCHEMA={type:'object',additionalProperties:false,properties:{verdict:{type:'string',enum:['approved','caution','needs_expert']},risk:{type:'string',enum:['low','medium','high']},labels:{type:'array',items:{type:'string',enum:LABELS}},on_topic:{type:'boolean'},reasons:{type:'array',maxItems:3,items:reasonSchema},suggested_edit:{type:'string'},summary:{type:'string'}},required:['verdict','risk','labels','on_topic','reasons','suggested_edit','summary']};
+export const CHECK_SCHEMA={type:'object',additionalProperties:false,properties:{verdict:{type:'string',enum:['approved','caution','needs_expert']},risk:{type:'string',enum:['low','medium','high']},labels:{type:'array',items:{type:'string',enum:LABELS}},on_topic:{type:'boolean'},reasons:{type:'array',maxItems:3,items:reasonSchema},suggested_edit:{type:'string'},summary:{type:'string'},confidence:{type:'number'}},required:['verdict','risk','labels','on_topic','reasons','suggested_edit','summary','confidence']};
 const answerSchema={type:'object',additionalProperties:false,properties:{answer:{type:'string'},steps:{type:'array',minItems:2,maxItems:4,items:{type:'string'}},question:{type:'string'},offer:{type:'string'}},required:['answer','steps','question','offer']};
 const invalid=(lang='en')=>Object.assign(new Error(lang==='lo'?'ການກວດ AI ຍັງບໍ່ສຳເລັດ. ກະລຸນາລອງໃໝ່.':'The AI response needs another check. Please try again.'),{status:502});
 export function validUserText(value,lang){
@@ -21,7 +22,7 @@ export function guardVerdict(result,text){
  const reasons=result.verdict==='approved'?[]:result.reasons.filter(reason=>typeof reason?.evidence==='string'&&reason.evidence.trim()&&reason.evidence.length<=120&&reason.evidence.trim().split(/\s+/u).length<=8&&text.includes(reason.evidence)&&validUserText(reason.text,language)&&reason.text.trim()&&!/credibility indicators|bilingual content|broader reach|detailed content|tags match|ຂໍ້ມູນສອງພາສາ|ເນື້ອຫາລະອຽດ/iu.test(reason.text)).slice(0,3);
  if(result.verdict!=='approved'&&!reasons.length)throw invalid(language);
  if(result.verdict==='caution'&&!result.suggested_edit.trim())throw invalid(language);
- return {verdict:result.verdict,risk:result.risk,labels:[...new Set(result.labels)],on_topic:result.on_topic,reasons,suggested_edit:result.verdict==='caution'?result.suggested_edit:'',summary:result.summary,language,checkedAt:Date.now()};
+ return {verdict:result.verdict,risk:result.risk,labels:[...new Set(result.labels)],on_topic:result.on_topic,reasons,suggested_edit:result.verdict==='caution'?result.suggested_edit:'',summary:result.summary,language,checkedAt:Date.now(),...(Number.isFinite(result.confidence)?{confidence:Math.min(1,Math.max(0,result.confidence))}:{})};
 }
 export async function classifyIntent(text,{reply=modelReply}={}){
  const result=(await reply(INTENT_PROMPT,{text},{maxTokens:16})).trim().toUpperCase();
@@ -32,14 +33,15 @@ export async function checkContent(text,{reply=modelReply,onProgress=()=>{}}={})
  onProgress('read');const language=inputLanguage(text);
  if(!text.trim())throw Object.assign(new Error('Write a message first.'),{status:400});
  onProgress('links');
- const links=text.match(/https?:\/\/[^\s]+|\b(?:bit\.ly|tinyurl\.com)\/[^\s]+/gu)||[];
- const numbers=text.match(/\+?\d[\d\s()-]{6,}\d/gu)||[];
+ const sent=readSafetyConfig().provider==='openrouter'?scrubPii(text):text;
+ const links=sent.match(/https?:\/\/[^\s]+|\b(?:bit\.ly|tinyurl\.com)\/[^\s]+/gu)||[];
+ const numbers=sent.match(/\+?\d[\d\s()-]{6,}\d/gu)||[];
  onProgress('patterns');
- const input={text,language,links,numbers};
+ const input={text:sent,language,links,numbers};
  const options={schema:CHECK_SCHEMA,name:'sati_check'};
  const result=await reply(CHECK_PROMPT,input,options);
  onProgress('verdict');
- try{return guardVerdict(result,text);}catch(error){
+ try{return guardVerdict(result,sent);}catch(error){
   if(error.status!==502)throw error;
   // Retry one invalid result; never publish unchecked output or replace it with a preset verdict.
   const correction=language==='lo'?'All prose fields must contain Lao only, except common acronyms such as OTP or PIN. Copy evidence exactly from the input.':'Copy evidence exactly from the input.';

@@ -92,13 +92,58 @@ test('routing: no provider keeps the local result and marks green as unverified'
   let calls = 0; const llm = async () => { calls++; throw new Error('must not be called'); };
   const g = await localFirstCheck('Good morning everyone, have a nice day', { llm, ai: false }); assert.equal(g.verdict, 'approved'); assert.equal(g.unverified, true); assert.equal(calls, 0);
   const y = rows.map(r => r.text).find(t => screenText(t).status === 'yellow');
-  const yr = await localFirstCheck(y, { llm, ai: false }); assert.equal(yr.verdict, 'caution'); assert.ok(!yr.unverified);
+  const yr = await localFirstCheck(y, { llm, ai: false }); assert.equal(yr.verdict, 'caution'); assert.equal(yr.unverified, true);
 });
-test('routing: an AI failure falls back to the local result, green stays unverified', async () => {
+test('routing: an AI failure never passes a green: it is held as caution + unverified', async () => {
   const boom = async () => { throw new Error('down'); };
-  const g = await localFirstCheck('Good morning everyone, have a nice day', { llm: boom, ai: true }); assert.equal(g.verdict, 'approved'); assert.equal(g.unverified, true);
+  const g = await localFirstCheck('Good morning everyone, have a nice day', { llm: boom, ai: true }); assert.equal(g.verdict, 'caution'); assert.equal(g.unverified, true);
+  const y = rows.map(r => r.text).find(t => screenText(t).status === 'yellow'), yr = await localFirstCheck(y, { llm: boom, ai: true }); assert.equal(yr.verdict, 'caution'); assert.equal(yr.unverified, true);
 });
 test('routing: mock provider counts as no provider', async () => {
   const old = process.env.AI_PROVIDER; process.env.AI_PROVIDER = 'mock';
   try { const { aiAvailable } = await import('./screening/local-check.mjs'); assert.equal(aiAvailable(), false); } finally { old === undefined ? delete process.env.AI_PROVIDER : process.env.AI_PROVIDER = old; }
+});
+
+const ai = (verdict, risk, confidence) => async () => ({ verdict, risk, labels: [], on_topic: true, reasons: [], suggested_edit: '', summary: 'harmless question', language: 'en', checkedAt: 1, confidence });
+const yellowText = () => rows.map(r => r.text).find(t => screenText(t).status === 'yellow');
+test('downgrade: yellow becomes green only for approved + low risk + confidence >= 0.8, and is logged', async () => {
+  const logs = [], records = [], opts = { ai: true, log: m => logs.push(m), onDowngrade: r => records.push(r) };
+  const down = await localFirstCheck(yellowText(), { ...opts, llm: ai('approved', 'low', 0.85) });
+  assert.equal(down.verdict, 'approved'); assert.equal(down.downgradedFromYellow, true); assert.equal(records.length, 1); assert.match(logs[0], /yellow->green/); assert.ok(records[0].aiConfidence >= 0.8);
+  for (const [v, r, c] of [['approved', 'low', 0.79], ['approved', 'medium', 0.95], ['caution', 'low', 0.99], ['approved', 'low', undefined]]) {
+    const kept = await localFirstCheck(yellowText(), { ...opts, llm: ai(v, r, c) });
+    assert.notEqual(kept.downgradedFromYellow, true, `${v}/${r}/${c}`); assert.notEqual(kept.verdict === 'approved' && kept.downgradedFromYellow, true);
+  }
+  assert.equal(records.length, 1, 'only the first case downgraded');
+});
+test('downgrade: RED is never downgraded and never asks the AI', async () => {
+  let calls = 0; const r = await localFirstCheck('Send a deposit of 500000 kip first to secure your visa job in Cambodia', { ai: true, llm: async () => { calls++; return ai('approved', 'low', 1)(); } });
+  assert.equal(r.verdict, 'needs_expert'); assert.equal(calls, 0);
+});
+test('downgrade: no provider or mock keeps yellow, marked unverified', async () => {
+  const r = await localFirstCheck(yellowText(), { ai: false, llm: ai('approved', 'low', 1) }); assert.equal(r.verdict, 'caution'); assert.equal(r.unverified, true);
+});
+test('scrub: phones, emails, handles and titled names are removed; ordinary text is kept', async () => {
+  const { scrubPii } = await import('./safety/scrub.mjs');
+  const out = scrubPii('Call Mr Somchai Vong on +856 20 5551 7788 or mail a.b@x.com, telegram @bigprize_helper. my name is Noy Keo');
+  assert.doesNotMatch(out, /Somchai|5551|a\.b@x|bigprize|Noy/); assert.match(out, /\[phone\]/); assert.match(out, /Call Mr \[name\]/);
+  assert.equal(scrubPii('Pay 500000 kip by Friday'), 'Pay 500000 kip by Friday');
+});
+test('openrouter: retries 429 with backoff, then succeeds; counts rate-limit hits', async () => {
+  const { modelReply, aiStats } = await import('./safety/model.mjs');
+  const ok = { ok: true, status: 200, json: async () => ({ choices: [{ finish_reason: 'stop', message: { content: '{"a":1}' } }] }) };
+  const seq = [{ ok: false, status: 429, headers: new Headers() }, { ok: false, status: 429, headers: new Headers({ 'retry-after': '1' }) }, ok]; const waits = [];
+  const before = { ...aiStats };
+  const r = await modelReply('x', { text: 'hi' }, { schema: { type: 'object' }, fetcher: async () => seq.shift(), config: { provider: 'openrouter', key: 'k', model: 'm', sleep: async ms => waits.push(ms) } });
+  assert.deepEqual(r, { a: 1 }); assert.equal(waits.length, 2); assert.equal(waits[1], 1000); assert.equal(aiStats.rateLimited - before.rateLimited, 2);
+});
+test('openrouter: bad JSON is retried once, then fails (so the caller marks it unverified)', async () => {
+  const { modelReply } = await import('./safety/model.mjs'); let n = 0;
+  const bad = { ok: true, status: 200, json: async () => ({ choices: [{ finish_reason: 'stop', message: { content: 'not json' } }] }) };
+  await assert.rejects(modelReply('x', { text: 'hi' }, { schema: { type: 'object' }, fetcher: async () => { n++; return bad; }, config: { provider: 'openrouter', key: 'k', model: 'm', sleep: async () => {} } }));
+  assert.equal(n, 2);
+});
+test('openrouter: persistent 429 gives up with a 503 instead of a verdict', async () => {
+  const { modelReply } = await import('./safety/model.mjs');
+  await assert.rejects(modelReply('x', { text: 'hi' }, { schema: { type: 'object' }, fetcher: async () => ({ ok: false, status: 429, headers: new Headers() }), config: { provider: 'openrouter', key: 'k', model: 'm', retries: 2, sleep: async () => {} } }), e => e.status === 503);
 });

@@ -9,7 +9,8 @@ export function readSafetyConfig(){
  return {provider,key:keyName?setting(keyName):'',model:(modelName&&setting(modelName))||{openrouter:'openai/gpt-4.1-mini',anthropic:'claude-haiku-5-5'}[provider]||'gpt-4.1-mini',helplines:setting('LOCAL_HELPLINES')||'[]',safeBrowsingKey:setting('GOOGLE_SAFE_BROWSING_KEY'),fallbacks:setting('OPENROUTER_FALLBACK_MODELS').split(',').map(v=>v.trim()).filter(Boolean)};
 }
 export const modelConfigured=()=>{const c=readSafetyConfig();return c.provider==='mock'||!!c.key;};
-const failure=(lang,status=503)=>Object.assign(new Error(lang==='lo'?'ບໍລິການ AI ຍັງບໍ່ພ້ອມ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.':'The AI service is unavailable. Please try again later.'),{status});
+export const aiStats={requests:0,retries:0,rateLimited:0,timeouts:0,badJson:0};
+const failure=(lang,status=503,code)=>Object.assign(new Error(lang==='lo'?'ບໍລິການ AI ຍັງບໍ່ພ້ອມ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.':'The AI service is unavailable. Please try again later.'),{status,code});
 // Global daily cap across every user, so free-tier quotas or credits cannot be drained.
 // Counted per Laos day in memory; a restart resets it, which errs on the side of availability.
 export const RESTING={en:'Sati AI is resting for today. Please try again tomorrow.',lo:'ວັນນີ້ Sati AI ກຳລັງພັກຜ່ອນ. ກະລຸນາລອງໃໝ່ມື້ອື່ນ.'}; // REVIEW-LO
@@ -52,14 +53,34 @@ export async function modelReply(instructions,input,{schema,name='sati_result',f
  const router=config.provider==='openrouter';
  const routerBody=strict=>({model:config.model,...(config.fallbacks?.length?{models:[config.model,...config.fallbacks]}:{}),messages:[{role:'system',content:instructions+(schema&&!strict?jsonOnly(schema):'')},{role:'user',content:JSON.stringify(input)}],max_tokens:maxTokens,...(schema&&strict?{response_format:{type:'json_schema',json_schema:{name,strict:true,schema}},provider:{require_parameters:true}}:{})});
  const body=router?routerBody(true):{model:config.model,store:false,instructions,input:JSON.stringify(input),max_output_tokens:maxTokens,...(schema?{text:{format:{type:'json_schema',name,strict:true,schema}}}:{})};
- const post=payload=>fetcher(router?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${config.key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(60000),body:JSON.stringify(payload)});
- let response;try{response=await post(body);if(router&&schema&&!response.ok&&response.status!==429&&response.status!==401)response=await post(routerBody(false));}catch{throw failure(language);}
- if(!response.ok)throw failure(language,502);
- const value=await response.json();let result;
- if(router){const choice=value.choices?.[0];if(value.error||!choice||choice.finish_reason!=='stop'||choice.message?.refusal)throw failure(language,502);result=typeof choice.message?.content==='string'?choice.message.content.trim():'';}
- else{if(value.status==='incomplete'||value.output?.some(item=>item.content?.some(part=>part.type==='refusal')))throw failure(language,502);result=value.output?.flatMap(item=>item.content||[]).filter(part=>part.type==='output_text').map(part=>part.text).join('').trim();}
- if(!result)throw failure(language,502);
- if(!schema)return result;try{return JSON.parse(unfence(result));}catch{throw failure(language,502);}
+ const sleep=config.sleep||(ms=>new Promise(r=>setTimeout(r,ms)));
+ // Backoff + retry on timeouts, 429 and 5xx (OpenRouter free tiers rate-limit hard). Honors Retry-After up to 20 s.
+ const post=async payload=>{
+  for(let attempt=0;;attempt++){
+   aiStats.requests++;let response=null;
+   try{response=await fetcher(router?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${config.key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(config.timeoutMs||60000),body:JSON.stringify(payload)});}catch{aiStats.timeouts++;}
+   const retryable=!response||response.status===429||response.status>=500;
+   if(response?.status===429)aiStats.rateLimited++;
+   if(!retryable||attempt>=(config.retries??3))return response;
+   aiStats.retries++;
+   const wait=Math.min(20000,(Number(response?.headers?.get?.('retry-after'))||0)*1000||1000*2**attempt+Math.floor(Math.random()*400));
+   await sleep(wait);
+  }
+ };
+ const run=async()=>{
+  let response=await post(body);
+  if(router&&schema&&response&&!response.ok&&response.status!==429&&response.status!==401)response=await post(routerBody(false));
+  if(!response)throw failure(language);
+  if(!response.ok)throw failure(language,response.status===429?503:502);
+  const value=await response.json();let result;
+  if(router){const choice=value.choices?.[0];if(value.error||!choice||choice.finish_reason!=='stop'||choice.message?.refusal)throw failure(language,502);result=typeof choice.message?.content==='string'?choice.message.content.trim():'';}
+  else{if(value.status==='incomplete'||value.output?.some(item=>item.content?.some(part=>part.type==='refusal')))throw failure(language,502);result=value.output?.flatMap(item=>item.content||[]).filter(part=>part.type==='output_text').map(part=>part.text).join('').trim();}
+  if(!result)throw failure(language,502);
+  if(!schema)return result;
+  try{return JSON.parse(unfence(result));}catch{throw failure(language,502,'badjson');}
+ };
+ // Strict JSON: one retry when the reply does not parse, then the error propagates (callers treat it as "unverified").
+ try{return await run();}catch(error){if(error.code==='badjson'){aiStats.badJson++;return await run();}throw error;}
 }
 
 // Streams a plain-text answer token by token. onToken gets every piece as it arrives; the full text is returned.
