@@ -324,3 +324,49 @@ Measured request size: about 3,300 characters of instructions plus the schema an
 - The classifier alone is still weak on unseen wording (rules carry generalisation); char n-grams were tried earlier and raised false positives, so they are not enabled.
 - Per-category thresholds were not tuned: every dev set is already above target, and tuning on it would only overfit.
 - Lao is only scaffolded.
+
+---
+
+## 8. Round 3: AI downgrade, OpenRouter, independent test sets
+
+**Verdict: BLOCKED, so FAIL (not measured). The OpenRouter free tier hit its daily request cap (`free-models-per-day`, 50 requests for an account with no purchased credits) partway through test-data generation. Nothing that needs the AI could be finished. No new numbers exist for locked-gen, locked-real, AI-only or full pipeline. The bar (full pipeline >= 85% recall and <= 10% false positives on locked-gen AND locked-real) is NOT proven.**
+
+### Built and tested (184 tests pass)
+1. **AI downgrade.** A local YELLOW becomes GREEN only if the AI returns `approved`, risk `low` and `confidence >= 0.8`; each downgrade is logged (categories, local score, confidence, AI summary; no post text in the log) and passed to an `onDowngrade` hook. RED always goes to experts with no AI call. With no provider or with mock, YELLOW stays yellow and is marked `unverified`. The check schema and prompt now return a `confidence` (0 to 1); a missing confidence never downgrades. Tests cover: downgrade, each of four non-downgrade cases, RED, and no-provider.
+2. **OpenRouter.** `AI_PROVIDER=openrouter` uses the OpenAI-compatible chat endpoint, with: backoff and retry on timeouts, 429 and 5xx (honours Retry-After, up to 20 s); one retry when the JSON does not parse; fail-fast on a daily cap; request counters (`aiStats`). On any AI failure the local verdict stands and is marked `unverified`; **an AI error never makes a post green** (a local green is held as `caution` + `unverified`; a local yellow stays yellow + `unverified`). Real posts are scrubbed of phone numbers, emails, @handles and titled names before they go to OpenRouter (`backend/safety/scrub.mjs`); test data is not scrubbed.
+3. **Default free model:** `baidu/ernie-5.5-flash-preview:free` in `.env.example`, reasons in `DEPLOY.md` (it returned valid JSON with sensible confidence; the Gemma and Ling free models were rate-limited upstream; Nemotron spent its budget on reasoning). Keys are read from `.env.local` and were never printed or committed. Caveat: free models can log prompts and the Baidu model runs on a third-party provider.
+4. **Agents** now share the provider: disk cache (`testdata/.ai-cache/`, git-ignored), throttle (`AI_MIN_INTERVAL_MS`), batch grader (10 posts per request), parallel generator with incremental writes, `assign-splits.mjs` (70% train / 15% dev / 15% locked-gen, deterministic, writes locked-gen once and refuses to overwrite). Eval sets `locked-gen` and `locked-real` exist; an empty set prints "NOT RUN".
+
+### What happened with the free tier
+- About 21 successful AI requests in total (live probes, a few generation batches) before the cap. The first generator runs lost most batches: the 3,000-token limit truncated the reasoning model (fixed: 8,000), and the model refused some harmful categories entirely (e.g. sexual content returned 0 posts). Then the daily cap hit: `Rate limit exceeded: free-models-per-day. Add 10 credits to unlock 1000 free model requests per day`.
+- Requests made: about 60 including probes. Rate-limit hits: more than 100 (mostly retried 429s from the cap and from upstream limits on other free models). **Cost: $0** (the key's usage stayed at its earlier $0.10).
+- The ~140 generated posts were never graded, so I deleted them rather than train or test on ungraded labels. **There is no locked-gen set. `locked-real/` does not exist (empty): no human-written set was provided.**
+
+### Numbers that do exist (unchanged from section 7, local only)
+| Set | Mode | Recall | Safe flagged | Result |
+|---|---|---|---|---|
+| locked (320 hand-written) | local | 88.2% | 11.2% | recall passes, FP fails |
+| locked (320) | AI only / full | NOT RUN | NOT RUN | no AI quota |
+| locked-gen | all | NOT RUN (empty) | | |
+| locked-real | all | NOT RUN (empty) | | |
+| downgrades | | 0 observed, 0 examples | | the AI never ran at scale, so I cannot show the 5 example downgrades you asked for |
+
+### 5 weakest categories (locked, local) with fixes
+1. **bullying 66.7%**: indirect group shaming ("we're all laughing at your photo"), threats to expose someone. Fix: patterns for group/collective mockery and "show the whole school"; generated bullying data once the AI is available.
+2. **off_topic 75%**: mostly harmless chatter by our own policy; fix is policy, not rules: decide if chatter should be flagged at all.
+3. **animal_insults 83.3%**: compound or creative insults ("buffalo-brained", "clown and parrot"). Fix: compound-word pattern for animal + brained/faced/mouthed, and an animal-insult lexicon check.
+4. **hate_speech 83.3%**: implicit hate ("deserve nothing", "should be locked away"). Fix: patterns on removal/denial of rights and dehumanising predicates, validated on generated data.
+5. **political_claims 83.3%**: unsourced corruption accusations and "brainwashing" claims. Fix: accusation + institution patterns; the AI check handles the nuance.
+Per the locked-set rule I did not tune on these.
+
+### What you need to do to finish (exact steps)
+1. Lift the cap: add 10 credits on OpenRouter (1,000 free-model requests/day; the free model still costs $0), or wait for the daily reset (about 50 requests/day is far too few for ~1,500 needed).
+2. Run: `AI_PROVIDER=openrouter` + key in `.env.local`, then
+   `node backend/screening/agents/generator.mjs --split=pool --per=45 --seed=11 --concurrency=3`
+   `node backend/screening/agents/grader.mjs`
+   `node backend/screening/agents/assign-splits.mjs` (70/15/15, locked-gen written once)
+   `npm run screen:train`, then `node backend/screening/agents/redteam.mjs` on dev only, then
+   `npm run screen:eval -- --set=locked-gen --mode=all`, `--set=locked --mode=all`, `--set=locked-real --mode=all` once each.
+   Everything is cached on disk, so a restart after an interruption costs nothing for completed calls.
+3. Put human-written posts in `backend/screening/testdata/locked-real/en.jsonl` (same row shape as `locked/en.jsonl`) or the bar cannot be passed.
+4. Expect model refusals for harmful categories (sexual content in particular); use a second model for those with `OPENROUTER_MODEL=...`.

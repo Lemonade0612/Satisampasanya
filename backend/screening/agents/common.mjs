@@ -26,5 +26,5 @@ export class NoProviderError extends Error { constructor() { super('No AI provid
 // ask(system, userObject, schema) -> parsed JSON. Real provider only; the mock would return canned check results, not data.
 export async function realAsk(system, user, schema) {
   if (!aiAvailable()) throw new NoProviderError();
-  return cachedReply(system, { text: JSON.stringify(user) }, { schema, maxTokens: 3000 });
+  return cachedReply(system, { text: JSON.stringify(user) }, { schema, maxTokens: 8000 });
 }

@@ -147,3 +147,9 @@ test('openrouter: persistent 429 gives up with a 503 instead of a verdict', asyn
   const { modelReply } = await import('./safety/model.mjs');
   await assert.rejects(modelReply('x', { text: 'hi' }, { schema: { type: 'object' }, fetcher: async () => ({ ok: false, status: 429, headers: new Headers() }), config: { provider: 'openrouter', key: 'k', model: 'm', retries: 2, sleep: async () => {} } }), e => e.status === 503);
 });
+test('openrouter: a daily free-tier cap fails fast without retries', async () => {
+  const { modelReply, aiStats } = await import('./safety/model.mjs'); let n = 0, slept = 0;
+  const cap = () => ({ ok: false, status: 429, headers: new Headers(), clone() { return { text: async () => '{"error":{"message":"Rate limit exceeded: free-models-per-day"}}' }; } });
+  await assert.rejects(modelReply('x', { text: 'hi' }, { schema: { type: 'object' }, fetcher: async () => { n++; return cap(); }, config: { provider: 'openrouter', key: 'k', model: 'm', sleep: async () => { slept++; } } }), e => e.status === 503);
+  assert.equal(n, 1, 'one request, no retries'); assert.equal(slept, 0); assert.ok(aiStats.dailyCap >= 1);
+});

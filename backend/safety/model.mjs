@@ -9,7 +9,7 @@ export function readSafetyConfig(){
  return {provider,key:keyName?setting(keyName):'',model:(modelName&&setting(modelName))||{openrouter:'openai/gpt-4.1-mini',anthropic:'claude-haiku-5-5'}[provider]||'gpt-4.1-mini',helplines:setting('LOCAL_HELPLINES')||'[]',safeBrowsingKey:setting('GOOGLE_SAFE_BROWSING_KEY'),fallbacks:setting('OPENROUTER_FALLBACK_MODELS').split(',').map(v=>v.trim()).filter(Boolean)};
 }
 export const modelConfigured=()=>{const c=readSafetyConfig();return c.provider==='mock'||!!c.key;};
-export const aiStats={requests:0,retries:0,rateLimited:0,timeouts:0,badJson:0};
+export const aiStats={requests:0,retries:0,rateLimited:0,dailyCap:0,timeouts:0,badJson:0};
 const failure=(lang,status=503,code)=>Object.assign(new Error(lang==='lo'?'ບໍລິການ AI ຍັງບໍ່ພ້ອມ. ກະລຸນາລອງໃໝ່ພາຍຫຼັງ.':'The AI service is unavailable. Please try again later.'),{status,code});
 // Global daily cap across every user, so free-tier quotas or credits cannot be drained.
 // Counted per Laos day in memory; a restart resets it, which errs on the side of availability.
@@ -59,6 +59,8 @@ export async function modelReply(instructions,input,{schema,name='sati_result',f
   for(let attempt=0;;attempt++){
    aiStats.requests++;let response=null;
    try{response=await fetcher(router?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/responses',{method:'POST',headers:{Authorization:`Bearer ${config.key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(config.timeoutMs||60000),body:JSON.stringify(payload)});}catch{aiStats.timeouts++;}
+   // A daily free-tier cap will not clear in seconds: fail fast instead of burning retries.
+   if(response?.status===429&&typeof response.clone==='function'&&await response.clone().text().then(t=>/per-day|daily/i.test(t),()=>false)){aiStats.rateLimited++;aiStats.dailyCap++;return response;}
    const retryable=!response||response.status===429||response.status>=500;
    if(response?.status===429)aiStats.rateLimited++;
    if(!retryable||attempt>=(config.retries??3))return response;
