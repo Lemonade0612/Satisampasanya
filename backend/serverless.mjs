@@ -21,7 +21,7 @@ async function bucket(env=process.env){
 const BLOB_PATH='sati/sati.sqlite';
 const blobOn=(env=process.env)=>!!(env.BLOB_READ_WRITE_TOKEN||env.BLOB_STORE_ID);
 export const snapshotsEnabled=(env=process.env)=>blobOn(env)||mongoEnabled(env);
-async function blobLatest(){try{return (await head(BLOB_PATH)).etag;}catch(e){if(e?.name==='BlobNotFoundError'||/not.?found/i.test(e?.message||''))return null;throw e;}}
+async function blobLatest(){try{return (await head(BLOB_PATH)).etag;}catch(e){if(e?.name==='BlobNotFoundError'||/not.?found|does not exist/i.test(e?.message||''))return null;throw e;}}
 async function blobDownload(path){
  const result=await get(BLOB_PATH,{access:'private'});
  if(!result||result.statusCode!==200)return null;
