@@ -41,7 +41,7 @@ export function AssistantComposer({lang,text,onText,kind,onKind,busy,error,remai
    <button type="button" aria-haspopup="dialog" aria-expanded={menu} aria-label={lo?'ແນບຮູບ ແລະ ຕົວເລືອກ':'Attach photo and options'} onClick={()=>setMenu(true)} className="shrink-0 w-10 h-10 rounded-full bg-white text-[#5F6390] flex items-center justify-center shadow-[0_1px_2px_rgba(20,17,43,0.08)]"><Plus size={20} aria-hidden/></button>
    <textarea ref={area} aria-label={lo?'ຂໍ້ຄວາມ':'Your message'} value={text} onChange={event=>onText(event.target.value)} maxLength={2000} rows={1}
     onKeyDown={event=>{if(event.key==='Enter'&&!event.shiftKey&&window.matchMedia?.('(pointer: fine)').matches){event.preventDefault();if(canSend)onSend();}}}
-    className="flex-1 min-w-0 min-h-10 max-h-[120px] bg-transparent px-0.5 py-2.5 text-[15px] leading-5 text-[#14112B] resize-none border-0 focus:outline-none" style={{fontSize:15}}
+    className="flex-1 min-w-0 min-h-10 max-h-[120px] bg-transparent px-0.5 py-2.5 text-[16px] leading-5 text-[#14112B] resize-none border-0 focus:outline-none" style={{fontSize:16}}
     onPaste={event=>{const file=[...event.clipboardData.files].find(f=>f.type.startsWith('image/'));if(file){event.preventDefault();void choose(file);}}}
     placeholder={image?(lo?'ເພີ່ມຄຳອະທິບາຍ (ບໍ່ບັງຄັບ)…':'Add a note (optional)…'):(lo?'ຖາມ ຫຼື ວາງລິ້ງ / ຂໍ້ຄວາມ…':'Ask or paste a link / message…')}/>
    <button type="submit" disabled={!canSend} style={{opacity:1}} aria-label={busy?(lo?'ກຳລັງກວດ…':'Checking…'):(lo?'ສົ່ງ':'Send')} className="shrink-0 w-10 h-10 rounded-full bg-[#5B21D1] text-white flex items-center justify-center disabled:opacity-40">
