@@ -13,7 +13,7 @@ async function openAssistant(page: Page, request: import('@playwright/test').API
 }
 
 const overlap = (page: Page) => page.evaluate(() => {
-  const list = document.querySelector('[data-testid="chat-list"]')!, last = list.querySelector('.mb-6:last-child');
+  const list = document.querySelector('[data-testid="chat-list"]')!, last = list.lastElementChild;
   const input = document.querySelector('textarea')!.closest('.sticky')!.getBoundingClientRect();
   const box = last!.getBoundingClientRect(), view = list.getBoundingClientRect();
   return { inputTop: input.top, listBottom: view.bottom, lastBottom: box.bottom, scrollGap: list.scrollHeight - list.scrollTop - list.clientHeight };
@@ -34,10 +34,10 @@ test('auto-scrolls to the newest message and the input never overlaps it', async
     expect(m.listBottom).toBeLessThanOrEqual(m.inputTop + 1);
   }
   // The verdict card is on screen with a badge.
-  await expect(page.getByText('Likely scam').last()).toBeVisible();
-  // Text is at least 18px.
+  await expect(page.getByText('Warning', { exact: true }).last()).toBeVisible();
+  // Text is at least 16px (smaller makes iOS zoom the page on focus).
   const size = await box.evaluate(el => parseFloat(getComputedStyle(el).fontSize));
-  expect(size).toBeGreaterThanOrEqual(18);
+  expect(size).toBeGreaterThanOrEqual(16);
 });
 
 test('scrolled-up readers get a "New message" pill instead of being yanked down', async ({ page, request }) => {
@@ -55,15 +55,15 @@ test('scrolled-up readers get a "New message" pill instead of being yanked down'
   await expect(page.getByRole('button', { name: /New message/ })).toBeHidden();
 });
 
-test('the typing indicator shows immediately and the disclaimer links to /about-ai', async ({ page, request }) => {
+test('the typing indicator shows immediately and the disclaimer links to How Sati checks', async ({ page, request }) => {
   await openAssistant(page, request);
   await page.route('**/api/assistant/stream', async route => { await new Promise(r => setTimeout(r, 1500)); await route.continue(); });
   await page.getByLabel('Your message').fill('Is this job real?');
   await page.getByRole('button', { name: 'Send' }).click();
   await expect(page.getByRole('status', { name: 'Sati is typing' })).toBeVisible({ timeout: 300 });
   const link = page.getByRole('link', { name: 'How Sati checks' });
-  await expect(link).toHaveAttribute('href', '/about-ai');
-  await expect(page.getByText('Sati AI can make mistakes. Please double-check important info.')).toBeVisible();
+  await expect(link).toHaveAttribute('href', '#/how-sati');
+  await expect(page.getByText(/Sati AI can be wrong/)).toBeVisible();
 });
 
 test('/about-ai explains the checks, limits and privacy in both languages', async ({ page }) => {

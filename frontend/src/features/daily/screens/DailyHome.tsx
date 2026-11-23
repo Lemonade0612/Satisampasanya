@@ -89,14 +89,14 @@ export function DailyHome({ lang, onLaunch, onNav, header, footer }: { lang: Lan
       {/* A. Header */}
       <header className="text-white px-4 pt-3.5 pb-14 rounded-b-[26px]" style={{ background: 'linear-gradient(140deg, #4A16B5 0%, #5B21D1 45%, #6E8EF0 100%)' }}>
         <div className="flex items-center gap-2.5">
-          <span className="w-9 h-9 rounded-[11px] bg-white flex items-center justify-center shrink-0"><img src="/brand-mark.svg" alt="" className="w-[22px] h-[22px]" /></span>
-          <h1 className="flex-1 min-w-0 text-[18px] font-extrabold whitespace-nowrap" style={{ fontFamily: 'Inter, BoonHome, sans-serif' }}>{lo ? 'Sati ປະຈຳວັນ' : 'Sati Daily'}{/* REVIEW-LO */}</h1>
+          {!header && <span className="w-9 h-9 rounded-[11px] bg-white flex items-center justify-center shrink-0"><img src="/brand-mark.svg" alt="" className="w-[22px] h-[22px]" /></span>}
+          <h1 className="flex-1 min-w-0 text-[18px] font-extrabold whitespace-nowrap truncate" style={{ fontFamily: 'Inter, BoonHome, sans-serif' }}>{lo ? 'Sati ປະຈຳວັນ' : 'Sati Daily'}{/* REVIEW-LO */}</h1>
           {header}
           <button onClick={() => setAgeOpen(true)} aria-label={`${t.age_title} ${age ? bandLabel(age, lang) : ''}`} className="shrink-0 relative flex items-center gap-1 h-[30px] rounded-full bg-white/20 px-2.5 text-[12px] font-bold before:absolute before:-inset-y-2 before:inset-x-0 before:content-['']">
             <span className="max-w-[84px] truncate">{age ? bandLabel(age, lang).replace(/\s*\d.*$/, '') : t.age_title}</span><ChevronDown size={12} aria-hidden />
           </button>
           <span className="shrink-0 flex items-center gap-1 h-[30px] rounded-full bg-white text-[#14112B] px-2.5 text-[12px] font-semibold">
-            <Flame size={13} className="text-[#F97316]" fill="#F97316" aria-hidden /><b className="text-[#F97316]" style={{ fontFamily: 'Inter, BoonHome, sans-serif' }}>{streak}</b> {lo ? 'ມື້' : 'days'}
+            <Flame size={13} className="text-[#F97316]" fill="#F97316" aria-hidden /><b className="text-[#F97316]" style={{ fontFamily: 'Inter, BoonHome, sans-serif' }}>{streak}</b>{!header && <> {lo ? 'ມື້' : 'days'}</>}
           </span>
         </div>
         <div className="flex items-center gap-2.5 mt-3 text-[12px]">
