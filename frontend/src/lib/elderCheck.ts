@@ -20,7 +20,7 @@ const SIGNALS: { weight: number; words: string[]; weak?: boolean; kind?: string;
   { weight: 1, words: ['ປັບໃໝ', 'a fine', 'penalty', 'ຄະດີ', 'คดี', 'court case', 'police case'], cat: 'authority' },
   { weight: 1, words: ['ຫຼານ', 'ອຸບັດຕິເຫດ', 'ໂຮງໝໍ', 'โรงพยาบาล', 'ຕິດຄຸກ', 'accident', 'hospital', 'grandchild', 'grandson', 'granddaughter', 'arrested'], cat: 'relative' },
   // Added for the demo: who is asking, a secret (weight 0: they only matter next to a transfer, see checkElderMessage), a threat to the account, a job abroad.
-  { weight: 0, words: ['ເບີໃໝ່', 'ແມ່ນລູກເອງ', 'ລູກເອງ', 'ປ່ຽນເບີ', 'เบอร์ใหม่', 'new number', "it's me", 'its me'], cat: 'relative' },
+  { weight: 0, words: ['ຫຼານຊາຍ', 'ຫຼານສາວ', 'ຫລານ', 'ລູກຊາຍ', 'ລູກສາວ', 'ເຂົ້າໂຮງໝໍ', 'ເບີໃໝ່', 'ແມ່ນລູກເອງ', 'ລູກເອງ', 'ປ່ຽນເບີ', 'เบอร์ใหม่', 'new number', "it's me", 'its me'], cat: 'relative' },
   { weight: 0, words: ['ຢ່າບອກໃຜ', 'ຢ່າບອກ', 'ຢ່າບອກຄົນອື່ນ', 'อย่าบอกใคร', "don't tell", 'do not tell', 'tell nobody', 'tell no one', 'keep it secret'], cat: 'secrecy' },
   { weight: 2, words: ['ບັນຊີຈະຖືກປິດ', 'ບັນຊີຂອງທ່ານຈະ', 'will be closed', 'will be suspended', 'will be blocked', 'verify now', 'verify your account'], cat: 'threat' },
   { weight: 2, words: ['ວຽກຕ່າງປະເທດ', 'ເງິນເດືອນດີ', 'ເງິນເດືອນສູງ', 'ຟຣີທຸກຢ່າງ', 'ຄ່າເດີນທາງ', 'ເກົາຫຼີ', 'job abroad', 'work abroad', 'high pay', 'free flight', 'free travel', 'free hotel'], cat: 'job' },
@@ -43,7 +43,10 @@ const GROUPS = SIGNALS.map(g => ({ ...g, res: compile(g.words) }));
 const WARNINGS = compile(WARNING);
 // "don't tell anyone" contains "don't" but is secrecy, not advice, so it is cut out before the advice check.
 const SECRECY_RE = /ຢ່າບອກ[ໃຜຄົນອື່ນ]*|อย่าบอกใคร|(?:do not|don't) tell (?:anyone|anybody|no one|nobody)|tell (?:nobody|no one)/gu;
-const TRANSFER = [...compile(['ໂອນ', 'ໂອນເງິນ', 'ຊ່ວຍໂອນ', 'โอน', 'โอนเงิน', 'transfer', 'send money']), /(?<![a-z])send\s+[\d,.]+/u];
+// Lao "ສົ່ງ" (send) is also "send a photo / a message", so it only counts as a transfer next to money: ສົ່ງເງິນ, or ສົ່ງ / ສົ່ງໃຫ້ followed soon by a number, ກີບ, ລ້ານ, ແສນ, ບາດ or ເງິນ.
+const TRANSFER = [...compile(['ໂອນ', 'ໂອນເງິນ', 'ຊ່ວຍໂອນ', 'โอน', 'โอนเงิน', 'ສົ່ງເງິນ', 'transfer', 'send money']), /(?<![a-z])send\s+[\d,.]+/u, /ສົ່ງ[^\n]{0,20}?(?:\d|ເງິນ|ກີບ|ລ້ານ|ແສນ|ບາດ)/u];
+// Telling the reader NOT to share a code ("ຢ່າບອກລະຫັດ", "ບໍ່ເຄີຍຂໍ OTP") protects them. It is not the "ຢ່າບອກໃຜ" (tell nobody) of a scammer.
+const PROTECT_RE = /(?:ຢ່າບອກ|ຢ່າແບ່ງປັນ|ຢ່າໃຫ້)\s*(?:ລະຫັດ|otp|pin)|(?:ບໍ່ເຄີຍ|ຈະບໍ່|ບໍ່)(?:ຂໍ|ຖາມຫາ|ຖາມ)\s*(?:ລະຫັດ|otp|pin)/u;
 
 export function checkElderMessage(text: string): ElderVerdict {
   const s = text.toLowerCase();
@@ -56,6 +59,8 @@ export function checkElderMessage(text: string): ElderVerdict {
   const transfer = TRANSFER.some(r => r.test(s));
   // Money asked for + someone close, an emergency, the police or a secret = the classic scam, whatever the score.
   if (transfer && ['relative', 'authority', 'secrecy'].some(c => cats.has(c)) && !(cats.size === 1 && cats.has('authority') && WARNINGS.some(r => r.test(s)))) return 'scam';
+  // Advice not to share a code, with no transfer request, link or other bait, is safe, even when it says "ຢ່າບອກ".
+  if (PROTECT_RE.test(s) && !transfer && [...cats].every(c => c === 'otp' || c === 'authority' || c === 'secrecy')) return 'safe';
   const advice = WARNINGS.some(r => r.test(s.replace(SECRECY_RE, ' ')));
   // Plain advice ("the bank never asks for your OTP") is safe; bait that happens to say "never" stays scored.
   if (advice && !cats.has('secrecy') && !transfer && [...cats].every(c => c === 'otp' || c === 'authority')) return 'safe';
