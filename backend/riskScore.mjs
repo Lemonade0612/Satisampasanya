@@ -87,3 +87,18 @@ export function overrideRisk(post,{level,note='',warningExample=false},actor,now
  post.warningExample=entry.warningExample;post.needs_admin_review=false;
  return post;
 }
+
+// BUG-10: with no AI configured the only check is the on-phone (local) one, marked `unverified`. When the keyword rules rate the
+// post yellow or red while that check said "approved", the card shows the rule's reason, not "No safety concerns".
+// Only the wording changes: the badge is never lowered, so the stricter signal still wins.
+export function reconcileUnverified(post){
+ const check=post.check;
+ if(!check?.unverified||check.verdict!=='approved'||!['yellow','red'].includes(post.risk_level))return post;
+ const first=(post.risk_reasons||[])[0];
+ const en=first?.en||'This post matches a scam warning sign. No AI check was available, so read it with care.';
+ const lo=first?.lo||'ໂພສນີ້ມີສັນຍານເຕືອນເລື່ອງການຫຼອກລວງ. ບໍ່ມີ AI ກວດ ຈຶ່ງຄວນອ່ານຢ່າງລະມັດລະວັງ.';// REVIEW-LO
+ post.flagReason=en;post.flagReasonLo=lo;
+ post.check={...check,summary:en};
+ if(post.screening)post.screening={...post.screening,note:en,noteLo:lo};
+ return post;
+}

@@ -11,7 +11,7 @@ import { apnsSender, dispatchPushes } from './push.mjs';
 import { snapshotsEnabled, restoreSnapshot, startSnapshots } from './snapshot.mjs';
 import {checkPost} from './safety/post-check.mjs';
 import {publicCurated,staffCurated,reviewCurated} from './curated.mjs';
-import {applyRisk,addReport} from './riskScore.mjs';
+import {applyRisk,addReport,reconcileUnverified} from './riskScore.mjs';
 import {reportRoutes,reportStats} from './reports.mjs';
 import {createMailer,resetMail} from './mailer.mjs';
 import {dailyRoutes} from './daily.mjs';
@@ -400,7 +400,7 @@ export function createApp({ database = resolve('backend/data/sati.sqlite'), seed
         const sourceUrl=link(data.sourceUrl)||undefined;
         const post = {id:randomUUID(),type:data.type,media:media.length?media:undefined,sourceUrl,content:content||contentLo,contentLo:contentLo||undefined,contentLanguage:data.contentLanguage==='lo'&&contentLo?'lo':content?'en':'lo',tags:cleanTags(data.tags),link:source||undefined,image:image(data.image),isNews:!!data.isNews,bands:isBand(user.age_band)?[user.age_band]:undefined,state:'clean',likes:0,comments:0,reposts:0,warnedMe:0,timestamp:'Just now'};
         const onProgress=stage=>{if(url.searchParams.get('stream')==='1'){if(!res.headersSent)res.writeHead(200,{'Content-Type':'application/x-ndjson','Cache-Control':'no-store','X-Accel-Buffering':'no'});res.write(JSON.stringify({type:'progress',stage,done:false})+'\n');}};
-        await check(post,{onProgress});applyRisk(post);
+        await check(post,{onProgress});applyRisk(post);reconcileUnverified(post);
         if(!post.tags.length)post.tags=post.check?.on_topic?['DigitalSafety']:['OffTopic'];
         if (db.prepare("SELECT COUNT(*) n FROM posts WHERE user_id=? AND created>? AND json_extract(data,'$.repostOf') IS NULL").get(user.id,since).n>=5)fail('Limit reached: 5 posts per day. Resets at midnight in Laos.',429);
         db.prepare('INSERT INTO posts VALUES (?,?,?,?)').run(post.id,user.id,JSON.stringify(post),Date.now());
