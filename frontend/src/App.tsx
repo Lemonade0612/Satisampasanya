@@ -82,7 +82,9 @@ export default function App() {
   const bandChosen = useHasBand();
   const [signupReason, setSignupReason] = useState<SignupReason | null>(null);
   const browsing = !user && guest === 'guest';
-  useEffect(() => { if (guest === null) dropPref(ELDER_GUEST); }, [guest]);
+  // Remember the guest session on this phone, so a reload (or handing it over) does not land on the welcome page.
+  // Cleared on sign-in (applyUser) and when leaving guest mode. The band is already kept on the device (lib/band.ts).
+  useEffect(() => { if (guest === 'guest') writePref(ELDER_GUEST, '1'); else if (guest === null) dropPref(ELDER_GUEST); }, [guest]);
   // Every user change goes through here: progress is keyed by account, and the account's band wins.
   const applyUser = useCallback((value: CurrentUser | null) => {
     setDailyAccount(value?.id ?? null);
