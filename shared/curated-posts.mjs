@@ -4,7 +4,7 @@
 // REVIEW-LO: every Lao string in this file needs a native-speaker pass before launch.
 export const CURATED_POSTS = [
   { // REVIEW-LO
-    id: 'lao-pm-crackdown', type: 'news', status: 'approved', needs_human_review: false, verified: true, pinned: false,
+    id: 'lao-pm-crackdown', org: 'laotian-times', type: 'news', status: 'approved', needs_human_review: false, verified: true, pinned: false,
     title_lo: 'ນາຍົກລັດຖະມົນຕີ ສອນໄຊ ສີພັນດອນ ສັ່ງລົງມືປາບປາມການສໍ້ໂກງອອນລາຍ',
     title_en: 'Lao PM Sonexay orders crackdown on online fraud',
     summary_lo: 'ນາຍົກລັດຖະມົນຕີຮຽກຮ້ອງໃຫ້ເສີມສ້າງມາດຕະການ ແລະ ປັບປຸງການບັງຄັບໃຊ້ກົດໝາຍ ຍ້ອນຈຳນວນກໍລະນີເພີ່ມຂຶ້ນທົ່ວປະເທດ.',
@@ -12,28 +12,16 @@ export const CURATED_POSTS = [
     image: '/posts/lao-pm-crackdown.jpg', source_name: 'Laotian Times', source_url: null, date: null, tags: ['OnlineScam', 'news'],
   },
   { // REVIEW-LO
-    id: 'vfi-trafficking-day', type: 'event', status: 'approved', needs_human_review: false, verified: true, pinned: false,
+    id: 'vfi-trafficking-day', org: 'village-focus', type: 'event', status: 'approved', needs_human_review: false, verified: true, pinned: false,
     title_lo: 'ວັນສາກົນຕ້ານການຄ້າມະນຸດ · 30 ກໍລະກົດ 2026',
     title_en: 'World Day Against Trafficking in Persons · 30 July 2026',
     summary_lo: 'ໂປສເຕີຈາກ Village Focus International ສຳລັບວັນສາກົນຕ້ານການຄ້າມະນຸດ ຄຳຂວັນ “Leave No One Behind”. ຮ່ວມສ້າງສັງຄົມໃຫ້ປອດໄພ ປົກປ້ອງທຸກຊີວິດ ຢຸດການຄ້າມະນຸດ. ໂທ 021 312519.',
     summary_en: 'Poster from Village Focus International for the World Day Against Trafficking in Persons, 30 July 2026. Theme: "Leave No One Behind". "Together, we can end human trafficking." Tel 021 312519, info@villagefocus.org.',
     image: '/posts/vfi-trafficking-day.jpg', source_name: 'Village Focus International', source_url: 'https://www.villagefocus.org', date: '2026-07-30', tags: ['Trafficking', 'event'],
   },
-  { // REVIEW-LO. Image shows real children: held for a person to check before it is public.
-    id: 'unicef-mental-health', type: 'awareness', status: 'approved', needs_human_review: false, owner_override: 'Lemon asked for every attached post to be visible (2026-11-15); human-review hold waived, warnings kept', verified: true, pinned: false, shows_minors: true,
-    title_lo: '5 ວິທີປົກປ້ອງສຸຂະພາບຈິດຂອງທ່ານຈາກໂລກອອນລາຍ',
-    title_en: '5 ways to protect your mental health online',
-    summary_lo: 'UNICEF Laos ແນະນຳ: ຫຼີກລ້ຽງການເສບຂ່າວດ້ານລົບ, ສັງເກດວ່າເນື້ອຫາທີ່ເບິ່ງເຮັດໃຫ້ທ່ານຮູ້ສຶກແນວໃດ ແລະ ຈຳກັດເນື້ອຫາຈາກບັນຊີທີ່ເຮັດໃຫ້ບໍ່ສະບາຍໃຈ; ມີສະຕິໃນການໃຊ້ສື່ອອນລາຍ; ປົກປ້ອງຕົນເອງ — ກວດການຕັ້ງຄ່າຄວາມເປັນສ່ວນຕົວ ແລະ ຖ້າພົບສິ່ງທີ່ກັງວົນໃຫ້ລາຍງານ ແລະ ຂໍຄວາມຊ່ວຍເຫຼືອ.',
-    summary_en: 'UNICEF Laos shares 5 ways to protect mental health online. Avoid doomscrolling: notice how what you watch makes you feel and limit accounts that make you uncomfortable. Use online media mindfully. Protect yourself: check your privacy settings, and report what worries you and ask for help.',
-    image: '/posts/unicef-mental-health.jpg', source_name: 'UNICEF Laos', source_url: null, date: '2026-11-06', tags: ['MentalHealth', 'DigitalSafety'],
-    credit: { name: 'UNICEF Laos', platform: 'Facebook', url: 'https://www.facebook.com/share/p/1bFt5R6njq/' },
-    // Caption of the original Facebook post (UNICEF Laos), so readers can read it inside Sati.
-    body_lo: 'ທ່ານກຳລັງຕິດການເສບຂ່າວລົບຢູ່ບໍ? ຢ່າປ່ອຍໃຫ້ລະບົບທຳຮ້າຍສຸຂະພາບຈິດຂອງທ່ານ.\n\nນີ້ແມ່ນ 5 ວິທີ ທີ່ຈະປ້ອງກັນຄວາມຄິດຂອງທ່ານໄດ້ທີ່: https://unicef.link/3QgGJdd\n\nອ້າງອີງໂດຍ UNICEF USA',
-    body_en: 'Are you stuck doomscrolling? Don\'t let the system harm your mental health.\n\nHere are 5 ways to protect your mind: https://unicef.link/3QgGJdd\n\nAdapted from UNICEF USA',
-    review_note: 'Photos of real children in the image. Approve only if UNICEF credit and consent are fine, or replace the image.',
-  },
+  // The UNICEF mental-health post now lives as an organisation post (backend/seed-orgs.json, org-unicef-5ways): photo carousel, credit header and the UNICEF Laos profile.
   { // REVIEW-LO. Details supplied by Lemon (no image).
-    id: 'iom-imac', type: 'hotline', status: 'approved', needs_human_review: false, verified: true, pinned: true,
+    id: 'iom-imac', org: 'iom-laos', type: 'hotline', status: 'approved', needs_human_review: false, verified: true, pinned: true,
     title_lo: 'ສູນຊ່ວຍເຫຼືອຜູ້ເຄື່ອນຍ້າຍ IOM ລາວ (iMAC)',
     title_en: 'IOM Laos Migrant Assistance Centre (iMAC)',
     summary_lo: 'ຕິດຕໍ່ສູນຊ່ວຍເຫຼືອຜູ້ເຄື່ອນຍ້າຍ IOM ລາວ (iMAC): ໂທ +856 20 97631319, ອີເມວ iomlaopdr@iom.int, ເວັບໄຊ laopdr.iom.int.',
@@ -42,7 +30,7 @@ export const CURATED_POSTS = [
     contact: { tel: '+85620 97631319', email: 'iomlaopdr@iom.int' },
   },
   { // REVIEW-LO
-    id: 'iom-youth-migration', type: 'awareness', status: 'approved', needs_human_review: false, verified: true, pinned: false,
+    id: 'iom-youth-migration', org: 'iom-laos', type: 'awareness', status: 'approved', needs_human_review: false, verified: true, pinned: false,
     title_lo: 'ທ່ານຮູ້ຫຼືບໍ່ວ່າ? ຜູ້ເຄື່ອນຍ້າຍຄົນລາວໃນຕ່າງປະເທດສ່ວນໃຫຍ່ເປັນໄວໜຸ່ມ',
     title_en: 'Did you know? Most Lao migrants abroad are young',
     summary_lo: 'ຜູ້ເຄື່ອນຍ້າຍຖິ່ນຖານຄົນລາວທີ່ອາໄສຢູ່ຕ່າງປະເທດມີຈຳນວນປະຊາກອນໄວໜຸ່ມຫຼາຍທີ່ສຸດ: 52.9% ອາຍຸ 15–29 ປີ ແລະ 34.8% ອາຍຸ 30–44 ປີ, ລວມເປັນ 87.7%. ຂໍ້ມູນຈາກ: ລາຍງານການສຳຫຼວດພົນລະເມືອງ ແລະ ທີ່ຢູ່ອາໄສ ທົ່ວປະເທດ ປີ 2025.',
@@ -50,7 +38,7 @@ export const CURATED_POSTS = [
     image: '/posts/iom-youth-migration.jpg', source_name: 'IOM Laos', source_url: null, date: null, tags: ['SafeMigration', 'awareness'],
   },
   { // REVIEW-LO. Real minors in photos and a recruiter targeting ages 12–22: needs a person.
-    id: 'pfha-volunteer', type: 'job', status: 'approved', needs_human_review: false, owner_override: 'Lemon asked for every attached post to be visible (2026-11-15); human-review hold waived, warnings kept', verified: true, pinned: false, shows_minors: true,
+    id: 'pfha-volunteer', org: 'pfha-bokeo', type: 'job', status: 'approved', needs_human_review: false, owner_override: 'Lemon asked for every attached post to be visible (2026-11-15); human-review hold waived, warnings kept', verified: true, pinned: false, shows_minors: true,
     title_lo: 'ສະມາຄົມສົ່ງເສີມສຸຂະພາບຄອບຄົວ ບໍ່ແກ້ວ ເປີດຮັບອາສາສະໝັກ',
     title_en: 'PFHA Bokeo is recruiting volunteers',
     summary_lo: 'ສະມາຄົມສົ່ງເສີມສຸຂະພາບຄອບຄົວ ບໍ່ແກ້ວ (PFHA) ກຳລັງຊອກຫານັກຮຽນ ມຕົ້ນ-ມປາຍ ຫຼື ໄວໜຸ່ມທົ່ວໄປ ທີ່ສົນໃຈເປັນ “ອາສາສະໝັກ” ໃນປີ 2026. ອາຍຸ 12–22 ປີ (ບໍ່ຈຳກັດເພດ). ຜູ້ທີ່ອາຍຸຕ່ຳກວ່າ 18 ປີ ຕ້ອງໄດ້ຮັບອະນຸຍາດຈາກຜູ້ປົກຄອງ.',
@@ -59,7 +47,7 @@ export const CURATED_POSTS = [
     review_note: 'Recruits minors (12–22) and the photos show real children. Contact details are on the original poster; confirm them with PFHA before approving.',
   },
   { // REVIEW-LO
-    id: 'unicef-hotline-1362', type: 'hotline', status: 'approved', needs_human_review: false, verified: true, pinned: true,
+    id: 'unicef-hotline-1362', profileOnly: true, org: 'lao-womens-union', type: 'hotline', status: 'approved', needs_human_review: false, verified: true, pinned: true,
     title_lo: 'ສາຍດ່ວນ 1362 · ສູນໃຫ້ຄຳປຶກສາ ແລະ ປົກປ້ອງ ແມ່ຍິງ-ເດັກນ້ອຍ',
     title_en: 'Hotline 1362 · counselling and protection for women and children',
     summary_lo: 'ຮັບແຈ້ງຄວາມກ່ຽວກັບການໃຊ້ຄວາມຮຸນແຮງຕໍ່ແມ່ຍິງ-ເດັກນ້ອຍ ແລະ ການຄ້າມະນຸດ. ໃຫ້ຄຳປຶກສາດ້ານກົດໝາຍ, ຈິດໃຈ ແລະ ສຸຂະພາບ. ຂໍ້ມູນຂອງທ່ານຈະຖືກຮັກສາໄວ້ເປັນຄວາມລັບ. ສູນກາງສະຫະພັນແມ່ຍິງລາວ ໂທໄດ້ 24 ຊົ່ວໂມງ ໂດຍບໍ່ເສຍຄ່າ.',
@@ -105,7 +93,7 @@ export const CURATED_POSTS = [
     image: '/posts/wii-fair.jpg', source_name: 'JOBLLEE Fest', source_url: null, date: '2024-09-18', tags: ['SafeJobs', 'event'],
   },
   { // REVIEW-LO. Child-exploitation topic: the rules say review; the owner waived that for this one video. It keeps the content warning and hotline 1362.
-    id: 'cna-invisible-trade', type: 'video', status: 'approved', needs_human_review: false, owner_override: 'Lemon approved this video explicitly on 2026-11-15 (child-topic rule waived for this post only)', verified: false, pinned: false, content_warning: true,
+    id: 'cna-invisible-trade', org: 'cna-insight', type: 'video', status: 'approved', needs_human_review: false, owner_override: 'Lemon approved this video explicitly on 2026-11-15 (child-topic rule waived for this post only)', verified: false, pinned: false, content_warning: true,
     title_lo: 'ການຄ້າທີ່ເບິ່ງບໍ່ເຫັນ: ການຂູດຮີດເດັກໃນລາວ',
     title_en: 'Invisible Trade: Child Exploitation in Laos',
     summary_lo: 'ລາຍການ Insight ຂອງ CNA ກ່ຽວກັບການຂູດຮີດເດັກໃນລາວ.',
@@ -121,7 +109,7 @@ export const CURATED_POSTS = [
     },
   },
   { // REVIEW-LO
-    id: "fb-labdelines-workers-day", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-labdelines-workers-day", org: 'labdelines', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ວັນກຳມະກອນສາກົນ ຄົບຮອບ 134 ປີ: ໂຄງການຫຼຸດຜ່ອນຄວາມສ່ຽງຈາກການຄ້າມະນຸດ", title_en: "International Workers' Day, 134th anniversary: project to reduce trafficking risk",
     summary_lo: "ເພື່ອລະນຶກເຖິງວັນກຳມະກອນສາກົນ ຄົບຮອບ 134 ປີ, ກົມສັງຄົມສົງເຄາະ, ກະຊວງແຮງງານ ແລະ ສະຫວັດດີການສັງຄົມ ຮ່ວມກັບ ໂຄງການຫຼຸດຜ່ອນຄວາມສ່ຽງຈາກການຄ້າມະນຸດ, ອົງການວິນຣ໋ອກສາກົນ ສະໜັບສະໜູນທຶນໂດຍ…", summary_en: "To mark the 134th International Workers' Day, the Department of Social Welfare (Ministry of Labour and Social Welfare), together with the project to reduce trafficking risk and Winrock International, supported by…",
     image: null, source_name: "labdelines", source_url: null, date: null, tags: ["Trafficking", "SafeJobs"],
@@ -129,7 +117,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1DYtgMbDHE/", embed_url: "https://www.facebook.com/reel/2691515157684630/" },
   },
   { // REVIEW-LO
-    id: "fb-oudomxay-pakbeng-awareness", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-oudomxay-pakbeng-awareness", org: 'oudomxay-police', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ຄະນະກຳມະການຕ້ານການຄ້າມະນຸດ ລົງໂຄສະນາເຜີຍແຜ່ນິຕິກຳ ທີ່ເມືອງປາກແບງ ແຂວງອຸດົມໄຊ", title_en: "Anti-trafficking committees spread legal information in Pakbeng district, Oudomxay",
     summary_lo: "ຄະນະກຳມະການສະກັດກັ້ນ ແລະ ຕ້ານການຄ້າມະນຸດຂັ້ນແຂວງ ແລະ ເມືອງ ລົງໂຄສະນາເຜີຍແຜ່ນິຕິກຳຢູ່ເມືອງປາກແບງ ແຂວງອຸດົມໄຊ.", summary_en: "The provincial and district committees for preventing and combating human trafficking held an awareness campaign on the laws in Pakbeng district, Oudomxay province.",
     image: null, source_name: "Oudomxay police", source_url: null, date: null, tags: ["Trafficking", "news"],
@@ -137,7 +125,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1DqeBXAYBd/", embed_url: "https://www.facebook.com/reel/6257457697612705/" },
   },
   { // REVIEW-LO
-    id: "fb-rfa-airport-wattay", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-rfa-airport-wattay", org: 'rfa-lao', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ຕຳຫຼວດສະກັດກັ້ນນາຍໜ້າ 2 ຄົນ ແລະ ຊ່ວຍເຫຼືອແມ່ຍິງລາວ 3 ຄົນ ຢູ່ສະໜາມບິນວັດໄຕ", title_en: "Police stop 2 brokers and help 3 Lao women at Wattay airport",
     summary_lo: "ກົມຕຳຫຼວດສະກັດກັ້ນ ແລະ ຕ້ານການຄ້າມະນຸດ ໄດ້ສະກັດກັ້ນນາຍໜ້າ 2 ຄົນ ແລະ ຊ່ວຍເຫຼືອແມ່ຍິງລາວ 3 ຄົນ ຢູ່ສະໜາມບິນສາກົນວັດໄຕ ທີ່ກຽມເດີນທາງໄປປະເທດຈີນ ເພື່ອແຕ່ງດອງກັບຄົນຈີນ.", summary_en: "The Anti-Human Trafficking Police Department stopped 2 brokers and helped 3 Lao women at Wattay International Airport who were preparing to travel to China to marry Chinese men.",
     image: null, source_name: "RFA Lao", source_url: null, date: null, tags: ["Trafficking", "SafeMigration", "news"],
@@ -145,7 +133,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1D1ZNgQJKV/", embed_url: "https://www.facebook.com/reel/539292955835241/" },
   },
   { // REVIEW-LO
-    id: "fb-asean-antitrafficking-meeting", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-asean-antitrafficking-meeting", org: 'target-magazine-laos', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ສປປ ລາວ ເຂົ້າຮ່ວມປະຊຸມວິຊາການອາຊຽນ ເພື່ອຫາລືວຽກງານຕ້ານການຄ້າມະນຸດ", title_en: "Lao PDR joins ASEAN technical meeting on anti-trafficking work",
     summary_lo: "ກອງປະຊຸມດັ່ງກ່າວເປັນການຫາລື ແລະ ຕິດຕາມຄວາມຄືບໜ້າການຈັດຕັ້ງການປະຕິບັດແຜນວຽກອາຊຽນ ເພື່ອຕ້ານການຄ້າມະນຸດ…", summary_en: "The meeting discussed and followed up progress on implementing the ASEAN work plan against human trafficking…",
     image: null, source_name: "Target Magazine Laos", source_url: null, date: null, tags: ["Trafficking", "news"],
@@ -153,7 +141,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/19vPZtCx5x/", embed_url: "https://www.facebook.com/reel/1976407773095731/" },
   },
   { // REVIEW-LO
-    id: "fb-ilsta-world-day", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-ilsta-world-day", org: 'ilsta', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ວັນຕ້ານການຄ້າມະນຸດໂລກ: ການຄ້າມະນຸດແມ່ນອາດຊະຍາກຳ", title_en: "World Day Against Trafficking: human trafficking is a crime",
     summary_lo: "ມື້ນີ້ ເປັນວັນຕ້ານການຄ້າມະນຸດໂລກ. ການຄ້າມະນຸດແມ່ນອາດຊະຍາກຳທີ່ກ່ຽວຂ້ອງກັບການຊັກຈູງ, ການຖ່າຍໂອນ, ການຮັບ, ຫຼື ການກັກຂັງບຸກຄົນໂດຍການຫຼອກລວງ ຫຼື ການບີບບັງຄັບ…", summary_en: "Today is World Day Against Trafficking in Persons. Human trafficking is a crime that involves recruiting, transferring, receiving or holding people through deception or coercion…",
     image: null, source_name: "ILSTA", source_url: null, date: null, tags: ["Trafficking", "awareness"],
@@ -161,7 +149,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/19uUdKeZyy/", embed_url: "https://www.facebook.com/reel/1043949111283699/" },
   },
   { // REVIEW-LO
-    id: "fb-laophattana-foreigner-clips", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-laophattana-foreigner-clips", org: 'laophattana-news', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ສັງຄົມເປັນຫ່ວງ: ຊາວຕ່າງຊາດຖ່າຍຄລິບກັບສາວລາວ ອາດເປັນການຄ້າມະນຸດແອບແຝງບໍ?", title_en: "Public concern: foreigner filming clips with Lao women, a disguised form of trafficking?",
     summary_lo: "ສັງຄົມເປັນຫ່ວງ ກໍລະນີຊາວຕ່າງຊາດຖ່າຍຄລິບກັບສາວລາວ ອາດຈະເປັນການຕົວະຍົວະແອບແຝງດ້ວຍການຄ້າມະນຸດຫຼືບໍ່?", summary_en: "Society is concerned about a case in which a foreigner filmed clips with Lao women: could it be trickery disguised as human trafficking?",
     image: null, source_name: "Lao Phattana News", source_url: null, date: null, tags: ["Trafficking", "SocialMedia", "news"],
@@ -169,7 +157,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1CNzXZPvkD/", embed_url: "https://www.facebook.com/reel/186947181025350/" },
   },
   { // REVIEW-LO
-    id: "fb-laophattana-trafficking-rights", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-laophattana-trafficking-rights", org: 'laophattana-news', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ການຄ້າມະນຸດ ກີດຂວາງການພັດທະນາ ແລະ ທຳລາຍສິດທິມະນຸດ", title_en: "Human trafficking blocks development and violates human rights",
     summary_lo: "ການຄ້າມະນຸດ ເປັນການກີດຂວາງການພັດທະນາຄວາມກ້າວໜ້າຊັບພະຍາກອນມະນຸດ ແລະ ເປັນການທຳລາຍສິດທິມະນຸດ.", summary_en: "Human trafficking obstructs the development of human resources and violates human rights.",
     image: null, source_name: "Lao Phattana News", source_url: null, date: null, tags: ["Trafficking", "awareness"],
@@ -177,7 +165,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1AcAq8Vs97/", embed_url: "https://www.facebook.com/reel/1829945337485259/" },
   },
   { // REVIEW-LO
-    id: "fb-molsw-beware-trafficking", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-molsw-beware-trafficking", org: 'molsw-news', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ລະວັງຖືກຕົວະຫຼອກລວງຕົກເປັນເຫຍື່ອການຄ້າມະນຸດ", title_en: "Beware of being deceived and becoming a victim of trafficking",
     summary_lo: "ຊ່ວຍກັນແຊຣແດ່ເດີພີ່ນ້ອງ. ລະວັງຈະຖືກຕົວະຫຼອກລວງຕົກເປັນເຫຍື່ອຈາກການຄ້າມະນຸດ. ດ້ວຍຄວາມເປັນຫ່ວງເປັນໄຍ ຈາກ ຂ່າວສານແຮງງານ ແລະ ສະຫວັດດີການສັງຄົມ (ຮສສ).", summary_en: "Please share: beware of being deceived and becoming a victim of human trafficking. With concern from the Labour and Social Welfare news page.",
     image: null, source_name: "ຂ່າວສານແຮງງານ ແລະ ສະຫວັດດີການສັງຄົມ (ຮສສ)", source_url: null, date: null, tags: ["Trafficking", "SafeJobs", "awareness"],
@@ -185,7 +173,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1BuRNhM2ua/", embed_url: "https://www.facebook.com/watch/?v=530116222145222" },
   },
   { // REVIEW-LO
-    id: "fb-optahanhet-golden-triangle", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-optahanhet-golden-triangle", org: 'optahanhet', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ເຕືອນຄົນລາວ: ຍິງສາວລາວຖືກຫຼອກເປັນເຫຍື່ອການຄ້າມະນຸດ ໃນເຂດສາມຫຼ່ຽມຄຳ", title_en: "Warning to Lao people: Lao women tricked into trafficking in the Golden Triangle zone",
     summary_lo: "ເຕືອນຄົນລາວ: ຄົນຈີນຕົວະຫຼອກຍິງສາວລາວ ຕົກເປັນເຫຍື່ອການຄ້າມະນຸດ ໃນເຂດເສດຖະກິດສາມຫຼ່ຽມຄຳ ປະເທດລາວ. ຊາວໄທກໍຕົກໃນສະພາບດຽວກັນ ຖືກຫຼອກໄປກຳປູເຈຍເຮັດວຽກຕອບແຊດ…", summary_en: "Warning to Lao people: Lao women were tricked and became victims of trafficking in the Golden Triangle Special Economic Zone, Laos. Thai people were also deceived into going to Cambodia to work as chat operators…",
     image: null, source_name: "ເປີດຕາທັນເຫດ", source_url: null, date: null, tags: ["Trafficking", "OnlineScam", "JobScam"],
@@ -193,7 +181,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1EGyFkPauy/", embed_url: "https://www.facebook.com/watch/?v=370249767942126" },
   },
   { // REVIEW-LO
-    id: "fb-iom-intern-to-coordinator", type: 'video', status: 'approved', needs_human_review: false, verified: true, pinned: false,
+    id: "fb-iom-intern-to-coordinator", org: 'iom-laos', type: 'video', status: 'approved', needs_human_review: false, verified: true, pinned: false,
     title_lo: "ຈາກການຝຶກງານ ສູ່ຄວາມມຸ່ງໝັ້ນປົກປ້ອງຜູ້ເຄື່ອນຍ້າຍຖິ່ນຖານ", title_en: "From internship to a commitment to protect migrants",
     summary_lo: "ຈຸດເລີ່ມຕົ້ນຂອງການຝຶກງານໄດ້ກາຍມາເປັນຄວາມມຸ່ງໝັ້ນໃນການປົກປ້ອງຜູ້ເຄື່ອນຍ້າຍຖິ່ນຖານ. ປັດຈຸບັນ ຮັບໜ້າທີ່ເປັນຜູ້ປະສານງານພາກສະໜາມ ກັບອົງການ IOM ປະຈຳ ສປປ ລາວ…", summary_en: "The start of an internship became a commitment to protecting migrants. Now working as a field coordinator with IOM in Lao PDR…",
     image: null, source_name: "IOM Lao PDR", source_url: null, date: null, tags: ["SafeMigration", "awareness"],
@@ -201,7 +189,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1F7WeADFtg/", embed_url: "https://www.facebook.com/reel/925959800034361/" },
   },
   { // REVIEW-LO
-    id: "fb-iom-samuel-story", type: 'video', status: 'approved', needs_human_review: false, verified: true, pinned: false,
+    id: "fb-iom-samuel-story", org: 'iom-laos', type: 'video', status: 'approved', needs_human_review: false, verified: true, pinned: false,
     title_lo: "ເລື່ອງເລົ່າຂອງ Samuel ຜູ້ຕົກເປັນເຫຍື່ອການຄ້າມະນຸດ ແລະ ຖືກບັງຄັບໃຊ້ແຮງງານໂດຍກຸ່ມສໍ້ໂກງອອນລາຍ ໃນມຽນມາ", title_en: "Samuel's story: trafficked and forced to work for an online scam group in Myanmar",
     summary_lo: "ນີ້ແມ່ນເລື່ອງເລົ່າຂອງທ້າວ Samuel ຄົນສັນຊາດການາ (Ghana) ຜູ້ທີ່ຕົກເປັນເຫຍື່ອຂອງການຄ້າມະນຸດ ແລະ ຖືກບັງຄັບໃຊ້ແຮງງານໂດຍກຸ່ມ #OnlineScams ທີ່ປະເທດມຽນມາ…", summary_en: "This is the story of Samuel, from Ghana, who became a victim of human trafficking and was forced to work by an #OnlineScams group in Myanmar…",
     image: null, source_name: "IOM Lao PDR", source_url: null, date: null, tags: ["Trafficking", "OnlineScam", "awareness"],
@@ -209,7 +197,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1A5sAryG4Z/", embed_url: "https://www.facebook.com/reel/1786648659043925/" },
   },
   { // REVIEW-LO
-    id: "fb-laosatd-video-1", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-laosatd-video-1", org: 'laosatd', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ວິດີໂອຈາກເພຈ laosatd", title_en: "Video from the laosatd page",
     summary_lo: "ວິດີໂອທີ່ແບ່ງປັນໂດຍເພຈ Facebook laosatd. ກົດເບິ່ງ ຫຼື ເປີດຕົ້ນສະບັບເພື່ອອ່ານລາຍລະອຽດ.", summary_en: "A video shared by the Facebook page laosatd. Press play, or open the original for details.",
     image: null, source_name: "laosatd", source_url: null, date: null, tags: ["Trafficking"],
@@ -217,7 +205,7 @@ export const CURATED_POSTS = [
     video: { url: "https://www.facebook.com/share/v/1Cu3krBebr/", embed_url: "https://www.facebook.com/laosatd/videos/2516947665223228/" },
   },
   { // REVIEW-LO
-    id: "fb-laosatd-video-2", type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
+    id: "fb-laosatd-video-2", org: 'laosatd', type: 'video', status: 'approved', needs_human_review: false, verified: false, pinned: false,
     title_lo: "ວິດີໂອ (ໃຫ້ເຄຣດິດ laosatd)", title_en: "Video (credit: laosatd)",
     summary_lo: "ວິດີໂອທີ່ແບ່ງປັນຜ່ານ Facebook, ໃຫ້ເຄຣດິດເພຈ laosatd. ກົດເບິ່ງ ຫຼື ເປີດຕົ້ນສະບັບເພື່ອອ່ານລາຍລະອຽດ.", summary_en: "A video shared on Facebook, with credit to the page laosatd. Press play, or open the original for details.",
     image: null, source_name: "laosatd", source_url: null, date: null, tags: ["Trafficking"],

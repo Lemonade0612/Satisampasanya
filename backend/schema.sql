@@ -45,3 +45,6 @@ CREATE INDEX IF NOT EXISTS feedback_created ON feedback(created DESC);
 -- Anonymous scam-check counts (POST /api/reports). No message text, no user id.
 CREATE TABLE IF NOT EXISTS scam_reports (id TEXT PRIMARY KEY, category TEXT NOT NULL, verdict TEXT NOT NULL CHECK(verdict IN ('green','yellow','red')), band TEXT NOT NULL CHECK(band IN ('kids','youth','adult','elder')), created INTEGER NOT NULL);
 CREATE INDEX IF NOT EXISTS scam_reports_created ON scam_reports(created DESC, category);
+
+-- Repost counts run once per post on every feed page; without this each one parses every post's JSON.
+CREATE INDEX IF NOT EXISTS posts_repost_of ON posts(json_extract(data,'$.repostOf'));

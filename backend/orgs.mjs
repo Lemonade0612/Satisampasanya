@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { cleanMedia, feedFields, pageFeed, POST_TYPES } from './feed.mjs';
 import { accessFor } from './access.mjs';
+import { curatedOrgRows } from './curated.mjs';
 
 export const ORG_TYPES = ['gov', 'ngo', 'intl', 'media'];
 export const GAMES = ['story', 'flags', 'realorscam', 'links', 'dash', 'detective', 'call'];
@@ -41,6 +42,9 @@ export function seedOrgs(db) {
   const post = db.prepare('INSERT INTO posts VALUES (?,NULL,?,?)'), findPost = db.prepare('SELECT id FROM posts WHERE id=?');
   db.exec('BEGIN');
   try {
+    // Existing databases: fill in a logo or banner that was missing when the organisation was first created.
+    const fill = db.prepare('UPDATE organisations SET logo_url=COALESCE(logo_url,?), banner_url=COALESCE(banner_url,?) WHERE slug=?');
+    for (const o of seed.organisations) if (has.get(o.slug) && (o.logoUrl || o.bannerUrl)) fill.run(o.logoUrl ?? null, o.bannerUrl ?? null, o.slug);
     for (const o of seed.organisations) if (!has.get(o.slug)) add.run(`org-${o.slug}`, o.slug, o.nameLo, o.nameEn, o.type, o.verified ? 1 : 0, o.logoUrl, o.bannerUrl, o.bioLo, o.bioEn, o.website ?? null, o.facebookUrl ?? null, Date.now());
     seed.posts.forEach((p, i) => { if (!findPost.get(p.id)) post.run(p.id, JSON.stringify({ ...p, orgId: `org-${p.org}`, org: undefined, isDemo: true }), Date.now() - (i + 1) * 60000); });
     db.exec('COMMIT');
@@ -63,13 +67,13 @@ export async function socialRoutes(c) {
   if (method === 'GET' && m) {
     const o = db.prepare('SELECT * FROM organisations WHERE slug=?').get(m[1]); if (!o) throw bad('Organisation not found.', 404);
     const followers = db.prepare("SELECT COUNT(*) n FROM follows WHERE target_kind='org' AND target_id=?").get(o.id).n;
-    const posts = rows().filter(r => JSON.parse(r.data).orgId === o.id && visible(r)).length;
+    const posts = rows().filter(r => JSON.parse(r.data).orgId === o.id && visible(r)).length + curatedOrgRows(db, o.id).length;
     send(res, 200, orgView(o, { followers, posts, following: !!user && followedSets(db, user.id).orgs.has(o.id) })); return true;
   }
   m = /^\/api\/orgs\/([a-z0-9-]+)\/posts$/.exec(path);
   if (method === 'GET' && m) {
     const o = db.prepare('SELECT * FROM organisations WHERE slug=?').get(m[1]); if (!o) throw bad('Organisation not found.', 404);
-    send(res, 200, wrap(() => page(rows().filter(r => JSON.parse(r.data).orgId === o.id && visible(r)), view))); return true;
+    send(res, 200, wrap(() => page([...rows().filter(r => JSON.parse(r.data).orgId === o.id && visible(r)), ...curatedOrgRows(db, o.id)].sort((a, b) => b.created - a.created), view))); return true;
   }
   const isAdmin = () => user && accessFor(db, user).role === 'admin' && accessFor(db, user).status === 'active';
   // Admin only: create an organisation (unverified), verify it, post as it.

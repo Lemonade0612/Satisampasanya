@@ -98,7 +98,7 @@ test('seed posts: statuses agree with the rules', () => {
     else assert.equal(p.needs_human_review, true, `${p.id} pending needs_human_review`);
     if (['job', 'study'].includes(p.type) && !p.owner_override) assert.equal(p.status, 'pending', `${p.id} job/study must be pending`);
   }
-  assert.equal(CURATED_POSTS.length, 25);
+  assert.equal(CURATED_POSTS.length, 24);
   for (const p of CURATED_POSTS.filter(x => x.video)) assert.ok(p.credit?.name && p.credit?.url, `${p.id} video needs a credit with a link`);
 });
 
@@ -119,7 +119,7 @@ test('curated posts: public feed shows only approved, admin approval persists, r
     const admin = { id: 'a', name: 'Admin' };
     const before = publicCurated(db);
     assert.ok(before.every(p => p.status === 'approved'));
-    assert.equal(before.length, 25);
+    assert.equal(before.length, 24);
     assert.ok(before.find(p => p.id === 'wii-fair').expired);
     assert.equal(before.at(-1).id, 'wii-fair', 'ended events sort last');
     assert.deepEqual(before.slice(0, 2).map(p => p.type), ['hotline', 'hotline']);

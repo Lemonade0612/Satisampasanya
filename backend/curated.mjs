@@ -30,3 +30,18 @@ export function reviewCurated(db, id, status, note, user) {
     .run(id, status, note || '', user.id, user.name, Date.now());
   return staffCurated(db).find(p => p.id === id);
 }
+
+// Profile pages: approved curated posts that belong to an organisation are shown on its profile as ordinary org posts
+// (same shape as seeded org posts), so the profile, its post count and its paging work without a second code path.
+const initials = name => String(name).replace(/[^\p{L}\p{N}\s]/gu, '').split(/\s+/).filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'S';
+export function curatedOrgRows(db, orgId) {
+  const slug = orgId.replace(/^org-/, '');
+  return publicCurated(db).filter(p => p.org === slug).map((p, i) => {
+    const c = p.credit || { name: p.source_name, url: p.source_url };
+    const media = p.video ? [{ kind: 'video', url: p.video.url, ...(p.video.poster ? { thumb_url: p.video.poster } : {}) }] : p.image ? [{ kind: 'image', url: p.image }] : [];
+    const data = { id: `cur-${p.id}`, type: p.video ? 'video' : p.image ? 'poster' : 'text', orgId, tags: p.tags, timestamp: '', state: 'clean', risk_level: 'green', likes: 0, comments: 0, reposts: 0, warnedMe: 0, bands: ['youth', 'adult', 'elder'],
+      author: { name: c.name, handle: `@${slug}`, initials: initials(c.name), color: '#5B21D1', points: 0 },
+      content: `${p.title_en}\n${p.summary_en}`, contentLo: `${p.title_lo}\n${p.summary_lo}`, contentLanguage: 'lo', media, ...(c.url ? { sourceUrl: c.url } : {}) };
+    return { id: `cur-${p.id}`, user_id: null, data: JSON.stringify(data), created: (p.date && Date.parse(p.date)) || Date.now() - (i + 1) * 3600000 };
+  });
+}
