@@ -237,7 +237,7 @@ function TrendCard({ posts, lang, onOpen }: { posts: Post[]; lang: Lang; onOpen:
   const lo = lang === "lo", type = scamTypeLabel(trend.type, lang);
   return <button type="button" onClick={() => { onOpen(trend.type); setGone(true); }} className="w-full text-left rounded-2xl p-4 bg-tint-purple-bg">
     <span className="flex items-center gap-1.5 text-[13.5px] font-bold text-tint-purple-fg"><TrendingUp size={16} aria-hidden />{lo ? "ຊຸມຊົນ · ອາທິດນີ້" : "Community · this week"}</span>
-    <span className="mt-1.5 block text-[16.5px] font-bold leading-snug text-text">{lo ? `ເລື່ອງທີ່ຖືກເຕືອນຫຼາຍທີ່ສຸດ: ${type} · ${trend.count} ໂພສ` : `Most warned about: ${type} · ${trend.count} posts`}</span>
+    <span className="mt-1.5 block text-[16.5px] font-bold leading-snug text-text">{lo ? `ເລື່ອງທີ່ຖືກເຕືອນຫຼາຍທີ່ສຸດ: ${type} · ${trend.count} ໂພສ` : `Most warned about: ${type} · ${trend.count} ${trend.count === 1 ? "post" : "posts"}`}</span>
   </button>; // REVIEW-LO
 }
 

@@ -109,7 +109,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
                     <span aria-hidden className="absolute -top-2 right-2 text-6xl font-extrabold text-white/20">#{i + 1}</span>
                     <span className="relative block font-bold text-base leading-snug line-clamp-2">{topicName(tag)}</span>
                     <span className="absolute left-4 right-4 bottom-4">
-                      <span className="flex items-center justify-between text-xs font-semibold"><span>{count} {lo ? "ໂພສ" : "posts"}</span>{today > 0 && <span className="rounded-full bg-white/25 px-2 py-0.5">{lo ? "ມື້ນີ້" : "today"} +{today}</span>}</span>
+                      <span className="flex items-center justify-between text-xs font-semibold"><span>{count} {lo ? "ໂພສ" : count === 1 ? "post" : "posts"}</span>{today > 0 && <span className="rounded-full bg-white/25 px-2 py-0.5">{lo ? "ມື້ນີ້" : "today"} +{today}</span>}</span>
                       <span aria-hidden className="mt-1.5 block h-1.5 rounded-full bg-white/25 overflow-hidden"><span className="block h-full rounded-full bg-white" style={{ width: `${(count / max) * 100}%` }} /></span>
                     </span>
                   </button>
