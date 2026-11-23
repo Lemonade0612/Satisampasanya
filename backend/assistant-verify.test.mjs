@@ -122,6 +122,17 @@ test('the daily allowance is counted once and given back if the stream fails bef
   assert.equal(d.prepare('SELECT count FROM assistant_usage').get().count, 0);
 });
 
+test('BUG-02: a question the AI could not answer (stream error or resting) is not counted against the daily allowance', async () => {
+  const d = db(); const ev = [];
+  await assistantStream(d, 'u3', { text: 'How do I stay safe on TikTok?' }, e => ev.push(e), { stream: async () => { throw new Error('down'); } });
+  assert.equal(ev.at(-1).fallback, true); assert.equal(ev.at(-1).remaining, 20);
+  assert.equal(d.prepare('SELECT count FROM assistant_usage').get().count, 0);
+  const rest = []; await assistantStream(d, 'u3', { text: 'hello there' }, e => rest.push(e), { stream: async () => { throw Object.assign(new Error('Sati is resting'), { resting: true }); } });
+  assert.equal(rest.at(-1).remaining, 20); assert.equal(d.prepare('SELECT count FROM assistant_usage').get().count, 0);
+  const ok = []; await assistantStream(d, 'u3', { text: 'hello there' }, e => ok.push(e), { stream: async (_p, _i, on) => { on('Hi.'); return 'Hi.'; } });
+  assert.equal(ok.at(-1).remaining, 19); assert.equal(d.prepare('SELECT count FROM assistant_usage').get().count, 1);
+});
+
 test('modelStream reads server-sent events token by token (OpenRouter and OpenAI formats)', async () => {
   const sse = lines => ({ ok: true, body: (async function* () { for (const l of lines) yield new TextEncoder().encode(l); })() });
   const router = await (async () => { const got = []; const full = await modelStream('sys', { language: 'en', text: 'hi' }, p => got.push(p), { config: { provider: 'openrouter', key: 'k', model: 'm' }, fetcher: async () => sse(['data: {"choices":[{"delta":{"content":"Hel"}}]}\n\n', 'data: {"choices":[{"delta":{"content":"lo"}}]}\n\ndata: [DONE]\n\n']) }); return { got, full }; })();

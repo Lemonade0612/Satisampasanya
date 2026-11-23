@@ -57,13 +57,16 @@ export async function assistantStream(db,userId,{text,kind='text',mode='auto',ba
   if(checks)emit({type:'checks',checks});
   const hotlines=ALL_NUMBERS.map(l=>({name:l.name[language],number:l.number}));
   const brief=checks&&{level:checks.level,confidence:checks.confidence,signals:checks.signals.map(s=>({check:s.check,result:s.result,detail:language==='lo'?s.detail_lo:s.detail_en}))};
-  let full='',fallback=false;
+  let full='',fallback=false,resting=false;
   try{full=await stream(streamPrompt(band),{text,language,checks:brief,hotlines,dangerFirst:[ALWAYS_SHOWN.number]},piece=>emit({type:'token',text:piece}));}
   catch(error){
-   if(error.resting)full=error.message;
+   if(error.resting){full=error.message;resting=true;}
    else{fallback=true;full=fallbackText(checks,language);}
    emit({type:'token',text:full});
   }
-  emit({type:'done',text:scrubNumbers(sanitizeClaims(full)),fallback,remaining:limit-used.count,language});
+  // The AI could not answer (error or resting): hand the question back, like the non-streaming path does.
+  const unanswered=fallback||resting;
+  if(unanswered)db.prepare('UPDATE assistant_usage SET count=count-1 WHERE user_id=? AND day=? AND kind=?').run(userId,date,kind);
+  emit({type:'done',text:scrubNumbers(sanitizeClaims(full)),fallback,remaining:limit-used.count+(unanswered?1:0),language});
  }catch(error){db.prepare('UPDATE assistant_usage SET count=count-1 WHERE user_id=? AND day=? AND kind=?').run(userId,date,kind);throw error;}
 }
