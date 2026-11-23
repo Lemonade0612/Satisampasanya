@@ -73,3 +73,15 @@ test('/about-ai explains the checks, limits and privacy in both languages', asyn
   await page.getByRole('button', { name: 'ລາວ' }).click();
   await expect(page.getByRole('heading', { name: 'Sati AI ກວດສອບແນວໃດ' })).toBeVisible();
 });
+
+test('an expired session sends the person to sign-in, not a raw "Please sign in."', async ({ page, request }) => {
+  await page.route('**/api/assistant/usage', route => route.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ error: 'Please sign in.' }) }));
+  const res = await request.post(`${API}/auth/quick`, { data: { name: `e2e${Date.now() % 100000}`, ageBand: 'youth' } });
+  const { token } = await res.json();
+  await page.addInitScript(t => { localStorage.setItem('sati-session', t); localStorage.setItem('sati-lang', 'en'); localStorage.setItem('sati-age-tier', '"youth"'); }, token);
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Ask Sati' }).click({ timeout: 20000 });
+  await expect(page.getByText('Please sign in.', { exact: true })).toHaveCount(0);
+  await expect(page.getByTestId('chat-list')).toHaveCount(0);
+  expect(await page.evaluate(() => localStorage.getItem('sati-session'))).toBeNull();
+});

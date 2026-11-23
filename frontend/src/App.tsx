@@ -304,7 +304,7 @@ export default function App() {
             }}
           />
         )}
-        {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} onBack={() => setView(assistantFrom)} />}
+        {view === "assistant" && !showAlerts && user && <AssistantScreen lang={lang} onBack={() => setView(assistantFrom)} onSessionExpired={() => { clearSession(); applyUser(null); setView("feed"); setSignupReason('assistant'); }} />}
         {view === "daily" && !showAlerts && <DailyScreen lang={lang} start={dailyStart} onStarted={() => setDailyStart(null)} onCheckOnSati={() => { history.replaceState(null, "", location.pathname); setView("feed"); }} />}
         {view === "profile" && !showAlerts && !user && <GuestProfile lang={lang} onDone={handleLogin} onEmail={() => setGuest(null)} onChangeBand={() => setBandSheet(true)} />}
         {view === "profile" && !showAlerts && user && (

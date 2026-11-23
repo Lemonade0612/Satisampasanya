@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowDown, ArrowUpRight, Camera, ChevronRight, Link2, MessagesSquare, Phone, SquarePen } from "lucide-react";
 const logoImage = "/brand-mark.svg";
 import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
-import {request} from '../lib/api';
+import {request,ApiError} from '../lib/api';
 import {streamAssistant} from '../lib/assistantStream';
 import {verifyLocal} from '../lib/verify';
 import {AssistantMessage,type AssistantResult,type ChatMessage} from '../components/assistant/AssistantMessage';
@@ -12,8 +12,10 @@ import type {Lang} from '../types';
 
 const NEAR=120; // px from the bottom that still counts as "reading the latest message"
 
-export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
+export function AssistantScreen({lang,onBack,onSessionExpired}:{lang:Lang;onBack?:()=>void;onSessionExpired?:()=>void}){
  const lo=lang==='lo';
+ // A 401 means the saved session is no longer valid: hand over to the sign-in prompt instead of showing the server's raw text.
+ const expired=(e:unknown)=>{if(e instanceof ApiError&&e.status===401&&onSessionExpired){onSessionExpired();return true;}return false;};
  const [text,setText]=useState('');
  const [image,setImage]=useState<string>();
  const openAttach=useRef<(()=>void)|null>(null);
@@ -30,7 +32,7 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
  const nearBottom=useRef(true),nextId=useRef(1);
  const [pill,setPill]=useState(false);
  const [keyboardH,setKeyboardH]=useState<number|null>(null);
- useEffect(()=>{request<{text:number;post:number}>('/assistant/usage').then(setRemaining).catch(error=>setError(error.message));},[]);
+ useEffect(()=>{request<{text:number;post:number}>('/assistant/usage').then(setRemaining).catch(error=>{if(!expired(error))setError(error.message);});},[]);
 
  // Phone keyboard: follow the visible viewport so the input stays above the keyboard and the list shrinks instead of hiding behind it.
  useEffect(()=>{
@@ -78,6 +80,7 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
     patch(id,m=>m.status==='streaming'?{...m,status:'done'}:m);
    }
   }catch(e){
+   if(expired(e)){setMessages(all=>all.filter(m=>m.id!==id));setText(question);return;}
    const message=(e as Error).message;
    patch(id,m=>({...m,status:'error',error:message}));setError(message);
   }finally{sending.current=false;setBusy(false);}
