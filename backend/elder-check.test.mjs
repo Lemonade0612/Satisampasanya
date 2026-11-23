@@ -76,6 +76,12 @@ const CASES = [
   ['scam', "ຕຳຫຼວດແຈ້ງຄະດີ ຢາບ້າ, โอนเงิน 20,000 บาท, ຢ່າບອກໃຜ"],
   ['scam', "ຂໍສະແດງຄວາມຍິນດີ! ທ່ານຖືກລາງວັນ 50,000,000 ກີບ. ຈ່າຍຄ່າທຳນຽມ 500,000 ກີບກ່ອນ"],
   ['scam', "Your bank account will be closed today, verify now at bit.ly/xx"],
+  // Code REQUESTS are scams, even next to "tell nobody" or inside a message that also warns.
+  ['scam', 'ສົ່ງລະຫັດ OTP ມາໃຫ້ຂ້ອຍ ຢ່າບອກລະຫັດໃຫ້ໃຜ'],
+  ['scam', "send me your OTP code, don't tell the code to anyone"],
+  ['scam', 'ເຈົ້າໜ້າທີ່ທະນາຄານ: ກະລຸນາບອກລະຫັດ OTP ເພື່ອຢືນຢັນ'],
+  ['scam', 'ກະລຸນາແຈ້ງລະຫັດ OTP ທີ່ໄດ້ຮັບ'],
+  ['scam', 'ส่ง OTP มาให้ด่วน อย่าบอกใคร'],
 ];
 
 test('elder message check: regression set', () => {
@@ -83,3 +89,8 @@ test('elder message check: regression set', () => {
   const wrong = CASES.map(([want, text]) => ({ want, got: checkElderMessage(text), text })).filter(c => c.got !== c.want);
   assert.deepEqual(wrong, []);
 });
+
+// One named test per case, so a run shows exactly which wording is covered (the set above is a single test).
+for (const [want, text] of CASES) {
+  test(`elder check [${want}] ${text.slice(0, 60)}`, () => assert.equal(checkElderMessage(text), want));
+}

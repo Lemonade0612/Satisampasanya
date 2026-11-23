@@ -48,6 +48,16 @@ const TRANSFER = [...compile(['ໂອນ', 'ໂອນເງິນ', 'ຊ່ວ�
 // Telling the reader NOT to share a code ("ຢ່າບອກລະຫັດ", "ບໍ່ເຄີຍຂໍ OTP") protects them. It is not the "ຢ່າບອກໃຜ" (tell nobody) of a scammer.
 const PROTECT_RE = /(?:ຢ່າບອກ|ຢ່າແບ່ງປັນ|ຢ່າໃຫ້)\s*(?:ລະຫັດ|otp|pin)|(?:ບໍ່ເຄີຍ|ຈະບໍ່|ບໍ່)(?:ຂໍ|ຖາມຫາ|ຖາມ)\s*(?:ລະຫັດ|otp|pin)/u;
 
+// Asking the reader to hand over a code is the scam itself, even when the same message also says "don't tell anyone".
+// "ຢ່າບອກລະຫັດ" (do NOT tell the code) is advice, so a plain "ບອກ" only counts when no "ຢ່າ" is in front of it.
+const REQUEST_RE = new RegExp([
+  'ສົ່ງ\\s*(?:ລະຫັດ|otp)', '(?<!ຢ່າ)ບອກ\\s*(?:ລະຫັດ|otp)', 'ບອກ\\s*(?:ລະຫັດ|otp)?\\s*ໃຫ້\\s*(?:ຂ້ອຍ|ພວກເຮົາ|ເຈົ້າໜ້າທີ່)',
+  'ແຈ້ງ\\s*(?:ລະຫັດ|otp)', 'ພິມ\\s*(?:ລະຫັດ|otp)', 'ລະຫັດ\\s*ມາ', 'ส่ง\\s*(?:otp|รหัส)',
+  '(?<!(?:don\'t|do not|never) )send\\s+(?:me\\s+)?(?:the|your|a)\\s+(?:otp|code|pin)', '(?<!(?:don\'t|do not|never) )tell\\s+me\\s+(?:the|your)\\s+(?:otp|code|pin)',
+].join('|'), 'u');
+// Words that put the reader in the sender's hands: with any advice around them it is not plain advice.
+const TO_SENDER_RE = /ໃຫ້ຂ້ອຍ|ໃຫ້ພວກເຮົາ|ມາໃຫ້|\bto me\b/u;
+
 export function checkElderMessage(text: string): ElderVerdict {
   const s = text.toLowerCase();
   const hit = GROUPS.filter(g => g.res.some(r => r.test(s)));
@@ -59,7 +69,9 @@ export function checkElderMessage(text: string): ElderVerdict {
   const transfer = TRANSFER.some(r => r.test(s));
   // Money asked for + someone close, an emergency, the police or a secret = the classic scam, whatever the score.
   if (transfer && ['relative', 'authority', 'secrecy'].some(c => cats.has(c)) && !(cats.size === 1 && cats.has('authority') && WARNINGS.some(r => r.test(s)))) return 'scam';
+  if (REQUEST_RE.test(s)) return 'scam';
   // Advice not to share a code, with no transfer request, link or other bait, is safe, even when it says "ຢ່າບອກ".
+  if (PROTECT_RE.test(s) && TO_SENDER_RE.test(s)) return 'caution';
   if (PROTECT_RE.test(s) && !transfer && [...cats].every(c => c === 'otp' || c === 'authority' || c === 'secrecy')) return 'safe';
   const advice = WARNINGS.some(r => r.test(s.replace(SECRECY_RE, ' ')));
   // Plain advice ("the bank never asks for your OTP") is safe; bait that happens to say "never" stays scored.
