@@ -17,9 +17,9 @@ async function bucket(env=process.env){
  clientPromise??=new MongoClient(env.MONGODB_URI,{serverSelectionTimeoutMS:10000,maxPoolSize:5}).connect().catch(error=>{clientPromise=null;throw error;});
  return new GridFSBucket((await clientPromise).db(env.MONGODB_DATABASE||'sati'),{bucketName:BUCKET});
 }
-// Vercel Blob (private store, free on Hobby) is used when BLOB_READ_WRITE_TOKEN is set; MongoDB otherwise.
+// Vercel Blob (private store, free on Hobby) is used when BLOB_READ_WRITE_TOKEN or BLOB_STORE_ID (OIDC) is set; MongoDB otherwise.
 const BLOB_PATH='sati/sati.sqlite';
-const blobOn=(env=process.env)=>!!env.BLOB_READ_WRITE_TOKEN;
+const blobOn=(env=process.env)=>!!(env.BLOB_READ_WRITE_TOKEN||env.BLOB_STORE_ID);
 export const snapshotsEnabled=(env=process.env)=>blobOn(env)||mongoEnabled(env);
 async function blobLatest(){try{return (await head(BLOB_PATH)).etag;}catch(e){if(e?.name==='BlobNotFoundError'||/not.?found/i.test(e?.message||''))return null;throw e;}}
 async function blobDownload(path){
