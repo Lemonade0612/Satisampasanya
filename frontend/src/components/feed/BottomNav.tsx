@@ -10,24 +10,23 @@ export function BottomNav({ active, onChange, lang, onCompose, dailyDot = false 
   const item = (view: ActiveView, icon: (on: boolean) => ReactNode, label: string) => {
     const on = active === view;
     return (
-      <button type="button" aria-current={on ? "page" : undefined} onClick={() => onChange(view)}
-        className={`flex-1 min-w-0 min-h-11 flex flex-col items-center justify-center gap-1 ${on ? "text-text font-bold" : "text-text-muted font-bold"}`}>
-        {icon(on)}<span className="text-xs leading-tight">{label}</span>
+      <button type="button" aria-current={on ? "page" : undefined} onClick={() => onChange(view)} aria-label={label}
+        className={`min-w-0 h-12 mx-auto w-14 flex items-center justify-center rounded-full transition-colors ${on ? "bg-[#EFE8FD] text-[#5B21D1]" : "text-[#4B4E78]"}`}>
+        {icon(on)}
       </button>
     );
   };
   return (
-    <nav className="shrink-0 relative z-40 h-[calc(76px+env(safe-area-inset-bottom))] pb-[env(safe-area-inset-bottom)] bg-background border-t border-border flex items-stretch">
-      {item("feed", on => <Home size={26} strokeWidth={on ? 2.6 : 1.8} aria-hidden />, lo ? "ໜ້າຫຼັກ" : "Home")}
-      {item("explore", on => <Search size={26} strokeWidth={on ? 2.6 : 1.8} aria-hidden />, lo ? "ຄົ້ນຫາ" : "Explore")}
+    <div data-app-nav className="shrink-0 relative z-40 px-3 pt-1 pb-[calc(10px+env(safe-area-inset-bottom))] bg-white"><nav className="h-[62px] rounded-full bg-white border border-[#ECECF4] shadow-[0_6px_20px_rgba(20,17,43,0.12)] grid grid-cols-5 items-center px-1.5">
+      {item("feed", () => <Home size={26} strokeWidth={2} aria-hidden />, lo ? "ໜ້າຫຼັກ" : "Home")}
+      {item("explore", () => <Search size={26} strokeWidth={2} aria-hidden />, lo ? "ຄົ້ນຫາ" : "Explore")}
       {onCompose ? (
-        <button type="button" onClick={onCompose} className="flex-1 min-w-0 flex flex-col items-center justify-start text-text font-bold active:scale-95 transition-transform">
-          <span aria-hidden className="-mt-8 w-[64px] h-[64px] rounded-full border-4 border-background bg-primary text-primary-foreground shadow-[var(--shadow-soft)] flex items-center justify-center"><Plus size={34} strokeWidth={2.5} /></span>
-          <span className="mt-1 text-[15px] leading-tight">{lo ? "ໂພສ" : "Post"}</span>
+        <button type="button" onClick={onCompose} aria-label={lo ? "ໂພສ" : "Post"} className="min-w-0 h-12 flex items-center justify-center active:scale-95 transition-transform">
+          <span aria-hidden className="flex w-12 h-12 rounded-full text-white items-center justify-center bg-[#5B21D1] shadow-[0_4px_12px_rgba(91,33,209,0.35)]"><Plus size={26} strokeWidth={2.5} /></span>
         </button>
-      ) : <span className="flex-1" />}
-      {item("daily", on => <span className="relative"><Gamepad2 size={26} strokeWidth={on ? 2.6 : 1.8} aria-hidden />{dailyDot && <span role="img" aria-label={lo ? "ເກມມື້ນີ້ຍັງບໍ່ໄດ້ຫຼິ້ນ" : "Today's game not played yet"} className="badge-pop absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full bg-danger ring-2 ring-background" />}</span>, lo ? "ເກມ" : "Play")}
-      {item("profile", on => <User size={26} strokeWidth={on ? 2.6 : 1.8} aria-hidden />, lo ? "ຂ້ອຍ" : "Me")}
-    </nav>
+      ) : <span />}
+      {item("daily", () => <span className="relative"><Gamepad2 size={26} strokeWidth={2} aria-hidden />{dailyDot && <span role="img" aria-label={lo ? "ເກມມື້ນີ້ຍັງບໍ່ໄດ້ຫຼິ້ນ" : "Today's game not played yet"} className="badge-pop absolute -top-0.5 -right-1 w-2.5 h-2.5 rounded-full bg-danger ring-2 ring-background" />}</span>, lo ? "ເກມ" : "Play")}
+      {item("profile", () => <User size={26} strokeWidth={2} aria-hidden />, lo ? "ຂ້ອຍ" : "Me")}
+    </nav></div>
   );
 }

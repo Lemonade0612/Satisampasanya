@@ -86,8 +86,8 @@ export function RealOrScam({ lang, onExit, onFinish }: { lang: Lang; onExit: () 
           </div>
           {answer === null && cfg.quickSec > 0 && <Countdown key={card.id} seconds={SECONDS} onDone={() => pick(null)} label={L(lang, 'ໝົດເວລາ', "Time's up")} />}
           {answer === null && <div className="grid grid-cols-2 gap-3">
-            <button type="button" onClick={() => pick(true)} className="rounded-2xl bg-[#DC2626] text-white font-bold text-[1.25rem] shadow-[0_5px_0_#991B1B] min-h-[68px] flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#991B1B]"><Flag size={22} aria-hidden />{L(lang, 'ຫຼອກລວງ', 'Scam')}</button>
-            <button type="button" onClick={() => pick(false)} className="rounded-2xl bg-[#16A34A] text-white font-bold text-[1.25rem] shadow-[0_5px_0_#14532D] min-h-[68px] flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#14532D]"><ShieldCheck size={22} aria-hidden />{L(lang, 'ປອດໄພ', 'Safe')}</button>
+            <button type="button" onClick={() => pick(true)} className="rounded-2xl bg-[#E54848] text-white font-bold text-[17px] shadow-[0_5px_0_#A52A2A] min-h-14 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#A52A2A]"><Flag size={22} aria-hidden />{L(lang, 'ຫຼອກລວງ', 'Scam')}</button>
+            <button type="button" onClick={() => pick(false)} className="rounded-2xl bg-[#3FA34D] text-white font-bold text-[17px] shadow-[0_5px_0_#2A6E34] min-h-14 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#2A6E34]"><ShieldCheck size={22} aria-hidden />{L(lang, 'ປອດໄພ', 'Safe')}</button>
           </div>}
         </div>
       </div>

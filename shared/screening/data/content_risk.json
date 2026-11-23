@@ -1,0 +1,36 @@
+{
+  "_note": "Seed lists for detectors the first seed set did not cover (checks 1, 3, 5, 6, 9, 10 of the 17). Regex strings use JS syntax, case-insensitive. REVIEW-LO: Lao entries need a native speaker.",
+  "bullying": {
+    "en": ["nobody likes you", "nobody wants you", "no one likes you", "kill yourself", "kys", "go die", "you should die", "you're worthless", "you are worthless", "everyone hates you"],
+    "en_patterns": [
+      "\\b(?:unfollow|ignore|block|avoid|boycott|hate|exclude|shun)\\s+(?:her|him|them)\\b",
+      "\\b(?:she|he|they|you|ur|u)\\s+(?:is|are|'re|r)?\\s*(?:so\\s+|too\\s+|really\\s+)?(?:ugly|fat|stupid|dumb|worthless|pathetic|disgusting|a loser)\\b",
+      "\\bfat\\s+pig\\b"
+    ],
+    "lo": ["ຂີ້ທູດ", "ຢ່າໄປລົມນຳ", "ຢ່າຄົບ", "ຢ່າຫຼິ້ນນຳ", "ໄປຕາຍ", "ບໍ່ມີໃຜຮັກ", "ບໍ່ມີໃຜຢາກຄົບ", "ໜ້າລັງກຽດ", "ໜ້າຮັງກຽດ", "ໜ້າຂີ້ເຄືອກ"]
+  },
+  "hate_speech": {
+    "en": ["nigger", "faggot", "chink", "tranny", "go back to your country"],
+    "en_patterns": [
+      "\\b(?:hmong|khmer|vietnamese|chinese|thai|burmese|muslims?|buddhists?|christians?|gays?|lgbt\\w*|women|girls|foreigners|migrants|refugees)\\s+(?:are|is)\\s+(?:all\\s+)?(?:animals|trash|dirty|stupid|a disease|inferior|filth|scum|vermin|criminals)\\b",
+      "\\b(?:kill|exterminate|expel)\\s+(?:all\\s+)?(?:the\\s+)?(?:hmong|khmer|vietnamese|chinese|thais|burmese|muslims|gays|foreigners|migrants)\\b"
+    ],
+    "lo": ["ພວກຂະແຫຍ", "ພວກແຫຍ", "ໄລ່ພວກຕ່າງດ້າວອອກ", "ຂ້າພວກມົ້ງ"]
+  },
+  "dangerous": {
+    "en": ["how to make a bomb", "how to kill yourself", "how to make meth", "buy drugs here", "buy weapons", "how to poison"],
+    "lo": ["ວິທີຂ້າຕົວຕາຍ", "ຂາຍຢາບ້າ", "ຊື້ຢາບ້າ", "ຂາຍຢາເສບຕິດ", "ວິທີເຮັດລະເບີດ"]
+  },
+  "sexual": {
+    "en": ["porn", "nude", "nudes", "sex video", "xxx", "onlyfans", "sexy girls", "hookup", "escort service"],
+    "lo": ["ໜັງໂປ້", "ຮູບໂປ້", "ຄລິບໂປ້", "ຮູບເປືອຍ", "ບໍລິການທາງເພດ"]
+  },
+  "misinformation": {
+    "en": ["miracle cure", "cures cancer", "doctors hate", "100% proven", "vaccine causes", "5g causes", "forwarded as received"],
+    "lo": ["ຮັກສາມະເຮັງຫາຍ", "ຢາວິເສດຮັກສາທຸກພະຍາດ", "ຮັກສາທຸກພະຍາດ"]
+  },
+  "trafficking_signs": {
+    "en": ["hold your passport", "keep your passport", "take your passport", "hand over your passport", "cross the border secretly", "no passport needed", "no passport required", "illegal crossing"],
+    "lo": ["ເກັບໜັງສືຜ່ານແດນ", "ເກັບພາສປອດ", "ບໍ່ຕ້ອງມີພາສປອດ", "ບໍ່ຕ້ອງມີໜັງສືຜ່ານແດນ", "ຂ້າມແດນແບບລັບ", "ຂ້າມແດນທາງທຳມະຊາດ", "ເຂົ້າເມືອງຜິດກົດໝາຍ"]
+  }
+}

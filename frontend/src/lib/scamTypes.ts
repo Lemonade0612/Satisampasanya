@@ -44,6 +44,16 @@ export const CHECK_LABELS: Record<string, Record<Lang, string>> = {
 };
 export const checkLabel = (key: string, lang: Lang) => CHECK_LABELS[key]?.[lang] ?? key;
 
+// The one-line note under a flagged post, chosen by why it was flagged. Bad words, politics and off-topic are named plainly; anything else reads as a scam warning. // REVIEW-LO
+export function reasonNote(labels: string[] | undefined, lang: Lang): string | null {
+  const has = (...k: string[]) => !!labels?.some(l => k.includes(l));
+  if (has('profanity_only', 'harassment')) return lang === 'lo' ? 'ໂພສນີ້ມີຄຳຫຍາບ ຫຼື ຄຳດູຖູກຄົນອື່ນ. Sati ບໍ່ອະນຸຍາດເນື້ອຫາແບບນີ້.' : 'This post has bad words or insults. Sati does not allow this.';
+  if (has('political_sarcasm', 'satire')) return lang === 'lo' ? 'ໂພສນີ້ເວົ້າເຖິງການເມືອງ ຫຼື ເສຍດສີ. Sati ບໍ່ອະນຸຍາດເນື້ອຫາແບບນີ້.' : 'This post is about politics or satire. Sati does not allow this.';
+  if (has('off_topic')) return lang === 'lo' ? 'ໂພສນີ້ບໍ່ກ່ຽວກັບຄວາມປອດໄພອອນລາຍ ຫຼື ການຫຼອກລວງ.' : 'This post is not about online safety or scams.';
+  if (has('scam_risk', 'phishing', 'impersonation', 'trafficking_recruitment', 'fear_bait', 'misinformation', 'victim_blaming')) return lang === 'lo' ? 'ໂພສນີ້ອາດເປັນການຫຼອກລວງ. ຢ່າໂອນເງິນ ຫຼື ໃຫ້ຂໍ້ມູນສ່ວນຕົວ.' : 'This post may be a scam. Do not send money or personal details.';
+  return null;
+}
+
 // Hashtag text shown on a post. The stored tag may be English or Lao; show it in the interface language.
 const TAG_EXTRA: Record<string, Record<Lang, string>> = {
   OTP: { en: 'OTP', lo: 'OTP' },
@@ -62,7 +72,7 @@ const TAG_INDEX = new Map<string, Record<Lang, string>>();
 for (const l of [...Object.values(TOPIC_LABELS), ...Object.values(TAG_EXTRA)]) { TAG_INDEX.set(l.en, l); TAG_INDEX.set(l.lo, l); }
 export const tagLabel = (tag: string, lang: Lang) => TAG_INDEX.get(tag)?.[lang] ?? tag;
 
-export const scamTypeLabel = (key: string, lang: Lang) => SCAM_TYPES[key]?.[lang] ?? key;
+export const scamTypeLabel = (key: string, lang: Lang) => SCAM_TYPES[key]?.[lang] ?? tagLabel(key, lang);
 
 // Risk shown on a post: a seed example's intended verdict, else what review decided.
 export type Risk = 'red' | 'yellow' | 'green';
@@ -77,7 +87,7 @@ export function postRisk(p: Post): Risk | null {
 export function weeklyTrend(posts: Post[]): { type: string; count: number } | null {
   const weekAgo = Date.now() - 7 * 864e5;
   const counts = new Map<string, number>();
-  for (const p of posts) if (p.scamType && (p.seed || p.example || (p.createdAt ?? 0) >= weekAgo)) counts.set(p.scamType, (counts.get(p.scamType) ?? 0) + 1);
+  for (const p of posts) { const k = p.scamType || p.tags?.[0]; if (k && k !== 'OffTopic' && (p.seed || p.example || (p.createdAt ?? 0) >= weekAgo)) counts.set(k, (counts.get(k) ?? 0) + 1); }
   const top = [...counts].sort((a, b) => b[1] - a[1])[0];
   return top ? { type: top[0], count: top[1] } : null;
 }

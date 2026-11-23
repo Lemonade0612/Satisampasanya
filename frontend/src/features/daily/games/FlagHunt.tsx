@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Check, CheckCheck, Phone } from 'lucide-react';
+import { CheckCheck, ChevronLeft, Video } from 'lucide-react';
 import { haptic } from '../components/ui';
 import { GameShell, MAX_LIVES } from '../components/GameShell';
 import { FeedbackSheet } from '../components/FeedbackSheet';
@@ -55,30 +55,37 @@ export function FlagHunt({ lang, scenarios, onExit, onFinish }: { lang: Lang; sc
 
   return (
     <GameShell lang={lang} name={L(lang, 'ຊອກສັນຍານອັນຕະລາຍ', 'Red-flag hunt')} index={i} total={rounds.length} lives={lives} xp={xp} onExit={onExit} midGame>
-      <div className="h-full overflow-y-auto bg-[#ECE5DD] p-3 grid content-start gap-3">
-        <div className="flex items-center gap-3 rounded-xl bg-[#075E54] text-white px-3 py-2">
-          <span aria-hidden className="w-9 h-9 rounded-full bg-white/25 flex items-center justify-center"><Phone size={18} /></span>
-          <span className="min-w-0"><span className="block font-bold truncate">{r.scenario.contact}</span><span className="block text-[12px] text-white/80">{L(lang, 'ຂໍ້ຄວາມ', 'message')}</span></span>
+      <div className="h-full flex flex-col bg-[#EAE4DC]">
+        <div className="shrink-0 flex items-center gap-2.5 px-3 py-2 bg-white border-b border-[#E5E1DA]">
+          <ChevronLeft size={22} aria-hidden className="text-[#3F4268]" />
+          <span aria-hidden className="flex w-[38px] h-[38px] rounded-full bg-[#F59E0B] text-white text-[13px] font-extrabold items-center justify-center font-[BoonHome,sans-serif]">{r.scenario.contact.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()}</span>
+          <span className="flex-1 min-w-0"><span className="block text-[15px] font-bold truncate font-[BoonHome,sans-serif]">{r.scenario.contact}</span><span className="block text-[12px] text-[#6B6E8F]">{L(lang, 'ຂໍ້ຄວາມ', 'message')}</span></span>
+          <Video size={22} aria-hidden className="text-[#3F4268]" />
         </div>
-        <p role="note" className="mx-auto max-w-[92%] rounded-lg bg-[#FFF4C2] px-3 py-2 text-center text-[13px] leading-snug text-[#5B4B00]">{L(lang, 'ເບີນີ້ບໍ່ຢູ່ໃນລາຍຊື່ຂອງທ່ານ. ຢ່າຮີບເຊື່ອ.', 'This number is not in your contacts. Do not trust it yet.')}</p>
-        <h1 className="px-1 text-[1.125rem] font-bold text-[#14112B] leading-snug">{r.step.prompt[lang]}</h1>
-        <div className="max-w-[94%] rounded-2xl rounded-tl-sm bg-white px-3.5 pt-3 pb-1.5 shadow-sm">
-          <p className="text-[1.125rem] leading-[1.9] text-[#14112B] break-words">
-            {segs.map((s, k) => {
-              const hit = tapped.has(k), missedFlag = checked && s.flag && !hit, greyed = grey.has(k);
-              const cls = hit ? 'bg-[#FCA5A5] text-[#7F1D1D] font-bold' : missedFlag ? 'outline outline-2 outline-[#DC2626] bg-[#FEE2E2]' : greyed ? 'text-[#9CA3AF] bg-[#F3F4F6]' : '';
-              return <span key={k} role="button" tabIndex={checked ? -1 : 0} aria-pressed={hit} onClick={() => tap(k)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(k); } }}
-                className={`rounded px-0.5 py-0.5 box-decoration-clone transition-colors ${checked ? '' : 'cursor-pointer'} ${cls}`}>{s.text[lang]}</span>;
-            })}
-          </p>
-          <p className="mt-1 flex items-center justify-end gap-1 text-[12px] text-[#6B7280]">10:42 <CheckCheck size={14} aria-hidden className="text-[#53BDEB]" /></p>
+        <div className="flex-1 min-h-0 overflow-y-auto px-3 pt-3 pb-4 flex flex-col gap-1.5">
+          <div className="flex items-center gap-2.5 px-3 py-2.5 mb-1.5 rounded-[14px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.06)]">
+            <span className="flex-1 text-[15px] font-bold">{r.step.prompt[lang]}</span>
+            <span className="flex gap-1" aria-hidden>{Array.from({ length: total }, (_, k) => <span key={k} className={`w-2.5 h-2.5 rounded-full ${k < found ? 'bg-[#DC2626]' : 'bg-[#E3E1F0]'}`} />)}</span>
+            <span aria-live="polite" className="text-[15px] font-extrabold text-[#DC2626] font-[BoonHome,sans-serif] tabular-nums">{found}/{total}</span>
+          </div>
+          <span className="self-center px-2.5 py-1 mt-0.5 mb-1.5 rounded-lg bg-white text-[12px] text-[#6B6E8F]">{L(lang, 'ມື້ນີ້', 'Today')}</span>
+          <p role="note" className="self-center max-w-[90%] px-3 py-2 mb-2 rounded-lg bg-[#FFF3C4] text-center text-[12px] leading-[1.5] text-[#6B5A1E]">{L(lang, 'ເບີນີ້ບໍ່ຢູ່ໃນລາຍຊື່ຕິດຕໍ່ຂອງເຈົ້າ', 'This number is not in your contacts')}</p>
+          <div className="max-w-[86%] self-start pt-2 pr-2.5 pb-1.5 pl-3 rounded-[0_12px_12px_12px] bg-white shadow-[0_1px_1px_rgba(0,0,0,0.08)] text-[16px] leading-[1.75]">
+            <p className="break-words">
+              {segs.map((s, k) => {
+                const hit = tapped.has(k), missedFlag = checked && s.flag && !hit, greyed = grey.has(k);
+                const cls = hit ? 'bg-[#FCA5A5] text-[#7F1D1D] font-bold' : missedFlag ? 'outline outline-2 outline-[#DC2626] bg-[#FEE2E2]' : greyed ? 'text-[#9CA3AF] bg-[#F3F4F6] line-through' : '';
+                return <span key={k} role="button" tabIndex={checked ? -1 : 0} aria-pressed={hit} onClick={() => tap(k)} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tap(k); } }}
+                  className={`rounded px-0.5 py-0.5 box-decoration-clone transition-colors ${checked ? '' : 'cursor-pointer'} ${cls}`}>{s.text[lang]}</span>;
+              })}
+            </p>
+            <p className="mt-1 flex items-center justify-end gap-1 text-[11px] text-[#8A8DB0] font-[BoonHome,sans-serif]">09:41 <CheckCheck size={14} aria-hidden className="text-[#53BDEB]" /></p>
+          </div>
+          {grey.size > 0 && <p className="self-center mt-1.5 text-[13px] text-[#6B6E8F]">{L(lang, 'ຄຳທີ່ຂີດທັບ ແມ່ນບໍ່ແມ່ນທຸງແດງ', 'Struck-through words are not red flags')}</p>}
         </div>
-        <div className="flex items-center justify-between gap-3 rounded-2xl bg-white p-3">
-          <span aria-live="polite" className="flex items-center gap-2 text-[1rem] font-extrabold tabular-nums text-[#14112B]">{found}/{total}
-            <span className="flex gap-1.5" aria-hidden>{Array.from({ length: total }, (_, k) => <span key={k} className={`w-3 h-3 rounded-full ${k < found ? 'bg-[#DC2626]' : 'bg-[#D1D5DB]'}`} />)}</span></span>
-          <span className="text-[13px] text-[#5F6390]">{L(lang, 'ແຕະຄຳທີ່ໜ້າສົງໄສ', 'Tap the suspicious words')}</span>
-        </div>
-        {!checked && <button type="button" onClick={check} className="w-full min-h-14 rounded-2xl bg-[#5B21D1] text-white text-[1.125rem] font-bold shadow-[0_5px_0_#3B0E91] active:translate-y-[3px] active:shadow-[0_2px_0_#3B0E91] flex items-center justify-center gap-2"><Check size={20} aria-hidden />{L(lang, 'ກວດຄຳຕອບ', 'Check answers')}</button>}
+        {!checked && <div className="shrink-0 px-3.5 pt-3 pb-4 bg-white border-t border-[#E5E1DA]">
+          <button type="button" onClick={check} className="w-full min-h-[54px] rounded-2xl text-white text-[16px] font-bold flex items-center justify-center gap-2" style={{ background: 'linear-gradient(90deg, #5B21D1, #6E8EF0)', boxShadow: '0 5px 0 #3B0E91' }}>{L(lang, 'ກວດຄຳຕອບ', 'Check answers')}</button>
+        </div>}
       </div>
       {checked && <FeedbackSheet lang={lang} ok={allFound}
         title={allFound ? L(lang, 'ເກັ່ງຫຼາຍ!', 'Well spotted!') : L(lang, `ພົບ ${found} ຈາກ ${total}`, `Found ${found} of ${total}`)}

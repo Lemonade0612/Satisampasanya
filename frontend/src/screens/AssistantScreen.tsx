@@ -1,14 +1,13 @@
-import { ArrowLeft, ArrowDown, ScanSearch, Briefcase, LifeBuoy } from "lucide-react";
-import logoImage from "/images/sati-mark.png";
+import { ArrowLeft, ArrowDown, ArrowUpRight, Camera, ChevronRight, Link2, MessagesSquare, Phone, SquarePen } from "lucide-react";
+const logoImage = "/brand-mark.svg";
 import {useCallback,useEffect,useLayoutEffect,useRef,useState} from 'react';
 import {request} from '../lib/api';
 import {streamAssistant} from '../lib/assistantStream';
 import {verifyLocal} from '../lib/verify';
-import {DailySafetyTip} from '../components/feed/DailySafetyTip';
 import {AssistantMessage,type AssistantResult,type ChatMessage} from '../components/assistant/AssistantMessage';
 import {AssistantComposer,type CheckKind,type AssistantMode} from '../components/assistant/AssistantComposer';
 import {useBand} from '../lib/band';
-import {DT} from '../features/daily/i18n';
+import {TIERS} from '../features/daily/lib/age';
 import type {Lang} from '../types';
 
 const NEAR=120; // px from the bottom that still counts as "reading the latest message"
@@ -16,6 +15,8 @@ const NEAR=120; // px from the bottom that still counts as "reading the latest m
 export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
  const lo=lang==='lo';
  const [text,setText]=useState('');
+ const [image,setImage]=useState<string>();
+ const openAttach=useRef<(()=>void)|null>(null);
  const [kind,setKind]=useState<CheckKind>('text');
  const [mode,setMode]=useState<AssistantMode>('auto');
  const [busy,setBusy]=useState(false);
@@ -56,20 +57,20 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
  // A tile or suggested question fills the composer and sets the mode; the person edits it and sends.
  const prefill=(value:string,nextMode:AssistantMode)=>{setKind('text');setMode(nextMode);setText(value);requestAnimationFrame(()=>{const el=input.current;if(el){el.focus();el.setSelectionRange(value.length,value.length);}});};
  const send=async()=>{
-  const question=text.trim();if(!question||sending.current)return;
+  const question=text.trim(),photo=image;if((!question&&!photo)||sending.current)return;
   sending.current=true;setBusy(true);setError('');
   const selectedKind=kind,id=nextId.current++;
   // Optimistic: the message, the typing dots and (for links, numbers and scam wording) the verdict card show at once.
-  const local=selectedKind==='text'&&mode!=='ask'?verifyLocal(question):undefined;
+  const local=selectedKind==='text'&&mode!=='ask'&&question?verifyLocal(question):undefined;
   const checks=local&&(mode==='check'||local.hasEvidence)?local:undefined;
   nearBottom.current=true;
-  setMessages(all=>[...all,{id,question,checks,text:'',status:'streaming'}]);setText('');
+  setMessages(all=>[...all,{id,question,image:photo,checks,text:'',status:'streaming'}]);setText('');setImage(undefined);
   try{
-   if(selectedKind==='post'){
+   if(selectedKind==='post'&&!photo){
     const result=await request<AssistantResult>('/assistant','POST',{text:question,kind:'post',mode:'check',band});
     patch(id,m=>({...m,status:'done',legacy:result}));setRemaining(r=>({...r,post:result.remaining}));
    }else{
-    await streamAssistant({text:question,mode,kind:'text',band,lang},event=>{
+    await streamAssistant({text:question,image:photo,mode,kind:'text',band,lang},event=>{
      if(event.type==='checks')patch(id,m=>({...m,checks:event.checks,serverChecked:true}));
      else if(event.type==='token')patch(id,m=>({...m,text:m.text+event.text}));
      else if(event.type==='done'){patch(id,m=>({...m,text:event.text,status:'done',fallback:event.fallback,serverChecked:true}));setRemaining(r=>({...r,text:event.remaining}));}
@@ -82,36 +83,45 @@ export function AssistantScreen({lang,onBack}:{lang:Lang;onBack?:()=>void}){
   }finally{sending.current=false;setBusy(false);}
  };
 
- return <section className="flex flex-col h-full max-h-[100dvh] bg-background" style={keyboardH?{height:keyboardH}:undefined}>
-  <header className="shrink-0 px-3 pt-1 pb-2 border-b border-border">
-   <div className="flex items-center gap-2">
-    {onBack&&<button type="button" onClick={onBack} aria-label={lo?'ກັບຄືນ':'Back'} className="min-w-11 min-h-11 flex items-center justify-center"><ArrowLeft size={22}/></button>}
-    <img src={logoImage} alt="" aria-hidden className="w-9 h-9 object-contain shrink-0 bg-transparent"/>
-    <div className="flex-1 min-w-0"><h1 className="font-extrabold text-[1.25rem] leading-tight">{lo?'ຖາມ Sati':'Ask Sati'}</h1>
-     <p className="text-[13px] leading-snug text-muted-foreground font-lao">{lo?'ກວດລິ້ງ ແລະ ຖາມເລື່ອງຄວາມປອດໄພ':'Check links, ask about safety'}</p></div>
-    <span className="text-xs text-muted-foreground tabular-nums shrink-0">{remaining.text}/20 · {remaining.post}/10</span>
-   </div>
+ const caps=[
+  {Icon:Link2,color:'#5B21D1',lo:'ກວດລິ້ງ',en:'Check a link',fill:lo?'ກວດລິ້ງນີ້ໃຫ້ແດ່: ':'Please check this link: ',mode:'check' as AssistantMode},
+  {Icon:MessagesSquare,color:'#2563EB',lo:'ກວດຂໍ້ຄວາມ',en:'Check a message',fill:lo?'ກວດຂໍ້ຄວາມນີ້ໃຫ້ແດ່: ':'Please check this message: ',mode:'check' as AssistantMode},
+  {Icon:Phone,color:'#E11D48',lo:'ກວດເບີໂທ',en:'Check a number',fill:lo?'ກວດເບີໂທນີ້ໃຫ້ແດ່: ':'Please check this phone number: ',mode:'check' as AssistantMode},
+ ];
+ const tries=lo?['ຂໍ້ຄວາມໄດ້ລາງວັນນີ້ ແທ້ບໍ?','ວຽກໄທເງິນເດືອນສູງ ບໍ່ຕ້ອງມີໜັງສືຜ່ານແດນ?','ໂປສເຕີຮັບສະໝັກວຽກນີ້ ແທ້ບໍ?','ຖືກຫຼອກແລ້ວ ຄວນເຮັດແນວໃດ?']:['Is this prize message real?','Thai job, high pay, no passport needed?','Is this job poster real?','I was scammed. What now?'];
+ const bandName=lo?({kids:'ເດັກນ້ອຍ',youth:'ໄວໜຸ່ມ',adult:'ຜູ້ໃຫຍ່',elder:'ຜູ້ສູງອາຍຸ'} as Record<string,string>)[band]:TIERS[band].range;
+ return <section className="flex flex-col h-full max-h-[100dvh] bg-white text-[#14112B]" style={keyboardH?{height:keyboardH}:undefined}>
+  <header className="shrink-0 flex items-center gap-2.5 px-3 py-2 border-b border-[#ECECF4]">
+   {onBack&&<button type="button" onClick={onBack} aria-label={lo?'ກັບ':'Back'} className="w-11 h-11 flex items-center justify-center"><ArrowLeft size={22}/></button>}
+   <img src={logoImage} alt="Sati" className="w-[34px] h-[34px] object-contain shrink-0"/>
+   <div className="flex-1 min-w-0"><h1 className="text-[16px] font-bold leading-tight">{lo?'ຖາມ Sati':'Ask Sati'}</h1>
+    <p className="flex items-center gap-[5px] text-[12px] text-[#5F6390]"><span className="w-[7px] h-[7px] rounded-full bg-[#22C55E]"/>{lo?'ຜູ້ຊ່ວຍຄວາມປອດໄພ':'Safety helper'} · {bandName}</p></div>
+   {messages.length>0&&<button type="button" onClick={()=>{setMessages([]);setError('');}} aria-label={lo?'ແຊັດໃໝ່':'New chat'} className="w-10 h-10 rounded-full bg-[#F3F4F8] text-[#3F4268] flex items-center justify-center"><SquarePen size={18}/></button>}
   </header>
   <div className="relative flex-1 min-h-0">
-   <div ref={list} onScroll={onScroll} data-testid="chat-list" className="h-full overflow-y-auto overscroll-contain px-3 pt-3 pb-4" aria-live="polite">
-    {!messages.length&&<div className="grid gap-3 mb-3">
-     <div className="grid gap-2" role="group" aria-label={lo?'ເລືອກສິ່ງທີ່ຕ້ອງການ':'What do you need?'}>
-      {([
-       {Icon:ScanSearch,lo:'ກວດຂໍ້ຄວາມ ຫຼື ລິ້ງ',en:'Check a message or link',fill:lo?'ກວດຂໍ້ຄວາມ ຫຼື ລິ້ງນີ້ໃຫ້ແດ່: ':'Please check this message or link: ',mode:'check' as AssistantMode},
-       {Icon:Briefcase,lo:'ກວດຂໍ້ສະເໜີວຽກ',en:'Check a job offer',fill:lo?'ກວດຂໍ້ສະເໜີວຽກນີ້ວ່າປອດໄພບໍ: ':'Is this job offer safe? ',mode:'check' as AssistantMode},
-       {Icon:LifeBuoy,lo:'ຖ້າຖືກຫຼອກແລ້ວ ເຮັດແນວໃດ',en:'What to do if scammed',fill:lo?'ຂ້ອຍຄິດວ່າຖືກຫຼອກແລ້ວ ຄວນເຮັດແນວໃດ?':'I think I was scammed. What should I do?',mode:'ask' as AssistantMode},
-      ]).map(t=><button key={t.en} type="button" onClick={()=>prefill(t.fill,t.mode)} className="flex items-center gap-3 rounded-2xl border border-border bg-surface px-4 min-h-14 text-left font-lao active:bg-surface-2">
-       <span aria-hidden className="w-10 h-10 shrink-0 rounded-xl bg-[#EDE9FE] text-[#5B21D1] flex items-center justify-center"><t.Icon size={22}/></span><span className="flex-1 text-[17px] font-bold">{lo?t.lo:t.en}</span></button>)}
+   <div ref={list} onScroll={onScroll} data-testid="chat-list" className="h-full overflow-y-auto overscroll-contain scrollbar-hide px-4 py-5" aria-live="polite">
+    {!messages.length&&<div>
+     <h1 className="mt-3 mb-1.5 text-[24px] leading-[1.35] font-bold">{lo?<>ສະບາຍດີ<br/>ມີຫຍັງໃຫ້ Sati ຊ່ວຍ?</>:<>Hello<br/>What can Sati help with?</>}</h1>
+     <p className="mb-[22px] text-[14px] leading-[1.6] text-[#5F6390]">{lo?'ວາງລິ້ງ, ຂໍ້ຄວາມ ຫຼື ເບີໂທທີ່ສົງໄສ ຫຼື ຖາມຫຍັງກໍໄດ້ກ່ຽວກັບຄວາມປອດໄພອອນລາຍ.':'Paste a suspicious link, message or number, or ask anything about staying safe online.'}</p>
+     <button type="button" onClick={()=>{prefill(lo?'ໂປສເຕີນີ້ ແທ້ ຫຼື ປອມ?':'Is this poster real or fake?','auto');openAttach.current?.();}} className="flex w-full items-center gap-3 mb-2.5 p-3.5 rounded-[20px] text-left text-white" style={{background:'linear-gradient(135deg, #4A16B5, #5B21D1 55%, #6E8EF0)',boxShadow:'0 5px 0 #3B0E91'}}>
+      <span aria-hidden className="flex shrink-0 w-12 h-12 rounded-[14px] bg-white/20 items-center justify-center"><Camera size={22}/></span>
+      <span className="flex-1 min-w-0"><span className="block text-[16px] font-bold">{lo?'ກວດໂປສເຕີ: ແທ້ ຫຼື ປອມ?':'Check a poster: real or fake?'}</span><span className="block text-[13px] leading-[1.4] text-white/85">{lo?'ຖ່າຍຮູບ ຫຼື ອັບໂຫຼດ ໂປສເຕີວຽກ, ໂປຣໂມຊັນ, ແຈ້ງການ':'Take or upload a job poster, promotion or notice'}</span></span>
+      <ChevronRight size={20} aria-hidden className="shrink-0"/>
+     </button>
+     <div className="grid grid-cols-3 gap-2 mb-[26px]" role="group" aria-label={lo?'ເລືອກສິ່ງທີ່ຕ້ອງການ':'What do you need?'}>
+      {caps.map(c=><button key={c.en} type="button" onClick={()=>prefill(c.fill,c.mode)} className="p-[12px_10px] rounded-2xl bg-[#F6F7FC] text-left">
+       <span className="flex w-8 h-8 mb-2 rounded-[10px] bg-white items-center justify-center" style={{color:c.color}}><c.Icon size={16}/></span>
+       <span className="block text-[13px] font-bold">{lo?c.lo:c.en}</span></button>)}
      </div>
-     <div className="flex flex-wrap gap-2" role="group" aria-label={lo?'ຄຳຖາມແນະນຳ':'Suggested questions'}>
-      {(lo?['ວຽກຕ່າງປະເທດທີ່ໃຫ້ເງິນເດືອນສູງ ປອດໄພບໍ?','ເຂົາຂໍ OTP ຂອງຂ້ອຍ ຕ້ອງເຮັດແນວໃດ?','ວິທີກວດວ່າລິ້ງປອມ?','ເຂົາຂໍໜັງສືຜ່ານແດນ ປົກກະຕິບໍ?']:['Is a high-paying job abroad safe?','Someone asked for my OTP. What now?','How do I tell a fake link?','Is it normal to hand over my passport?']).map(q=><button key={q} type="button" onClick={()=>prefill(q,'ask')} className="min-h-11 rounded-full border border-border bg-background px-4 py-2 text-left text-[15px] font-bold text-text font-lao">{q}</button>)}
+     <p className="mb-2.5 text-[12px] font-bold text-[#5F6390]">{lo?'ລອງຖາມ':'Try asking'}</p>
+     <div className="flex flex-col gap-2" role="group" aria-label={lo?'ຄຳຖາມແນະນຳ':'Suggested questions'}>
+      {tries.map(q=><button key={q} type="button" onClick={()=>prefill(q,'ask')} className="flex items-center gap-2.5 min-h-[52px] px-3.5 rounded-[14px] border border-[#ECECF4] bg-white text-[14px] text-left"><span className="flex-1">{q}</span><ArrowUpRight size={16} className="shrink-0 text-[#A3A6C2]"/></button>)}
      </div>
     </div>}
-    <DailySafetyTip lang={lang}/>
-    <div className="mt-3">{messages.map(message=><AssistantMessage key={message.id} message={message} lang={lang}/>)}</div>
+    <div className="flex flex-col gap-3.5">{messages.map(message=><AssistantMessage key={message.id} message={message} lang={lang}/>)}</div>
    </div>
-   {pill&&<button type="button" onClick={()=>toBottom(true)} className="absolute left-1/2 -translate-x-1/2 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 min-h-11 font-bold shadow-lg font-lao"><ArrowDown size={18} aria-hidden/>{lo?'ຂໍ້ຄວາມໃໝ່':'New message'}</button>}
+   {pill&&<button type="button" onClick={()=>toBottom(true)} className="absolute left-1/2 -translate-x-1/2 bottom-3 z-20 inline-flex items-center gap-1.5 rounded-full bg-[#5B21D1] text-white px-4 min-h-11 font-bold shadow-lg"><ArrowDown size={18} aria-hidden/>{lo?'ຂໍ້ຄວາມໃໝ່':'New message'}</button>}
   </div>
-  <AssistantComposer innerRef={composer} inputRef={input} lang={lang} text={text} onText={setText} kind={kind} onKind={setKind} busy={busy} error={error} remaining={remaining[kind]} onSend={()=>void send()} mode={mode} onMode={setMode}/>
+  <AssistantComposer innerRef={composer} inputRef={input} lang={lang} text={text} onText={setText} kind={kind} onKind={setKind} busy={busy} error={error} remaining={remaining[kind]} onSend={()=>void send()} mode={mode} onMode={setMode} image={image} onImage={setImage} openRef={openAttach}/>
  </section>;
 }

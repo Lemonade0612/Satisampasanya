@@ -1,3 +1,4 @@
+import {useEffect,useState} from 'react';
 import type {Lang} from '../../types';
 export type CheckStage='read'|'links'|'patterns'|'verdict';
 const stages=[
@@ -8,7 +9,16 @@ const stages=[
 ];
 export function CheckProgress({stage,done=false,lang}:{stage:CheckStage;done?:boolean;lang:Lang}){
  const index=Math.max(0,stages.findIndex(value=>value.key===stage));
- const percent=done?100:Math.round((index+.5)/stages.length*100);
+ const [creep,setCreep]=useState(0);
+ useEffect(()=>{
+  setCreep(0);
+  if(done)return;
+  const start=Date.now();
+  const timer=window.setInterval(()=>setCreep(1-Math.exp(-(Date.now()-start)/6000)),200);
+  return()=>window.clearInterval(timer);
+ },[stage,done]);
+ // Within a stage, ease toward (but never reach) the next stage's start so the bar keeps moving.
+ const percent=done?100:Math.min(99,Math.round((index+.15+.8*creep)/stages.length*100));
  return <div role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100} aria-label={lang==='lo'?'AI ກຳລັງກວດສອບ':'AI is checking'} className="rounded-xl border border-border p-3">
   <div className="flex justify-between text-sm"><b>{done?(lang==='lo'?'AI ກວດແລ້ວ':'Checked by AI'):(lang==='lo'?'AI ກຳລັງກວດສອບ':'AI is checking')}</b><span>{percent}%</span></div>
   <div className="h-1.5 rounded-full bg-[#e6e3f2] overflow-hidden my-2"><i className="block h-full bg-[#5B2DC8] transition-[width] duration-300" style={{width:percent+'%'}}/></div>

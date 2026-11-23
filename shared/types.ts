@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 //  TYPES
 // ═══════════════════════════════════════════════════════════════════════════════
-export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla" | "rejected";
+import type { ScreeningInfo } from "./screening/types";
+export type PostState = "clean" | "flagged" | "confirmed" | "false" | "sla" | "rejected" | "screening" | "blocked";
 export type ActiveView = "feed" | "explore" | "profile" | "assistant" | "daily";
 export type ProfileTab = "posts" | "topics" | "points";
 export type AuthView = "welcome" | "login" | "register" | "forgot" | "quick";
@@ -108,6 +109,8 @@ export interface Post {
   screeningLogs?: ScreeningLog[];
   aiSeverity?: "none" | "low" | "medium" | "high" | "severe";
   aiFlags?: string[];
+  /** Result of the local screening engine (shared/screening). `screening` above is the server AI check. */
+  localScreening?: ScreeningInfo;
   expertAssigned?: boolean;
   expertReviewDeadline?: number;
   autoUnlockTimer?: number;

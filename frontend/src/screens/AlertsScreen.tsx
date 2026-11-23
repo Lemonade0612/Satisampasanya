@@ -22,7 +22,7 @@ function shortTime(ts: number, lang: Lang, now: number) {
   if (h < 24) return lo ? `${h} ຊມ` : `${h}h`;
   const d = Math.floor(h / 24);
   if (d < 7) return lo ? `${d} ມື້` : `${d}d`;
-  return new Date(ts).toLocaleDateString(lo ? 'lo-LA' : 'en-US', { day: 'numeric', month: 'short' });
+  { const d = new Date(ts); return lo ? `${d.getDate()} ${['ມັງກອນ','ກຸມພາ','ມີນາ','ເມສາ','ພຶດສະພາ','ມິຖຸນາ','ກໍລະກົດ','ສິງຫາ','ກັນຍາ','ຕຸລາ','ພະຈິກ','ທັນວາ'][d.getMonth()]}` : d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' }); }
 } // REVIEW-LO
 
 export function AlertsScreen({lang,alerts,onMarkRead,onMarkAllRead,onClose,onOpenPost,onOpenSettings}: {lang:Lang;alerts:Notification[];onMarkRead:(id:string)=>Promise<void>;onMarkAllRead:()=>Promise<void>;onClose:()=>void;onOpenPost:(id:string)=>void;onOpenSettings:()=>void}) {

@@ -102,7 +102,7 @@ export function BandSheet({ lang, onClose, onSaved }: { lang: Lang; onClose?: ()
         role="dialog" aria-modal="true" aria-label={d.age_title} onClick={e => e.stopPropagation()} onSubmit={e => { e.preventDefault(); void save(); }}>
         <div className="flex items-start justify-between gap-2">
           <div><h3 className="font-extrabold text-xl">{d.age_title}</h3><p className="text-sm text-muted-foreground">{account ? t.savedAccount : t.savedPhone}</p></div>
-          {onClose && <button type="button" onClick={onClose} aria-label="Close" className="w-10 h-10 shrink-0 rounded-full bg-muted flex items-center justify-center"><X size={18} /></button>}
+          {onClose && <button type="button" onClick={onClose} aria-label={lang === 'lo' ? 'ປິດ' : 'Close'} className="w-10 h-10 shrink-0 rounded-full bg-muted flex items-center justify-center"><X size={18} /></button>}
         </div>
         <BandChooser lang={lang} value={picked} onPick={b => { setPicked(b); setError(''); }} account={account} />
         {needsPassword && <label className="grid gap-1 text-sm font-semibold">{t.password}

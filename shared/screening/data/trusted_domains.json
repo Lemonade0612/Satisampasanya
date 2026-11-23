@@ -1,0 +1,6 @@
+{
+  "_note": "A link to these = source_link_provided (positive). Anything else is neutral; shorteners / http:// / lookalikes => suspicious_link.",
+  "trusted": ["gov.la", "laopdr.gov.la", "mofa.gov.la", "molsw.gov.la", "kpl.gov.la", "laophattana.com", "vientianetimes.org.la", "laotiantimes.com", "rfa.org", "unodc.org", "iom.int", "unicef.org", "ilo.org", "who.int", "ecpat.org", "vfi.org"],
+  "shorteners": ["bit.ly", "tinyurl.com", "t.co", "goo.gl", "cutt.ly", "is.gd", "shorturl.at", "rb.gy", "s.id", "short.link"],
+  "suspicious_words_in_domain": ["free-money", "claim-prize", "gift", "bonus", "win", "verify-account", "login-", "secure-"]
+}

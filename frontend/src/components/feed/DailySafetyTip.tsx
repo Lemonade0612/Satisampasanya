@@ -35,7 +35,7 @@ export function DailySafetyTip({ lang }: { lang: Lang }) {
   const pool = filterByBand(CARDS, useBand());
   const c = pool[dayIndex(pool.length)];
   // Answered on an earlier visit today: stay hidden until tomorrow's card.
-  const [answeredBefore] = useState(() => load<{ day: string } | null>(ANSWER, null)?.day === dayKey());
+  const answeredBefore = false; // Show every visit; it hides after the reader answers.
   const [guess, setGuess] = useState<boolean | null>(null);
   const [hidden, setHidden] = useState(false);
   const answer = (g: boolean) => { setGuess(g); save(ANSWER, { day: dayKey(), guess: g }); };
@@ -47,17 +47,17 @@ export function DailySafetyTip({ lang }: { lang: Lang }) {
     <aside className="rounded-2xl bg-tint-purple-bg p-4 grid gap-2">
       <div className="flex items-center gap-2">
         <img src="/brand-mark.svg" alt="" className="w-5 h-5 shrink-0" />
-        <p className="flex-1 min-w-0 truncate whitespace-nowrap text-base font-bold text-primary">{lo ? 'ແທ້ ຫຼື ປອມ? ປະຈຳວັນ' : "Today's fact or fake?"}</p>
+        <p className="flex-1 min-w-0 truncate whitespace-nowrap text-[16.5px] font-bold text-primary">{lo ? 'ແທ້ ຫຼື ປອມ? ປະຈຳວັນ' : "Today's fact or fake?"}</p>
         {guess !== null && <span className="shrink-0 whitespace-nowrap text-xs font-bold text-muted-foreground">{lo ? 'ອັນໃໝ່ມື້ອື່ນ' : 'New one tomorrow'}</span>}
         {guess !== null && <button type="button" onClick={() => setHidden(true)} aria-label={lo ? 'ປິດ' : 'Close'} className="shrink-0 w-11 h-11 -my-2 -mr-2 flex items-center justify-center text-muted-foreground"><X size={18} aria-hidden /></button>}
       </div>
-      <p className="text-[15px] font-lao leading-relaxed font-medium">{c.q[lo]}</p>
+      <p className="text-[14.5px] font-lao leading-relaxed">{c.q[lo]}</p>
       {guess === null
         ? <div className="flex gap-2">
-            <button onClick={() => answer(true)} className="rounded-full border border-border bg-card h-11 flex-1 max-w-none text-sm font-bold hover:border-primary">{lo ? 'ແທ້' : 'Fact'}</button>
-            <button onClick={() => answer(false)} className="rounded-full border border-border bg-card h-11 flex-1 max-w-none text-sm font-bold hover:border-primary">{lo ? 'ປອມ' : 'Fake'}</button>
+            <button onClick={() => answer(true)} className="rounded-full border-0 bg-white h-11 flex-1 max-w-none text-[14.5px] font-bold hover:border-primary">{lo ? 'ແທ້' : 'Fact'}</button>
+            <button onClick={() => answer(false)} className="rounded-full border-0 bg-white h-11 flex-1 max-w-none text-[14.5px] font-bold hover:border-primary">{lo ? 'ປອມ' : 'Fake'}</button>
           </div>
-        : <p className={`rounded-xl p-2 text-base font-lao flex gap-2 ${right ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100' : 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'}`}>
+        : <p className={`rounded-xl p-2 text-[14.5px] font-lao flex gap-2 ${right ? 'bg-emerald-50 text-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-100' : 'bg-amber-50 text-amber-900 dark:bg-amber-950/40 dark:text-amber-100'}`}>
             {right ? <CheckCircle2 size={16} className="shrink-0 mt-0.5" /> : <XCircle size={16} className="shrink-0 mt-0.5" />}
             <span>{c.why[lo]}</span>
           </p>}

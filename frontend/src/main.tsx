@@ -12,9 +12,3 @@ createRoot(document.getElementById('root')!).render(aboutAi ? <AboutAi /> : <App
 if (import.meta.env.PROD && !Capacitor.isNativePlatform() && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => { /* unsupported or blocked */ }); });
 }
-
-// On phones the on-screen keyboard can cover the field being typed in: bring it back into view after the keyboard opens.
-document.addEventListener('focusin', event => {
-  const el = event.target;
-  if (el instanceof HTMLTextAreaElement || (el instanceof HTMLInputElement && !['checkbox', 'radio', 'button', 'submit'].includes(el.type))) setTimeout(() => el.scrollIntoView({ block: 'center', behavior: 'smooth' }), 320);
-});

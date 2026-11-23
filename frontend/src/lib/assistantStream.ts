@@ -7,7 +7,7 @@ export type StreamEvent =
   | { type: 'done'; text: string; fallback: boolean; remaining: number; language: 'lo' | 'en' };
 
 // POST /assistant/stream: newline-delimited JSON events. onEvent is called for each one as it arrives.
-export async function streamAssistant(body: { text: string; mode: string; kind: string; band: string; lang: string }, onEvent: (e: StreamEvent) => void, signal?: AbortSignal) {
+export async function streamAssistant(body: { text: string; image?: string; mode: string; kind: string; band: string; lang: string }, onEvent: (e: StreamEvent) => void, signal?: AbortSignal) {
   let response: Response;
   try { response = await fetch(API_BASE + '/assistant/stream', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(body) }); }
   catch { throw new ApiError('Cannot reach the service.', 0); }

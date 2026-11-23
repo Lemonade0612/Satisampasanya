@@ -48,7 +48,7 @@ export function AboutAi() {
       <div className="mx-auto max-w-2xl px-5 py-6 text-[18px] leading-[1.7]">
         <div className="flex items-center justify-between gap-3 mb-6">
           <a href="/" className="font-bold text-primary underline">← {t.back}</a>
-          <div role="group" aria-label="Language" className="inline-flex rounded-full border border-border p-0.5">
+          <div role="group" aria-label={lang === 'lo' ? 'ພາສາ' : 'Language'} className="inline-flex rounded-full border border-border p-0.5">
             {(['en', 'lo'] as const).map(l => <button key={l} type="button" aria-pressed={lang === l} onClick={() => pick(l)} className={`px-3 min-h-9 rounded-full text-sm font-bold ${lang === l ? 'bg-primary text-primary-foreground' : ''}`}>{l === 'en' ? 'EN' : 'ລາວ'}</button>)}
           </div>
         </div>

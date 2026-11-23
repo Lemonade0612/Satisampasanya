@@ -1,5 +1,7 @@
 import {PeoplePanel,type PeopleTarget} from './PeoplePanel';
 import { PostScreening } from "./PostScreening";
+import { ScreeningBanner } from "../screening/ScreeningBanner";
+import { isFrozen } from "../../lib/localScreening";
 import { riskLevel, YellowBanner, RedOverlay, ReportButton } from "./RiskFlag";
 import { StatusPill, STATUS, statusOf } from "./colorCode";
 import { openProfile } from "../../lib/profileNav";
@@ -74,6 +76,9 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
     setShowAlt(true);
   };
   const [why, setWhy] = useState(false);
+  // Local screening banner for screening / flagged / false / sla posts. Frozen posts take no likes, comments, reposts or shares.
+  const showLocal = ["screening", "flagged", "false", "sla"].includes(post.state) && (!!post.localScreening || !!post.isDemo || (!post.check && !post.seed));
+  const frozen = isFrozen(post);
   const kind = typeOf(post), media = mediaOf(post), source = sourceOf(post);
   const tips = kind === "poster" && !translated ? listItems(rawContent) : { intro: "", items: [] as string[] };
   const asList = tips.items.length >= 3;
@@ -151,10 +156,10 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
 
   if (hidden) return null;
   return (
-    <article ref={setCard} className={`border p-4 rounded-[20px] overflow-hidden ${red ? "bg-[#F1F1F5] border-[#E0E1EB]" : "bg-white border-[#ECECF4]"}`}>
+    <article ref={setCard} aria-disabled={frozen || undefined} className={`border p-4 rounded-[20px] overflow-hidden ${red ? "bg-[#F1F1F5] border-[#E0E1EB]" : "bg-white border-[#ECECF4]"} ${frozen ? "opacity-75" : ""}`}>
       <div>
       {post.repostOf&&<p className="mb-2.5 inline-flex max-w-full items-center gap-2 rounded-full bg-[#F1ECFE] border border-[#DDD3FB] pl-1 pr-3 py-1 text-[13px] text-[#5B21D1]"><span aria-hidden className="flex shrink-0 w-6 h-6 rounded-full bg-[#5B21D1] text-white items-center justify-center"><Repeat2 size={14} strokeWidth={2.5}/></span><b className="font-extrabold text-[#14112B] truncate font-[BoonHome,sans-serif]">{post.author.name}</b><span className="font-bold whitespace-nowrap">{lo?'ແບ່ງປັນຕໍ່':'reposted'}</span></p>}
-      {!compact && !post.check && !post.seed && !post.isDemo && getStateBanner()}
+      {!compact && (showLocal ? <ScreeningBanner post={post} lang={lang} /> : !post.check && !post.seed && !post.isDemo && getStateBanner())}
       <div className="flex gap-2.5 items-center relative">
         <button type="button" tabIndex={-1} aria-hidden={!profileTarget} onClick={openAuthor} className="w-10 h-10 shrink-0 rounded-full overflow-hidden flex items-center justify-center text-white text-sm font-bold" style={{ background: red ? "#9CA3AF" : post.author.color }}>{post.org?.logoUrl ? <img src={post.org.logoUrl} alt="" className="w-full h-full object-cover" /> : post.author.initials}</button>
         <div className="flex-1 min-w-0">
@@ -192,7 +197,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       </div>}
       <div>
       {source && kind !== "link" && <SourceLink url={source} lang={lang} />}
-      {(risky || safe) && (() => { const k = statusOf(post), st = STATUS[k], Icon = st.Icon, ring = { safe: "#BBF7D0", check: "#FDE68A", warn: "#FECACA", pending: "#E6E6F0" }[k], fg = { safe: "#166534", check: "#92400E", warn: "#991B1B", pending: "#3F4268" }[k], box = { safe: "#22A06B", check: "#E8A33D", warn: "#E5484D", pending: "#8B8FB0" }[k], reasons = k !== "safe" ? flagReasons(post, lang) : []; return (
+      {(risky || safe) && !showLocal && (() => { const k = statusOf(post), st = STATUS[k], Icon = st.Icon, ring = { safe: "#BBF7D0", check: "#FDE68A", warn: "#FECACA", pending: "#E6E6F0" }[k], fg = { safe: "#166534", check: "#92400E", warn: "#991B1B", pending: "#3F4268" }[k], box = { safe: "#22A06B", check: "#E8A33D", warn: "#E5484D", pending: "#8B8FB0" }[k], reasons = k !== "safe" ? flagReasons(post, lang) : []; return (
         <div role={k === "warn" ? "alert" : undefined} className="mt-3 rounded-2xl border p-3" style={{ background: st.tint, borderColor: ring, color: fg }}>
           <div className="flex items-center gap-3">
             <span aria-hidden className="flex shrink-0 w-10 h-10 rounded-xl items-center justify-center text-white" style={{ background: box }}><Icon size={22} strokeWidth={2.25} /></span>
@@ -208,7 +213,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
             <div className="mt-2 text-[#14112B] text-sm"><PostScreening post={post} lang={lang}/></div>
           </div>}
         </div>); })()}
-      {!risky && !safe && !compact && <PostScreening post={post} lang={lang}/>}
+      {!risky && !safe && !compact && !showLocal && <PostScreening post={post} lang={lang}/>}
       {post.points !== undefined && post.state === "confirmed" && (
         <div className="flex items-center gap-3 mt-2 text-[13px] text-text-muted">
           <span className="flex items-center gap-1 text-success"><Zap size={12} aria-hidden /> {post.points} {t.verified_pts}</span>
@@ -217,7 +222,7 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
       )}
       {shareError&&<p role="alert" className="text-sm text-danger">{shareError}</p>}
       </div>
-      {red ? <p className="mt-3 pt-3 border-t border-[#E0E1EB] flex items-center gap-1.5 text-[13px] text-[#5F6390]"><Lock size={14} aria-hidden className="shrink-0" />{lo ? "ປິດການກົດຖືກໃຈ, ຄອມເມັນ ແລະ ແບ່ງປັນ ສຳລັບໂພສທີ່ຖືກເຕືອນ" : "Likes, comments and sharing are off for warned posts"}</p> : <div className="flex justify-around items-center -mb-2 mt-2 text-[#5F6390]">
+      {red || frozen ? <p className="mt-3 pt-3 border-t border-[#E0E1EB] flex items-center gap-1.5 text-[13px] text-[#5F6390]"><Lock size={14} aria-hidden className="shrink-0" />{lo ? "ປິດການກົດຖືກໃຈ, ຄອມເມັນ, ແບ່ງປັນຕໍ່ ແລະ ແບ່ງປັນ ສຳລັບໂພສທີ່ຖືກພັກໄວ້ ຫຼື ຖືກເຕືອນ" : "Likes, comments, reposts and sharing are off for held or warned posts"}</p> : <div className="flex justify-around items-center -mb-2 mt-2 text-[#5F6390]">
         <button type="button" disabled={post.frozen} aria-pressed={liked} aria-label={lo?'ມັກ':'Like'} onClick={() => onLike(post.id)} className={`${abtn} ${liked?'text-[#E11D48]':''}`}><Heart size={18} aria-hidden fill={liked?'currentColor':'none'} /><span className="font-[BoonHome,sans-serif]">{post.likes}</span></button>
         {!readOnly&&<button type="button" disabled={post.frozen} aria-label={lo?'ຄຳເຫັນ':'Comment'} onClick={() => onOpenComments(post.id)} className={abtn}><MessageCircle size={18} aria-hidden /><span className="font-[BoonHome,sans-serif]">{post.comments}</span></button>}
         <button type="button" disabled={post.frozen} aria-pressed={warned} onClick={() => onWarnedMe(post.id)} className={`${abtn} ${warned?'text-[#5B21D1] font-bold':''}`}>{warned?<ShieldCheck size={18} aria-hidden />:<Shield size={18} aria-hidden />}{lo?'ມີປະໂຫຍດ':'Helpful'} {post.communityRanking?.eligible ? post.communityRanking.score : post.warnedMe}</button>

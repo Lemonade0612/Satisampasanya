@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../lib/api';
 import { mixPage } from '../lib/feedMix';
+import { typeOf } from '../components/feed/PostMedia';
 import type { Post } from '../types';
 
 type Tab = 'foryou' | 'following';
@@ -35,7 +36,12 @@ export function useFeedPages(tab: Tab, band: string, enabled: boolean, userId?: 
     const g = ++gen.current;
     if (manual) setRefreshing(true);
     try {
-      const r = await api.feed({ tab });
+      let r = await api.feed({ tab, limit: 30 });
+      // "For you" leads with members' posts, picture posts first, so make sure the first screen has some: read up to two more pages when none arrived yet.
+      for (let extra = 0; tab === 'foryou' && extra < 2 && r.nextCursor && !r.posts.some(p => !p.org && typeOf(p) !== 'text'); extra++) {
+        const more = await api.feed({ tab, cursor: r.nextCursor, limit: 30 });
+        r = { ...r, posts: [...r.posts, ...more.posts.filter(p => !r.posts.some(q => q.id === p.id))], nextCursor: more.nextCursor };
+      }
       if (g !== gen.current) return;
       setItems(r.posts); setCursor(r.nextCursor); newest.current = r.newestId; setPending([]); setStatus('ok'); setError('');
       writeCache(key, r.posts);

@@ -1,4 +1,4 @@
-html, body, #root { width: 100%; max-width: 100vw; height: 100%; overflow: hidden; }
+html, body, #root { width: 100%; height: 100%; overflow: hidden; }
 body { -webkit-text-size-adjust: 100%; overscroll-behavior: none; }
 .app-shell { height: var(--app-height, 100dvh); }
 .phone-modal { height: var(--app-height, 100dvh); max-width: 28rem; margin-inline: auto; }
@@ -18,8 +18,8 @@ input, textarea { scroll-margin-block: 80px; }
 .feed-tabs button { scroll-snap-align: start; }
 .font-lao { line-height: 1.7; }
 
-.feed-tabs button { font-size: 15px; }
-@media (max-width: 360px) { .feed-tabs button { font-size: 13px; } }
+.feed-tabs button { font-size: 16px; }
+@media (max-width: 360px) { .feed-tabs button { font-size: 14px; } }
 
 html, body, #root { background: #fff; }
 html.dark, html.dark body, html.dark #root { background: #181B22; }
@@ -32,3 +32,11 @@ html.dark, html.dark body, html.dark #root { background: #181B22; }
 @media (prefers-reduced-motion: reduce) { .alert-banner, .badge-pop { animation: none; } }
 /* Elders' larger-text option (toggled in the feed header): every rem-based size grows together. */
 html.sati-large-text { font-size: calc(var(--font-size, 16px) * 1.15); }
+
+body[data-in-game] nav[data-app-nav] { display: none; }
+
+/* Lao text: 16px with generous line spacing so tall vowels and tone marks never touch the line above. Headings (18px+) keep their size. */
+html[lang="lo"] body { font-size: 16px; line-height: 1.85; }
+html[lang="lo"] :is(.text-xs, .text-sm, .text-base, .text-\[12px\], .text-\[13px\], .text-\[13\.5px\], .text-\[14px\], .text-\[14\.5px\], .text-\[15px\], .text-\[16px\], .text-\[17px\]) { font-size: 16px; }
+html[lang="lo"] :is(p, li, .text-\[16px\], .text-\[15px\]) { line-height: 1.8; }
+html[lang="lo"] .feed-tabs button { font-size: 16px; }

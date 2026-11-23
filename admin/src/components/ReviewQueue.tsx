@@ -5,6 +5,7 @@ import {useLang,useT,ago,fullDate,waitLabel} from '../i18n';
 import {ModerationLabels} from './ModerationLabels';
 import {Highlighted} from './NeedsEyesFirst';
 import {ReviewDialog} from './ReviewDialog';
+import {exportOverrides,overrideCount} from '../trainingStore';
 import {Select,SearchField,FilterTabs,Pager} from './ui';
 
 type Filter='all'|'red'|'yellow'|'breach';
@@ -21,7 +22,7 @@ export function ReviewQueue({posts,onReviewed,canReview=true}:{posts:AdminPost[]
  const visible=queue.slice(page*size,(page+1)*size);
  const tabs=([['all',t.states.all],['red',t.red],['yellow',t.watch],['breach',t.breach]] as const).map(([key,label])=>({key:key as Filter,label,count:all.filter(p=>match(p,key)).length,tone:key==='red'?'red' as const:key==='yellow'?'watch' as const:undefined}));
  return <section className="sd-card sd-table-card">
-  <div className="sd-card-head"><div><h2>{t.queueHead} <span className="sd-count-badge mono">{formatCount(posts.filter(needsReview).length)}</span></h2><p>{t.queueSub}</p></div></div>
+  <div className="sd-card-head"><div><h2>{t.queueHead} <span className="sd-count-badge mono">{formatCount(posts.filter(needsReview).length)}</span></h2><p>{t.queueSub}</p></div>{overrideCount()>0&&<button className="sd-btn small" onClick={exportOverrides}>Export training data ({overrideCount()})</button>}</div>
   <FilterTabs label={t.queue} value={filter} onChange={f=>{setFilter(f);setPage(0);}} items={tabs}/>
   <div className="sd-toolbar">
    <SearchField value={search} onChange={v=>{setSearch(v);setPage(0);}} placeholder={t.searchQueue}/>

@@ -37,6 +37,7 @@ export const T = {
     bio_ph: "Write your bio...", social_coming_soon: "Social login coming soon",
     reply_ph: "Write a reply...", no_replies: "No replies yet — be the first to respond.",
     banner_review_title: "Under Expert Review", banner_false_title: "Confirmed False",
+    banner_review_body: "AI was not sure, so an expert will check this post within 48 hours.",
     banner_correction: "Correction: ", banner_sla: "Not reviewed in time — fully unlocked, no verified points",
     warned_me: "Warned me", verified_pts: "verified points", featured_bonus: "Featured bonus",
     news_label: "News", alerts_title: "Alerts", alerts_mark_all: "Mark all read",
@@ -92,6 +93,7 @@ export const T = {
     bio_ph: "ຂຽນແນະນຳຕົວສັ້ນໆ...", social_coming_soon: "ກຳລັງມາໄວໆນີ້",
     reply_ph: "ຂຽນຄຳຕອບ...", no_replies: "ຍັງບໍ່ມີຄຳຕອບ — ມາເປັນຄົນທຳອິດເລີຍ.",
     banner_review_title: "ກຳລັງລໍຖ້າຜູ້ຊ່ຽວຊານກວດສອບ",
+    banner_review_body: "AI ບໍ່ໝັ້ນໃຈ ຈຶ່ງສົ່ງໃຫ້ຜູ້ຊ່ຽວຊານກວດສອບພາຍໃນ 48 ຊົ່ວໂມງ.", // REVIEW-LO
     banner_false_title: "ຢືນຢັນແລ້ວວ່າຂໍ້ມູນບໍ່ຖືກຕ້ອງ",
     banner_correction: "ຄຳແກ້ໄຂ: ",
     banner_sla: "ບໍ່ໄດ້ຮັບການກວດສອບທັນເວລາ — ເປີດໂພສໃຫ້ເບິ່ງໄດ້ແລ້ວ ແຕ່ບໍ່ໄດ້ຄະແນນຢືນຢັນ",

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlertTriangle, ExternalLink, Phone, Play } from "lucide-react";
 import { openExternal } from "../../lib/external";
 import { HOTLINES } from "../../lib/hotlines";
@@ -43,12 +43,25 @@ export function VideoPlayer({ url, embedUrl, poster, title, lang, sourceName, co
   const lo = lang === "lo";
   const source = parseVideoUrl(url, embedUrl);
   const [started, setStarted] = useState(false);
+  const box = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
   const canEmbed = source.kind !== "link" && !failed;
   const open = () => void openExternal(url);
+  // Without a content warning, a Facebook or YouTube video loads its own player as the card scrolls near the screen, so the
+  // viewer sees the real first frame as the preview (nothing plays until they press play inside it).
+  const livePreview = !contentWarning && (source.kind === "facebook" || source.kind === "youtube");
+  useEffect(() => {
+    const el = box.current;
+    if (!livePreview || started || !el) return;
+    if (typeof IntersectionObserver === "undefined") { setStarted(true); return; }
+    const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { setStarted(true); io.disconnect(); } }, { rootMargin: "200px" });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [livePreview, started]);
+  const hue = [...(sourceName || title)].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 360, 7);
 
   return <div className="rounded-2xl overflow-hidden border border-border bg-background">
-    <div className="relative aspect-video bg-black">
+    <div ref={box} className="relative aspect-video bg-black">
       {started && canEmbed ? (
         source.kind === "file"
           ? <video className="absolute inset-0 w-full h-full" src={source.src} poster={poster} controls playsInline preload="metadata" onError={() => setFailed(true)} aria-label={title} />
@@ -56,7 +69,10 @@ export function VideoPlayer({ url, embedUrl, poster, title, lang, sourceName, co
               allow="autoplay; encrypted-media; picture-in-picture; fullscreen" sandbox="allow-scripts allow-same-origin allow-presentation allow-popups" />
       ) : <>
         {poster && <img src={poster} alt="" referrerPolicy="no-referrer" loading="lazy" className={`absolute inset-0 w-full h-full object-cover ${contentWarning && !started ? "blur-md scale-105" : ""}`} onError={e => { e.currentTarget.style.display = "none"; }} />}
-        {!poster && <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-[#1b1340] to-[#4a2fd0]" />}
+        {!poster && <div aria-hidden className="absolute inset-0" style={{ background: `linear-gradient(135deg, hsl(${hue} 55% 18%), hsl(${(hue + 40) % 360} 60% 34%))` }}>
+          <span className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-semibold text-white">{source.kind === "facebook" ? "Facebook" : source.kind === "youtube" ? "YouTube" : (lo ? "ວິດີໂອ" : "Video")} · {lo ? "ວິດີໂອ" : "Video"}</span>
+          <span className="absolute left-3 bottom-3 text-[13px] font-semibold text-white/80">{sourceName}</span>
+        </div>}
         <div className="absolute inset-0 bg-black/45 flex flex-col items-center justify-center gap-3 p-4 text-center text-white">
           {contentWarning && !started && <p role="note" className="flex items-start gap-2 text-left text-[13px] leading-snug max-w-[34ch]"><AlertTriangle size={18} aria-hidden className="shrink-0 mt-0.5 text-warning-icon" /><span>{lo ? WARN.lo : WARN.en}</span></p>}
           {source.kind === "link" || failed

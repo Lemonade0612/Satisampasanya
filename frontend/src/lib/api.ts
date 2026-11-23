@@ -3,8 +3,7 @@ import type {CheckStage} from '../components/safety/CheckProgress';
 import type { CurrentUser, Post, PostDraft, Comment, Notification } from '../types';
 import { getBand } from './band';
 
-// Native shells: the iOS Simulator reaches the Mac at localhost; the Android emulator reaches it at 10.0.2.2. VITE_API_URL overrides both.
-export const API_BASE = import.meta.env.VITE_API_URL || (Capacitor.isNativePlatform() ? (Capacitor.getPlatform() === 'android' ? 'http://10.0.2.2:3001/api' : 'http://localhost:3001/api') : '/api');
+export const API_BASE = import.meta.env.VITE_API_URL || (Capacitor.isNativePlatform() ? 'http://127.0.0.1:3001/api' : '/api');
 const TOKEN_KEY = 'sati-session';
 // Email accounts keep the session for this tab only. Quick accounts (nickname + optional PIN) stay signed in
 // on this phone, because many of those users have no password to type again.

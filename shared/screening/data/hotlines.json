@@ -1,0 +1,11 @@
+{
+  "_note": "Numbers allowed in posts (not personal info). Verify each with official sources before launch.",
+  "allowed_numbers": ["1300", "1362", "1190", "1191", "1195", "191", "1195"],
+  "labels": {
+    "1300": "Lao Women's Union / anti-trafficking & violence hotline",
+    "1362": "Lao child helpline",
+    "1191": "Police",
+    "1195": "Ambulance",
+    "1190": "Fire"
+  }
+}

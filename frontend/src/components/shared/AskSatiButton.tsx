@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import type { Lang } from "../../types";
 
 // Floating "Ask Sati" pill: right 16px, 16px above the 76px nav. Scroll areas pad their bottom by ASK_SATI_PAD.
-export const ASK_SATI_PAD = "pb-32";
+export const ASK_SATI_PAD = "pb-40";
 export function AskSatiButton({ onClick, lang }: { onClick: () => void; lang: Lang }) {
   return (
     <button type="button" onClick={onClick}

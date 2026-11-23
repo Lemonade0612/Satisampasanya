@@ -9,10 +9,10 @@ if(args.includes('--help')) {
   console.log('Usage: npm run ios:live [-- --target DEVICE_ID --url http://127.0.0.1:5173]\n       npm run ios:run [-- --target DEVICE_ID]\nUses xcodebuild and simctl directly with Device Hub.');
   process.exit(0);
 }
-const live=args.includes('--live');
+const live=args.includes('--live'), fast=args.includes('--fast');
 let target, url='http://127.0.0.1:5173';
 for(let i=0;i<args.length;i++) {
-  if(args[i]==='--live')continue;
+  if(args[i]==='--live'||args[i]==='--fast')continue;
   if(['--target','--url'].includes(args[i])&&args[i+1]) {
     if(args[i]==='--target')target=args[++i];else url=args[++i];
   } else {console.error(`Unknown or incomplete option: ${args[i]}. Use --help.`);process.exit(1);}
@@ -36,7 +36,9 @@ try {
   if(!device)throw new Error('Simulator not found. Start your iPhone in Device Hub, or pass --target DEVICE_ID.');
   if(device.state!=='Booted')run('xcrun',['simctl','boot',device.udid]);
   run('xcrun',['simctl','bootstatus',device.udid,'-b']);
-  run('npm',['run','ios:sync']);
+  // --fast: web code only changed, so skip icon check and plugin sync (cap copy just copies the built web files).
+  if(fast){run('npm',['run','build']);run('npx',['cap','copy','ios']);}
+  else run('npm',['run','ios:sync']);
   configPath='ios/App/App/capacitor.config.json';
   original=readFileSync(configPath,'utf8');
   const config=JSON.parse(original);

@@ -90,15 +90,15 @@ export function LinkDetective({ lang, onExit, onFinish }: { lang: Lang; onExit: 
 
   return (
     <GameShell lang={lang} name={L(lang, 'ນັກສືບລິ້ງ', 'Link Detective')} index={i} total={rounds.length} lives={lives} xp={xp} onExit={onExit} midGame>
-      <div className="h-full overflow-y-auto p-4 grid gap-4 content-start">
-        <h1 className="text-[1.375rem] leading-snug font-extrabold">{r.kind === 'binary' ? L(lang, 'ລິ້ງນີ້ແທ້ ຫຼື ປອມ?', 'Is this link real or fake?') : L(lang, r.c.prompt_lo, r.c.prompt_en)}</h1>
+      <div className="h-full overflow-y-auto px-4 pt-[18px] pb-4 grid gap-3.5 content-start">
+        <h1 className="text-[21px] leading-[1.4] font-bold">{r.kind === 'binary' ? L(lang, 'ລິ້ງນີ້ແທ້ ຫຼື ປອມ?', 'Is this link real or fake?') : L(lang, r.c.prompt_lo, r.c.prompt_en)}</h1>
         <div key={i} className="daily-in relative">
           {res?.ok && combo >= STREAK_CONFETTI && <Burst />}
           {r.kind === 'binary' && <>
             <BrowserFrame><AddressBar url={r.link.url} mark={picked !== null ? mark!.part : undefined} tone={mark?.tone} /><div aria-hidden className="grid gap-2"><span className="h-3 w-2/3 rounded bg-[#ECECF4]" /><span className="h-3 w-full rounded bg-[#ECECF4]" /><span className="h-3 w-5/6 rounded bg-[#ECECF4]" /></div></BrowserFrame>
             {picked === null && <div className="mt-4 grid grid-cols-2 gap-3">
-              <button type="button" onClick={() => answer(false)} className="rounded-2xl bg-[#DC2626] text-white font-bold text-[1.125rem] shadow-[0_5px_0_#991B1B] min-h-16 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#991B1B]"><Flag size={20} aria-hidden />{L(lang, 'ປອມ', 'Fake')}</button>
-              <button type="button" onClick={() => answer(true)} className="rounded-2xl bg-[#16A34A] text-white font-bold text-[1.125rem] shadow-[0_5px_0_#14532D] min-h-16 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#14532D]"><ShieldCheck size={20} aria-hidden />{L(lang, 'ຂອງແທ້', 'Real')}</button>
+              <button type="button" onClick={() => answer(false)} className="rounded-2xl bg-[#E54848] text-white font-bold text-[17px] shadow-[0_5px_0_#A52A2A] min-h-14 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#A52A2A]"><Flag size={20} aria-hidden />{L(lang, 'ປອມ', 'Fake')}</button>
+              <button type="button" onClick={() => answer(true)} className="rounded-2xl bg-[#3FA34D] text-white font-bold text-[17px] shadow-[0_5px_0_#2A6E34] min-h-14 flex items-center justify-center gap-2 active:translate-y-[3px] active:shadow-[0_2px_0_#2A6E34]"><ShieldCheck size={20} aria-hidden />{L(lang, 'ຂອງແທ້', 'Real')}</button>
             </div>}
           </>}
           {r.kind === 'choice' && r.c.kind === 'which_part' && <>

@@ -239,7 +239,7 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
         <button onClick={start} className="daily-btn rounded-2xl daily-grad text-white text-lg font-bold shadow-[0_4px_0_#3B0FA0] flex items-center justify-center gap-2"><Play size={20} fill="currentColor" />{t.dash_go}</button>
         <Ranking lang={lang} />
       </div>
-      {sheet && <Sheet title={sheet === 'route' ? t.dash_pick : t.age_title} onClose={() => setSheet(null)}>
+      {sheet && <Sheet lang={lang} title={sheet === 'route' ? t.dash_pick : t.age_title} onClose={() => setSheet(null)}>
         {sheet === 'route'
           ? <div className="grid grid-cols-3 gap-2">
               {ASEAN.map(c => (
@@ -407,12 +407,12 @@ export function ScamDash({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
 }
 
 // Small bottom sheet so pickers stay hidden until asked for.
-function Sheet({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
+function Sheet({ title, onClose, lang, children }: { title: string; onClose: () => void; lang: Lang; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 z-50 mx-auto max-w-md flex items-end bg-black/40 daily-fade" onClick={onClose}>
       <div className="daily-in w-full rounded-t-3xl bg-background p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] grid gap-3 font-lao max-h-[80%] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between"><h3 className="font-bold text-lg">{title}</h3>
-          <button onClick={onClose} aria-label="Close" className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"><X size={18} /></button></div>
+          <button onClick={onClose} aria-label={lang === 'lo' ? 'ປິດ' : 'Close'} className="w-10 h-10 rounded-full bg-muted flex items-center justify-center"><X size={18} /></button></div>
         {children}
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, Phone, Video } from 'lucide-react';
+import { ChevronLeft, CirclePlus, Image as ImageIcon, Phone, ThumbsUp, Video } from 'lucide-react';
 import storyData from '../data/story-chat.json';
 import { haptic } from '../components/ui';
 import { GameShell, MAX_LIVES } from '../components/GameShell';
@@ -79,23 +79,24 @@ export function StoryChat({ lang, scenarios, featured, onExit, onFinish }: { lan
     <GameShell lang={lang} name={L(lang, 'ແຊັດສະຕໍລີ', 'Story chat')} index={i} total={rounds.length} lives={lives} xp={xp} onExit={onExit} midGame>
       <div className="h-full flex flex-col bg-white">
         <div className="shrink-0 flex items-center gap-2 border-b border-[#E6E6F0] px-3 py-2">
-          <ChevronLeft size={22} aria-hidden className="text-[#0084FF]" />
+          <ChevronLeft size={22} aria-hidden className="text-[#5B21D1]" />
           <Avatar name={r.contact} size={36} />
           <div className="min-w-0 flex-1"><p className="truncate font-bold text-[#14112B]">{r.contact}</p><p className="text-[12px] text-[#5F6390]">{L(lang, 'ຄຳຂໍຂໍ້ຄວາມ', 'Message request')}</p></div>
-          <Phone size={20} aria-hidden className="text-[#0084FF]" /><Video size={22} aria-hidden className="text-[#0084FF]" />
+          <Phone size={20} aria-hidden className="text-[#5B21D1]" /><Video size={22} aria-hidden className="text-[#5B21D1]" />
         </div>
         <div className="flex-1 min-h-0 overflow-y-auto px-3 py-3">
-          {r.request && <div className="mx-auto mb-4 max-w-[94%] rounded-2xl bg-[#F0F0F5] p-3 text-center text-[13px] leading-relaxed text-[#14112B]">
-            <p className="font-bold">{L(lang, 'ຄຳຂໍຂໍ້ຄວາມ: ທ່ານບໍ່ຮູ້ຈັກຄົນນີ້', 'Message request: you may not know this person')}</p>
-            <p className="mt-1 text-[#5F6390]">{L(lang, 'ບໍ່ແມ່ນໝູ່ · ບໍ່ມີໝູ່ຮ່ວມ · ສ້າງບັນຊີເມື່ອ 3 ມື້ກ່ອນ', 'Not friends · No mutual friends · Account created 3 days ago')}</p>
-          </div>}
+          <div className="text-center mb-3.5">
+            <span className="inline-flex w-16 h-16 rounded-full text-white text-[20px] font-extrabold items-center justify-center font-[BoonHome,sans-serif]" style={{ background: 'linear-gradient(135deg, #F59E0B, #EF4444)' }}>{r.contact.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()}</span>
+            <p className="mt-1.5 mb-0.5 text-[17px] font-bold font-[BoonHome,sans-serif]">{r.contact}</p>
+            {r.request && <p className="text-[13px] leading-[1.5] text-[#6B6E8F]">{L(lang, 'ທ່ານບໍ່ແມ່ນໝູ່ກັນໃນເຟສບຸກ', 'You are not friends on Facebook')}<br />{L(lang, 'ບໍ່ມີໝູ່ຮ່ວມກັນ · ບັນຊີສ້າງເມື່ອ 2 ອາທິດກ່ອນ', 'No mutual friends · Account created 2 weeks ago')}</p>}
+          </div>
           <div className="flex flex-col gap-0.5">
             {thread.map((m, k) => {
               const nextSame = thread[k + 1]?.from === m.from, prevSame = thread[k - 1]?.from === m.from;
               const mine = m.from === 'me';
               return <div key={k} className={`daily-bubble flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'} ${prevSame ? '' : 'mt-2'}`}>
                 {!mine && (nextSame ? <span className="w-7 shrink-0" /> : <Avatar name={r.contact} size={28} />)}
-                <p className={`max-w-[78%] px-3.5 py-2 text-[1.0625rem] leading-snug break-words ${mine ? 'bg-[#0084FF] text-white rounded-[18px] rounded-br-md' : 'bg-[#F0F0F5] text-[#14112B] rounded-[18px] rounded-bl-md'}`}>{m.text}</p>
+                <p className={`max-w-[74%] px-[13px] py-[9px] text-[16px] leading-[1.5] break-words ${mine ? 'bg-[#5B21D1] text-white rounded-[18px] rounded-br-md' : 'bg-[#F0F0F5] text-[#14112B] rounded-[18px] rounded-bl-md'}`}>{m.text}</p>
               </div>;
             })}
             {typing && <div className="flex items-end gap-2 mt-2" role="status" aria-label={L(lang, 'ກຳລັງພິມ', 'typing')}><Avatar name={r.contact} size={28} />
@@ -106,10 +107,10 @@ export function StoryChat({ lang, scenarios, featured, onExit, onFinish }: { lan
         </div>
         <div className="shrink-0 border-t border-[#E6E6F0] bg-white px-3 pt-2 pb-[max(10px,env(safe-area-inset-bottom))]">
           {ready && picked === null && <div className="daily-in mb-2">
-            <p className="mb-1.5 text-[13px] font-bold text-[#5F6390]">{r.prompt}</p>
-            <div className="flex flex-col gap-2">{r.choices.map((c, k) => <button key={c.id} type="button" onClick={() => choose(k)} className="w-full min-h-12 rounded-2xl border-2 border-[#0084FF] bg-white px-4 py-2 text-left text-[1.0625rem] font-bold text-[#0084FF] active:bg-[#E7F3FF]">{c.text}</button>)}</div>
+            <p className="mb-2 text-[13px] font-bold text-[#5F6390]">{r.prompt}</p>
+            <div className="flex flex-col gap-2">{r.choices.map((c, k) => <button key={c.id} type="button" onClick={() => choose(k)} className="w-full min-h-12 rounded-2xl border-2 border-[#0084FF] bg-white px-4 py-2 text-left text-[1.0625rem] font-bold text-[#5B21D1] active:bg-[#E7F3FF]">{c.text}</button>)}</div>
           </div>}
-          <div aria-hidden className="flex items-center gap-2"><span className="flex-1 rounded-full bg-[#F0F0F5] px-4 py-2.5 text-[15px] text-[#8E8EA8]">{L(lang, 'ຂຽນຂໍ້ຄວາມ…', 'Aa')}</span></div>
+          <div aria-hidden className="flex items-center gap-2.5 pt-1"><CirclePlus size={22} className="text-[#5B21D1]" /><ImageIcon size={22} className="text-[#5B21D1]" /><span className="flex-1 h-[38px] rounded-full bg-[#F0F0F5] px-3.5 text-[15px] leading-[38px] text-[#8A8DB0]">Aa</span><ThumbsUp size={22} className="text-[#5B21D1]" /></div>
         </div>
       </div>
       {choice && <FeedbackSheet lang={lang} ok={choice.correct} gain={choice.correct ? `+${XP_RIGHT} XP` : L(lang, '−1 ໂລ່', '−1 shield')} explanation={choice.consequence}

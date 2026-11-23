@@ -1,0 +1,6 @@
+{
+  "_note": "Political claims/sarcasm => flagged for expert review (not auto-removed). Keep neutral: flag claims about people/parties/gov, not neutral news from trusted sources.",
+  "lo": ["ລັດຖະບານໂກງ", "ພັກ", "ນາຍົກ", "ປະທານປະເທດ", "ລັດຖະມົນຕີ", "ສໍ້ລາດບັງຫຼວງ", "ກິນສິນບົນ", "ປະທ້ວງ", "ໂຄ່ນລົ້ມ", "ເລືອກຕັ້ງ"],
+  "en": ["government is corrupt", "corrupt government", "the party", "prime minister", "president", "minister", "corruption", "bribe", "protest", "overthrow", "election", "regime"],
+  "sarcasm_markers": ["lol", "lmao", "sure...", "yeah right", "555", "ຮ່າໆ", "ແມ່ນແລ້ວ...", "🙄", "😂"]
+}

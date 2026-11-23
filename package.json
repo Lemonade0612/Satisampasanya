@@ -16,6 +16,7 @@
     "ios:sync": "node scripts/sync-icon.mjs --if-needed && npm run build && cap sync ios",
     "ios:open": "cap open ios",
     "ios:run": "node scripts/run-ios.mjs",
+    "ios:fast": "node scripts/run-ios.mjs --fast",
     "dev:web": "vite",
     "backend": "node --env-file-if-exists=.env.local backend/server.mjs",
     "test": "node --test backend/*.test.mjs",
@@ -38,6 +39,7 @@
     "seed:reviews": "node scripts/seed-review-posts.mjs",
     "seed:risk": "node scripts/seed-risk-posts.mjs",
     "seed:scenarios": "node scripts/seed-scenarios.mjs",
+    "eval:screening": "tsx scripts/eval.ts",
     "screen:eval": "node backend/screening/eval.mjs",
     "screen:train": "node backend/screening/train.mjs",
     "screen:gen": "node backend/screening/testdata/gen.mjs",
@@ -72,8 +74,10 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "4.7.0",
     "tailwindcss": "4.1.12",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
-    "vite": "6.3.5"
+    "vite": "6.3.5",
+    "vitest": "^3.2.7"
   },
   "engines": {
     "node": ">=24"

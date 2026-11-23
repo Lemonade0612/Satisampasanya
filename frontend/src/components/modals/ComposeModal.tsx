@@ -1,6 +1,8 @@
 import {CheckProgress,type CheckStage} from '../safety/CheckProgress';
 import { request } from '../../lib/api';
 import { useState } from 'react';
+import { PreCheck, ReviewProgress, useLiveScreen } from '../screening/ComposeCheck';
+import { screenPost } from '../../lib/localScreening';
 import { X, ImagePlus, Loader2, Sparkles, PenLine, Tag, Link2 } from 'lucide-react';
 import { SectionTitle } from '../shared/SectionTitle';
 import { TOPIC_LABELS, TOPIC_ORDER, TOPIC_SHORT_LO, TOPIC_EN_NAMES } from '../../lib/constants';
@@ -19,17 +21,27 @@ export function ComposeModal({lang,remaining,onClose,onPost}: {lang:Lang;userNam
   const [busy,setBusy]=useState(false),[reading,setReading]=useState(false),[error,setError]=useState('');
   const [translating,setTranslating]=useState(false);
   const [stage,setStage]=useState<CheckStage|null>(null),[done,setDone]=useState(false);
+  const [reviewing,setReviewing]=useState(false);
+  const both=[english,lao].filter(Boolean).join('\n');
+  const live=useLiveScreen(both,news&&source.trim()?source.trim():undefined,!!photo,tags);
   const text=editLang==='lo'?lao:english, setText=editLang==='lo'?setLao:setEnglish;
   const toggleTag=(tag:string)=>setTags(prev=>prev.includes(tag)?prev.filter(t=>t!==tag):prev.length>=MAX_TAGS?prev:[...prev,tag]);
   // Translate the visible field into the other language, then show the result.
   const translate=async()=>{const target=editLang==='lo'?'en':'lo';if(!text.trim())return;setTranslating(true);setError('');try{const result=await request<{text:string}>('/translate','POST',{text,target});if(target==='lo')setLao(result.text);else setEnglish(result.text);setEditLang(target);}catch(e){setError((e as Error).message);}finally{setTranslating(false);}};
   const hasText=!!(english.trim()||lao.trim());
   const sourceOk=!news||isHttpUrl(source);
-  const canPost=hasText&&sourceOk&&remaining>0;
-  const hint=!hasText?label('Write something first','ຂຽນຂໍ້ຄວາມກ່ອນ'):!sourceOk?label('Add a source link first','ໃສ່ລິ້ງກ່ອນ'):remaining<=0?label('You have reached 5 posts today','ໂພສຄົບ 5 ຄັ້ງມື້ນີ້ແລ້ວ'):label('Ready to post','ພ້ອມໂພສ');
-  const submit=async()=>{
-    if(!canPost||busy||reading||translating)return;
-    setBusy(true);setError('');setStage(null);setDone(false);
+  const blocked=live?.state==='blocked';
+  const canPost=hasText&&sourceOk&&remaining>0&&!blocked;
+  const hint=blocked?label('Remove the personal info first','ລຶບຂໍ້ມູນສ່ວນຕົວກ່ອນ'):!hasText?label('Write something first','ຂຽນຂໍ້ຄວາມກ່ອນ'):!sourceOk?label('Add a source link first','ໃສ່ລິ້ງກ່ອນ'):remaining<=0?label('You have reached 5 posts today','ໂພສຄົບ 5 ຄັ້ງມື້ນີ້ແລ້ວ'):label('Ready to post','ພ້ອມໂພສ');
+  // Submit: re-check synchronously (the live check is debounced), then show the "Under AI review" steps, then post.
+  const submit=()=>{
+    if(!canPost||busy||reading||translating||reviewing)return;
+    const r=screenPost(both,news&&source.trim()?source.trim():undefined,{hasImage:!!photo,tags});
+    if(r.state==='blocked'){setError(label('This post shares personal info or a location, so it cannot be published.','ໂພສນີ້ມີຂໍ້ມູນສ່ວນຕົວ ຫຼື ສະຖານທີ່ ຈຶ່ງເຜີຍແຜ່ບໍ່ໄດ້.'));return;}
+    setError('');setReviewing(true);
+  };
+  const post=async()=>{
+    setReviewing(false);setBusy(true);setError('');setStage(null);setDone(false);
     try {await onPost({content:english.trim(),contentLo:lao.trim()||undefined,tags,link:news?source.trim():undefined,image:photo,isNews:news,contentLanguage:editLang==='lo'&&lao.trim()?'lo':english.trim()?'en':'lo'},(stage,done)=>{setStage(stage);setDone(!!done);});onClose();}
     catch(e){setStage(null);setError((e as Error).message);}finally{setBusy(false);}
   };
@@ -39,7 +51,7 @@ export function ComposeModal({lang,remaining,onClose,onPost}: {lang:Lang;userNam
   const card='rounded-2xl border border-border bg-background p-3.5 space-y-2.5';
   return <section role="dialog" aria-modal="true" aria-label={label('Create a post','ສ້າງໂພສໃໝ່')} className="phone-modal fixed inset-0 z-50 flex flex-col bg-background text-text text-base">
     <header className="grid grid-cols-[1fr_auto_1fr] items-center h-14 px-4 border-b border-border bg-background shrink-0">
-      <button type="button" disabled={busy} onClick={onClose} className="justify-self-start min-h-11 flex items-center gap-1 text-sm text-text-2 font-bold"><X size={20} aria-hidden/>{label('Cancel','ຍົກເລີກ')}</button>
+      <button type="button" disabled={busy||reviewing} onClick={onClose} className="justify-self-start min-h-11 flex items-center gap-1 text-sm text-text-2 font-bold"><X size={20} aria-hidden/>{label('Cancel','ຍົກເລີກ')}</button>
       <h2 className="font-bold text-base">{label('New post','ສ້າງໂພສໃໝ່')}</h2>
       <span className="justify-self-end text-[13px] text-text-muted">{label('Left today','ເຫຼືອ')} {Math.max(0,remaining)}/5</span>
     </header>
@@ -83,13 +95,15 @@ export function ComposeModal({lang,remaining,onClose,onPost}: {lang:Lang;userNam
         {news&&<div><label htmlFor="post-source" className="sr-only">{label('News source link','ລິ້ງແຫຼ່ງຂ່າວ')}</label><input id="post-source" type="url" inputMode="url" required aria-invalid={!!source&&!sourceOk} value={source} onChange={e=>setSource(e.target.value)} placeholder={label('https:// news source link','https:// ລິ້ງແຫຼ່ງຂ່າວ')} className={`${box} min-h-11 px-3 text-base placeholder:text-text-muted focus:outline-none focus:border-primary`}/></div>}
       </section>
 
+      {!reviewing&&!busy&&<PreCheck result={live} lang={lang}/>}
+      {reviewing&&<ReviewProgress lang={lang} onDone={()=>void post()}/>}
       {stage&&<CheckProgress stage={stage} done={done} lang={lang}/>}
       {error&&<p role="alert" className="text-sm text-danger">{error}</p>}
     </div>
     <footer className="shrink-0 border-t border-border bg-background px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
-      <button type="button" onClick={submit} disabled={!canPost||busy||reading||translating} aria-describedby="post-hint"
+      <button type="button" onClick={submit} disabled={!canPost||busy||reading||translating||reviewing} aria-describedby="post-hint"
         className="w-full h-[52px] rounded-full font-bold text-base flex items-center justify-center bg-primary text-primary-foreground disabled:bg-surface-2 disabled:text-text-muted">
-        {busy?<Loader2 className="animate-spin" size={20} aria-label={label('Posting','ກຳລັງໂພສ')}/>:label('Post now','ໂພສເລີຍ')}
+        {busy||reviewing?<Loader2 className="animate-spin" size={20} aria-label={label('Posting','ກຳລັງໂພສ')}/>:label('Post now','ໂພສເລີຍ')}
       </button>
       <p id="post-hint" aria-live="polite" className="text-center text-xs text-text-muted mt-2">{hint} · {label('Community posts are not automatically verified by experts','ໂພສຊຸມຊົນບໍ່ໄດ້ຮັບການຢືນຢັນໂດຍຜູ້ຊ່ຽວຊານອັດຕະໂນມັດ')}</p>
     </footer>

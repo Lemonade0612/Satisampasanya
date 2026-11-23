@@ -11,6 +11,8 @@ export const HOTLINES: HotlineGroup[] = [
   { title: { lo: 'ການຄ້າມະນຸດ, ຄວາມຮຸນແຮງ ແລະ ໄວໜຸ່ມ', en: 'Trafficking, violence and youth' }, items: [
     { number: '1362', tel: '1362', tone: 'violet', name: { lo: 'ສູນໃຫ້ຄຳປຶກສາ ແລະ ປົກປ້ອງແມ່ຍິງ ແລະ ເດັກ', en: 'Counselling and protection for women and children' }, org: { lo: 'ສະຫະພັນແມ່ຍິງລາວ', en: "Lao Women's Union" }, extra: { lo: '24/7 · WhatsApp 020 9613 1362', en: '24/7 · WhatsApp 020 9613 1362' } },
     { number: '1361', tel: '1361', tone: 'sky', name: { lo: 'ສາຍດ່ວນ Noi Yakhoo (ເດັກຍິງ)', en: 'Noi Yakhoo (girls)' }, org: { lo: 'ໃຫ້ຄຳປຶກສາເດັກຍິງ ແລະ ໄວໜຸ່ມຍິງ', en: 'Counselling for girls and young women' } },
+    { number: '+856 20 97631319', tel: '+8562097631319', tone: 'blue', name: { lo: 'iMAC (IOM)', en: 'iMAC (IOM)' }, org: { lo: 'ຊ່ວຍແຮງງານຍ້າຍຖິ່ນ ແລະ ຜູ້ເຄາະຮ້າຍຈາກການຄ້າມະນຸດ', en: 'Help for migrants and trafficking survivors' } },
+    { number: '021 312519', tel: '+85621312519', tone: 'blue', name: { lo: 'Village Focus', en: 'Village Focus' }, org: { lo: 'ການຊ່ວຍເຫຼືອ ແລະ ຄຳແນະນຳ', en: 'Support and advice' } },
   ] },
   { title: { lo: 'ສຸກເສີນ', en: 'Emergency' }, items: [
     { number: '1191', tel: '1191', tone: 'blue', name: { lo: 'ຕຳຫຼວດ', en: 'Police' } },

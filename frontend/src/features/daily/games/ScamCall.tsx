@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, ChevronRight, Grid3x3, Lightbulb, MicOff, Phone, PhoneOff, ShieldAlert, ShieldCheck, ShieldQuestion, ThumbsUp, Volume2, Wallet, UserRound } from 'lucide-react';
 import { Burst, Combo, Countdown } from '../components/juice';
-import { getAge, tier, type AgeTier } from '../lib/age';
+import { getAge, tier } from '../lib/age';
 import { filterByBand } from '../../../lib/band';
 import { CT, DAYS, SIGNS, planDay, type Call, type Day, type Move } from '../data/scamCalls';
 import { Backdrop } from '../components/Backdrop';
@@ -25,10 +25,6 @@ const gainFor = (c: Call, m: Move) => (!c.real && m === 'hangup' ? 30 : m === 'c
 const MOVE_ICON = { trust: ThumbsUp, check: ShieldQuestion, hangup: PhoneOff };
 
 const money = (n: number, lang: Lang) => `${n.toLocaleString('en-US')} ${CT[lang].kip}`;
-// The day closest to the player's own age is suggested first.
-const FOR_AGE: Record<AgeTier, string[]> = { kids: ['ton'], youth: ['noy', 'dara'], adult: ['khamla', 'souk'], elder: ['bounmy'] };
-// A day written for one band only (as in content/call/<band>.json) is suggested to that band too.
-const forMe = (d: Day, age: AgeTier) => FOR_AGE[age].includes(d.id) || (d.bands?.length === 1 && d.bands[0] === age);
 const shuffle = <T,>(a: T[]) => a.map(v => [Math.random(), v] as const).sort((x, y) => x[0] - y[0]).map(([, v]) => v);
 
 // Pick a character's day, then take a handful of calls, each real or scam. The player reads what the hero knows,
@@ -121,25 +117,21 @@ export function ScamCall({ lang, onExit, onFinish }: { lang: Lang; onExit: () =>
 
   const body = (<>
     {stage === 'pick' && <div className="h-full overflow-y-auto p-4 grid gap-4 content-start">
-      <h2 className="text-[1.375rem] font-extrabold">{L('ເລືອກເລື່ອງ', 'Pick a story')}</h2>
+      <div>
+        <h2 className="text-[1.375rem] font-extrabold">{L('ເລືອກເລື່ອງ', 'Pick a story')}</h2>
+        <p className="text-[0.9375rem] text-[#5F6390]">{L('ຊ່ວຍຕົວລະຄອນຮັບມືສາຍໂທແປກ', 'Help the character handle a strange call')}</p>
+      </div>
       {SCENES.filter(sc => filterByBand([sc.day], getAge()).length).concat(SCENES.filter(sc => !filterByBand([sc.day], getAge()).length)).map(sc => (
-        <button key={sc.id} type="button" onClick={() => begin(sc.day)} className="text-left rounded-3xl bg-white border border-[#E6E6F0] shadow-sm overflow-hidden active:scale-[.99]">
-          <img src={sc.image} alt="" className="w-full h-40 object-cover" loading="lazy" />
-          <span className="block p-4">
-            <span className="block text-[1.125rem] font-extrabold">{sc.day.hero.name[lang]}, {sc.day.hero.age}</span>
-            <span className="block text-[1rem] text-[#5F6390]">{sc.day.who[lang]}</span>
-            <span className="mt-2 inline-block rounded-full bg-[#FEE2E2] px-3 py-1 text-[13px] font-bold text-[#B91C1C]">{sc.scam[lang]}</span>
+        <button key={sc.id} type="button" onClick={() => begin(sc.day)} className="shrink-0 block w-full text-left rounded-3xl bg-white border border-[#E6E6F0] shadow-md overflow-hidden active:scale-[.99]">
+          <img src={sc.image} alt="" className="block w-full h-[11.5rem] shrink-0 object-cover" loading="lazy" />
+          <span className="flex items-center gap-3 p-4">
+            <span className="flex-1 min-w-0">
+              <span className="block text-[1.125rem] font-extrabold">{sc.day.hero.name[lang]}, {sc.day.hero.age}</span>
+              <span className="block text-[1rem] text-[#5F6390]">{sc.day.who[lang]}</span>
+            </span>
+            <span className="w-11 h-11 shrink-0 rounded-full bg-[#EFE9FD] flex items-center justify-center"><ChevronRight size={20} className="text-primary" /></span>
           </span>
         </button>))}
-      <h3 className="mt-2 text-[1rem] font-bold text-[#5F6390]">{L('ເລື່ອງອື່ນໆ', 'More stories')}</h3>
-      <div className="grid gap-3">
-        {filterByBand(DAYS, getAge()).sort((a, b) => Number(forMe(b, getAge())) - Number(forMe(a, getAge()))).map(d => (
-          <button key={d.id} type="button" onClick={() => begin(d)} className="flex items-center gap-3 rounded-3xl border-2 border-border bg-card p-2 pr-3 text-left hover:border-primary">
-            <span className="relative w-24 h-20 shrink-0 rounded-2xl overflow-hidden"><DayScene day={d} lang={lang} hour={10} thumb /></span>
-            <span className="flex-1 min-w-0 grid gap-0.5"><span className="font-bold">{d.hero.name[lang]}, {d.hero.age}</span><span className="text-sm text-muted-foreground leading-snug">{d.who[lang]}</span></span>
-            <ChevronRight size={20} className="text-muted-foreground shrink-0" />
-          </button>))}
-      </div>
     </div>}
 
     {stage === 'intro' && <div className="h-full overflow-y-auto p-4 grid gap-4 content-start">

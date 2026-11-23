@@ -22,6 +22,8 @@ import { Clock, TrendingUp } from "lucide-react";
 import { GAMES, picksForToday } from "../features/daily/screens/DailyHome";
 import { scamTypeLabel, weeklyTrend } from "../lib/scamTypes";
 import type { GameId } from "../features/daily/types";
+import { isFrozen } from "../lib/localScreening";
+import { sampleNews, showSamples } from "../lib/sampleNews";
 import type { Band, Lang, Post } from "../types";
 
 export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments, onLike, onRepost, onWarnedMe, onOpenAlerts, onLangToggle, onOpenExplore, alertCount, onRepostClick, onChangeBand, onImageExpand, onTopicClick, onPlayGame, followedTopics, customTopic, following, currentUserId, onFollow }: {
@@ -41,12 +43,14 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
   posts = postsForBand(posts, band);
   const youth = band === "youth";
   const games = picksForToday(band);
-  const tabs = lang === "lo" ? ["ສຳລັບທ່ານ", "ຕິດຕາມ", "ຫຼ້າສຸດ", "ຍອດນິຍົມ"] : ["For you", "Following", "Latest", "Popular"];
+  const tabs = lang === "lo" ? ["ສຳລັບທ່ານ", "ຕິດຕາມ", "ຫຼ້າສຸດ", "ຂ່າວ"] : ["For you", "Following", "Latest", "News"];
   // Popular ranks on review and safety only, so likes, comments, shares and helpful votes do not push a post up.
   const score = (p: Post) => { const r = p.communityRanking; return r?.eligible ? r.parts.review + r.parts.safety : 0; };
   const filteredPosts = (customTopic ? posts.filter(p => p.tags.includes(customTopic)) : activeTab === 1 ? posts.filter(p => !!p.author.id && following.includes(p.author.id)) : [...posts]);
-  if (activeTab === 2) filteredPosts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
-  if (activeTab === 3) filteredPosts.sort((a,b) => score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
+  // Latest: every open post, newest first; screened, flagged and unsafe posts stay out.
+  if (activeTab === 2) { const open = filteredPosts.filter(p => !isFrozen(p)); filteredPosts.splice(0, filteredPosts.length, ...open); filteredPosts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0)); }
+  // News: news reports and posts with a source link, newest first. Sample posts in every state appear in development or with ?demo=1.
+  if (activeTab === 3 && !customTopic) { const news = posts.filter(p => p.isNews); const have = new Set(news.map(p => p.id)); filteredPosts.splice(0, filteredPosts.length, ...news, ...(showSamples() ? sampleNews().filter(p => !have.has(p.id)) : [])); filteredPosts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0)); }
   if (activeTab === 0 && !customTopic) filteredPosts.sort((a,b) => Number(b.communityRanking?.eligible || false) - Number(a.communityRanking?.eligible || false) || Number(following.includes(b.author.id || "") || b.tags.some(t=>followedTopics.includes(t))) - Number(following.includes(a.author.id || "") || a.tags.some(t=>followedTopics.includes(t))) || score(b) - score(a) || (b.createdAt || 0) - (a.createdAt || 0));
 
   // For you and Following read the cursor-paged /api/feed. Each card shows its live copy so likes and comments stay fresh.
@@ -139,7 +143,7 @@ export function FeedScreen({ lang, posts, activeTab, onTabChange, onOpenComments
       <div ref={scroller} {...ptr.bind} className={`flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-y-contain scrollbar-hide bg-white pb-[150px]`}>
         <div className="flex flex-col gap-3 px-3 pt-3">
         <div className="flex items-center justify-end -mt-1 -mb-1 mx-0.5"><ColorCodeButton lang={lang} /></div>
-        {band !== "kids" && <TrendCard posts={posts} lang={lang} onOpen={t => { setTrendType(t); scroller.current?.scrollTo({ top: 0, behavior: "smooth" }); }} />}
+        {band !== "kids" && <TrendCard posts={posts.filter(p => !isFrozen(p))} lang={lang} onOpen={t => { setTrendType(t); scroller.current?.scrollTo({ top: 0, behavior: "smooth" }); }} />}
         {band !== "kids" && <DailySafetyTip lang={lang} />}
         {!helpHidden && <HelpBar lang={lang} onHide={hideHelp} onAll={onOpenExplore} />}
         {activeTab === 0 && !customTopic && band !== "kids" && <PinnedOfficial lang={lang} />}

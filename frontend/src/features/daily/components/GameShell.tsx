@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, ShieldCheck, X, Zap } from 'lucide-react';
+import { Shield, X } from 'lucide-react';
 import type { Lang } from '../types';
 
 export const MAX_LIVES = 3;
@@ -12,25 +12,25 @@ export function GameShell({ lang, name, index, total, lives = MAX_LIVES, xp = 0,
   lang: Lang; name: string; index: number; total: number; lives?: number; xp?: number; dark?: boolean; midGame?: boolean; onExit: () => void; children: ReactNode;
 }) {
   const [confirm, setConfirm] = useState(false);
-  const bar = dark ? 'bg-[#0F0B2A] text-white border-white/10' : 'bg-background text-text border-border';
+  const bar = dark ? 'bg-[#0F0B2A] text-white border-white/10' : 'bg-white text-[#14112B] border-[#ECECF4]';
   const seg = dark ? 'bg-white/20' : 'bg-[#E6E6F0]';
   return (
     <div className={`flex flex-col h-full font-lao ${dark ? 'bg-[#0F0B2A] text-white' : 'bg-[#F7F7FA] text-text'}`}>
-      <header className={`shrink-0 border-b px-3 pt-[max(8px,env(safe-area-inset-top))] pb-2 ${bar}`}>
+      <header className={`shrink-0 border-b px-3 pt-[max(8px,env(safe-area-inset-top))] pb-3 ${bar}`}>
         <div className="flex items-center gap-2">
           <button type="button" aria-label={tx(lang, 'ອອກຈາກເກມ', 'Exit game')} onClick={() => (midGame ? setConfirm(true) : onExit())}
             className={`min-h-11 min-w-11 -ml-1 flex items-center justify-center rounded-full ${dark ? 'text-white' : 'text-text-2'} focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary`}><X size={24} aria-hidden /></button>
           <div className="min-w-0 flex-1">
             <p className="truncate text-[15px] font-bold leading-tight">{name}</p>
-            <p className={`text-[13px] leading-tight tabular-nums ${dark ? 'text-white/70' : 'text-text-muted'}`}>{tx(lang, 'ຂໍ້', 'Q')} {Math.min(index + 1, total)} / {total}</p>
+            <p className={`text-[12px] leading-tight tabular-nums font-[BoonHome,sans-serif] ${dark ? 'text-white/70' : 'text-[#5F6390]'}`}>{tx(lang, 'ຂໍ້', 'Q')} {Math.min(index + 1, total)} / {total}</p>
           </div>
           <span role="img" aria-label={tx(lang, `ໂລ່ ${lives} ຈາກ ${MAX_LIVES}`, `${lives} of ${MAX_LIVES} shields left`)} className="flex items-center gap-0.5">
-            {Array.from({ length: MAX_LIVES }, (_, i) => i < lives ? <ShieldCheck key={i} size={22} aria-hidden className="text-[#2563EB]" fill="#60A5FA" /> : <Shield key={i} size={22} aria-hidden className={dark ? 'text-white/35' : 'text-[#B9BCD3]'} />)}
+            {Array.from({ length: MAX_LIVES }, (_, i) => i < lives ? <Shield key={i} size={20} aria-hidden className="text-[#5B21D1]" fill={dark ? 'rgba(110,142,240,.35)' : '#EDE9FE'} /> : <Shield key={i} size={20} aria-hidden className={dark ? 'text-white/35' : 'text-[#C9CBDC]'} />)}
           </span>
-          <span className={`flex items-center gap-1 rounded-full px-2.5 h-8 text-[14px] font-extrabold tabular-nums ${dark ? 'bg-white/15' : 'bg-[#EDE9FE] text-[#5B21D1]'}`}><Zap size={14} aria-hidden fill="currentColor" />{xp} XP</span>
+          <span className={`flex items-center gap-1 rounded-full px-2.5 h-8 text-[13px] font-extrabold tabular-nums font-[BoonHome,sans-serif] ${dark ? 'bg-white/15' : 'bg-[#FEF3C7] text-[#B45309]'}`}>{xp} XP</span>
         </div>
-        <div role="progressbar" aria-label={tx(lang, 'ຄວາມຄືບໜ້າ', 'Progress')} aria-valuemin={0} aria-valuemax={total} aria-valuenow={Math.min(index, total)} className="mt-2 flex gap-1">
-          {Array.from({ length: total }, (_, i) => <span key={i} className={`h-2 flex-1 rounded-full transition-colors ${i < index ? 'bg-[#5B21D1]' : i === index ? 'bg-[#6E8EF0]' : seg}`} />)}
+        <div role="progressbar" aria-label={tx(lang, 'ຄວາມຄືບໜ້າ', 'Progress')} aria-valuemin={0} aria-valuemax={total} aria-valuenow={Math.min(index, total)} className="mt-2.5 flex gap-1">
+          {Array.from({ length: total }, (_, i) => <span key={i} className={`h-1.5 flex-1 rounded-full transition-colors ${i < index ? 'bg-[#5B21D1]' : i === index ? 'bg-[#6E8EF0]' : seg}`} />)}
         </div>
       </header>
       <div className="flex-1 min-h-0 relative">{children}</div>

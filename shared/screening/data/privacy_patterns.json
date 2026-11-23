@@ -1,0 +1,19 @@
+{
+  "_note": "Regex patterns (JS syntax) for blocking personal info and location. Any hit => blocked (except hotlines.json numbers).",
+  "phone": [
+    "(?:\\+?856[\\s-]?)?0?20[\\s-]?\\d{2,4}[\\s-]?\\d{3,4}[\\s-]?\\d{0,4}",
+    "(?:\\+?856[\\s-]?)?0?30[\\s-]?\\d{3}[\\s-]?\\d{4}",
+    "(?:\\+?66[\\s-]?|0)[689]\\d[\\s-]?\\d{3}[\\s-]?\\d{4}",
+    "\\+\\d{1,3}[\\s-]?\\d{6,12}"
+  ],
+  "email": ["[\\w.+-]+@[\\w-]+\\.[\\w.]+"],
+  "passport_no": ["\\b[A-Z]{1,2}\\d{6,8}\\b", "(?:passport|ໜັງສືຜ່ານແດນ|ພາສປອດ)[^\\n]{0,15}\\d{5,}"],
+  "id_card": ["(?:id card|id no|ບັດປະຈຳຕົວ|ສຳມະໂນຄົວ|family book)[^\\n]{0,15}\\d{5,}", "\\b\\d{2}-?\\d{2}-?\\d{6,8}\\b"],
+  "bank_account": ["(?:bcel|ldb|apb|jdb|account|acc|ບັນຊີ)[^\\n]{0,15}\\d{8,}", "\\b\\d{3}[\\s-]?\\d{2}[\\s-]?\\d{2}[\\s-]?\\d{6,8}\\b"],
+  "location_sharing": [
+    "-?\\d{1,2}\\.\\d{4,},\\s*-?\\d{1,3}\\.\\d{4,}",
+    "(?:maps\\.google|google\\.com/maps|goo\\.gl/maps|maps\\.app\\.goo\\.gl)",
+    "(?:i'?m at|i am at|my house is|my address|come to my|live location|ຢູ່ເຮືອນຂ້ອຍ|ເຮືອນຂ້ອຍຢູ່|ທີ່ຢູ່ຂ້ອຍ|ມາຫາຂ້ອຍທີ່)",
+    "(?:ບ້ານ|ban)\\s?\\S+[,\\s]+(?:ໜ່ວຍ|unit|ເຮືອນເລກທີ|house no)\\s?\\d+"
+  ]
+}

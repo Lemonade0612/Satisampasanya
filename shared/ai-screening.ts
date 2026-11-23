@@ -688,11 +688,10 @@ export async function runAIScreening(
         estimatedReviewTime: 15,
       });
 
-      const waitTime = expertQueue.getEstimatedWaitTime(post.id);
       logs.push({
         stage: "expert_review",
         timestamp: Date.now(),
-        message: `📋 Added to expert queue (position: #${expertQueue.getQueuePosition(post.id)}). Est. wait: ${waitTime} min.`,
+        message: `📋 Added to expert queue (position: #${expertQueue.getQueuePosition(post.id)}). Expert review within 48h.`,
         severity: "medium",
       });
       break;
@@ -712,12 +711,11 @@ export async function runAIScreening(
       });
 
       const queuePos = expertQueue.getQueuePosition(post.id);
-      const estWait = expertQueue.getEstimatedWaitTime(post.id);
 
       logs.push({
         stage: "expert_review",
         timestamp: Date.now(),
-        message: `🚩 Flagged for expert review. Queue: #${queuePos} of ${expertQueue.getQueueLength()}. Est. wait: ${estWait} min.`,
+        message: `🚩 Flagged for expert review. Queue: #${queuePos} of ${expertQueue.getQueueLength()}. Expert review within 48h.`,
         severity: analysis.severity as "low" | "medium" | "high" | "severe",
       });
       break;

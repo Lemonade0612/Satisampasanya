@@ -5,11 +5,10 @@ import { HOTLINES, type Hotline } from "../lib/hotlines";
 import { DOC_KIND_LABEL, OFFICIAL_DOCS, TRAFFICKING_STATS_2024, type DocKind } from "../lib/officialDocs";
 import { ASK_SATI_PAD } from "../components/shared/AskSatiButton";
 import { openWebsite } from "../lib/site";
-import { CuratedFeed } from "../components/posts/CuratedFeed";
 import { TagChip } from "@/components/ui/TagChip";
 import type { Lang, Post } from "../types";
 
-type ExploreTab = "explore" | "news" | "hotlines" | "docs";
+type ExploreTab = "explore" | "hotlines" | "docs";
 
 export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLink }: { lang: Lang; posts: Post[]; onOpenPost: (id: string) => void; onTopicClick?: (topic: string) => void; onCheckLink?: () => void }) {
   const [search, setSearch] = useState("");
@@ -50,7 +49,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             {search && <button type="button" aria-label={lo ? "ລຶບຄຳຄົ້ນຫາ" : "Clear search"} onClick={() => setSearch("")} className="w-11 h-11 -mr-3 flex items-center justify-center text-text-muted"><X size={18} aria-hidden /></button>}
           </label>
         </div>
-        {!q && <div role="tablist" className="grid grid-cols-4 px-4">
+        {!q && <div role="tablist" className="grid grid-cols-3 px-4">
           {TABS.map(([id, l]) => <button key={id} type="button" role="tab" aria-selected={tab === id} onClick={() => setTab(id)}
             className={`relative justify-self-center min-h-12 px-1 text-[15px] font-bold ${tab === id ? "text-primary-ink" : "text-text-muted"}`}>
             {lo ? l.lo : l.en}{tab === id && <span aria-hidden className="absolute bottom-0 left-0 right-0 h-[3px] bg-primary rounded-full" />}
@@ -78,7 +77,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </div>
           ))}
         </div>
-      ) : tab === "news" ? <div className={ASK_SATI_PAD}><CuratedFeed lang={lang} /></div> : tab === "hotlines" ? <Hotlines lang={lang} /> : tab === "docs" ? <Docs lang={lang} /> : (
+      ) : tab === "hotlines" ? <Hotlines lang={lang} /> : tab === "docs" ? <Docs lang={lang} /> : (
         <div className={`px-4 pt-4 ${ASK_SATI_PAD} space-y-6`}>
           {/* Help card */}
           <section className="rounded-3xl border border-rose-200 p-4" style={{ background: "linear-gradient(135deg, #FFF1F2, #FFEDD5)" }}>
@@ -92,7 +91,6 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </div>
           </section>
 
-          {onCheckLink && (
           <button type="button" onClick={onCheckLink} className="w-full min-h-[72px] rounded-2xl border border-border bg-background p-3.5 flex items-center gap-3 text-left">
             <span aria-hidden className="w-11 h-11 shrink-0 rounded-xl bg-[#EDE7FB] text-primary flex items-center justify-center"><Link2 size={22} /></span>
             <span className="flex-1 min-w-0">
@@ -101,7 +99,6 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
             </span>
             <ChevronRight size={20} aria-hidden className="text-text-muted shrink-0" />
           </button>
-          )}
 
           {ranked.length > 0 && <section>
             <h2 className="flex items-center gap-2 font-bold mb-3"><TrendingUp size={18} className="text-rose-500" aria-hidden />{lo ? "ກຳລັງເປັນກະແສ" : "Trending"}</h2>
@@ -145,7 +142,7 @@ export function ExploreScreen({ lang, posts, onOpenPost, onTopicClick, onCheckLi
   );
 }
 
-const TABS: [ExploreTab, { lo: string; en: string }][] = [["explore", { lo: "ສຳຫຼວດ", en: "Explore" }], ["news", { lo: "ຂ່າວສານ", en: "Posts" }], ["hotlines", { lo: "ສາຍດ່ວນ", en: "Hotlines" }], ["docs", { lo: "ເອກະສານ", en: "Documents" }]];
+const TABS: [ExploreTab, { lo: string; en: string }][] = [["explore", { lo: "ສຳຫຼວດ", en: "Explore" }], ["hotlines", { lo: "ສາຍດ່ວນ", en: "Hotlines" }], ["docs", { lo: "ເອກະສານ", en: "Documents" }]];
 const TREND_GRADS = ["linear-gradient(140deg,#5B21D1,#2563EB)", "linear-gradient(140deg,#E11D48,#F97316)", "linear-gradient(140deg,#0EA5E9,#10B981)", "linear-gradient(140deg,#7C3AED,#EC4899)"];
 const TOPIC_TINTS = ["bg-violet-50 text-violet-700", "bg-blue-50 text-blue-700", "bg-rose-50 text-rose-700", "bg-emerald-50 text-emerald-700", "bg-amber-50 text-amber-800", "bg-sky-50 text-sky-700", "bg-fuchsia-50 text-fuchsia-700", "bg-teal-50 text-teal-700"];
 const TONES: Record<Hotline["tone"], string> = { rose: "bg-rose-50 text-rose-600", blue: "bg-blue-50 text-blue-700", violet: "bg-violet-50 text-violet-700", amber: "bg-amber-50 text-amber-700", emerald: "bg-emerald-50 text-emerald-700", sky: "bg-sky-50 text-sky-700", slate: "bg-slate-100 text-slate-700" };
@@ -176,7 +173,7 @@ function Docs({ lang }: { lang: Lang }) {
   const lo = lang === "lo";
   const [kind, setKind] = useState<DocKind | "all">("all");
   const s = TRAFFICKING_STATS_2024;
-  const tints: Record<DocKind, string> = { notice: "bg-rose-50 text-rose-600", guide: "bg-blue-50 text-blue-700", plan: "bg-violet-50 text-violet-700" };
+  const tints: Record<DocKind, string> = { notice: "bg-rose-50 text-rose-600", guide: "bg-blue-50 text-blue-700", plan: "bg-violet-50 text-violet-700", report: "bg-amber-50 text-amber-700" };
   return <div className={`px-4 pt-4 ${ASK_SATI_PAD} space-y-4`}>
     <section className="relative rounded-3xl p-5 text-white overflow-hidden" style={{ background: "linear-gradient(140deg, #1D4ED8, #2563EB 50%, #60A5FA)" }}>
       <span aria-hidden className="absolute -top-10 -right-10 w-36 h-36 rounded-full bg-white/15" />
@@ -189,7 +186,7 @@ function Docs({ lang }: { lang: Lang }) {
       <p className="relative text-[11px] opacity-85 mt-3">{lo ? "ແຫຼ່ງ: ກອງປະຊຸມຄະນະກຳມະການແຫ່ງຊາດຕ້ານການຄ້າມະນຸດ, ມັງກອນ 2025" : "Source: National Committee for Anti-Human Trafficking meeting, January 2025"}</p>
     </section>
     <div className="flex gap-2 overflow-x-auto scrollbar-hide">
-      {(["all", "notice", "guide", "plan"] as const).map(k => <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)}
+      {(["all", "notice", "guide", "plan", "report"] as const).map(k => <button key={k} type="button" aria-pressed={kind === k} onClick={() => setKind(k)}
         className={`min-h-11 px-4 rounded-[10px] text-sm font-semibold shrink-0 ${kind === k ? "bg-slate-900 text-white dark:bg-white dark:text-slate-900" : "bg-[#F3F4F8] dark:bg-muted text-text-2"}`}>
         {k === "all" ? (lo ? "ທັງໝົດ" : "All") : lo ? DOC_KIND_LABEL[k].lo : DOC_KIND_LABEL[k].en}
       </button>)}
@@ -200,8 +197,8 @@ function Docs({ lang }: { lang: Lang }) {
           <span aria-hidden className={`w-11 h-11 shrink-0 rounded-xl flex items-center justify-center ${tints[d.kind]}`}><FileText size={20} /></span>
           <span className="flex-1 min-w-0">
             <span className={`inline-block rounded-md px-1.5 py-0.5 text-[11px] font-bold ${tints[d.kind]}`}>{lo ? DOC_KIND_LABEL[d.kind].lo : DOC_KIND_LABEL[d.kind].en}</span>
-            <span className="block font-bold text-sm leading-snug mt-1 font-lao">{d.title}</span>
-            <span className="block text-xs text-text-muted mt-0.5">{d.source}</span>
+            <span className="block font-bold text-sm leading-snug mt-1 font-lao">{lo ? d.title : d.en.title}</span>
+            <span className="block text-xs text-text-muted mt-0.5">{lo ? d.source : d.en.source}</span>
           </span>
           <ExternalLink size={18} aria-label={lo ? "ເປີດໃນບຣາວເຊີ" : "Opens in browser"} className="text-text-muted shrink-0 mt-1" />
         </a>

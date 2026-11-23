@@ -46,6 +46,8 @@ export function DailyScreen({ lang, onCheckOnSati, homeHeader, homeFooter, start
   const launch = (l: Launch) => { track({ type: 'session_start', mode: `${l.game}:${l.scope}` }); setResult(null); setPlay(l); setRound(r => r + 1); };
   useEffect(() => { if (start) { launch(start); onStarted?.(); } }, [start]); // eslint-disable-line react-hooks/exhaustive-deps
   const exit = () => { setPlay(null); setResult(null); };
+  // Games take the whole screen (design): the app hides its bottom nav while one is open.
+  useEffect(() => { document.body.toggleAttribute('data-in-game', !!play); return () => document.body.removeAttribute('data-in-game'); }, [play]);
   const done = (r: GameResult) => {
     if (!play) return;
     setStreak(finishSession(play.game, r.score, r.failed ? r.scenarioIds.slice(0, -1) : r.scenarioIds, { mission: play.scope === 'daily' && !r.failed }).streak);

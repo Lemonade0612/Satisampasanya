@@ -1,0 +1,162 @@
+[
+  {
+    "text": "Free Chinese Language Course! Starts Nov 15, 2026, 17:30–19:00, China Cultural Center, Vientiane. Limited seats! Contact on WhatsApp or scan the QR code.",
+    "expected": "flagged",
+    "flags": [
+      "free_offer",
+      "urgency",
+      "private_contact",
+      "qr_only"
+    ]
+  },
+  {
+    "text": "Job in Thailand 15,000 baht/month, DM Telegram",
+    "expected": "false",
+    "flags": [
+      "job_abroad",
+      "private_contact"
+    ]
+  },
+  {
+    "text": "ໂອນເງິນມັດຈຳ 200,000 ກີບ",
+    "expected": "false",
+    "flags": [
+      "money_ask"
+    ]
+  },
+  {
+    "text": "Free Robux! Click bit.ly/free-rbx and log in now",
+    "expected": "flagged",
+    "flags": [
+      "free_offer",
+      "suspicious_link"
+    ]
+  },
+  {
+    "text": "The government is corrupt lol, sure they care about us",
+    "expected": "flagged",
+    "flags": [
+      "political_claims"
+    ]
+  },
+  {
+    "text": "lol",
+    "expected": "flagged",
+    "flags": [
+      "very_short_content"
+    ]
+  },
+  {
+    "text": "Call 1300 if you see a fake job ad at your school",
+    "expected": "clean",
+    "flags": []
+  },
+  {
+    "text": "Tip: check job offers with the labour ministry first",
+    "link": "https://www.laopdr.gov.la/jobs",
+    "expected": "clean",
+    "flags": [
+      "source_link_provided"
+    ]
+  },
+  {
+    "text": "Send your passport copy to me on WhatsApp 020 5555 1234 for the visa",
+    "expected": "blocked",
+    "flags": [
+      "phone"
+    ]
+  },
+  {
+    "text": "Pay a 300 dollar visa fee first, then you fly next week, Telegram only",
+    "expected": "false",
+    "flags": [
+      "money_ask"
+    ]
+  },
+  {
+    "text": "We keep your passport during the contract, free room and food",
+    "expected": "false",
+    "flags": [
+      "trafficking_signs"
+    ]
+  },
+  {
+    "text": "Hiring waitresses in Phnom Penh, $800/month, we arrange your travel, message Telegram",
+    "expected": "flagged",
+    "flags": [
+      "job_offer",
+      "private_contact"
+    ]
+  },
+  {
+    "text": "ສະໝັກວຽກທີ່ກຳປູເຈຍ ເງິນເດືອນ 800 ໂດລາ ທັກ Telegram ມາເລີຍ",
+    "expected": "flagged",
+    "flags": [
+      "private_contact"
+    ]
+  },
+  {
+    "text": "Earn 500$ a day from home, no experience, message me",
+    "expected": "flagged",
+    "flags": [
+      "job_offer",
+      "private_contact"
+    ]
+  },
+  {
+    "text": "ຫາເງິນງ່າຍໆ ມື້ລະ 500,000 ກີບ ບໍ່ຕ້ອງລົງທຶນ ສົນໃຈ inbox",
+    "expected": "flagged",
+    "flags": [
+      "private_contact"
+    ]
+  },
+  {
+    "text": "Dm me for cheap visa to Malaysia, passport only, no interview",
+    "expected": "flagged",
+    "flags": [
+      "private_contact"
+    ]
+  },
+  {
+    "text": "Romantic partner abroad needs help, send gift cards to unlock the package",
+    "expected": "flagged",
+    "flags": [
+      "romance_scam"
+    ]
+  },
+  {
+    "text": "ໂທມາ ສູນ ສອງ ສູນ ຫ້າ ຫ້າ ຫ້າ ຫ້າ ຫ້າ ຫ້າ ຫ້າ ຫ້າ",
+    "expected": "blocked",
+    "flags": [
+      "phone"
+    ]
+  },
+  {
+    "text": "email me at noy [at] gmail [dot] com",
+    "expected": "blocked",
+    "flags": [
+      "email"
+    ]
+  },
+  {
+    "text": "noy.lao @ gmail.com",
+    "expected": "blocked",
+    "flags": [
+      "email"
+    ]
+  },
+  {
+    "text": "I live near Patuxai, house number 45 Rue Samsenthai",
+    "expected": "blocked",
+    "flags": [
+      "location_sharing"
+    ]
+  },
+  {
+    "text": "Sending my location pin 17.9757 N 102.6331 E",
+    "expected": "blocked",
+    "flags": [
+      "location_sharing"
+    ]
+  }
+]
