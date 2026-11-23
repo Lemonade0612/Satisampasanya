@@ -7,18 +7,18 @@ export type ElderVerdict = 'scam' | 'caution' | 'safe';
 
 // weak: short tech words ("pin", "otp", "link") that are everyday words too. They only count next to another signal.
 // kind: a weak and a strong group asking for the same thing (a code, a link) count once.
-const SIGNALS: { weight: number; words: string[]; weak?: boolean; kind?: string }[] = [
-  { weight: 2, words: ['ລະຫັດ', 'password', 'passcode', 'verification code'], kind: 'code' },
-  { weight: 2, words: ['otp', 'pin', 'code'], weak: true, kind: 'code' },
-  { weight: 2, words: ['http', 'https', 'www', '.apk', 'ກົດລິ້ງ', 'ລິ້ງ', 'ດາວໂຫຼດ', 'ຕິດຕັ້ງ', 'anydesk', 'teamviewer'], kind: 'link' },
-  { weight: 2, words: ['link', 'download', 'install', 'app', 'apk'], weak: true, kind: 'link' },
-  { weight: 1, words: ['ໂອນ', 'transfer', 'send money', 'ຈ່າຍ', 'pay', 'ຄ່າທຳນຽມ', 'fee', 'deposit', 'ມັດຈຳ'] },
+const SIGNALS: { weight: number; words: string[]; weak?: boolean; kind?: string; cat?: string }[] = [
+  { weight: 2, words: ['ລະຫັດ', 'password', 'passcode', 'verification code'], kind: 'code', cat: 'otp' },
+  { weight: 2, words: ['otp', 'pin', 'code'], weak: true, kind: 'code', cat: 'otp' },
+  { weight: 2, words: ['http', 'https', 'www', '.apk', 'ກົດລິ້ງ', 'ລິ້ງ', 'ດາວໂຫຼດ', 'ຕິດຕັ້ງ', 'anydesk', 'teamviewer'], kind: 'link', cat: 'link' },
+  { weight: 2, words: ['link', 'download', 'install', 'app', 'apk'], weak: true, kind: 'link', cat: 'link' },
+  { weight: 1, words: ['ໂອນ', 'transfer', 'send money', 'ຈ່າຍ', 'pay', 'ຄ່າທຳນຽມ', 'fee', 'deposit', 'ມັດຈຳ'], cat: 'money' },
   { weight: 1, words: ['ດ່ວນ', 'ດຽວນີ້', 'ພາຍໃນ', 'urgent', 'immediately', 'right now', 'today only', 'ລະງັບ', 'suspended', 'blocked', 'ຖືກປິດ'] },
-  { weight: 2, words: ['ຖືກລາງວັນ', 'ລາງວັນ', 'ຫວຍ', 'won', 'winner', 'prize', 'lottery'] },
-  { weight: 2, words: ['ລົງທຶນ', 'ກຳໄລ', 'ຮັບປະກັນ', 'invest', 'guaranteed profit', 'usdt', 'crypto', 'bitcoin'] },
-  { weight: 1, words: ['ຕຳຫຼວດ', 'ເຈົ້າໜ້າທີ່', 'ທະນາຄານ', 'police', 'officer', 'bank', 'ບຳນານ', 'pension'] },
-  { weight: 1, words: ['ປັບໃໝ', 'a fine', 'penalty', 'ຄະດີ', 'court case'] },
-  { weight: 1, words: ['ຫຼານ', 'ອຸບັດຕິເຫດ', 'ໂຮງໝໍ', 'ຕິດຄຸກ', 'accident', 'hospital', 'grandchild', 'grandson', 'granddaughter', 'arrested'] },
+  { weight: 2, words: ['ຖືກລາງວັນ', 'ລາງວັນ', 'ຫວຍ', 'won', 'winner', 'prize', 'lottery'], cat: 'prize' },
+  { weight: 2, words: ['ລົງທຶນ', 'ກຳໄລ', 'ຮັບປະກັນ', 'invest', 'guaranteed profit', 'usdt', 'crypto', 'bitcoin'], cat: 'invest' },
+  { weight: 1, words: ['ຕຳຫຼວດ', 'ເຈົ້າໜ້າທີ່', 'ທະນາຄານ', 'police', 'officer', 'bank', 'ບຳນານ', 'pension'], cat: 'authority' },
+  { weight: 1, words: ['ປັບໃໝ', 'a fine', 'penalty', 'ຄະດີ', 'court case'], cat: 'authority' },
+  { weight: 1, words: ['ຫຼານ', 'ອຸບັດຕິເຫດ', 'ໂຮງໝໍ', 'ຕິດຄຸກ', 'accident', 'hospital', 'grandchild', 'grandson', 'granddaughter', 'arrested'], cat: 'relative' },
 ];
 // A message that warns AGAINST sharing a code or paying is advice, not bait.
 // "ຢ່າ" (don't) must not match inside "ຢ່າງ" (like / kind of), an everyday word.
@@ -44,4 +44,11 @@ export function checkElderMessage(text: string): ElderVerdict {
   if (strong.length) for (const g of hit) { if (g.kind && kinds.has(g.kind)) continue; if (g.kind) kinds.add(g.kind); score += g.weight; }
   if (WARNINGS.some(r => r.test(s))) score -= 2;
   return score >= 3 ? 'scam' : score >= 1 ? 'caution' : 'safe';
+}
+
+/** The kind of message, for the anonymous warning (Inform). Stored with the verdict and nothing else. */
+export function elderCategory(text: string): string {
+  const s = text.toLowerCase();
+  const hit = GROUPS.filter(g => g.cat && g.res.some(r => r.test(s))).sort((a, b) => b.weight - a.weight);
+  return hit[0]?.cat ?? 'other';
 }

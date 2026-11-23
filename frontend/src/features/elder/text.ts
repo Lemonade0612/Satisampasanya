@@ -45,3 +45,23 @@ export const elderSpokenLines = (): string[] => [
   ...VIDEOS.flatMap(v => [v.titleLo, ...v.captions, v.question, ...v.answers, v.explainLo]),
   ...TIPS.flatMap(t => [t.headlineLo, ...t.steps]),
 ];
+
+// Family setup, Tell and Inform. Kept apart from ET on purpose: ET is read aloud from recordings (scripts/gen-audio.mjs),
+// these lines are spoken by the phone's Lao voice when it has one. All Lao here needs native review. // REVIEW-LO
+export const FT = {
+  setup_title: 'ຕັ້ງເບີລູກ',
+  setup_intro: 'ໃສ່ເບີ WhatsApp ຂອງລູກຫຼານ ເພື່ອບອກເຂົາໄດ້ໄວ ເມື່ອພົບຂໍ້ຄວາມແປກໆ',
+  name_label: 'ພໍ່ແມ່ເອີ້ນເຈົ້າວ່າ', name_hint: 'ຊື່ທີ່ໃຊ້ເອີ້ນລູກຫຼານ',
+  phone_label: 'ເບີ WhatsApp', phone_hint: '020 XXXX XXXX',
+  phone_error: 'ໃສ່ເບີໃຫ້ຖືກ ຕົວຢ່າງ 020 5555 1234',
+  save: 'ບັນທຶກ', skip: 'ຂ້າມກ່ອນ', saved: 'ບັນທຶກແລ້ວ',
+  tell: (name: string) => `ບອກ${name}`, tell_whatsapp: 'ສົ່ງທາງ WhatsApp', tell_setup: 'ຕັ້ງເບີລູກ',
+  steps_label: 'ຂັ້ນຕອນ S A T I: S ແລະ A ແລ້ວ',
+  step_stop: 'ຢຸດ', step_ask: 'ຖາມ', step_tell: 'ບອກ', step_inform: 'ເຕືອນ',
+  preview_title: 'ຕົວຢ່າງຂໍ້ຄວາມ', preview_note: 'ນີ້ແມ່ນຕົວຢ່າງ. ຍັງບໍ່ໄດ້ສົ່ງ.', send_real: 'ສົ່ງແທ້', close: 'ປິດ',
+  inform: 'ເຕືອນຄົນອື່ນ', inform_title: 'ເຕືອນຄົນອື່ນ', inform_intro: 'ຈະສົ່ງແຕ່ປະເພດຂໍ້ຄວາມ ເພື່ອເຕືອນຄົນອື່ນ.',
+  inform_type: 'ປະເພດ', no_name: 'ບໍ່ສົ່ງຊື່', no_phone: 'ບໍ່ສົ່ງເບີໂທ', inform_send: 'ສົ່ງການເຕືອນ',
+  thanks: 'ຂອບໃຈ', thanks_line: 'ຂອບໃຈທີ່ຊ່ວຍເຕືອນຄົນອື່ນ.',
+  me_row: 'ເບີລູກຫຼານ',
+  cat: { otp: 'ຂໍລະຫັດ OTP', link: 'ລິ້ງປອມ', money: 'ຂໍໃຫ້ໂອນເງິນ', prize: 'ຖືກລາງວັນປອມ', invest: 'ລົງທຶນປອມ', authority: 'ອ້າງເປັນເຈົ້າໜ້າທີ່', relative: 'ອ້າງເປັນຫຼານ', other: 'ຂໍ້ຄວາມແປກໆ' } as Record<string, string>,
+} as const;

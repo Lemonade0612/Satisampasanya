@@ -201,3 +201,10 @@ Watch for Thai spelling or Thai words. Lines to look at first: ເກັ່ງ�
 - [ ] ຄົນທີ່ບໍ່ເຄີຍພົບໜ້າ ຢ່າໂອນເງິນໃຫ້
 - [ ] ບໍ່ມີຂອງຂວັນ ທີ່ຕ້ອງຈ່າຍຄ່າສົ່ງ
 - [ ] ເລົ່າໃຫ້ຄອບຄົວຟັງ
+
+## Family setup, Tell and Inform (feat/family-tell): needs native review
+
+All of `FT` in `frontend/src/features/elder/text.ts` and the message text in `shared/family-tell.mjs` (`tellText`) are new Lao,
+not yet reviewed. They have no recorded audio yet; the phone's Lao voice reads them if it has one.
+Please check in particular: "ພໍ່ແມ່ເອີ້ນເຈົ້າວ່າ" (field label), "ຕັ້ງເບີລູກ", "ບອກ<name>",
+the WhatsApp message "ແມ່/ພໍ່ ໄດ້ຮັບຂໍ້ຄວາມນີ້: "…" · ສະຕິ: … ໂທຫາແມ່/ພໍ່ແດ່.", and the Inform screen ("ເຕືອນຄົນອື່ນ", "ບໍ່ສົ່ງຊື່", "ບໍ່ສົ່ງເບີໂທ", "ສົ່ງການເຕືອນ").

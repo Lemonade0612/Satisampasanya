@@ -1,0 +1,12 @@
+export declare const PHONE_KEY: string; export declare const NAME_KEY: string; export declare const SEEN_KEY: string; export declare const INFORM_KEY: string;
+export declare function normalizeLaoWhatsApp(input: unknown): string | null;
+export declare function formatPhone(d: string | null | undefined): string;
+export declare function validateFamily(f: { name?: string; phone?: string }): { ok: boolean; name: string; phone: string | null; errors: { phone?: 'format' } };
+export declare function tellText(a: { message: string; verdictWord: string }): string;
+export declare function waLink(phone: string, text: string): string;
+export declare function smsLink(phone: string, text: string): string;
+export type TellPlan = { action: 'setup' } | { action: 'preview' } | { action: 'share' | 'whatsapp'; fallbacks: ('whatsapp' | 'sms')[] };
+export declare function planTell(a: { phone?: string | null; canShare: boolean; demo: boolean }): TellPlan;
+export type InformRecord = { category: string; verdict: string; createdAt: number };
+export declare function makeInformRecord(a: { category?: string; verdict?: string; now?: number }): InformRecord;
+export declare function appendInform(storage: Pick<Storage, 'getItem' | 'setItem'>, record: InformRecord): void;
