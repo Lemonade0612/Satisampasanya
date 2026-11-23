@@ -7,7 +7,7 @@ import { StatusPill, STATUS, statusOf } from "./colorCode";
 import { openProfile } from "../../lib/profileNav";
 import { BadgeCheck } from "lucide-react";
 import { PosterCarousel, VideoBlock, LinkCard, SourceLink, TipList, listItems, mediaOf, sourceOf, typeOf } from "./PostMedia";
-import { request } from "../../lib/api";
+import { request, hasSession } from "../../lib/api";
 import { flagReasons } from "../../lib/flagReasons";
 import { T } from "../../lib/translations";
 import { Tr } from "../../lib/useTranslated";
@@ -145,7 +145,19 @@ export function PostCard({ post, lang, onOpenComments, onLike, onWarnedMe, onRep
   const chips = post.check?.labels?.length ? post.check.labels.slice(0, 3).map(l => checkLabel(l, lang)) : post.scamType ? [scamTypeLabel(post.scamType, lang)] : [];
   const lo = lang === "lo";
   const abtn = "disabled:opacity-40 flex items-center gap-1.5 h-10 px-1.5 text-[15px]";
-  const share = async () => { setShareError('');try{const checked=await request<Post>(`/posts/${post.id}/share`,'POST',{});const value={title:checked.author.name,text:content,...(checked.link?{url:checked.link}:{})};if(navigator.share){await navigator.share(value);await request(`/posts/${post.id}/share`,'POST',{completed:true});}else if(navigator.clipboard)await navigator.clipboard.writeText(content+(checked.link?'\n'+checked.link:''));}catch(error){if((error as Error).name!=='AbortError')setShareError((error as Error).message);} };
+  // Share the post on the phone first (share sheet, else copy). Counting the share on the server is a
+  // background extra for signed-in users only: a guest, or any failure there, never blocks or shows an error.
+  const share = async () => {
+    setShareError('');
+    // The server turns sharing off for warning posts; keep that rule here now that sharing no longer waits for it.
+    if (red || (post as { exampleStatus?: string }).exampleStatus === 'red') { setShareError(lo ? 'ໂພສນີ້ຖືກຕິດປ້າຍເຕືອນ ແບ່ງປັນບໍ່ໄດ້' : 'Sharing is turned off for posts Sati marked as a warning.'); return; }
+    const link = (post as { link?: string }).link;
+    const value = { title: post.author.name, text: content, ...(link ? { url: link } : {}) };
+    try {
+      if (navigator.share) { await navigator.share(value); if (hasSession()) void request(`/posts/${post.id}/share`, 'POST', { completed: true }).catch(() => {}); }
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(content + (link ? '\n' + link : '')); setShareError(lo ? 'ສຳເນົາແລ້ວ' : 'Copied to clipboard'); }
+    } catch (error) { if ((error as Error).name !== 'AbortError') setShareError(lo ? 'ແບ່ງປັນບໍ່ໄດ້ ລອງໃໝ່' : 'Could not share. Please try again.'); }
+  };
   const [menu, setMenu] = useState(false);
   // Organisations open their organisation page; members open their public profile (by @handle).
   const profileTarget = post.org ? { kind: "org" as const, slug: post.org.slug } : post.author.handle ? { kind: "user" as const, handle: post.author.handle } : null;
