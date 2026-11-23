@@ -12,6 +12,12 @@ const token = () => store(sessionStorage) || store(localStorage);
 export const hasSession = () => !!token();
 export const authHeaders = (): Record<string, string> => (hasSession() ? { Authorization: `Bearer ${token()}` } : {});
 export const clearSession = () => { try { sessionStorage.removeItem(TOKEN_KEY); localStorage.removeItem(TOKEN_KEY); } catch { /* storage blocked */ } };
+// What the person sees when the service cannot be reached. The developer hint stays in dev builds only.
+export function unreachableMessage() {
+  if (import.meta.env.DEV) return 'Cannot reach the service. Open Start Backend.command (or Start iPhone.command for the simulator), then retry.';
+  let lo = false; try { lo = localStorage.getItem('sati-lang') === 'lo'; } catch { /* default English */ }
+  return lo ? 'ຕອນນີ້ Sati ຕອບບໍ່ໄດ້. ໃຊ້ແຖບ ກວດ ເພື່ອກວດຂໍ້ຄວາມໃນໂທລະສັບ.' : "Sati can't answer right now. Use the Check tab to check a message on your phone.";
+}
 export class ApiError extends Error { constructor(message: string, public status: number) { super(message); } }
 export async function request<T>(path: string, method = 'GET', data?: unknown, timeoutMs?: number): Promise<T> {
   let response: Response;
@@ -22,7 +28,7 @@ export async function request<T>(path: string, method = 'GET', data?: unknown, t
   const stop = abort?.signal;
   try {
     response = await fetch(API_BASE + path, { signal: stop, method, headers: { ...(data === undefined ? {} : {'Content-Type':'application/json'}), ...(hasSession() ? {Authorization:`Bearer ${token()}`} : {}) }, body: data === undefined ? undefined : JSON.stringify(data) });
-  } catch { throw new ApiError('Cannot reach the service. Open Start Backend.command (or Start iPhone.command for the simulator), then retry.', 0); }
+  } catch { throw new ApiError(unreachableMessage(), 0); }
   finally { clearTimeout(timer); }
   const value = await response.json().catch(() => { throw new ApiError('The service returned an invalid response. Please retry.', response.status || 502); });
   if (!response.ok) throw new ApiError(value.error || 'Request failed.', response.status);

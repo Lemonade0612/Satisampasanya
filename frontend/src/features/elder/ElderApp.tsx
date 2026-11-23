@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { ChevronRight, ClipboardPaste, Gift, Heart, MessageSquareWarning, Pause, Phone, PhoneCall, Plane, Play, RotateCcw, ShieldCheck, Smartphone, TrendingUp, type LucideIcon } from 'lucide-react';
+import { ChevronRight, ClipboardPaste, Gift, Heart, MessageCircle, MessageSquareWarning, ShieldAlert, Users, Pause, Phone, PhoneCall, Plane, Play, RotateCcw, ShieldCheck, Smartphone, TrendingUp, type LucideIcon } from 'lucide-react';
 import { laoDayNumber } from '../daily/lib/storage';
 import { hasLaoAudio, preloadSpeech, speakParts, stopAll } from '../daily/lib/useSpeak';
 import { getFamilyPhone, setSimpleMode, telLink } from '../../lib/simpleMode';
-import type { ElderVerdict } from '../../lib/elderCheck';
+import { elderCategory, type ElderVerdict } from '../../lib/elderCheck';
+import { planTell, smsLink, tellText, waLink } from '../../../../shared/family-tell.mjs';
 import { BottomBar, Header, MainButton, Page, Steps, useElderSpeak, type Tab } from './ui';
-import { ET, VERDICT, VIDEOS, durationLabel, tipForDay, videosForDay, type ElderVideo } from './text';
+import { ET, FT, VERDICT, VIDEOS, durationLabel, tipForDay, videosForDay, type ElderVideo } from './text';
 import { screenForElder } from './screen';
+import { FamilySetup, InformScreen, SatiRow, TellPreview } from './FamilyScreens';
+import { getFamilyName, isDemoMode, saveInform, setupSeen } from './family';
 import type { Lang } from '../../types';
 
 // Elder mode: a separate, very simple shell. Five screens (Home, Video, Check, Result, Learn) and a 3-tab bar.
@@ -25,6 +28,8 @@ const ICONS: Record<string, LucideIcon> = {
 export function ElderApp(_: { lang?: Lang }) {
   const [route, setRoute] = useState<Route>({ tab: 'home' });
   const [text, setText] = useState('');
+  // Family setup: asked once on the first launch (skippable), and from Home or the Result screen afterwards.
+  const [setup, setSetup] = useState<null | 'first' | 'menu'>(() => (!getFamilyPhone() && !setupSeen() ? 'first' : null));
   const day = laoDayNumber();
   useEffect(() => { preloadSpeech(); }, []);
   const go = (tab: Tab) => { stopAll(); setRoute({ tab } as Route); };
@@ -40,15 +45,16 @@ export function ElderApp(_: { lang?: Lang }) {
   };
 
   if ('checking' in route) return <Checking />;
+  if (setup) return <div className="elder h-full flex flex-col"><FamilySetup first={setup === 'first'} onDone={() => setSetup(null)} /><BottomBar tab={route.tab} onTab={t => { setSetup(null); go(t); }} /></div>;
 
   return (
     <div className="elder h-full flex flex-col">
       {route.tab === 'home' && ('video' in route
         ? <VideoScreen key={route.video} video={VIDEOS.find(v => v.id === route.video)!} onBack={() => go('home')}
             onNext={() => { const i = VIDEOS.findIndex(v => v.id === route.video); setRoute({ tab: 'home', video: VIDEOS[(i + 1) % VIDEOS.length].id }); }} />
-        : <Home day={day} onCheck={() => go('check')} onVideo={id => setRoute({ tab: 'home', video: id })} />)}
+        : <Home day={day} onSetup={() => setSetup('menu')} onCheck={() => go('check')} onVideo={id => setRoute({ tab: 'home', video: id })} />)}
       {route.tab === 'check' && ('verdict' in route
-        ? <Result verdict={route.verdict} onBack={() => go('check')} onAgain={() => { setText(''); go('check'); }} />
+        ? <Result verdict={route.verdict} message={text} onSetup={() => setSetup('menu')} onBack={() => go('check')} onAgain={() => { setText(''); go('check'); }} />
         : <Check text={text} setText={setText} onRun={run} />)}
       {route.tab === 'learn' && <Learn day={day} />}
       <BottomBar tab={route.tab} onTab={go} />
@@ -63,7 +69,7 @@ function Poster({ video, big }: { video: ElderVideo; big?: boolean }) {
   return <span className="absolute inset-0 bg-[#3B0FA0] flex items-center justify-center text-white/30" aria-hidden><Icon size={big ? 120 : 34} /></span>;
 }
 
-function Home({ day, onCheck, onVideo }: { day: number; onCheck: () => void; onVideo: (id: string) => void }) {
+function Home({ day, onSetup, onCheck, onVideo }: { day: number; onSetup: () => void; onCheck: () => void; onVideo: (id: string) => void }) {
   const [first, second] = videosForDay(day);
   return (
     <Page header={<Header title={ET.hello} listen={[ET.odd_q, ET.odd_tap, ET.videos_today, first.titleLo, second.titleLo]} />}>
@@ -90,6 +96,9 @@ function Home({ day, onCheck, onVideo }: { day: number; onCheck: () => void; onV
           <span className="block text-[1.3125rem] font-bold leading-snug">{second.titleLo}</span>
           <span className="block text-[1.125rem] text-[#4B4870]">{durationLabel(second.durationSec)}</span>
         </span>
+      </button>
+      <button type="button" onClick={onSetup} className="w-full min-h-[4.5rem] rounded-[1.25rem] border-2 border-[#E4E2EE] bg-white px-4 flex items-center gap-3 text-[1.3125rem] font-bold text-[#3B0FA0]">
+        <Users size={30} aria-hidden />{FT.setup_title}
       </button>
     </Page>
   );
@@ -213,10 +222,32 @@ function Checking() {
 }
 
 // ---------- 4. Result ----------
-function Result({ verdict, onBack, onAgain }: { verdict: ElderVerdict; onBack: () => void; onAgain: () => void }) {
+function Result({ verdict, message, onBack, onAgain, onSetup }: { verdict: ElderVerdict; message: string; onBack: () => void; onAgain: () => void; onSetup: () => void }) {
   const v = VERDICT[verdict];
-  const phone = getFamilyPhone();
+  const phone = getFamilyPhone(), name = getFamilyName();
+  const risky = verdict !== 'safe';
+  const [told, setTold] = useState(false);
+  const [informed, setInformed] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [inform, setInform] = useState<null | 'confirm' | 'thanks'>(null);
+  const text = tellText({ message, verdictWord: v.word });
+  const canShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+  // Share sheet first, then WhatsApp, then SMS if the browser would not open WhatsApp.
+  const send = async () => {
+    setPreview(false);
+    if (canShare) {
+      try { await navigator.share({ text }); setTold(true); return; } catch (e) { if ((e as Error).name === 'AbortError') return; }
+    }
+    if (!window.open(waLink(phone, text), '_blank')) location.href = smsLink(phone, text);
+    setTold(true);
+  };
+  const tell = () => {
+    const plan = planTell({ phone, canShare, demo: isDemoMode() });
+    if (plan.action === 'setup') onSetup(); else if (plan.action === 'preview') setPreview(true); else void send();
+  };
+  if (inform) return <InformScreen category={elderCategory(message)} stage={inform} onDone={() => setInform(null)} onSend={() => { saveInform(elderCategory(message), verdict); setInformed(true); setInform('thanks'); }} />;
   return (
+    <>
     <Page header={<Header title={ET.result_title} onBack={onBack} autoRead listen={[v.word, v.line, ET.do_this, ...v.steps]} />}
 >
       <section role="status" className="rounded-[1.375rem] p-[1.375rem] text-white" style={{ background: v.bg }}>
@@ -225,9 +256,17 @@ function Result({ verdict, onBack, onAgain }: { verdict: ElderVerdict; onBack: (
       </section>
       <h2 className="text-[1.3125rem] font-bold">{ET.do_this}</h2>
       <section className="rounded-[1.375rem] bg-white border border-[#E4E2EE] p-4"><Steps steps={v.steps} /></section>
-      {/* Two buttons scroll with the result, so the verdict stays visible at large text sizes. */}
-      <div className="grid gap-3 mt-2"><MainButton icon={<Phone />} label={ET.call} href={phone ? telLink(phone) : 'tel:'} /><MainButton icon={<RotateCcw />} label={ET.again} onClick={onAgain} kind="secondary" /></div>
+      {risky && <SatiRow told={told} informed={informed} />}
+      {/* Buttons scroll with the result, so the verdict stays visible at large text sizes. */}
+      <div className="grid gap-3 mt-2">
+        {risky && <MainButton icon={<MessageCircle />} label={!phone ? FT.tell_setup : name ? FT.tell(name) : FT.tell_whatsapp} onClick={tell} />}
+        <MainButton icon={<Phone />} label={ET.call} href={phone ? telLink(phone) : 'tel:'} kind={risky ? 'secondary' : 'primary'} />
+        {risky && <MainButton icon={<ShieldAlert />} label={FT.inform} onClick={() => setInform('confirm')} kind="secondary" />}
+        <MainButton icon={<RotateCcw />} label={ET.again} onClick={onAgain} kind="secondary" />
+      </div>
     </Page>
+    {preview && <TellPreview text={text} onSend={() => void send()} onClose={() => setPreview(false)} />}
+    </>
   );
 }
 
