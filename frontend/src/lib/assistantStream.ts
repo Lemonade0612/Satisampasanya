@@ -1,4 +1,4 @@
-import { API_BASE, ApiError, authHeaders } from './api';
+import { API_BASE, ApiError, authHeaders, unreachableMessage } from './api';
 import type { VerifyResult } from './verify';
 
 export type StreamEvent =
@@ -10,7 +10,7 @@ export type StreamEvent =
 export async function streamAssistant(body: { text: string; image?: string; mode: string; kind: string; band: string; lang: string }, onEvent: (e: StreamEvent) => void, signal?: AbortSignal) {
   let response: Response;
   try { response = await fetch(API_BASE + '/assistant/stream', { method: 'POST', signal, headers: { 'Content-Type': 'application/json', ...authHeaders() }, body: JSON.stringify(body) }); }
-  catch { throw new ApiError('Cannot reach the service.', 0); }
+  catch { throw new ApiError(unreachableMessage(), 0); }
   if (!response.ok || !response.body) {
     const value = await response.json().catch(() => ({}));
     throw new ApiError(value.error || 'Request failed.', response.status);
